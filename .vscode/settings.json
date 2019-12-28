@@ -1,0 +1,19 @@
+{
+    "files.exclude": {
+        "schema": true
+    },
+    "search.exclude": {
+        "**/*demo*": true,
+        "src/**/*.js": true,
+        "src/**/*.js.map": true
+    },
+    "java.configuration.updateBuildConfiguration": "disabled",
+    "editor.snippetSuggestions": "top",
+    "NE.enable.snippets": true,
+    "xml.fileAssociations": [
+        {
+            "systemId": "/Volumes/data/dev/nativescript/nativescript-carto/schema/tns.xsd",
+            "pattern": "**/**/*.xml"
+        }
+    ]
+}

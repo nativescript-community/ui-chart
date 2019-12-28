@@ -1,0 +1,39 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "declaration": true,
+        "removeComments": false,
+        "noLib": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": ["es6", "dom"],
+        "sourceMap": true,
+        "pretty": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "noEmitHelpers": true,
+        "noEmitOnError": false,
+        "noImplicitAny": false,
+        "noImplicitReturns": true,
+        "noImplicitUseStrict": false,
+        "noFallthroughCasesInSwitch": true,
+        "baseUrl": ".",
+        "outDir": "./plugin",
+        "paths": {
+            
+            "tns-core-modules": ["./node_modules/@nativescript/core"],
+            "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
+            "nativescript-chart": ["./src"],
+            "nativescript-chart/*": ["./src/*"],
+            "*": ["node_modules/*"]
+        }
+    },
+    "include": ["src/**/*", "src/**/*.ts", "./references.d.ts", "./src/references.d.ts"],
+    "exclude": ["platforms"],
+    "compileOnSave": false,
+    "angularCompilerOptions": {
+        "skipTemplateCodegen": true
+    }
+}

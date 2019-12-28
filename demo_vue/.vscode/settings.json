@@ -1,0 +1,5 @@
+{
+    "files.exclude": {
+        "**/nativescript-carto/**/*.js": true
+    }
+}

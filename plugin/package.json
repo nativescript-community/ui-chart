@@ -1,0 +1,30 @@
+{
+    "name": "nativescript-chart",
+    "version": "0.0.0",
+    "description": "Nativescript Chart plugin.",
+    "nativescript": {
+        "platforms": {
+            "android": "6.2.1",
+            "ios": "6.2.1"
+        }
+    },
+    "keywords": [
+        "NativeScript",
+        "JavaScript",
+        "Android",
+        "iOS"
+    ],
+    "author": {
+        "name": "Martin Guillon",
+        "email": "martin@akylas.fr"
+    },
+    "bugs": {
+        "url": "https://github.com/Akylas/nativescript-chart/issues"
+    },
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/Akylas/nativescript-chart",
+    "readmeFilename": "README.md",
+    "dependencies": {
+        "nativescript-canvas": "2.1.10"
+    }
+}
