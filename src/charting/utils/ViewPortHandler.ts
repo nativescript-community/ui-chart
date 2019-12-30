@@ -264,7 +264,7 @@ export class ViewPortHandler {
      */
 
 
-    public setZoomAtPosition( scaleX,  scaleY,  outputMatrix) {
+    public setZoom( scaleX,  scaleY,  outputMatrix) {
         if (!outputMatrix) {
             outputMatrix= new Matrix()
         }
@@ -283,7 +283,7 @@ export class ViewPortHandler {
      * @param y
      * @return
      */
-    public  setZoom( scaleX,  scaleY,  x,  y) {
+    public  setZoomAtPosition( scaleX,  scaleY,  x,  y) {
 
         const save = new Matrix();
         save.set(this.mMatrixTouch);
