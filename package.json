@@ -41,10 +41,15 @@
         "@commitlint/cli": "^8.2.0",
         "@commitlint/config-conventional": "^8.2.0",
         "@nativescript/core": "6.3.1",
+        "@tweenjs/tween.js": "18.5.0",
         "@types/node": "^12.12.21",
+        "@types/tween.js": "^17.2.0",
+        "cpy-cli": "^3.0.0",
         "husky": "^3.1.0",
         "lerna": "^3.19.0",
-        "nativescript-canvas":"2.1.10",
+        "nativescript-canvas": "2.1.10",
+        "nativescript-gesturehandler": "^0.0.11",
+        "nativescript-tween": "0.0.4",
         "npm-watch": "^0.6.0",
         "prompt": "^1.0.0",
         "rimraf": "^3.0.0",
@@ -52,12 +57,9 @@
         "tslint": "^5.20.1",
         "tslint-config-prettier": "^1.18.0",
         "tslint-config-standard": "^9.0.0",
-        "cpy-cli": "^3.0.0",
-        "typescript": "~3.7.3"
+        "typescript": "~3.7.4"
     },
-    "dependencies": {},
     "bootstrapper": "nativescript-plugin-seed",
-    
     "commitlint": {
         "extends": [
             "@commitlint/config-conventional"
