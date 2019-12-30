@@ -21,16 +21,17 @@
         "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "outDir": "./plugin",
+        "rootDir": "./src",
         "paths": {
             
-            "tns-core-modules": ["./node_modules/@nativescript/core"],
-            "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
+            "tns-core-modules": ["node_modules/@nativescript/core"],
+            "tns-core-modules/*": ["node_modules/@nativescript/core/*"],
             "nativescript-chart": ["./src"],
             "nativescript-chart/*": ["./src/*"],
             "*": ["node_modules/*"]
         }
     },
-    "include": ["src/**/*", "src/**/*.ts", "./references.d.ts", "./src/references.d.ts"],
+    "include": ["src/**/*.ts", "./references.d.ts", "./src/references.d.ts"],
     "exclude": ["platforms"],
     "compileOnSave": false,
     "angularCompilerOptions": {
