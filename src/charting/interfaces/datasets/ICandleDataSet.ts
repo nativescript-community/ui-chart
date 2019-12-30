@@ -1,5 +1,5 @@
 import { ILineScatterCandleRadarDataSet } from './ILineScatterCandleRadarDataSet';
-import { CandleEntry } from 'nativescript-chart/charting/data/CandleEntry';
+import { CandleEntry } from '../../data/CandleEntry';
 
 export interface ICandleDataSet extends ILineScatterCandleRadarDataSet<CandleEntry> {
     /**

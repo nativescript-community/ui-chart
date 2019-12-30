@@ -1,4 +1,4 @@
-import { BarEntry } from "nativescript-chart/charting/data/BarEntry";
+import { BarEntry } from "../../data/BarEntry";
 import { IBarLineScatterCandleBubbleDataSet } from "./IBarLineScatterCandleBubbleDataSet";
 
 /**

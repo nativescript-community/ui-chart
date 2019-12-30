@@ -1,7 +1,7 @@
 import { ChartInterface } from "./ChartInterface";
 import { BarLineScatterCandleBubbleData } from "../..//data/BarLineScatterCandleBubbleData";
 import { AxisDependency } from "../../components/YAxis";
-import { Transformer } from "nativescript-chart/charting/utils/Transformer";
+import { Transformer } from "../../utils/Transformer";
 
 export interface BarLineScatterCandleBubbleDataProvider extends ChartInterface {
 

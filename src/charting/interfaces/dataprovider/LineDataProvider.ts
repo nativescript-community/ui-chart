@@ -1,6 +1,6 @@
 import { LineData } from "../../data/LineData";
 import { BarLineScatterCandleBubbleDataProvider } from "./BarLineScatterCandleBubbleDataProvider";
-import { AxisDependency } from "nativescript-chart/charting/components/YAxis";
+import { AxisDependency } from "../../components/YAxis";
 
 export interface LineDataProvider extends BarLineScatterCandleBubbleDataProvider {
 

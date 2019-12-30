@@ -4,7 +4,7 @@ import { AxisDependency } from '../../components/YAxis';
 import { GradientColor } from '../../model/GradientColor';
 import { ValueFormatter } from '../../formatter/ValueFormatter';
 import { MPPointF } from '../../utils/MPPointF';
-import { LegendForm } from 'nativescript-chart/charting/components/Legend';
+import { LegendForm } from '../../components/Legend';
 import { DashPathEffect, Typeface } from 'nativescript-canvas';
 import { Color } from '@nativescript/core/color/color';
 

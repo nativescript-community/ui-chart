@@ -1,6 +1,6 @@
 import { IDataSet } from "./IDataSet";
-import { PieEntry } from "nativescript-chart/charting/data/PieEntry";
-import { ValuePosition } from "nativescript-chart/charting/data/PieDataSet";
+import { PieEntry } from "../../data/PieEntry";
+import { ValuePosition } from "../../data/PieDataSet";
 
 export interface IPieDataSet extends IDataSet<PieEntry> {
 
