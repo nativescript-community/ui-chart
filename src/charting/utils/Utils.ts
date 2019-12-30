@@ -11,16 +11,16 @@ import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
  * @author Philipp Jahoda
  */
 export namespace Utils {
-    const mainScreen = screen.mainScreen;
+    // const mainScreen = screen.mainScreen;
     const density = screen.mainScreen.scale;
     //    const mMetrics;
-    const mMinimumFlingVelocity = 50;
-    const mMaximumFlingVelocity = 8000;
+    // const mMinimumFlingVelocity = 50;
+    // const mMaximumFlingVelocity = 8000;
     const DEG2RAD = Math.PI / 180.0;
 
-    const DOUBLE_EPSILON = Number.EPSILON;
+    // const DOUBLE_EPSILON = Number.EPSILON;
 
-    const FLOAT_EPSILON = Number.EPSILON;
+    // const FLOAT_EPSILON = Number.EPSILON;
 
     /**
      * initialize method, called inside the Chart.init() method.
@@ -28,15 +28,16 @@ export namespace Utils {
      * @param context
      */
     export function init(context) {
+    
         if (context == null) {
             // noinspection deprecation
-            // this.mMinimumFlingVelocity = ViewConfiguration.getMinimumFlingVelocity();
+            // this.mMinimumFlingVelocity = android.view.ViewConfiguration.getMinimumFlingVelocity();
             // noinspection deprecation
-            // this.mMaximumFlingVelocity = ViewConfiguration.getMaximumFlingVelocity();
+            // this.mMaximumFlingVelocity = android.view.ViewConfiguration.getMaximumFlingVelocity();
 
             console.error('MPChartLib-Utils', 'Utils.init(...) PROVIDED CONTEXT OBJECT IS NULL');
         } else {
-            // const viewConfiguration = ViewConfiguration.get(context);
+            // const viewConfiguration = android.view.ViewConfiguration.get(context);
             // this.mMinimumFlingVelocity = viewConfiguration.getScaledMinimumFlingVelocity();
             // this.mMaximumFlingVelocity = viewConfiguration.getScaledMaximumFlingVelocity();
             // Resources res = context.getResources();
@@ -377,28 +378,28 @@ export namespace Utils {
         };
     }
 
-    export function velocityTrackerPointerUpCleanUpIfNecessary(ev, tracker) {
-        // Check the dot product of current velocities.
-        // If the pointer that left was opposing another velocity vector, clear.
-        tracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
-        const upIndex = ev.getActionIndex();
-        const id1 = ev.getPointerId(upIndex);
-        const x1 = tracker.getXVelocity(id1);
-        const y1 = tracker.getYVelocity(id1);
-        for (let i = 0, count = ev.getPointerCount(); i < count; i++) {
-            if (i == upIndex) continue;
+    // export function velocityTrackerPointerUpCleanUpIfNecessary(ev, tracker) {
+    //     // Check the dot product of current velocities.
+    //     // If the pointer that left was opposing another velocity vector, clear.
+    //     tracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
+    //     const upIndex = ev.getActionIndex();
+    //     const id1 = ev.getPointerId(upIndex);
+    //     const x1 = tracker.getXVelocity(id1);
+    //     const y1 = tracker.getYVelocity(id1);
+    //     for (let i = 0, count = ev.getPointerCount(); i < count; i++) {
+    //         if (i == upIndex) continue;
 
-            const id2 = ev.getPointerId(i);
-            const x = x1 * tracker.getXVelocity(id2);
-            const y = y1 * tracker.getYVelocity(id2);
+    //         const id2 = ev.getPointerId(i);
+    //         const x = x1 * tracker.getXVelocity(id2);
+    //         const y = y1 * tracker.getYVelocity(id2);
 
-            const dot = x + y;
-            if (dot < 0) {
-                tracker.clear();
-                break;
-            }
-        }
-    }
+    //         const dot = x + y;
+    //         if (dot < 0) {
+    //             tracker.clear();
+    //             break;
+    //         }
+    //     }
+    // }
 
     /**
      * Original method view.postInvalidateOnAnimation() only supportd in API >=
@@ -412,13 +413,13 @@ export namespace Utils {
     //         else view.postInvalidateDelayed(10);
     //     }
 
-    export function getMinimumFlingVelocity() {
-        return mMinimumFlingVelocity;
-    }
+    // export function getMinimumFlingVelocity() {
+    //     return mMinimumFlingVelocity;
+    // }
 
-    export function getMaximumFlingVelocity() {
-        return mMaximumFlingVelocity;
-    }
+    // export function getMaximumFlingVelocity() {
+    //     return mMaximumFlingVelocity;
+    // }
 
     /**
      * returns an angle between 0 < 360 (not less than zero, less than 360)
