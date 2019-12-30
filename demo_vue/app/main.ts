@@ -11,28 +11,28 @@ Vue.use(RadChart);
 Vue.registerElement('LineChart', () => require('nativescript-chart/charting/charts/LineChart').LineChart);
 
 import { MPLineChart } from 'nativescript-mpchart-fork-adrianoop/chart/line-chart/nativescript-line-chart';
-class CustomLineChart extends (com as any).github.mikephil.charting.charts.LineChart {
-    _owner: WeakRef<CustomMPLineChart>;
-    constructor(context) {
-        super(context);
-    }
-    onDraw(canvas) {
-        super.onDraw(canvas);
-        const owner = this._owner && this._owner.get();
-        if (owner) {
-            owner.notify({ eventName: 'drawn', object: owner });
-        }
-    }
-}
+// class CustomLineChart extends (com as any).github.mikephil.charting.charts.LineChart {
+//     _owner: WeakRef<CustomMPLineChart>;
+//     constructor(context) {
+//         super(context);
+//     }
+//     onDraw(canvas) {
+//         super.onDraw(canvas);
+//         const owner = this._owner && this._owner.get();
+//         if (owner) {
+//             owner.notify({ eventName: 'drawn', object: owner });
+//         }
+//     }
+// }
 
-class CustomMPLineChart extends MPLineChart {
-    createNativeView() {
-        var lineChartView = new CustomLineChart(this._context);
-        lineChartView._owner = new WeakRef(this);
-        return lineChartView;
-    }
-}
-Vue.registerElement('MPLineChart', () => CustomMPLineChart);
+// class CustomMPLineChart extends MPLineChart {
+//     createNativeView() {
+//         var lineChartView = new CustomLineChart(this._context);
+//         lineChartView._owner = new WeakRef(this);
+//         return lineChartView;
+//     }
+// }
+Vue.registerElement('MPLineChart', () => MPLineChart);
 
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = true;

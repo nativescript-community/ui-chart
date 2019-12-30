@@ -16,5 +16,5 @@ export const getExamples = () => {
             title: nsMPChartTitle,
             component: NSMPChart
         }
-    ];
+    ] as any[];
 };
