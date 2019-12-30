@@ -1,17 +1,14 @@
-import { ViewPortJob } from "./ViewPortJob";
+import { Matrix } from 'nativescript-canvas';
+import { BarLineChartBase } from '../charts/BarLineChartBase';
+import { AxisDependency } from '../components/YAxis';
+import { ObjectPool } from '../utils/ObjectPool';
+import { Transformer } from '../utils/Transformer';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { ViewPortJob } from './ViewPortJob';
 
 export class ZoomJob extends ViewPortJob {
-
-    private static ObjectPool<ZoomJob> pool;
-
-    static {
-        pool = ObjectPool.create(1, new ZoomJob(null, 0, 0, 0, 0, null, null, null));
-        pool.setReplenishPercentage(0.5f);
-    }
-
-    public static ZoomJob getInstance(viewPortHandler: ViewPortHandler, let scaleX, let scaleY, let xValue, let yValue,
-                                      Transformer trans, YAxis.AxisDependency axis, View v) {
-        ZoomJob result = pool.get();
+    public static getInstance(viewPortHandler: ViewPortHandler, scaleX, scaleY, xValue, yValue, trans: Transformer, axis: AxisDependency, v: BarLineChartBase<any, any, any>) {
+        const result = pool.get();
         result.xValue = xValue;
         result.yValue = yValue;
         result.scaleX = scaleX;
@@ -23,17 +20,16 @@ export class ZoomJob extends ViewPortJob {
         return result;
     }
 
-    public static void recycleInstance(ZoomJob instance) {
+    public static recycleInstance(instance: ZoomJob) {
         pool.recycle(instance);
     }
 
-    protected let scaleX;
-    protected let scaleY;
+    protected scaleX;
+    protected scaleY;
 
-    protected YAxis.AxisDependency axisDependency;
+    protected axisDependency: AxisDependency;
 
-    public ZoomJob(viewPortHandler: ViewPortHandler, let scaleX, let scaleY, let xValue, let yValue, Transformer trans,
-                   YAxis.AxisDependency axis, View v) {
+    constructor(viewPortHandler: ViewPortHandler, scaleX, scaleY, xValue, yValue, trans: Transformer, axis: AxisDependency, v: BarLineChartBase<any, any, any>) {
         super(viewPortHandler, xValue, yValue, trans, v);
 
         this.scaleX = scaleX;
@@ -41,34 +37,32 @@ export class ZoomJob extends ViewPortJob {
         this.axisDependency = axis;
     }
 
-    protected Matrix this.mRunMatrixBuffer = new Matrix();
+    protected mRunMatrixBuffer = new Matrix();
 
-    
     public run() {
+        const save = this.mRunMatrixBuffer;
+        this.mViewPortHandler.zoom(this.scaleX, this.scaleY, save);
+        this.mViewPortHandler.refresh(save, this.view, false);
 
-        Matrix save = this.mRunMatrixBuffer;
-        this.mViewPortHandler.zoom(scaleX, scaleY, save);
-        this.mViewPortHandler.refresh(save, view, false);
+        let yValsInView = this.view.getAxis(this.axisDependency).mAxisRange / this.mViewPortHandler.getScaleY();
+        let xValsInView = this.view.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
 
-        let yValsInView = ((BarLineChartBase) view).getAxis(axisDependency).mAxisRange / this.mViewPortHandler.getScaleY();
-        let xValsInView = ((BarLineChartBase) view).getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
+        this.pts[0] = this.xValue - xValsInView / 2;
+        this.pts[1] = this.yValue + yValsInView / 2;
 
-        pts[0] = xValue - xValsInView / 2f;
-        pts[1] = yValue + yValsInView / 2f;
+        this.mTrans.pointValuesToPixel(this.pts);
 
-        this.mTrans.pointValuesToPixel(pts);
+        this.mViewPortHandler.translate(this.pts, save);
+        this.mViewPortHandler.refresh(save, this.view, false);
 
-        this.mViewPortHandler.translate(pts, save);
-        this.mViewPortHandler.refresh(save, view, false);
+        this.view.calculateOffsets();
+        this.view.invalidate();
 
-        ((BarLineChartBase) view).calculateOffsets();
-        view.postInvalidate();
-
-        recycleInstance(this);
+        ZoomJob.recycleInstance(this);
     }
 
-    
-    protected ObjectPool.Poolable instantiate() {
+    public instantiate() {
         return new ZoomJob(null, 0, 0, 0, 0, null, null, null);
     }
 }
+const pool = ObjectPool.create<ZoomJob>(1, new ZoomJob(null, 0, 0, 0, 0, null, null, null)).setReplenishPercentage(0.5);

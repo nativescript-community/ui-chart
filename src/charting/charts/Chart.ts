@@ -17,6 +17,8 @@ import { LegendRenderer } from '../renderer/LegendRenderer';
 import { IHighlighter } from '../highlight/IHighlighter';
 import { profile } from '@nativescript/core/profiling/profiling';
 import { ChartAnimator } from '../animation/ChartAnimator';
+import { ViewPortJob } from '../jobs/ViewPortJob';
+import { ChartTouchListener } from '../listener/ChartTouchListener';
 
 const LOG_TAG = 'MPAndroidChart';
 
@@ -107,7 +109,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     // protected  mSelectionListener: OnChartValueSelectedListener;
 
-    // protected ChartTouchListener this.mChartTouchListener;
+    protected mChartTouchListener: ChartTouchListener<any>;
 
     /**
      * text that is displayed when the chart is empty
@@ -136,7 +138,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * object responsible for animations
      */
-    protected mAnimator; // ChartAnimator
+    protected mAnimator: ChartAnimator; 
 
     /**
      * Extra offsets to be appended to the viewport
@@ -154,25 +156,26 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.init();
     }
 
+    initNativeView() {
+        super.initNativeView();
+        this.mChartTouchListener.init();
+    }
+    disposeNativeView() {
+        super.disposeNativeView();
+        this.mChartTouchListener.dispose();
+    }
+
     /**
      * initialize all paints and stuff
      */
     @profile
     protected init() {
-        // setWillNotDraw(false);
-        // setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
-        this.mAnimator = new ChartAnimator();
-        //     new AnimatorUpdateListener() {
-
-        //     public onAnimationUpdate(ValueAnimator animation) {
-        //         // ViewCompat.postInvalidateOnAnimation(Chart.this);
-        //         postInvalidate();
-        //     }
-        // }
+        this.mAnimator = new ChartAnimator(()=>{
+            this.invalidate();
+        });
 
         // initialize the utils
-        // Utils.init(getContext());
+        Utils.init(this._context);
         this.mMaxHighlightDistance = Utils.convertDpToPixel(500);
 
         this.mDescription = new Description();
@@ -193,6 +196,62 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         if (this.mLogEnabled) console.log('', 'Chart.init()');
     }
+
+
+    // public addEventListener(arg: string | GestureTypes, callback: (data: EventData) => void, thisArg?: any) {
+    //     if (typeof arg === "string") {
+    //         arg = getEventOrGestureName(arg);
+
+    //         let gesture = gestureFromString(arg);
+    //         if (gesture && !this._isEvent(arg)) {
+    //             this._observe(gesture, callback, thisArg);
+    //         } else {
+    //             let events = (arg).split(",");
+    //             if (events.length > 0) {
+    //                 for (let i = 0; i < events.length; i++) {
+    //                     let evt = events[i].trim();
+    //                     let gst = gestureFromString(evt);
+    //                     if (gst && !this._isEvent(arg)) {
+    //                         this._observe(gst, callback, thisArg);
+    //                     } else {
+    //                         super.addEventListener(evt, callback, thisArg);
+    //                     }
+    //                 }
+    //             } else {
+    //                 super.addEventListener(arg, callback, thisArg);
+    //             }
+    //         }
+    //     } else if (typeof arg === "number") {
+    //         this._observe(<GestureTypes>arg, callback, thisArg);
+    //     }
+    // }
+
+    // public removeEventListener(arg: string | GestureTypes, callback?: any, thisArg?: any) {
+    //     if (typeof arg === "string") {
+    //         let gesture = gestureFromString(arg);
+    //         if (gesture && !this._isEvent(arg)) {
+    //             this._disconnectGestureObservers(gesture);
+    //         } else {
+    //             let events = arg.split(",");
+    //             if (events.length > 0) {
+    //                 for (let i = 0; i < events.length; i++) {
+    //                     let evt = events[i].trim();
+    //                     let gst = gestureFromString(evt);
+    //                     if (gst && !this._isEvent(arg)) {
+    //                         this._disconnectGestureObservers(gst);
+    //                     } else {
+    //                         super.removeEventListener(evt, callback, thisArg);
+    //                     }
+    //                 }
+    //             } else {
+    //                 super.removeEventListener(arg, callback, thisArg);
+    //             }
+
+    //         }
+    //     } else if (typeof arg === "number") {
+    //         this._disconnectGestureObservers(<GestureTypes>arg);
+    //     }
+    // }
 
     // public initWithDummyData() {
     // ColorTemplate template = new ColorTemplate();
@@ -261,7 +320,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.mData = null;
         this.mOffsetsCalculated = false;
         this.mIndicesToHighlight = null;
-        // this.mChartTouchListener.setLastHighlighted(null);
+        this.mChartTouchListener.setLastHighlighted(null);
         this.invalidate();
     }
 
@@ -464,9 +523,9 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     protected setLastHighlighted(highs) {
         if (highs == null || highs.length <= 0 || highs[0] == null) {
-            // this.mChartTouchListener.setLastHighlighted(null);
+            this.mChartTouchListener.setLastHighlighted(null);
         } else {
-            // this.mChartTouchListener.setLastHighlighted(highs[0]);
+            this.mChartTouchListener.setLastHighlighted(highs[0]);
         }
     }
 
@@ -1433,9 +1492,11 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      *
      * @param job
      */
-    public addViewportJob(job) {
+    public addViewportJob(job: ViewPortJob) {
         if (this.mViewPortHandler.hasChartDimens()) {
-            // post(job);
+            setTimeout(() => {
+                job.run();
+            }, 0);
         } else {
             this.mJobs.push(job);
         }
@@ -1488,11 +1549,10 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged);
 
         if (w > 0 && h > 0 && h < 10000 && h < 10000) {
-            if (this.mLogEnabled) console.log(LOG_TAG, "Setting chart dimens, width: " + w + ", height: " + h);
-                this.mViewPortHandler.setChartDimens(Utils.convertPixelsToDp(w), Utils.convertPixelsToDp(h));
+            if (this.mLogEnabled) console.log(LOG_TAG, 'Setting chart dimens, width: ' + w + ', height: ' + h);
+            this.mViewPortHandler.setChartDimens(Utils.convertPixelsToDp(w), Utils.convertPixelsToDp(h));
         } else {
-            // if (this.mLogEnabled)
-            // Log.w(LOG_TAG, "*Avoiding* setting chart dimens! width: " + w + ", height: " + h);
+            if (this.mLogEnabled) console.warn(LOG_TAG, '*Avoiding* setting chart dimens! width: ' + w + ', height: ' + h);
         }
 
         // This may cause the chart view to mutate properties affecting the view port --
@@ -1504,11 +1564,13 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             this.calculateOffsets(); // needs chart size
         }
 
-        // for (Runnable r : this.mJobs) {
-        //     post(r);
-        // }
+        for (let r of this.mJobs) {
+            setTimeout(() => {
+                r.run();
+            }, 0);
+        }
 
-        // this.mJobs.clear();
+        this.mJobs = [];
 
         // super.onSizeChanged(w, h);
     }

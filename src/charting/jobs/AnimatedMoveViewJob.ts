@@ -1,28 +1,15 @@
-package com.github.mikephil.charting.jobs;
-
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
-import android.view.View;
-
-import com.github.mikephil.charting.utils.ObjectPool;
-import com.github.mikephil.charting.utils.Transformer;
-import com.github.mikephil.charting.utils.ViewPortHandler;
-
+import { BarLineChartBase } from '../charts/BarLineChartBase';
+import { ObjectPool } from '../utils/ObjectPool';
+import { Transformer } from '../utils/Transformer';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { AnimatedViewPortJob } from './AnimatedViewPortJob';
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
-@SuppressLint("NewApi")
-public class AnimatedMoveViewJob extends AnimatedViewPortJob {
+export class AnimatedMoveViewJob extends AnimatedViewPortJob {
 
-    private static ObjectPool<AnimatedMoveViewJob> pool;
-
-    static {
-        pool = ObjectPool.create(4, new AnimatedMoveViewJob(null,0,0,null,null,0,0,0));
-        pool.setReplenishPercentage(0.5f);
-    }
-
-    public static AnimatedMoveViewJob getInstance(viewPortHandler: ViewPortHandler, let xValue, let yValue, Transformer trans, View v, let xOrigin, let yOrigin, long duration){
-        AnimatedMoveViewJob result = pool.get();
+    public static getInstance(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, duration) {
+        const result = pool.get();
         result.mViewPortHandler = viewPortHandler;
         result.xValue = xValue;
         result.yValue = yValue;
@@ -31,35 +18,32 @@ public class AnimatedMoveViewJob extends AnimatedViewPortJob {
         result.xOrigin = xOrigin;
         result.yOrigin = yOrigin;
         //result.resetAnimator();
-        result.animator.setDuration(duration);
+        result.createAnimator(duration);
         return result;
     }
 
-    public static void recycleInstance(AnimatedMoveViewJob instance){
+    public static recycleInstance(instance: AnimatedMoveViewJob) {
         pool.recycle(instance);
     }
 
-
-    public AnimatedMoveViewJob(viewPortHandler: ViewPortHandler, let xValue, let yValue, Transformer trans, View v, let xOrigin, let yOrigin, long duration) {
+    constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, duration) {
         super(viewPortHandler, xValue, yValue, trans, v, xOrigin, yOrigin, duration);
     }
 
-    
-    public onAnimationUpdate(ValueAnimator animation) {
+    public onAnimationUpdate(animation) {
+        this.pts[0] = this.xOrigin + (this.xValue - this.xOrigin) * this.phase;
+        this.pts[1] = this.yOrigin + (this.yValue - this.yOrigin) * this.phase;
 
-        pts[0] = xOrigin + (xValue - xOrigin) * phase;
-        pts[1] = yOrigin + (yValue - yOrigin) * phase;
-
-        this.mTrans.pointValuesToPixel(pts);
-        this.mViewPortHandler.centerViewPort(pts, view);
+        this.mTrans.pointValuesToPixel(this.pts);
+        this.mViewPortHandler.centerViewPort(this.pts, this.view);
     }
 
-    public recycleSelf(){
-        recycleInstance(this);
+    public recycleSelf() {
+        AnimatedMoveViewJob.recycleInstance(this);
     }
 
-    
-    protected ObjectPool.Poolable instantiate() {
-        return new AnimatedMoveViewJob(null,0,0,null,null,0,0,0);
+    public instantiate() {
+        return new AnimatedMoveViewJob(null, 0, 0, null, null, 0, 0, 0);
     }
 }
+const pool = ObjectPool.create<AnimatedMoveViewJob>(4, new AnimatedMoveViewJob(null, 0, 0, null, null, 0, 0, 0)).setReplenishPercentage(0.5);

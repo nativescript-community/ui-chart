@@ -18,6 +18,11 @@ import { XAxisPosition } from '../components/XAxis';
 import { YAxisRenderer } from '../renderer/YAxisRenderer';
 import { XAxisRenderer } from '../renderer/XAxisRenderer';
 import { ChartHighlighter } from '../highlight/ChartHighlighter';
+import { MoveViewJob } from '../jobs/MoveViewJob';
+import { AnimatedMoveViewJob } from '../jobs/AnimatedMoveViewJob';
+import { AnimatedZoomJob } from '../jobs/AnimatedZoomJob';
+import { ZoomJob } from '../jobs/ZoomJob';
+import { BarLineChartTouchListener } from '../listener/BarLineChartTouchListener';
 
 const LOG_TAG = 'BarLineChartBase';
 
@@ -129,7 +134,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.setHighlighter(new ChartHighlighter(this));
 
-        // this.mChartTouchListener = new BarLineChartTouchListener(this, this.mViewPortHandler.getMatrixTouch(), 3f);
+        this.mChartTouchListener = new BarLineChartTouchListener(this, this.mViewPortHandler.getMatrixTouch(), 3);
 
         this.mGridBackgroundPaint = new Paint();
         this.mGridBackgroundPaint.setStyle(Style.FILL);
@@ -469,10 +474,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     //         return this.mChartTouchListener.onTouch(this, event);
     // }
 
-    public computeScroll() {
+    // public computeScroll() {
         // if (this.mChartTouchListener instanceof BarLineChartTouchListener)
         //     (this.mChartTouchListener).computeScroll();
-    }
+    // }
 
     /**
      * ################ ################ ################ ################
@@ -565,8 +570,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis   the axis relative to which the zoom should take place
      */
     public zoomAtValue(scaleX, scaleY, xValue, yValue, axis) {
-        // const job = ZoomJob.getInstance(this.mViewPortHandler, scaleX, scaleY, xValue, yValue, this.getTransformer(axis), axis, this);
-        // this.addViewportJob(job);
+        const job = ZoomJob.getInstance(this.mViewPortHandler, scaleX, scaleY, xValue, yValue, this.getTransformer(axis), axis, this);
+        this.addViewportJob(job);
     }
 
     /**
@@ -596,23 +601,23 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public zoomAndCenterAnimated(scaleX, scaleY, xValue, yValue, axis, duration) {
         const origin = this.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), axis);
 
-        // const job = AnimatedZoomJob.getInstance(
-        //     this.mViewPortHandler,
-        //     this,
-        //     this.getTransformer(axis),
-        //     this.getAxis(axis),
-        //     this.mXAxis.mAxisRange,
-        //     scaleX,
-        //     scaleY,
-        //     this.mViewPortHandler.getScaleX(),
-        //     this.mViewPortHandler.getScaleY(),
-        //     xValue,
-        //     yValue,
-        //     origin.x,
-        //     origin.y,
-        //     duration
-        // );
-        // this.addViewportJob(job);
+        const job = AnimatedZoomJob.getInstance(
+            this.mViewPortHandler,
+            this,
+            this.getTransformer(axis),
+            this.getAxis(axis),
+            this.mXAxis.mAxisRange,
+            scaleX,
+            scaleY,
+            this.mViewPortHandler.getScaleX(),
+            this.mViewPortHandler.getScaleY(),
+            xValue,
+            yValue,
+            origin.x,
+            origin.y,
+            duration
+        );
+        this.addViewportJob(job);
 
         // MPPointD.recycleInstance(origin);
     }
@@ -727,8 +732,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param xValue
      */
     public moveViewToX(xValue) {
-        // const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, 0, this.getTransformer(AxisDependency.LEFT), this);
-        // this.addViewportJob(job);
+        const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, 0, this.getTransformer(AxisDependency.LEFT), this);
+        this.addViewportJob(job);
     }
 
     /**
@@ -743,9 +748,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public moveViewTo(xValue, yValue, axis) {
         let yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
 
-        // const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this);
+        const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this);
 
-        // this.addViewportJob(job);
+        this.addViewportJob(job);
     }
 
     /**
@@ -763,9 +768,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         let yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
 
-        // const job = AnimatedMoveViewJob.getInstance(this.mViewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
+        const job = AnimatedMoveViewJob.getInstance(this.mViewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
 
-        // this.addViewportJob(job);
+        this.addViewportJob(job);
 
         // MPPointD.recycleInstance(bounds);
     }
@@ -780,9 +785,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public centerViewToY(yValue, axis) {
         let valsInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
 
-        // const job = MoveViewJob.getInstance(this.mViewPortHandler, 0, yValue + valsInView / 2, this.getTransformer(axis), this);
+        const job = MoveViewJob.getInstance(this.mViewPortHandler, 0, yValue + valsInView / 2, this.getTransformer(axis), this);
 
-        // this.addViewportJob(job);
+        this.addViewportJob(job);
     }
 
     /**
@@ -798,9 +803,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         let yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
         let xInView = this.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
 
-        // const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this);
+        const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this);
 
-        // this.addViewportJob(job);
+        this.addViewportJob(job);
     }
 
     /**
@@ -818,9 +823,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         let yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
         let xInView = this.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
 
-        // const job = AnimatedMoveViewJob.getInstance(this.mViewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
+        const job = AnimatedMoveViewJob.getInstance(this.mViewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
 
-        // this.addViewportJob(job);
+        this.addViewportJob(job);
 
         // MPPointD.recycleInstance(bounds);
     }

@@ -1,99 +1,113 @@
-package com.github.mikephil.charting.jobs;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
-import android.view.View;
+import TWEEN from 'nativescript-tween';
+import { BarLineChartBase } from "../charts/BarLineChartBase";
+import { Transformer } from "../utils/Transformer";
+import { ViewPortHandler } from "../utils/ViewPortHandler";
+import { ViewPortJob } from "./ViewPortJob";
 
-import com.github.mikephil.charting.utils.Transformer;
-import com.github.mikephil.charting.utils.ViewPortHandler;
-
+export interface AnimatorUpdateListener {
+    onAnimationUpdate(animation: TWEEN.Tween);
+}
+export interface AnimatorListener {
+    onAnimationStart(animation: TWEEN.Tween);
+    onAnimationEnd(animation: TWEEN.Tween);
+    onAnimationCancel(animation: TWEEN.Tween);
+}
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
-@SuppressLint("NewApi")
-public abstract class AnimatedViewPortJob extends ViewPortJob implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+export abstract class AnimatedViewPortJob extends ViewPortJob implements AnimatorUpdateListener, AnimatorListener {
 
-    protected ObjectAnimator animator;
+    protected  animator: TWEEN.Tween;
 
-    protected let phase;
+    protected  phase;
 
-    protected let xOrigin;
-    protected let yOrigin;
+    protected  xOrigin;
+    protected  yOrigin;
 
-    public AnimatedViewPortJob(viewPortHandler: ViewPortHandler, let xValue, let yValue, Transformer trans, View v, let xOrigin, let yOrigin, long duration) {
+    constructor(viewPortHandler: ViewPortHandler,  xValue,  yValue,  trans: Transformer,  v:BarLineChartBase<any, any, any>,  xOrigin,  yOrigin,  duration) {
         super(viewPortHandler, xValue, yValue, trans, v);
         this.xOrigin = xOrigin;
         this.yOrigin = yOrigin;
-        animator = ObjectAnimator.ofFloat(this, "phase", 0, 1);
-        animator.setDuration(duration);
-        animator.addUpdateListener(this);
-        animator.addListener(this);
+        this.createAnimator(duration) 
+        // this.animator = ObjectAnimator.ofFloat(this, "phase", 0, 1);
+        // animator.setDuration(duration);
+        // animator.addUpdateListener(this);
+        // animator.addListener(this);
     }
 
-    @SuppressLint("NewApi")
+
+    createAnimator(duration) {
+        this.animator = new TWEEN.Tween({ value: 0 })
+        .to({ value: 1 }, duration)
+        .onStop(()=>this.onAnimationCancel(this.animator))
+        .onComplete(()=>this.onAnimationEnd(this.animator))
+        .onStart(()=>this.onAnimationStart(this.animator))
+        .onUpdate(obj => {
+            // this.log('onUpdate', obj.value);
+            this.phase = obj.value;
+            ()=>this.onAnimationUpdate(this.animator)
+        })
+        .start();
+    }
+
     
     public run() {
-        animator.start();
+        this.animator.start();
     }
 
     public getPhase() {
-        return phase;
+        return this.phase;
     }
 
-    public setPhase(let phase) {
+    public setPhase( phase) {
         this.phase = phase;
     }
 
     public getXOrigin() {
-        return xOrigin;
+        return this.xOrigin;
     }
 
     public getYOrigin() {
-        return yOrigin;
+        return this.yOrigin;
     }
 
-    public abstract void recycleSelf();
+    public abstract  recycleSelf();
 
     protected resetAnimator(){
-        animator.removeAllListeners();
-        animator.removeAllUpdateListeners();
-        animator.reverse();
-        animator.addUpdateListener(this);
-        animator.addListener(this);
+        this.animator.stop();
+        this.animator.update(0);
+        // this.animator.reset();
+        // this.animator.reverse();
+        // this.animator.addUpdateListener(this);
+        // this.animator.addListener(this);
     }
 
     
-    public onAnimationStart(Animator animation) {
+    public onAnimationStart( animation: TWEEN.Tween) {
 
     }
 
     
-    public onAnimationEnd(Animator animation) {
+    public onAnimationEnd( animation: TWEEN.Tween) {
         try{
-            recycleSelf();
-        }catch (IllegalArgumentException e){
+            this.recycleSelf();
+        }catch ( e){
             // don't worry about it.
         }
     }
 
     
-    public onAnimationCancel(Animator animation) {
+    public onAnimationCancel( animation: TWEEN.Tween) {
         try{
-            recycleSelf();
-        }catch (IllegalArgumentException e){
+            this.recycleSelf();
+        }catch ( e){
             // don't worry about it.
         }
     }
 
     
-    public onAnimationRepeat(Animator animation) {
-
-    }
-
-    
-    public onAnimationUpdate(ValueAnimator animation) {
+    public onAnimationUpdate( animation: TWEEN.Tween) {
 
     }
 }

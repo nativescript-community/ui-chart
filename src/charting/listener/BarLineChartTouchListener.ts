@@ -1,24 +1,9 @@
-package com.github.mikephil.charting.listener;
-
-import android.annotation.SuppressLint;
-import android.graphics.Matrix;
-import android.graphics.PointF;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.VelocityTracker;
-import android.view.View;
-import android.view.animation.AnimationUtils;
-
-import com.github.mikephil.charting.charts.BarLineChartBase;
-import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.data.BarLineScatterCandleBubbleData;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IDataSet;
-import com.github.mikephil.charting.utils.MPPointF;
-import com.github.mikephil.charting.utils.Utils;
-import com.github.mikephil.charting.utils.ViewPortHandler;
+import { Matrix } from 'nativescript-canvas';
+import { GestureState, GestureStateEventData } from 'nativescript-gesturehandler';
+import { BarLineChartBase } from '../charts/BarLineChartBase';
+import { IDataSet } from '../interfaces/datasets/IDataSet';
+import { Utils } from '../utils/Utils';
+import { ChartGesture, ChartTouchListener } from './ChartTouchListener';
 
 /**
  * TouchListener for Bar-, Line-, Scatter- and CandleStickChart with handles all
@@ -26,53 +11,51 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
  *
  * @author Philipp Jahoda
  */
-public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBase<? extends BarLineScatterCandleBubbleData<?
-        extends IBarLineScatterCandleBubbleDataSet<? extends Entry>>>> {
-
+export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBase<any, any, any>> {
     /**
      * the original touch-matrix from the chart
      */
-    private Matrix this.mMatrix = new Matrix();
+    private mMatrix = new Matrix();
 
     /**
      * matrix for saving the original matrix state
      */
-    private Matrix this.mSavedMatrix = new Matrix();
+    private mSavedMatrix = new Matrix();
 
     /**
      * polet where the touch action started
      */
-    private MPPointF this.mTouchStartPolet = MPPointF.getInstance(0,0);
+    private mTouchStartPoint = { x: 0, y: 0 };
 
     /**
      * center between two pointers (fingers on the display)
      */
-    private MPPointF this.mTouchPointCenter = MPPointF.getInstance(0,0);
+    private mTouchPointCenter = { x: 0, y: 0 };
 
-    private let mSavedXDist = 1;
-    private let mSavedYDist = 1;
-    private let mSavedDist = 1;
+    private mSavedXDist = 1;
+    private mSavedYDist = 1;
+    private mSavedDist = 1;
 
-    private IDataSet this.mClosestDataSetToTouch;
+    private mClosestDataSetToTouch: IDataSet<any>;
 
     /**
      * used for tracking velocity of dragging
      */
-    private VelocityTracker this.mVelocityTracker;
+    // private VelocityTracker this.mVelocityTracker;
 
-    private long this.mDecelerationLastTime = 0;
-    private MPPointF this.mDecelerationCurrentPolet = MPPointF.getInstance(0,0);
-    private MPPointF this.mDecelerationVelocity = MPPointF.getInstance(0,0);
+    private mDecelerationLastTime = 0;
+    private mDecelerationCurrentPoint = { x: 0, y: 0 };
+    private mDecelerationVelocity = { x: 0, y: 0 };
 
     /**
      * the distance of movement that will be counted as a drag
      */
-    private let mDragTriggerDist;
+    private mDragTriggerDist;
 
     /**
      * the minimum distance between the pointers that will trigger a zoom gesture
      */
-    private let mMinScalePointerDistance;
+    private mMinScalePointerDistance;
 
     /**
      * Constructor with initialization parameters.
@@ -82,211 +65,398 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @param dragTriggerDistance the minimum movement distance that will be interpreted as a "drag" gesture in dp (3dp equals
      *                            to about 9 pixels on a 5.5" FHD screen)
      */
-    public BarLineChartTouchListener(BarLineChartBase<? extends BarLineScatterCandleBubbleData<? extends
-            IBarLineScatterCandleBubbleDataSet<? extends Entry>>> chart, Matrix touchMatrix, let dragTriggerDistance) {
+    constructor(chart: BarLineChartBase<any, any, any>, touchMatrix: Matrix, dragTriggerDistance) {
         super(chart);
         this.mMatrix = touchMatrix;
 
         this.mDragTriggerDist = Utils.convertDpToPixel(dragTriggerDistance);
 
-        this.mMinScalePointerDistance = Utils.convertDpToPixel(3.5f);
+        this.mMinScalePointerDistance = Utils.convertDpToPixel(3.5);
     }
-
-    @SuppressLint("ClickableViewAccessibility")
-    
-    public onTouch(View v, MotionEvent event) {
-
-        if (mVelocityTracker == null) {
-            this.mVelocityTracker = VelocityTracker.obtain();
-        }
-        this.mVelocityTracker.addMovement(event);
-
-        if (event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
-            if (mVelocityTracker != null) {
-                this.mVelocityTracker.recycle();
-                this.mVelocityTracker = null;
-            }
-        }
-
-        if (mTouchMode == NONE) {
-            this.mGestureDetector.onTouchEvent(event);
-        }
-
-        if (!mChart.isDragEnabled() && (!mChart.isScaleXEnabled() && !mChart.isScaleYEnabled()))
-            return true;
-
-        // Handle touch events here...
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-
-            case MotionEvent.ACTION_DOWN:
-
-                startAction(event);
-
-                stopDeceleration();
-
-                saveTouchStart(event);
+    onPanGesture(event: GestureStateEventData) {
+        if (!this.mChart.isDragEnabled() && !this.mChart.isScaleXEnabled() && !this.mChart.isScaleYEnabled()) return;
+        const state = event.data.state;
+        switch (state) {
+            case GestureState.BEGAN:
+                this.stopDeceleration();
+                this.saveTouchStart(event);
 
                 break;
-
-            case MotionEvent.ACTION_POINTER_DOWN:
-
-                if (event.getPointerCount() >= 2) {
-
+            case GestureState.ACTIVE:
+                if (this.mTouchMode == ChartTouchListener.DRAG) {
                     this.mChart.disableScroll();
 
-                    saveTouchStart(event);
+                    let x = event.data.extraData.translationX;
+                    let y = event.data.extraData.translationY;
 
-                    // get the distance between the pointers on the x-axis
-                    this.mSavedXDist = getXDist(event);
-
-                    // get the distance between the pointers on the y-axis
-                    this.mSavedYDist = getYDist(event);
-
-                    // get the total distance between the pointers
-                    this.mSavedDist = spacing(event);
-
-                    if (mSavedDist > 10) {
-
-                        if (mChart.isPinchZoomEnabled()) {
-                            this.mTouchMode = PINCH_ZOOM;
-                        } else {
-                            if (mChart.isScaleXEnabled() != this.mChart.isScaleYEnabled()) {
-                                this.mTouchMode = this.mChart.isScaleXEnabled() ? X_ZOOM : Y_ZOOM;
-                            } else {
-                                this.mTouchMode = this.mSavedXDist > this.mSavedYDist ? X_ZOOM : Y_ZOOM;
-                            }
-                        }
-                    }
-
-                    // determine the touch-pointer center
-                    midPoint(mTouchPointCenter, event);
-                }
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-
-                if (mTouchMode == DRAG) {
-
-                    this.mChart.disableScroll();
-
-                    let x = this.mChart.isDragXEnabled() ? event.getX() - this.mTouchStartPoint.x : 0;
-                    let y = this.mChart.isDragYEnabled() ? event.getY() - this.mTouchStartPoint.y : 0;
-
-                    performDrag(event, x, y);
-
-                } else if (mTouchMode == X_ZOOM || this.mTouchMode == Y_ZOOM || this.mTouchMode == PINCH_ZOOM) {
-
-                    this.mChart.disableScroll();
-
-                    if (mChart.isScaleXEnabled() || this.mChart.isScaleYEnabled())
-                        performZoom(event);
-
-                } else if (mTouchMode == NONE
-                        && Math.abs(distance(event.getX(), this.mTouchStartPoint.x, event.getY(),
-                        this.mTouchStartPoint.y)) > this.mDragTriggerDist) {
-
-                    if (mChart.isDragEnabled()) {
-
-                        boolean shouldPan = !mChart.isFullyZoomedOut() ||
-                                !mChart.hasNoDragOffset();
+                    this.performDrag(event, x, y);
+                } else if (this.mTouchMode == ChartTouchListener.NONE) {
+                    if (this.mChart.isDragEnabled()) {
+                        const shouldPan = !this.mChart.isFullyZoomedOut() || !this.mChart.hasNoDragOffset();
 
                         if (shouldPan) {
-
-                            let distanceX = Math.abs(event.getX() - this.mTouchStartPoint.x);
-                            let distanceY = Math.abs(event.getY() - this.mTouchStartPoint.y);
+                            // let distanceX = Math.abs(event.getX() - this.mTouchStartPoint.x);
+                            // let distanceY = Math.abs(event.getY() - this.mTouchStartPoint.y);
 
                             // Disable dragging in a direction that's disallowed
-                            if ((mChart.isDragXEnabled() || distanceY >= distanceX) &&
-                                    (mChart.isDragYEnabled() || distanceY <= distanceX)) {
-
+                            if (this.mChart.isDragXEnabled() && this.mChart.isDragYEnabled()) {
                                 this.mLastGesture = ChartGesture.DRAG;
-                                this.mTouchMode = DRAG;
+                                this.mTouchMode = ChartTouchListener.DRAG;
                             }
-
                         } else {
-
-                            if (mChart.isHighlightPerDragEnabled()) {
+                            if (this.mChart.isHighlightPerDragEnabled()) {
                                 this.mLastGesture = ChartGesture.DRAG;
 
-                                if (mChart.isHighlightPerDragEnabled())
-                                    performHighlightDrag(event);
+                                if (this.mChart.isHighlightPerDragEnabled()) this.performHighlightDrag(event);
                             }
                         }
-
                     }
-
                 }
                 break;
+            case GestureState.END:
+            case GestureState.CANCELLED:
+                if (this.mTouchMode == ChartTouchListener.DRAG && this.mChart.isDragDecelerationEnabled()) {
+                    this.mTouchMode === ChartTouchListener.NONE;
+                    this.stopDeceleration();
 
-            case MotionEvent.ACTION_UP:
+                    this.mDecelerationLastTime = Date.now();
 
-                final VelocityTracker velocityTracker = this.mVelocityTracker;
-                const pointerId = event.getPointerId(0);
-                velocityTracker.computeCurrentVelocity(1000, Utils.getMaximumFlingVelocity());
-                const velocityY = velocityTracker.getYVelocity(pointerId);
-                const velocityX = velocityTracker.getXVelocity(pointerId);
+                    this.mDecelerationCurrentPoint.x = event.data.extraData.x;
+                    this.mDecelerationCurrentPoint.y = event.data.extraData.y;
 
-                if (Math.abs(velocityX) > Utils.getMinimumFlingVelocity() ||
-                        Math.abs(velocityY) > Utils.getMinimumFlingVelocity()) {
+                    this.mDecelerationVelocity.x = event.data.extraData.velocityX;
+                    this.mDecelerationVelocity.y = event.data.extraData.velocityY;
 
-                    if (mTouchMode == DRAG && this.mChart.isDragDecelerationEnabled()) {
+                    this.mChart.invalidate();
+                    // Utils.postInvalidateOnAnimation(this.mChart); // This causes computeScroll to fire, recommended for this by
+                    // Google
+                }
+                break;
+        }
+        this.mMatrix = this.mChart.getViewPortHandler().refresh(this.mMatrix, this.mChart, true);
+    }
+    onPinchGesture(event: GestureStateEventData) {
+        if (!this.mChart.isScaleXEnabled() && !this.mChart.isScaleYEnabled()) return;
+        const state = event.data.state;
+        switch (state) {
+            case GestureState.BEGAN:
+                if (event.data.extraData.numberOfPointers >= 2) {
+                    this.mChart.disableScroll();
 
-                        stopDeceleration();
+                    this.saveTouchStart(event);
+                    // this.mSavedScale = event.data.extraData.scale;
+                    // get the distance between the pointers on the x-axis
+                    // this.mSavedXDist = this.getXDist(event);
 
-                        this.mDecelerationLastTime = AnimationUtils.currentAnimationTimeMillis();
+                    // get the distance between the pointers on the y-axis
+                    // this.mSavedYDist = getYDist(event);
 
-                        this.mDecelerationCurrentPoint.x = event.getX();
-                        this.mDecelerationCurrentPoint.y = event.getY();
+                    // get the total distance between the pointers
+                    // this.mSavedDist = spacing(event);
 
-                        this.mDecelerationVelocity.x = velocityX;
-                        this.mDecelerationVelocity.y = velocityY;
+                    // if (this.mSavedScale > 10) {
 
-                        Utils.postInvalidateOnAnimation(mChart); // This causes computeScroll to fire, recommended for this by
-                        // Google
+                    if (this.mChart.isPinchZoomEnabled()) {
+                        this.mTouchMode = ChartTouchListener.PINCH_ZOOM;
+                    } else {
+                        if (this.mChart.isScaleXEnabled() != this.mChart.isScaleYEnabled()) {
+                            this.mTouchMode = this.mChart.isScaleXEnabled() ? ChartTouchListener.X_ZOOM : ChartTouchListener.Y_ZOOM;
+                        } else {
+                            this.mTouchMode = this.mSavedXDist > this.mSavedYDist ? ChartTouchListener.X_ZOOM : ChartTouchListener.Y_ZOOM;
+                        }
+                    }
+                    // }
+
+                    // determine the touch-pointer center
+                    this.mTouchPointCenter.x = event.data.extraData.focalX;
+                    this.mTouchPointCenter.y = event.data.extraData.focalY;
+                    // midPoint(mTouchPointCenter, event);
+                }
+                break;
+            case GestureState.ACTIVE:
+                if (this.mTouchMode === ChartTouchListener.X_ZOOM || this.mTouchMode === ChartTouchListener.Y_ZOOM || this.mTouchMode === ChartTouchListener.PINCH_ZOOM) {
+                    this.mChart.disableScroll();
+
+                    if (this.mChart.isScaleXEnabled() || this.mChart.isScaleYEnabled()) {
+                        if (event.data.extraData.numberOfPointers >= 2) {
+                            if (this.mTouchMode === ChartTouchListener.PINCH_ZOOM) {
+                                this.mLastGesture = ChartGesture.PINCH_ZOOM;
+                                const t = this.getTrans(this.mTouchPointCenter.x, this.mTouchPointCenter.y);
+
+                                const scale = event.data.extraData.scale;
+                                const isZoomingOut = scale < 1;
+                                const h = this.mChart.getViewPortHandler();
+
+                                const canZoomMoreX = isZoomingOut ? h.canZoomOutMoreX() : h.canZoomInMoreX();
+
+                                const canZoomMoreY = isZoomingOut ? h.canZoomOutMoreY() : h.canZoomInMoreY();
+
+                                let scaleX = this.mChart.isScaleXEnabled() ? scale : 1;
+                                let scaleY = this.mChart.isScaleYEnabled() ? scale : 1;
+
+                                if (canZoomMoreY || canZoomMoreX) {
+                                    this.mMatrix.set(this.mSavedMatrix);
+                                    this.mMatrix.postScale(scaleX, scaleY, t.x, t.y);
+
+                                    // if (l != null)
+                                    // l.onChartScale(event, scaleX, scaleY);
+                                }
+                            } else if (this.mTouchMode === ChartTouchListener.X_ZOOM && this.mChart.isScaleXEnabled()) {
+                                this.mLastGesture = ChartGesture.X_ZOOM;
+                                const t = this.getTrans(this.mTouchPointCenter.x, this.mTouchPointCenter.y);
+
+                                // let xDist = getXDist(event);
+                                const scaleX = event.data.extraData.scale;
+                                const h = this.mChart.getViewPortHandler();
+                                // let scaleX = xDist / this.mSavedXDist; // x-axis scale
+
+                                const isZoomingOut = scaleX < 1;
+                                const canZoomMoreX = isZoomingOut ? h.canZoomOutMoreX() : h.canZoomInMoreX();
+
+                                if (canZoomMoreX) {
+                                    this.mMatrix.set(this.mSavedMatrix);
+                                    this.mMatrix.postScale(scaleX, 1, t.x, t.y);
+
+                                    // if (l != null)
+                                    // l.onChartScale(event, scaleX, 1);
+                                }
+                            } else if (this.mTouchMode === ChartTouchListener.Y_ZOOM && this.mChart.isScaleYEnabled()) {
+                                this.mLastGesture = ChartGesture.Y_ZOOM;
+                                const t = this.getTrans(this.mTouchPointCenter.x, this.mTouchPointCenter.y);
+
+                                // let yDist = getYDist(event);
+                                // let scaleY = yDist / this.mSavedYDist; // y-axis scale
+                                const scaleY = event.data.extraData.scale;
+                                const h = this.mChart.getViewPortHandler();
+
+                                const isZoomingOut = scaleY < 1;
+                                const canZoomMoreY = isZoomingOut ? h.canZoomOutMoreY() : h.canZoomInMoreY();
+
+                                if (canZoomMoreY) {
+                                    this.mMatrix.set(this.mSavedMatrix);
+                                    this.mMatrix.postScale(1, scaleY, t.x, t.y);
+
+                                    // if (l != null)
+                                    // l.onChartScale(event, 1, scaleY);
+                                }
+                            }
+                        }
                     }
                 }
-
-                if (mTouchMode == X_ZOOM ||
-                        this.mTouchMode == Y_ZOOM ||
-                        this.mTouchMode == PINCH_ZOOM ||
-                        this.mTouchMode == POST_ZOOM) {
-
+                break;
+            case GestureState.END:
+            case GestureState.CANCELLED:
+                if (
+                    this.mTouchMode === ChartTouchListener.X_ZOOM ||
+                    this.mTouchMode === ChartTouchListener.Y_ZOOM ||
+                    this.mTouchMode === ChartTouchListener.PINCH_ZOOM ||
+                    this.mTouchMode === ChartTouchListener.POST_ZOOM
+                ) {
+                    this.mTouchMode === ChartTouchListener.NONE;
                     // Range might have changed, which means that Y-axis labels
                     // could have changed in size, affecting Y-axis size.
                     // So we need to recalculate offsets.
                     this.mChart.calculateOffsets();
-                    this.mChart.postInvalidate();
+                    this.mChart.invalidate();
                 }
-
-                this.mTouchMode = NONE;
-                this.mChart.enableScroll();
-
-                if (mVelocityTracker != null) {
-                    this.mVelocityTracker.recycle();
-                    this.mVelocityTracker = null;
-                }
-
-                endAction(event);
-
-                break;
-            case MotionEvent.ACTION_POINTER_UP:
-                Utils.velocityTrackerPointerUpCleanUpIfNecessary(event, this.mVelocityTracker);
-
-                this.mTouchMode = POST_ZOOM;
-                break;
-
-            case MotionEvent.ACTION_CANCEL:
-
-                this.mTouchMode = NONE;
-                endAction(event);
                 break;
         }
-
-        // perform the transformation, update the chart
-        this.mMatrix = this.mChart.getViewPortHandler().refresh(mMatrix, this.mChart, true);
-
-        return true; // indicate event was handled
+        this.mMatrix = this.mChart.getViewPortHandler().refresh(this.mMatrix, this.mChart, true);
     }
+
+    // public onTouch( v,  event) {
+
+    //     // if (mVelocityTracker == null) {
+    //     //     this.mVelocityTracker = VelocityTracker.obtain();
+    //     // }
+    //     // this.mVelocityTracker.addMovement(event);
+
+    //     // if (event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+    //     //     if (mVelocityTracker != null) {
+    //     //         this.mVelocityTracker.recycle();
+    //     //         this.mVelocityTracker = null;
+    //     //     }
+    //     // }
+
+    //     // if (mTouchMode == NONE) {
+    //     //     this.mGestureDetector.onTouchEvent(event);
+    //     // }
+
+    //     // if (!mChart.isDragEnabled() && (!mChart.isScaleXEnabled() && !mChart.isScaleYEnabled()))
+    //     //     return true;
+
+    //     // Handle touch events here...
+    //     switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
+    //         case MotionEvent.ACTION_DOWN:
+
+    //             // startAction(event);
+
+    //             // stopDeceleration();
+
+    //             // saveTouchStart(event);
+
+    //             break;
+
+    //         case MotionEvent.ACTION_POINTER_DOWN:
+
+    //             // if (event.getPointerCount() >= 2) {
+
+    //             //     this.mChart.disableScroll();
+
+    //             //     saveTouchStart(event);
+
+    //             //     // get the distance between the pointers on the x-axis
+    //             //     this.mSavedXDist = getXDist(event);
+
+    //             //     // get the distance between the pointers on the y-axis
+    //             //     this.mSavedYDist = getYDist(event);
+
+    //             //     // get the total distance between the pointers
+    //             //     this.mSavedDist = spacing(event);
+
+    //             //     if (mSavedDist > 10) {
+
+    //             //         if (mChart.isPinchZoomEnabled()) {
+    //             //             this.mTouchMode = PINCH_ZOOM;
+    //             //         } else {
+    //             //             if (mChart.isScaleXEnabled() != this.mChart.isScaleYEnabled()) {
+    //             //                 this.mTouchMode = this.mChart.isScaleXEnabled() ? X_ZOOM : Y_ZOOM;
+    //             //             } else {
+    //             //                 this.mTouchMode = this.mSavedXDist > this.mSavedYDist ? X_ZOOM : Y_ZOOM;
+    //             //             }
+    //             //         }
+    //             //     }
+
+    //             //     // determine the touch-pointer center
+    //             //     midPoint(mTouchPointCenter, event);
+    //             // }
+    //             break;
+
+    //         case MotionEvent.ACTION_MOVE:
+
+    //             // if (mTouchMode == DRAG) {
+
+    //             //     this.mChart.disableScroll();
+
+    //             //     let x = this.mChart.isDragXEnabled() ? event.getX() - this.mTouchStartPoint.x : 0;
+    //             //     let y = this.mChart.isDragYEnabled() ? event.getY() - this.mTouchStartPoint.y : 0;
+
+    //             //     this.performDrag(event, x, y);
+
+    //             // } else if (mTouchMode == X_ZOOM || this.mTouchMode == Y_ZOOM || this.mTouchMode == PINCH_ZOOM) {
+
+    //             //     this.mChart.disableScroll();
+
+    //             //     if (mChart.isScaleXEnabled() || this.mChart.isScaleYEnabled())
+    //             //         performZoom(event);
+
+    //             // } else if (mTouchMode == NONE
+    //             //         && Math.abs(distance(event.getX(), this.mTouchStartPoint.x, event.getY(),
+    //             //         this.mTouchStartPoint.y)) > this.mDragTriggerDist) {
+
+    //             //     if (mChart.isDragEnabled()) {
+
+    //             //         boolean shouldPan = !mChart.isFullyZoomedOut() ||
+    //             //                 !mChart.hasNoDragOffset();
+
+    //             //         if (shouldPan) {
+
+    //             //             let distanceX = Math.abs(event.getX() - this.mTouchStartPoint.x);
+    //             //             let distanceY = Math.abs(event.getY() - this.mTouchStartPoint.y);
+
+    //             //             // Disable dragging in a direction that's disallowed
+    //             //             if ((mChart.isDragXEnabled() || distanceY >= distanceX) &&
+    //             //                     (mChart.isDragYEnabled() || distanceY <= distanceX)) {
+
+    //             //                 this.mLastGesture = ChartGesture.DRAG;
+    //             //                 this.mTouchMode = DRAG;
+    //             //             }
+
+    //             //         } else {
+
+    //             //             if (mChart.isHighlightPerDragEnabled()) {
+    //             //                 this.mLastGesture = ChartGesture.DRAG;
+
+    //             //                 if (mChart.isHighlightPerDragEnabled())
+    //             //                     performHighlightDrag(event);
+    //             //             }
+    //             //         }
+
+    //             //     }
+
+    //             // }
+    //             break;
+
+    //         case MotionEvent.ACTION_UP:
+
+    //             // final VelocityTracker velocityTracker = this.mVelocityTracker;
+    //             // const pointerId = event.getPointerId(0);
+    //             // velocityTracker.computeCurrentVelocity(1000, Utils.getMaximumFlingVelocity());
+    //             // const velocityY = velocityTracker.getYVelocity(pointerId);
+    //             // const velocityX = velocityTracker.getXVelocity(pointerId);
+
+    //             // if (Math.abs(velocityX) > Utils.getMinimumFlingVelocity() ||
+    //             //         Math.abs(velocityY) > Utils.getMinimumFlingVelocity()) {
+
+    //             //     if (mTouchMode == DRAG && this.mChart.isDragDecelerationEnabled()) {
+
+    //             //         stopDeceleration();
+
+    //             //         this.mDecelerationLastTime = AnimationUtils.currentAnimationTimeMillis();
+
+    //             //         this.mDecelerationCurrentPoint.x = event.getX();
+    //             //         this.mDecelerationCurrentPoint.y = event.getY();
+
+    //             //         this.mDecelerationVelocity.x = velocityX;
+    //             //         this.mDecelerationVelocity.y = velocityY;
+
+    //             //         Utils.postInvalidateOnAnimation(mChart); // This causes computeScroll to fire, recommended for this by
+    //             //         // Google
+    //             //     }
+    //             // }
+
+    //             // if (mTouchMode == X_ZOOM ||
+    //             //         this.mTouchMode == Y_ZOOM ||
+    //             //         this.mTouchMode == PINCH_ZOOM ||
+    //             //         this.mTouchMode == POST_ZOOM) {
+
+    //             //     // Range might have changed, which means that Y-axis labels
+    //             //     // could have changed in size, affecting Y-axis size.
+    //             //     // So we need to recalculate offsets.
+    //             //     this.mChart.calculateOffsets();
+    //             //     this.mChart.postInvalidate();
+    //             // }
+
+    //             // this.mTouchMode = NONE;
+    //             // this.mChart.enableScroll();
+
+    //             // if (mVelocityTracker != null) {
+    //             //     this.mVelocityTracker.recycle();
+    //             //     this.mVelocityTracker = null;
+    //             // }
+
+    //             endAction(event);
+
+    //             break;
+    //         case MotionEvent.ACTION_POINTER_UP:
+    //             Utils.velocityTrackerPointerUpCleanUpIfNecessary(event, this.mVelocityTracker);
+
+    //             this.mTouchMode = POST_ZOOM;
+    //             break;
+
+    //         case MotionEvent.ACTION_CANCEL:
+
+    //             this.mTouchMode = NONE;
+    //             endAction(event);
+    //             break;
+    //     }
+
+    //     // perform the transformation, update the chart
+    //     this.mMatrix = this.mChart.getViewPortHandler().refresh(mMatrix, this.mChart, true);
+
+    //     return true; // indicate event was handled
+    // }
 
     /**
      * ################ ################ ################ ################
@@ -298,13 +468,12 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      *
      * @param event
      */
-    private void saveTouchStart(MotionEvent event) {
+    private saveTouchStart(event: GestureStateEventData) {
+        this.mSavedMatrix.set(this.mMatrix);
+        this.mTouchStartPoint.x = event.data.extraData.x;
+        this.mTouchStartPoint.y = event.data.extraData.y;
 
-        this.mSavedMatrix.set(mMatrix);
-        this.mTouchStartPoint.x = event.getX();
-        this.mTouchStartPoint.y = event.getY();
-
-        this.mClosestDataSetToTouch = this.mChart.getDataSetByTouchPoint(event.getX(), event.getY());
+        this.mClosestDataSetToTouch = this.mChart.getDataSetByTouchPoint(this.mTouchStartPoint.x, this.mTouchStartPoint.x);
     }
 
     /**
@@ -312,29 +481,28 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      *
      * @param event
      */
-    private void performDrag(MotionEvent event, let distanceX, let distanceY) {
+    private performDrag(event, distanceX, distanceY) {
+        this.mLastGesture = ChartTouchListener.DRAG;
 
-        this.mLastGesture = ChartGesture.DRAG;
+        this.mMatrix.set(this.mSavedMatrix);
 
-        this.mMatrix.set(mSavedMatrix);
-
-        OnChartGestureListener l = this.mChart.getOnChartGestureListener();
+        // OnChartGestureListener l = this.mChart.getOnChartGestureListener();
 
         // check if axis is inverted
-        if (inverted()) {
-
+        if (this.inverted()) {
             // if there is an inverted horizontalbarchart
-            if (mChart instanceof HorizontalBarChart) {
-                distanceX = -distanceX;
-            } else {
-                distanceY = -distanceY;
-            }
+            // TOOD: uncomment
+            // if (this.mChart instanceof HorizontalBarChart) {
+            // distanceX = -distanceX;
+            // } else {
+            distanceY = -distanceY;
+            // }
         }
 
         this.mMatrix.postTranslate(distanceX, distanceY);
 
-        if (l != null)
-            l.onChartTranslate(event, distanceX, distanceY);
+        // if (l != null)
+        // l.onChartTranslate(event, distanceX, distanceY);
     }
 
     /**
@@ -342,110 +510,109 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      *
      * @param event
      */
-    private void performZoom(MotionEvent event) {
+    // private  performZoom( scale) {
 
-        if (event.getPointerCount() >= 2) { // two finger zoom
+    //     // if (event.getPointerCount() >= 2) { // two finger zoom
 
-            OnChartGestureListener l = this.mChart.getOnChartGestureListener();
+    //         // OnChartGestureListener l = this.mChart.getOnChartGestureListener();
 
-            // get the distance between the pointers of the touch event
-            let totalDist = spacing(event);
+    //         // get the distance between the pointers of the touch event
+    //         let totalDist = spacing(event);
 
-            if (totalDist > this.mMinScalePointerDistance) {
+    //         if (totalDist > this.mMinScalePointerDistance) {
 
-                // get the translation
-                MPPointF t = getTrans(mTouchPointCenter.x, this.mTouchPointCenter.y);
-                ViewPortHandler h = this.mChart.getViewPortHandler();
+    //             // get the translation
+    //             MPPointF t = getTrans(mTouchPointCenter.x, this.mTouchPointCenter.y);
+    //             ViewPortHandler h = this.mChart.getViewPortHandler();
 
-                // take actions depending on the activated touch mode
-                if (mTouchMode == PINCH_ZOOM) {
+    //             // take actions depending on the activated touch mode
+    //             if (mTouchMode == PINCH_ZOOM) {
 
-                    this.mLastGesture = ChartGesture.PINCH_ZOOM;
+    //                 this.mLastGesture = ChartGesture.PINCH_ZOOM;
 
-                    let scale = totalDist / this.mSavedDist; // total scale
+    //                 let scale = totalDist / this.mSavedDist; // total scale
 
-                    boolean isZoomingOut = (scale < 1);
+    //                 boolean isZoomingOut = (scale < 1);
 
-                    boolean canZoomMoreX = isZoomingOut ?
-                            h.canZoomOutMoreX() :
-                            h.canZoomInMoreX();
+    //                 boolean canZoomMoreX = isZoomingOut ?
+    //                         h.canZoomOutMoreX() :
+    //                         h.canZoomInMoreX();
 
-                    boolean canZoomMoreY = isZoomingOut ?
-                            h.canZoomOutMoreY() :
-                            h.canZoomInMoreY();
+    //                 boolean canZoomMoreY = isZoomingOut ?
+    //                         h.canZoomOutMoreY() :
+    //                         h.canZoomInMoreY();
 
-                    let scaleX = (mChart.isScaleXEnabled()) ? scale : 1;
-                    let scaleY = (mChart.isScaleYEnabled()) ? scale : 1;
+    //                 let scaleX = (mChart.isScaleXEnabled()) ? scale : 1;
+    //                 let scaleY = (mChart.isScaleYEnabled()) ? scale : 1;
 
-                    if (canZoomMoreY || canZoomMoreX) {
+    //                 if (canZoomMoreY || canZoomMoreX) {
 
-                        this.mMatrix.set(mSavedMatrix);
-                        this.mMatrix.postScale(scaleX, scaleY, t.x, t.y);
+    //                     this.mMatrix.set(mSavedMatrix);
+    //                     this.mMatrix.postScale(scaleX, scaleY, t.x, t.y);
 
-                        if (l != null)
-                            l.onChartScale(event, scaleX, scaleY);
-                    }
+    //                     if (l != null)
+    //                         l.onChartScale(event, scaleX, scaleY);
+    //                 }
 
-                } else if (mTouchMode == X_ZOOM && this.mChart.isScaleXEnabled()) {
+    //             } else if (mTouchMode == X_ZOOM && this.mChart.isScaleXEnabled()) {
 
-                    this.mLastGesture = ChartGesture.X_ZOOM;
+    //                 this.mLastGesture = ChartGesture.X_ZOOM;
 
-                    let xDist = getXDist(event);
-                    let scaleX = xDist / this.mSavedXDist; // x-axis scale
+    //                 let xDist = getXDist(event);
+    //                 let scaleX = xDist / this.mSavedXDist; // x-axis scale
 
-                    boolean isZoomingOut = (scaleX < 1);
-                    boolean canZoomMoreX = isZoomingOut ?
-                            h.canZoomOutMoreX() :
-                            h.canZoomInMoreX();
+    //                 boolean isZoomingOut = (scaleX < 1);
+    //                 boolean canZoomMoreX = isZoomingOut ?
+    //                         h.canZoomOutMoreX() :
+    //                         h.canZoomInMoreX();
 
-                    if (canZoomMoreX) {
+    //                 if (canZoomMoreX) {
 
-                        this.mMatrix.set(mSavedMatrix);
-                        this.mMatrix.postScale(scaleX, 1, t.x, t.y);
+    //                     this.mMatrix.set(mSavedMatrix);
+    //                     this.mMatrix.postScale(scaleX, 1, t.x, t.y);
 
-                        if (l != null)
-                            l.onChartScale(event, scaleX, 1);
-                    }
+    //                     if (l != null)
+    //                         l.onChartScale(event, scaleX, 1);
+    //                 }
 
-                } else if (mTouchMode == Y_ZOOM && this.mChart.isScaleYEnabled()) {
+    //             } else if (mTouchMode == Y_ZOOM && this.mChart.isScaleYEnabled()) {
 
-                    this.mLastGesture = ChartGesture.Y_ZOOM;
+    //                 this.mLastGesture = ChartGesture.Y_ZOOM;
 
-                    let yDist = getYDist(event);
-                    let scaleY = yDist / this.mSavedYDist; // y-axis scale
+    //                 let yDist = getYDist(event);
+    //                 let scaleY = yDist / this.mSavedYDist; // y-axis scale
 
-                    boolean isZoomingOut = (scaleY < 1);
-                    boolean canZoomMoreY = isZoomingOut ?
-                            h.canZoomOutMoreY() :
-                            h.canZoomInMoreY();
+    //                 boolean isZoomingOut = (scaleY < 1);
+    //                 boolean canZoomMoreY = isZoomingOut ?
+    //                         h.canZoomOutMoreY() :
+    //                         h.canZoomInMoreY();
 
-                    if (canZoomMoreY) {
+    //                 if (canZoomMoreY) {
 
-                        this.mMatrix.set(mSavedMatrix);
-                        this.mMatrix.postScale(1, scaleY, t.x, t.y);
+    //                     this.mMatrix.set(mSavedMatrix);
+    //                     this.mMatrix.postScale(1, scaleY, t.x, t.y);
 
-                        if (l != null)
-                            l.onChartScale(event, 1, scaleY);
-                    }
-                }
+    //                     if (l != null)
+    //                         l.onChartScale(event, 1, scaleY);
+    //                 }
+    //             }
 
-                MPPointF.recycleInstance(t);
-            }
-        }
-    }
+    //             MPPointF.recycleInstance(t);
+    //         }
+    //     }
+    // }
 
     /**
      * Highlights upon dragging, generates callbacks for the selection-listener.
      *
      * @param e
      */
-    private void performHighlightDrag(MotionEvent e) {
+    private performHighlightDrag(e) {
+        const h = this.mChart.getHighlightByTouchPoint(e.getX(), e.getY());
 
-        Highlight h = this.mChart.getHighlightByTouchPoint(e.getX(), e.getY());
-
-        if (h != null && !h.equalTo(mLastHighlighted)) {
+        if (h != null && h !== this.mLastHighlighted) {
             this.mLastHighlighted = h;
-            this.mChart.highlightValue(h, true);
+            this.mChart.highlight(h, true);
         }
     }
 
@@ -454,19 +621,18 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      */
     /** DOING THE MATH BELOW ;-) */
 
-
     /**
      * Determines the center polet between two pointer touch points.
      *
      * @param point
      * @param event
      */
-    private static void midPoint(MPPointF point, MotionEvent event) {
-        let x = event.getX(0) + event.getX(1);
-        let y = event.getY(0) + event.getY(1);
-        point.x = (x / 2f);
-        point.y = (y / 2f);
-    }
+    // private static void midPoint(MPPointF point, MotionEvent event) {
+    //     let x = event.getX(0) + event.getX(1);
+    //     let y = event.getY(0) + event.getY(1);
+    //     point.x = (x / 2f);
+    //     point.y = (y / 2f);
+    // }
 
     /**
      * returns the distance between two pointer touch points
@@ -474,11 +640,12 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @param event
      * @return
      */
-    private static let spacing(MotionEvent event) {
-        let x = event.getX(0) - event.getX(1);
-        let y = event.getY(0) - event.getY(1);
-        return  Math.sqrt(x * x + y * y);
-    }
+    // private static  spacing( event: GestureStateEventData) {
+
+    //     let x = event.getX(0) - event.getX(1);
+    //     let y = event.getY(0) - event.getY(1);
+    //     return  Math.sqrt(x * x + y * y);
+    // }
 
     /**
      * calculates the distance on the x-axis between two pointers (fingers on
@@ -487,22 +654,22 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @param e
      * @return
      */
-    private static let getXDist(MotionEvent e) {
-        let x = Math.abs(e.getX(0) - e.getX(1));
-        return x;
-    }
+    // private static  getXDist( e: GestureStateEventData) {
+    //     let x = Math.abs(e.getX(0) - e.getX(1));
+    //     return x;
+    // }
 
-    /**
-     * calculates the distance on the y-axis between two pointers (fingers on
-     * the display)
-     *
-     * @param e
-     * @return
-     */
-    private static let getYDist(MotionEvent e) {
-        let y = Math.abs(e.getY(0) - e.getY(1));
-        return y;
-    }
+    // /**
+    //  * calculates the distance on the y-axis between two pointers (fingers on
+    //  * the display)
+    //  *
+    //  * @param e
+    //  * @return
+    //  */
+    // private static let getYDist( e: GestureStateEventData) {
+    //     let y = Math.abs(e.getY(0) - e.getY(1));
+    //     return y;
+    // }
 
     /**
      * Returns a recyclable MPPointF instance.
@@ -513,21 +680,20 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @param y
      * @return
      */
-    public MPPointF getTrans(let x, let y) {
-
-        ViewPortHandler vph = this.mChart.getViewPortHandler();
+    public getTrans(x, y) {
+        const vph = this.mChart.getViewPortHandler();
 
         let xTrans = x - vph.offsetLeft();
         let yTrans = 0;
 
         // check if axis is inverted
-        if (inverted()) {
+        if (this.inverted()) {
             yTrans = -(y - vph.offsetTop());
         } else {
-            yTrans = -(mChart.getMeasuredHeight() - y - vph.offsetBottom());
+            yTrans = -(this.mChart.getMeasuredHeight() - y - vph.offsetBottom());
         }
 
-        return MPPointF.getInstance(xTrans, yTrans);
+        return { x: xTrans, y: yTrans };
     }
 
     /**
@@ -535,9 +701,10 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      *
      * @return
      */
-    private boolean inverted() {
-        return (mClosestDataSetToTouch == null && this.mChart.isAnyAxisInverted()) || (mClosestDataSetToTouch != null
-                && this.mChart.isInverted(mClosestDataSetToTouch.getAxisDependency()));
+    private inverted() {
+        return (
+            (this.mClosestDataSetToTouch == null && this.mChart.isAnyAxisInverted()) || (this.mClosestDataSetToTouch != null && this.mChart.isInverted(this.mClosestDataSetToTouch.getAxisDependency()))
+        );
     }
 
     /**
@@ -550,7 +717,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      *
      * @return
      */
-    public Matrix getMatrix() {
+    public getMatrix() {
         return this.mMatrix;
     }
 
@@ -560,132 +727,140 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      *
      * @param dragTriggerDistance
      */
-    public setDragTriggerDist(let dragTriggerDistance) {
+    public setDragTriggerDist(dragTriggerDistance) {
         this.mDragTriggerDist = Utils.convertDpToPixel(dragTriggerDistance);
     }
 
-    
-    public onDoubleTap(MotionEvent e) {
+    // public onDoubleTap( e) {
 
-        this.mLastGesture = ChartGesture.DOUBLE_TAP;
+    //     this.mLastGesture = ChartGesture.DOUBLE_TAP;
 
-        OnChartGestureListener l = this.mChart.getOnChartGestureListener();
+    //     OnChartGestureListener l = this.mChart.getOnChartGestureListener();
 
-        if (l != null) {
-            l.onChartDoubleTapped(e);
+    //     if (l != null) {
+    //         l.onChartDoubleTapped(e);
+    //     }
+
+    //     // check if double-tap zooming is enabled
+    //     if (mChart.isDoubleTapToZoomEnabled() && this.mChart.getData().getEntryCount() > 0) {
+
+    //         MPPointF trans = getTrans(e.getX(), e.getY());
+
+    //         this.mChart.zoom(mChart.isScaleXEnabled() ? 1.4f : 1, this.mChart.isScaleYEnabled() ? 1.4f : 1, trans.x, trans.y);
+
+    //         if (mChart.isLogEnabled())
+    //             console.log("BarlineChartTouch", "Double-Tap, Zooming In, x: " + trans.x + ", y: "
+    //                     + trans.y);
+
+    //         MPPointF.recycleInstance(trans);
+    //     }
+
+    //     return super.onDoubleTap(e);
+    // }
+
+    public onLongPressGesture(e: GestureStateEventData) {
+        if (e.data.state === GestureState.ACTIVE) {
+            this.mLastGesture = ChartGesture.LONG_PRESS;
         }
 
-        // check if double-tap zooming is enabled
-        if (mChart.isDoubleTapToZoomEnabled() && this.mChart.getData().getEntryCount() > 0) {
+        // OnChartGestureListener l = this.mChart.getOnChartGestureListener();
 
-            MPPointF trans = getTrans(e.getX(), e.getY());
+        // if (l != null) {
 
-            this.mChart.zoom(mChart.isScaleXEnabled() ? 1.4f : 1, this.mChart.isScaleYEnabled() ? 1.4f : 1, trans.x, trans.y);
-
-            if (mChart.isLogEnabled())
-                console.log("BarlineChartTouch", "Double-Tap, Zooming In, x: " + trans.x + ", y: "
-                        + trans.y);
-
-            MPPointF.recycleInstance(trans);
-        }
-
-        return super.onDoubleTap(e);
+        //     l.onChartLongPressed(e);
+        // }
     }
 
-    
-    public onLongPress(MotionEvent e) {
+    public onTapGesture(e: GestureStateEventData) {
+        if (e.data.state === GestureState.ACTIVE) {
+            const numberOfPointers = e.data.extraData.numberOfPointers;
+            if (numberOfPointers === 1) {
+                this.mLastGesture = ChartGesture.SINGLE_TAP;
+                // OnChartGestureListener l = this.mChart.getOnChartGestureListener();
 
-        this.mLastGesture = ChartGesture.LONG_PRESS;
+                // if (l != null) {
+                //     l.onChartSingleTapped(e);
+                // }
+                if (!this.mChart.isHighlightPerTapEnabled()) {
+                    return;
+                }
 
-        OnChartGestureListener l = this.mChart.getOnChartGestureListener();
+                const h = this.mChart.getHighlightByTouchPoint(e.data.extraData.x, e.data.extraData.y);
+                this.performHighlight(h);
+            } else if (numberOfPointers === 2) {
+                // check if double-tap zooming is enabled
+                if (this.mChart.isDoubleTapToZoomEnabled() && this.mChart.getData().getEntryCount() > 0) {
+                    const trans = this.getTrans(e.data.extraData.x, e.data.extraData.y);
 
-        if (l != null) {
+                    this.mChart.zoom(this.mChart.isScaleXEnabled() ? 1.4 : 1, this.mChart.isScaleYEnabled() ? 1.4 : 1, trans.x, trans.y);
 
-            l.onChartLongPressed(e);
+                    if (this.mChart.isLogEnabled()) console.log('BarlineChartTouch', 'Double-Tap, Zooming In, x: ' + trans.x + ', y: ' + trans.y);
+
+                    // MPPointF.recycleInstance(trans);
+                }
+            }
         }
     }
 
-    
-    public onSingleTapUp(MotionEvent e) {
+    // public onFling(MotionEvent e1, MotionEvent e2, let velocityX, let velocityY) {
 
-        this.mLastGesture = ChartGesture.SINGLE_TAP;
+    //     this.mLastGesture = ChartGesture.FLING;
 
-        OnChartGestureListener l = this.mChart.getOnChartGestureListener();
+    //     OnChartGestureListener l = this.mChart.getOnChartGestureListener();
 
-        if (l != null) {
-            l.onChartSingleTapped(e);
-        }
+    //     if (l != null) {
+    //         l.onChartFling(e1, e2, velocityX, velocityY);
+    //     }
 
-        if (!mChart.isHighlightPerTapEnabled()) {
-            return false;
-        }
-
-        Highlight h = this.mChart.getHighlightByTouchPoint(e.getX(), e.getY());
-        performHighlight(h, e);
-
-        return super.onSingleTapUp(e);
-    }
-
-    
-    public onFling(MotionEvent e1, MotionEvent e2, let velocityX, let velocityY) {
-
-        this.mLastGesture = ChartGesture.FLING;
-
-        OnChartGestureListener l = this.mChart.getOnChartGestureListener();
-
-        if (l != null) {
-            l.onChartFling(e1, e2, velocityX, velocityY);
-        }
-
-        return super.onFling(e1, e2, velocityX, velocityY);
-    }
+    //     return super.onFling(e1, e2, velocityX, velocityY);
+    // }
 
     public stopDeceleration() {
         this.mDecelerationVelocity.x = 0;
         this.mDecelerationVelocity.y = 0;
     }
 
-    public computeScroll() {
+    // public computeScroll() {
 
-        if (mDecelerationVelocity.x == 0 && this.mDecelerationVelocity.y == 0)
-            return; // There's no deceleration in progress
+    //     if (this.mDecelerationVelocity.x == 0 && this.mDecelerationVelocity.y == 0)
+    //         return; // There's no deceleration in progress
 
-        final long currentTime = AnimationUtils.currentAnimationTimeMillis();
+    //     const  currentTime = Date.now();;
 
-        this.mDecelerationVelocity.x *= this.mChart.getDragDecelerationFrictionCoef();
-        this.mDecelerationVelocity.y *= this.mChart.getDragDecelerationFrictionCoef();
+    //     this.mDecelerationVelocity.x *= this.mChart.getDragDecelerationFrictionCoef();
+    //     this.mDecelerationVelocity.y *= this.mChart.getDragDecelerationFrictionCoef();
 
-        const timeInterval =  (currentTime - this.mDecelerationLastTime) / 1000;
+    //     const timeInterval =  (currentTime - this.mDecelerationLastTime) / 1000;
 
-        let distanceX = this.mDecelerationVelocity.x * timeInterval;
-        let distanceY = this.mDecelerationVelocity.y * timeInterval;
+    //     let distanceX = this.mDecelerationVelocity.x * timeInterval;
+    //     let distanceY = this.mDecelerationVelocity.y * timeInterval;
 
-        this.mDecelerationCurrentPoint.x += distanceX;
-        this.mDecelerationCurrentPoint.y += distanceY;
+    //     this.mDecelerationCurrentPoint.x += distanceX;
+    //     this.mDecelerationCurrentPoint.y += distanceY;
 
-        MotionEvent event = MotionEvent.obtain(currentTime, currentTime, MotionEvent.ACTION_MOVE, this.mDecelerationCurrentPoint.x,
-                this.mDecelerationCurrentPoint.y, 0);
+    //     MotionEvent event = MotionEvent.obtain(currentTime, currentTime, MotionEvent.ACTION_MOVE, this.mDecelerationCurrentPoint.x,
+    //             this.mDecelerationCurrentPoint.y, 0);
 
-        let dragDistanceX = this.mChart.isDragXEnabled() ? this.mDecelerationCurrentPoint.x - this.mTouchStartPoint.x : 0;
-        let dragDistanceY = this.mChart.isDragYEnabled() ? this.mDecelerationCurrentPoint.y - this.mTouchStartPoint.y : 0;
+    //     let dragDistanceX = this.mChart.isDragXEnabled() ? this.mDecelerationCurrentPoint.x - this.mTouchStartPoint.x : 0;
+    //     let dragDistanceY = this.mChart.isDragYEnabled() ? this.mDecelerationCurrentPoint.y - this.mTouchStartPoint.y : 0;
 
-        performDrag(event, dragDistanceX, dragDistanceY);
+    //     performDrag(event, dragDistanceX, dragDistanceY);
 
-        event.recycle();
-        this.mMatrix = this.mChart.getViewPortHandler().refresh(mMatrix, this.mChart, false);
+    //     event.recycle();
+    //     this.mMatrix = this.mChart.getViewPortHandler().refresh(mMatrix, this.mChart, false);
 
-        this.mDecelerationLastTime = currentTime;
+    //     this.mDecelerationLastTime = currentTime;
 
-        if (Math.abs(mDecelerationVelocity.x) >= 0.01 || Math.abs(mDecelerationVelocity.y) >= 0.01)
-            Utils.postInvalidateOnAnimation(mChart); // This causes computeScroll to fire, recommended for this by Google
-        else {
-            // Range might have changed, which means that Y-axis labels
-            // could have changed in size, affecting Y-axis size.
-            // So we need to recalculate offsets.
-            this.mChart.calculateOffsets();
-            this.mChart.postInvalidate();
+    //     if (Math.abs(mDecelerationVelocity.x) >= 0.01 || Math.abs(mDecelerationVelocity.y) >= 0.01)
+    //         Utils.postInvalidateOnAnimation(mChart); // This causes computeScroll to fire, recommended for this by Google
+    //     else {
+    //         // Range might have changed, which means that Y-axis labels
+    //         // could have changed in size, affecting Y-axis size.
+    //         // So we need to recalculate offsets.
+    //         this.mChart.calculateOffsets();
+    //         this.mChart.postInvalidate();
 
-            stopDeceleration();
-        }
-    }
+    //         stopDeceleration();
+    //     }
+    // }
 }

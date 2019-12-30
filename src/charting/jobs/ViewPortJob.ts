@@ -1,24 +1,26 @@
-import { ViewPortHandler } from "../utils/ViewPortHandler";
+import { BarLineChartBase } from '../charts/BarLineChartBase';
+import { Poolable } from '../utils/ObjectPool';
+import { Transformer } from '../utils/Transformer';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
 
-export abstract class ViewPortJob {
+export abstract class ViewPortJob  extends Poolable {
+    protected pts = Array.create('float', 2);
 
-    protected  pts = [];
+    protected mViewPortHandler: ViewPortHandler;
+    protected xValue = 0;
+    protected yValue = 0;
+    protected mTrans: Transformer;
+    protected view: BarLineChartBase<any, any, any>;
 
-    protected  mViewPortHandler: ViewPortHandler;
-    protected  xValue = 0;
-    protected  yValue = 0;
-    protected  mTrans :Transformer;
-    protected  view;
+    public abstract run();
 
-    constructor(viewPortHandler: ViewPortHandler,  xValue,  yValue,
-                        trans: Transformer,  v) {
-
+    constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v) {
+        super();
         this.mViewPortHandler = viewPortHandler;
         this.xValue = xValue;
         this.yValue = yValue;
         this.mTrans = trans;
         this.view = v;
-
     }
 
     public getXValue() {
@@ -26,6 +28,6 @@ export abstract class ViewPortJob {
     }
 
     public getYValue() {
-        return  this.yValue;
+        return this.yValue;
     }
 }
