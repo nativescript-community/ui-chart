@@ -4,7 +4,7 @@
             <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onNavigationButtonTap"></NavigationButton>
         </ActionBar>
         <StackLayout @loaded="onLoaded">
-            <MPLineChart ref="lineChart" backgroundColor="lightgray" width="100%" height="100%" :items="dataSets"> </MPLineChart>
+            <MPLineChart ref="lineChart" scaleEnable highlightPerTapEnabled highlightPerDragEnabled backgroundColor="lightgray" width="100%" height="100%" :items="dataSets"> </MPLineChart>
         </StackLayout>
     </Page>
 </template>

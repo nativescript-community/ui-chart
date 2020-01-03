@@ -37,6 +37,7 @@ module.exports = env => {
 
         // You can provide the following flags when running 'tns run android|ios'
         snapshot, // --env.snapshot
+        development, // --env.development
         production, // --env.production
         report, // --env.report
         hmr, // --env.hmr
@@ -68,6 +69,11 @@ module.exports = env => {
     if (hasRootLevelScopedModules) {
         coreModulesPackageName = '@nativescript/core';
         alias['tns-core-modules'] = coreModulesPackageName;
+    }
+
+    if (development) {
+        alias['nativescript-chart'] = resolve(projectRoot, '..', 'src');
+
     }
 
     const appResourcesFullPath = resolve(projectRoot, appResourcesPath);
@@ -258,7 +264,6 @@ module.exports = env => {
             new webpack.ProgressPlugin({
                 entries: true,
                 modules: true,
-                // modulesCount: 100,
                 profile: true
             }),
             // ... Vue Loader plugin omitted
@@ -288,6 +293,12 @@ module.exports = env => {
             new nsWebpack.WatchStateLoggerPlugin()
         ]
     };
+
+    if (development) {
+        config.plugins.push(
+            new webpack.ContextReplacementPlugin(/nativescript-chart/, resolve(projectRoot, '..', 'src'))
+        );
+    }
 
     if (unitTesting) {
         config.module.rules.push(

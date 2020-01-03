@@ -12,7 +12,7 @@
 <script lang="ts">
 import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'vue';
-import { LineChart } from 'nativescript-chart/charting/charts/LineChart';
+import LineChart from 'nativescript-chart/charting/charts/LineChart';
 import { LimitLine, LimitLabelPosition } from 'nativescript-chart/charting/components/LimitLine';
 import { LegendForm } from 'nativescript-chart/charting/components/Legend';
 import { knownFolders, path } from '@nativescript/core/file-system';
@@ -110,8 +110,9 @@ export default Vue.extend({
         }
     },
     mounted() {
+        console.log('mounted');
         const chart = this.$refs.lineChart['nativeView'] as LineChart;
-
+        // chart.setLogEnabled(true);
         // background color
         // chart.backgroundColor = 'white';
 
@@ -120,7 +121,7 @@ export default Vue.extend({
         // chart.setTouchEnabled(true);
 
         // set listeners
-        chart.on('valueSelected', e => console.log(e));
+        chart.on('valueSelected', (e: any) => console.log(e.entry, e.highlight));
         // chart.setDrawGridBackground(false);
 
         // enable scaling and dragging
