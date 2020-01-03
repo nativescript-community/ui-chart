@@ -7,17 +7,18 @@
     "nativescript": {
         "id": "com.akylas.nativescript.cartodemo",
         "tns-android": {
-            "version": "6.3.0"
+            "version": "6.3.1"
         }
     },
     "dependencies": {
         "nativescript-akylas-vue": "2.5.0-alpha.6",
         "nativescript-chart": "../plugin",
         "nativescript-mpchart-fork-adrianoop": "1.0.8",
+        "nativescript-gesturehandler": "^0.1.0",
         "nativescript-ui-chart": "7.1.1",
         "nativescript-canvas": "2.1.10",
         "nativescript-vue": "^2.4.0",
-        "@nativescript/core": "~6.3.0"
+        "@nativescript/core": "~6.3.2"
     },
     "devDependencies": {
         "@babel/core": "~7.7.7",
@@ -26,7 +27,7 @@
         "fork-ts-checker-webpack-plugin": "^3.1.1",
         "nativescript-dev-webpack": "1.4.0",
         "node-sass": "^4.13.0",
-        "tns-platform-declarations": "6.2.1",
+        "tns-platform-declarations": "6.3.2",
         "tslib": "^1.10.0",
         "typescript": "3.7.4",
         "vue": "^2.6.11",
