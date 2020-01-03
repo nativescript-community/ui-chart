@@ -22,11 +22,11 @@ import { ChartTouchListener } from '../listener/ChartTouchListener';
 
 const LOG_TAG = 'MPAndroidChart';
 
-declare module '@nativescript/core/ui/core/view' {
-    interface View {
-        _raiseLayoutChangedEvent();
-    }
-}
+// declare module '@nativescript/core/ui/core/view' {
+//     interface View {
+//         _raiseLayoutChangedEvent();
+//     }
+// }
 
 /**
  * Baseclass of all Chart-Views.
@@ -153,16 +153,19 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     constructor() {
         super();
+        console.log('constructor')
         this.init();
     }
 
     initNativeView() {
+        console.log('initNativeView')
         super.initNativeView();
-        this.mChartTouchListener.init();
+        this.mChartTouchListener && this.mChartTouchListener.init();
     }
     disposeNativeView() {
+        console.log('disposeNativeView')
         super.disposeNativeView();
-        this.mChartTouchListener.dispose();
+        this.mChartTouchListener && this.mChartTouchListener.dispose();
     }
 
     /**
@@ -170,12 +173,13 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     @profile
     protected init() {
+        console.log('init')
         this.mAnimator = new ChartAnimator(()=>{
             this.invalidate();
         });
 
         // initialize the utils
-        Utils.init(this._context);
+        // Utils.init(this._context);
         this.mMaxHighlightDistance = Utils.convertDpToPixel(500);
 
         this.mDescription = new Description();
@@ -333,10 +337,10 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.invalidate();
     }
 
-    invalidate() {
-        console.log('invalidate', new Error().stack);
-        super.invalidate();
-    }
+    // invalidate() {
+    //     console.log('invalidate', new Error().stack);
+    //     super.invalidate();
+    // }
 
     /**
      * Returns true if the chart is empty (meaning it's data object is either
@@ -610,7 +614,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         if (high == null) this.mIndicesToHighlight = null;
         else {
-            if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted: ' + high.toString());
+            if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted', high);
 
             e = this.mData.getEntryForHighlight(high);
             if (e == null) {
@@ -1530,20 +1534,21 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     //                     resolveSize(size,
     //                             heightMeasureSpec)));
     // }
-    public onLayout(left: number, top: number, right: number, bottom: number) {
-        super.onLayout(left, top, right, bottom);
-    }
+    // public onLayout(left: number, top: number, right: number, bottom: number) {
+    //     super.onLayout(left, top, right, bottom);
+    // }
 
-    public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
+    // public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
+    //     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    // }
 
-    _raiseLayoutChangedEvent() {
-        super._raiseLayoutChangedEvent();
-        this.onSizeChanged(this.getMeasuredWidth(), this.getMeasuredHeight());
-    }
+    // _raiseLayoutChangedEvent() {
+    //     super._raiseLayoutChangedEvent();
+    //     this.onSizeChanged(this.getMeasuredWidth(), this.getMeasuredHeight());
+    // }
 
-    public onSizeChanged(w: number, h: number): void {
+    public onSizeChanged(w: number, h: number, oldw:number, oldh:number): void {
+        super.onSizeChanged(w, h,oldw,oldh);
         // super.setMeasuredDimension(measuredWidth, measuredHeight);
         const needsDataSetChanged = !this.mViewPortHandler.hasChartDimens();
         if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged);

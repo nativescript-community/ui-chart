@@ -54,7 +54,6 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      */
     protected getHighlightForX(xVal, x, y) {
         const closestValues = this.getHighlightsAtXValue(xVal, x, y);
-
         if (closestValues.length === 0) {
             return null;
         }
@@ -78,13 +77,13 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * @param axis
      * @return
      */
-    protected getMinimumDistance(closestValues, pos, axis) {
+    protected getMinimumDistance(closestValues: Highlight[], pos, axis) {
         let distance = Number.MAX_VALUE;
 
         for (let i = 0; i < closestValues.length; i++) {
-            const high = closestValues.get(i);
+            const high = closestValues[i];
 
-            if (high.getAxis() == axis) {
+            if (high.axis == axis) {
                 let tempDistance = Math.abs(this.getHighlightPos(high) - pos);
                 if (tempDistance < distance) {
                     distance = tempDistance;
@@ -138,14 +137,14 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     protected buildHighlights(set: IDataSet<Entry>, dataSetIndex, xVal, rounding) {
         const xProperty = set.xProperty;
         const yProperty = set.yProperty;
-        const highlights = [];
+        const highlights: Highlight[] = [];
 
         //noinspection unchecked
         let entries = set.getEntriesForXValue(xVal);
         if (entries.length == 0) {
             // Try to find closest x-value and take all entries for that x-value
             const closest = set.getEntryForXValue(xVal, NaN, rounding);
-            if (closest != null) {
+            if (closest !== null) {
                 //noinspection unchecked
                 entries = set.getEntriesForXValue(closest[xProperty]);
             }
@@ -157,6 +156,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
             const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[xProperty], e[yProperty]);
 
             highlights.push({
+                entry:e,
                 x: e[xProperty],
                 y: e[yProperty],
                 xPx: pixels.x,

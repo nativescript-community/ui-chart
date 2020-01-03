@@ -57,7 +57,7 @@ export class ObjectPool<T extends Poolable> {
             throw new Error('Object Pool must be instantiated with a capacity greater than 0!');
         }
         this.desiredCapacity = withCapacity;
-        this.objects = new Object[this.desiredCapacity]();
+        this.objects = new Array(this.desiredCapacity);
         this.objectsPointer = 0;
         this.modelObject = object;
         this.replenishPercentage = 1.0;
@@ -172,7 +172,7 @@ export class ObjectPool<T extends Poolable> {
     private resizePool() {
         const oldCapacity = this.desiredCapacity;
         this.desiredCapacity *= 2;
-        const temp = new Object[this.desiredCapacity]();
+        const temp = new Array(this.desiredCapacity);
         for (let i = 0; i < oldCapacity; i++) {
             temp[i] = this.objects[i];
         }

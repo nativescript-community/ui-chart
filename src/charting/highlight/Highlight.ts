@@ -55,4 +55,9 @@ export interface Highlight {
      * the y-position (pixels) on which this highlight object was last drawn
      */
     drawY?;
+
+    /**
+     * the associated entry
+     */
+    entry?;
 }

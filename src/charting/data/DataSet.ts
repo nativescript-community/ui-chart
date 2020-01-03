@@ -322,19 +322,18 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         let high = this.mValues.length - 1;
 
         while (low <= high) {
-            let m = (high + low) / 2;
+            let m = Math.floor((high + low) / 2);
             let entry = this.mValues[m];
-
             // if we have a match
-            if (xValue == entry[this.xProperty]) {
-                while (m > 0 && this.mValues[m - 1][this.xProperty] == xValue) m--;
+            if (xValue === entry[this.xProperty]) {
+                while (m > 0 && this.mValues[m - 1][this.xProperty] === xValue) m--;
 
                 high = this.mValues.length;
 
                 // loop over all "equal" entries
                 for (; m < high; m++) {
                     entry = this.mValues[m];
-                    if (entry[this.xProperty] == xValue) {
+                    if (entry[this.xProperty] === xValue) {
                         entries.push(entry);
                     } else {
                         break;

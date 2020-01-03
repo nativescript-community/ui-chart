@@ -65,10 +65,10 @@ module.exports = env => {
         'nativescript-vue': 'nativescript-akylas-vue'
     };
 
-    // if (hasRootLevelScopedModules) {
-    //     coreModulesPackageName = '@nativescript/core';
-    //     alias['tns-core-modules'] = coreModulesPackageName;
-    // }
+    if (hasRootLevelScopedModules) {
+        coreModulesPackageName = '@nativescript/core';
+        alias['tns-core-modules'] = coreModulesPackageName;
+    }
 
     const appResourcesFullPath = resolve(projectRoot, appResourcesPath);
 
@@ -95,13 +95,13 @@ module.exports = env => {
         mode: mode,
         context: appFullPath,
         externals,
-        // watchOptions: {
-        //     ignored: [
-        //         appResourcesFullPath,
-        //         // Don't watch hidden files
-        //         '**/.*'
-        //     ]
-        // },
+        watchOptions: {
+            ignored: [
+                appResourcesFullPath,
+                // Don't watch hidden files
+                '**/.*'
+            ]
+        },
         target: nativescriptTarget,
         // target: nativeScriptVueTarget,
         entry: entries,
@@ -134,45 +134,45 @@ module.exports = env => {
             fs: 'empty',
             __dirname: false
         },
-        // devtool: hiddenSourceMap ? 'hidden-source-map' : sourceMap ? 'inline-source-map' : 'none',
-        // optimization: {
-        //     runtimeChunk: 'single',
-        //     noEmitOnErrors: true,
-        //     splitChunks: {
-        //         cacheGroups: {
-        //             vendor: {
-        //                 name: 'vendor',
-        //                 chunks: 'all',
-        //                 test: module => {
-        //                     const moduleName = module.nameForCondition ? module.nameForCondition() : '';
-        //                     return /[\\/]node_modules[\\/]/.test(moduleName) || appComponents.some(comp => comp === moduleName);
-        //                 },
-        //                 enforce: true
-        //             }
-        //         }
-        //     },
-        //     minimize: Boolean(production),
-        //     minimizer: [
-        //         new TerserPlugin({
-        //             parallel: true,
-        //             cache: true,
-        //             sourceMap: isAnySourceMapEnabled,
-        //             terserOptions: {
-        //                 output: {
-        //                     comments: false,
-        //                     semicolons: !isAnySourceMapEnabled
-        //                 },
-        //                 compress: {
-        //                     // The Android SBG has problems parsing the output
-        //                     // when these options are enabled
-        //                     collapse_vars: platform !== 'android',
-        //                     sequences: platform !== 'android'
-        //                 },
-        //                 keep_fnames: true
-        //             }
-        //         })
-        //     ]
-        // },
+        devtool: hiddenSourceMap ? 'hidden-source-map' : sourceMap ? 'inline-source-map' : 'none',
+        optimization: {
+            runtimeChunk: 'single',
+            noEmitOnErrors: true,
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        name: 'vendor',
+                        chunks: 'all',
+                        test: module => {
+                            const moduleName = module.nameForCondition ? module.nameForCondition() : '';
+                            return /[\\/]node_modules[\\/]/.test(moduleName) || appComponents.some(comp => comp === moduleName);
+                        },
+                        enforce: true
+                    }
+                }
+            },
+            minimize: Boolean(production),
+            minimizer: [
+                new TerserPlugin({
+                    parallel: true,
+                    cache: true,
+                    sourceMap: isAnySourceMapEnabled,
+                    terserOptions: {
+                        output: {
+                            comments: false,
+                            semicolons: !isAnySourceMapEnabled
+                        },
+                        compress: {
+                            // The Android SBG has problems parsing the output
+                            // when these options are enabled
+                            collapse_vars: platform !== 'android',
+                            sequences: platform !== 'android'
+                        },
+                        keep_fnames: true
+                    }
+                })
+            ]
+        },
         module: {
             rules: [
                 {

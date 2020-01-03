@@ -119,6 +119,8 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     protected cubicPath = new Path();
     protected cubicFillPath = new Path();
+    protected linearPath = new Path();
+    protected linearFillPath = new Path();
 
     constructor(chart: LineDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
@@ -133,7 +135,6 @@ export class LineChartRenderer extends LineRadarRenderer {
     public initBuffers() {}
 
     @profile
-    
     public drawData(c: Canvas) {
         let width = this.mViewPortHandler.getChartWidth();
         let height = this.mViewPortHandler.getChartHeight();
@@ -235,20 +236,14 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     @profile
-    protected drawCubicBezier(dataSet: ILineDataSet) {
-        let phaseY = this.mAnimator.getPhaseY();
-        const xKey = dataSet.xProperty;
-        const yKey = dataSet.yProperty;
-
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
-
-        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
-
-        let intensity = dataSet.getCubicIntensity();
-
-        this.cubicPath.reset();
+    generateCubicPath(dataSet: ILineDataSet, outputPath: Path) {
+        outputPath.reset();
 
         if (this.mXBounds.range >= 1) {
+            let phaseY = this.mAnimator.getPhaseY();
+            const xKey = dataSet.xProperty;
+            const yKey = dataSet.yProperty;
+            let intensity = dataSet.getCubicIntensity();
             let prevDx = 0;
             let prevDy = 0;
             let curDx = 0;
@@ -271,9 +266,9 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (cur == null) return;
 
             // let the spline start
-            this.cubicPath.moveTo(cur[xKey], cur[yKey] * phaseY);
+            outputPath.moveTo(cur[xKey], cur[yKey] * phaseY);
 
-            for (let j = this.mXBounds.min + 1; j <= this.mXBounds.range + this.mXBounds.min; j++) {
+            for (let j = firstIndex; j <= lastIndex; j++) {
                 prevPrev = prev;
                 prev = cur;
                 cur = nextIndex == j ? next : dataSet.getEntryForIndex(j);
@@ -286,9 +281,57 @@ export class LineChartRenderer extends LineRadarRenderer {
                 curDx = (next[xKey] - prev[xKey]) * intensity;
                 curDy = (next[yKey] - prev[yKey]) * intensity;
 
-                this.cubicPath.cubicTo(prev[xKey] + prevDx, (prev[yKey] + prevDy) * phaseY, cur[xKey] - curDx, (cur[yKey] - curDy) * phaseY, cur[xKey], cur[yKey] * phaseY);
+                outputPath.cubicTo(prev[xKey] + prevDx, (prev[yKey] + prevDy) * phaseY, cur[xKey] - curDx, (cur[yKey] - curDy) * phaseY, cur[xKey], cur[yKey] * phaseY);
             }
         }
+    }
+    @profile
+    generateLinearPath(dataSet: ILineDataSet, outputPath: Path) {
+        outputPath.reset();
+
+        if (this.mXBounds.range >= 1) {
+            const phaseY = this.mAnimator.getPhaseY();
+            const isDrawSteppedEnabled = dataSet.getMode() == Mode.STEPPED;
+            const xKey = dataSet.xProperty;
+            const yKey = dataSet.yProperty;
+
+            // const filled = outputPath;
+            outputPath.reset();
+
+            let firstIndex = this.mXBounds.min + 1;
+            let lastIndex = this.mXBounds.min + this.mXBounds.range;
+            const entry = dataSet.getEntryForIndex(firstIndex);
+
+            // filled.moveTo(entry[xKey], fillMin);
+            outputPath.moveTo(entry[xKey], entry[yKey] * phaseY);
+
+            // create a new path
+            let currentEntry = null;
+            let previousEntry = entry;
+            for (let x = firstIndex; x <= lastIndex; x++) {
+                currentEntry = dataSet.getEntryForIndex(x);
+                if (!currentEntry[yKey]) {
+                    continue;
+                }
+
+                if (isDrawSteppedEnabled) {
+                    outputPath.lineTo(currentEntry[xKey], previousEntry[yKey] * phaseY);
+                }
+
+                outputPath.lineTo(currentEntry[xKey], currentEntry[yKey] * phaseY);
+
+                previousEntry = currentEntry;
+            }
+        }
+    }
+
+    @profile
+    protected drawCubicBezier(dataSet: ILineDataSet) {
+        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+
+        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+
+        this.generateCubicPath(dataSet, this.cubicPath);
 
         // if filled is enabled, close the path
         if (dataSet.isDrawFilledEnabled()) {
@@ -305,6 +348,39 @@ export class LineChartRenderer extends LineRadarRenderer {
         trans.pathValueToPixel(this.cubicPath);
 
         this.mBitmapCanvas.drawPath(this.cubicPath, this.mRenderPaint);
+
+        this.mRenderPaint.setPathEffect(null);
+    }
+    @profile
+    protected drawLinear(c: Canvas, dataSet: ILineDataSet) {
+        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+
+        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+
+        this.generateLinearPath(dataSet, this.linearPath);
+            //     // if the data-set is dashed, draw on bitmap-canvas
+            let canvas:Canvas = null;
+        if (dataSet.isDashedLineEnabled()) {
+            canvas = this.mBitmapCanvas;
+        } else {
+            canvas = c;
+        }
+
+        // if filled is enabled, close the path
+        if (dataSet.isDrawFilledEnabled()) {
+            this.linearFillPath.reset();
+            this.linearFillPath.addPath(this.linearPath);
+
+            this.drawLinearFill(this.mBitmapCanvas, dataSet, this.linearFillPath, trans, this.mXBounds);
+        }
+
+        this.mRenderPaint.setColor(dataSet.getColor());
+
+        this.mRenderPaint.setStyle(Style.STROKE);
+
+        trans.pathValueToPixel(this.linearPath);
+
+        canvas.drawPath(this.linearPath, this.mRenderPaint);
 
         this.mRenderPaint.setPathEffect(null);
     }
@@ -327,8 +403,26 @@ export class LineChartRenderer extends LineRadarRenderer {
             this.drawFilledPath(c, spline, dataSet.getFillColor(), dataSet.getFillAlpha());
         }
     }
+    @profile
+    protected drawLinearFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, bounds: XBounds) {
+        const xKey = dataSet.xProperty;
+        let fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
 
-    private mLineBuffer: number[] = Array.create('float', 4);
+        spline.lineTo(dataSet.getEntryForIndex(bounds.min + bounds.range)[xKey], fillMin);
+        spline.lineTo(dataSet.getEntryForIndex(bounds.min)[xKey], fillMin);
+        spline.close();
+
+        trans.pathValueToPixel(spline);
+
+        const drawable = dataSet.getFillDrawable();
+        if (drawable != null) {
+            this.drawFilledPathBitmap(c, spline, drawable);
+        } else {
+            this.drawFilledPath(c, spline, dataSet.getFillColor(), dataSet.getFillAlpha());
+        }
+    }
+
+    // private mLineBuffer: number[] = Array.create('float', 4);
 
     /**
      * Draws a normal line.
@@ -336,138 +430,143 @@ export class LineChartRenderer extends LineRadarRenderer {
      * @param c
      * @param dataSet
      */
-    @profile
-    protected drawLinear(c: Canvas, dataSet: ILineDataSet) {
-        let entryCount = dataSet.getEntryCount();
-        const xKey = dataSet.xProperty;
-        const yKey = dataSet.yProperty;
+    // @profile
+    // protected drawLinear(c: Canvas, dataSet: ILineDataSet) {
+    //     const startTime = Date.now();
+    //     let entryCount = dataSet.getEntryCount();
+    //     const xKey = dataSet.xProperty;
+    //     const yKey = dataSet.yProperty;
 
-        const isDrawSteppedEnabled = dataSet.getMode() == Mode.STEPPED;
-        let pointsPerEntryPair = isDrawSteppedEnabled ? 4 : 2;
+    //     const isDrawSteppedEnabled = dataSet.getMode() == Mode.STEPPED;
+    //     let pointsPerEntryPair = isDrawSteppedEnabled ? 4 : 2;
 
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+    //     const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
-        let phaseY = this.mAnimator.getPhaseY();
+    //     let phaseY = this.mAnimator.getPhaseY();
 
-        this.mRenderPaint.setStyle(Style.STROKE);
+    //     this.mRenderPaint.setStyle(Style.STROKE);
+    //     this.linearPath.reset();
 
-        let canvas: Canvas = null;
+    //     let canvas: Canvas = null;
 
-        // if the data-set is dashed, draw on bitmap-canvas
-        if (dataSet.isDashedLineEnabled()) {
-            canvas = this.mBitmapCanvas;
-        } else {
-            canvas = c;
-        }
+    //     // if the data-set is dashed, draw on bitmap-canvas
+    //     if (dataSet.isDashedLineEnabled()) {
+    //         canvas = this.mBitmapCanvas;
+    //     } else {
+    //         canvas = c;
+    //     }
 
-        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+    //     this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-        // if drawing filled is enabled
-        if (dataSet.isDrawFilledEnabled() && entryCount > 0) {
-            this.drawLinearFill(c, dataSet, trans, this.mXBounds);
-        }
-        // more than 1 color
-        if (dataSet.getColors().length > 1) {
-            if (this.mLineBuffer.length <= pointsPerEntryPair * 2) {
-                this.mLineBuffer = Array.create('float', pointsPerEntryPair * 4);
-            }
+    //     // if drawing filled is enabled
+    //     if (dataSet.isDrawFilledEnabled() && entryCount > 0) {
+    //         this.drawLinearFill(c, dataSet, trans, this.mXBounds);
+    //     }
+    //     // more than 1 color
+    //     if (dataSet.getColors().length > 1) {
+    //         if (this.mLineBuffer.length <= pointsPerEntryPair * 2) {
+    //             this.mLineBuffer = [];
+    //             // this.mLineBuffer = Array.create('float', pointsPerEntryPair * 4);
+    //         }
 
-            for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
-                let e = dataSet.getEntryForIndex(j);
-                if (e == null) continue;
+    //         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
+    //             let e = dataSet.getEntryForIndex(j);
+    //             if (e == null) continue;
 
-                this.mLineBuffer[0] = e[xKey];
-                this.mLineBuffer[1] = e[yKey] * phaseY;
+    //             this.mLineBuffer[0] = e[xKey];
+    //             this.mLineBuffer[1] = e[yKey] * phaseY;
 
-                if (j < this.mXBounds.max) {
-                    e = dataSet.getEntryForIndex(j + 1);
+    //             if (j < this.mXBounds.max) {
+    //                 e = dataSet.getEntryForIndex(j + 1);
 
-                    if (e == null || !e[yKey]) break;
+    //                 if (e == null || !e[yKey]) break;
 
-                    if (isDrawSteppedEnabled) {
-                        this.mLineBuffer[2] = e[xKey];
-                        this.mLineBuffer[3] = this.mLineBuffer[1];
-                        this.mLineBuffer[4] = this.mLineBuffer[2];
-                        this.mLineBuffer[5] = this.mLineBuffer[3];
-                        this.mLineBuffer[6] = e[xKey];
-                        this.mLineBuffer[7] = e[yKey] * phaseY;
-                    } else {
-                        this.mLineBuffer[2] = e[xKey];
-                        this.mLineBuffer[3] = e[yKey] * phaseY;
-                    }
-                } else {
-                    this.mLineBuffer[2] = this.mLineBuffer[0];
-                    this.mLineBuffer[3] = this.mLineBuffer[1];
-                }
+    //                 if (isDrawSteppedEnabled) {
+    //                     this.mLineBuffer[2] = e[xKey];
+    //                     this.mLineBuffer[3] = this.mLineBuffer[1];
+    //                     this.mLineBuffer[4] = this.mLineBuffer[2];
+    //                     this.mLineBuffer[5] = this.mLineBuffer[3];
+    //                     this.mLineBuffer[6] = e[xKey];
+    //                     this.mLineBuffer[7] = e[yKey] * phaseY;
+    //                 } else {
+    //                     this.mLineBuffer[2] = e[xKey];
+    //                     this.mLineBuffer[3] = e[yKey] * phaseY;
+    //                 }
+    //             } else {
+    //                 this.mLineBuffer[2] = this.mLineBuffer[0];
+    //                 this.mLineBuffer[3] = this.mLineBuffer[1];
+    //             }
 
-                trans.pointValuesToPixel(this.mLineBuffer);
+    //             trans.pointValuesToPixel(this.mLineBuffer);
 
-                if (!this.mViewPortHandler.isInBoundsRight(this.mLineBuffer[0])) break;
+    //             if (!this.mViewPortHandler.isInBoundsRight(this.mLineBuffer[0])) break;
 
-                // make sure the lines don't do shitty things outside
-                // bounds
-                if (
-                    !this.mViewPortHandler.isInBoundsLeft(this.mLineBuffer[2]) ||
-                    (!this.mViewPortHandler.isInBoundsTop(this.mLineBuffer[1]) && !this.mViewPortHandler.isInBoundsBottom(this.mLineBuffer[3]))
-                )
-                    continue;
+    //             // make sure the lines don't do shitty things outside
+    //             // bounds
+    //             if (
+    //                 !this.mViewPortHandler.isInBoundsLeft(this.mLineBuffer[2]) ||
+    //                 (!this.mViewPortHandler.isInBoundsTop(this.mLineBuffer[1]) && !this.mViewPortHandler.isInBoundsBottom(this.mLineBuffer[3]))
+    //             )
+    //                 continue;
 
-                // get the color that is set for this line-segment
-                this.mRenderPaint.setColor(dataSet.getColor(j));
+    //             // get the color that is set for this line-segment
+    //             this.mRenderPaint.setColor(dataSet.getColor(j));
 
-                canvas.drawLines(this.mLineBuffer, 0, pointsPerEntryPair * 2, this.mRenderPaint);
-            }
-        } else {
-            // only one color per dataset
+    //             canvas.drawLines(this.mLineBuffer, 0, pointsPerEntryPair * 2, this.mRenderPaint);
+    //         }
+    //     } else {
+    //         // only one color per dataset
 
-            if (this.mLineBuffer.length < Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2)
-                this.mLineBuffer = Array.create('float', Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 4);
+    //         if (this.mLineBuffer.length < Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2) {
+    //             // this.mLineBuffer = Array.create('float', Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 4);
+    //             this.mLineBuffer = [];
+    //         }
 
-            let e1, e2;
+    //         let e1, e2;
 
-            e1 = dataSet.getEntryForIndex(this.mXBounds.min);
+    //         e1 = dataSet.getEntryForIndex(this.mXBounds.min);
 
-            if (e1 != null) {
-                let j = 0;
-                for (let x = this.mXBounds.min; x <= this.mXBounds.range + this.mXBounds.min; x++) {
-                    e1 = dataSet.getEntryForIndex(x == 0 ? 0 : x - 1);
-                    e2 = dataSet.getEntryForIndex(x);
+    //         if (e1 != null) {
+    //             let j = 0;
+    //             for (let x = this.mXBounds.min; x <= this.mXBounds.range + this.mXBounds.min; x++) {
+    //                 e1 = dataSet.getEntryForIndex(x == 0 ? 0 : x - 1);
+    //                 e2 = dataSet.getEntryForIndex(x);
 
-                    if (e1 == null || e2 == null || !e1[yKey] || !e2[yKey]) continue;
+    //                 if (e1 == null || e2 == null || !e1[yKey] || !e2[yKey]) continue;
 
-                    // console.log('test', j, x, xKey, yKey, e1[xKey], e1[yKey]);
+    //                 // console.log('test', j, x, xKey, yKey, e1[xKey], e1[yKey]);
 
-                    this.mLineBuffer[j++] = e1[xKey];
-                    this.mLineBuffer[j++] = (e1[yKey] || 0) * phaseY;
+    //                 this.mLineBuffer[j++] = e1[xKey];
+    //                 this.mLineBuffer[j++] = (e1[yKey] || 0) * phaseY;
 
-                    if (isDrawSteppedEnabled) {
-                        this.mLineBuffer[j++] = e2[xKey];
-                        this.mLineBuffer[j++] = e1[yKey] * phaseY;
-                        this.mLineBuffer[j++] = e2[xKey];
-                        this.mLineBuffer[j++] = e1[yKey] * phaseY;
-                    }
+    //                 if (isDrawSteppedEnabled) {
+    //                     this.mLineBuffer[j++] = e2[xKey];
+    //                     this.mLineBuffer[j++] = e1[yKey] * phaseY;
+    //                     this.mLineBuffer[j++] = e2[xKey];
+    //                     this.mLineBuffer[j++] = e1[yKey] * phaseY;
+    //                 }
 
-                    this.mLineBuffer[j++] = e2[xKey];
-                    this.mLineBuffer[j++] = e2[yKey] * phaseY;
-                }
+    //                 this.mLineBuffer[j++] = e2[xKey];
+    //                 this.mLineBuffer[j++] = e2[yKey] * phaseY;
+    //             }
 
-                if (j > 0) {
-                    trans.pointValuesToPixel(this.mLineBuffer);
+    //             if (j > 0) {
+    //                 trans.pointValuesToPixel(this.mLineBuffer);
 
-                    let size = Math.max((this.mXBounds.range + 1) * pointsPerEntryPair, pointsPerEntryPair) * 2;
+    //                 let size = Math.max((this.mXBounds.range + 1) * pointsPerEntryPair, pointsPerEntryPair) * 2;
 
-                    this.mRenderPaint.setColor(dataSet.getColor());
+    //                 this.mRenderPaint.setColor(dataSet.getColor());
 
-                    // console.log('drawLinear2', this.mLineBuffer.length, size, this.mRenderPaint.getColor(), this.mRenderPaint.getStrokeWidth(), this.mRenderPaint.getStyle());
-                    canvas.drawLines(this.mLineBuffer, 0, size, this.mRenderPaint);
-                }
-            }
-        }
+    //                 // console.log('drawLinear2', this.mLineBuffer.length, size, this.mRenderPaint.getColor(), this.mRenderPaint.getStrokeWidth(), this.mRenderPaint.getStyle());
+    //                 canvas.drawLines(this.mLineBuffer, 0, size, this.mRenderPaint);
+    //             }
+    //         }
+    //     }
 
-        this.mRenderPaint.setPathEffect(null);
-    }
+    //     this.mRenderPaint.setPathEffect(null);
+    // }
 
-    protected mGenerateFilledPathBuffer = new Path();
+    // protected mGenerateFilledPathBuffer = new Path();
 
     /**
      * Draws a filled linear path on the canvas.
@@ -477,40 +576,40 @@ export class LineChartRenderer extends LineRadarRenderer {
      * @param trans
      * @param bounds
      */
-    @profile
-    protected drawLinearFill(c: Canvas, dataSet: ILineDataSet, trans: Transformer, bounds: XBounds) {
-        const filled = this.mGenerateFilledPathBuffer;
+    // @profile
+    // protected drawLinearFill(c: Canvas, dataSet: ILineDataSet, trans: Transformer, bounds: XBounds) {
+    //     const filled = this.mGenerateFilledPathBuffer;
 
-        const startingIndex = bounds.min;
-        const endingIndex = bounds.range + bounds.min;
-        const indexInterval = 128;
+    //     const startingIndex = bounds.min;
+    //     const endingIndex = bounds.range + bounds.min;
+    //     const indexInterval = 128;
 
-        let currentStartIndex = 0;
-        let currentEndIndex = indexInterval;
-        let iterations = 0;
+    //     let currentStartIndex = 0;
+    //     let currentEndIndex = indexInterval;
+    //     let iterations = 0;
 
-        // Doing this iteratively in order to avoid OutOfMemory errors that can happen on large bounds sets.
-        do {
-            currentStartIndex = startingIndex + iterations * indexInterval;
-            currentEndIndex = currentStartIndex + indexInterval;
-            currentEndIndex = currentEndIndex > endingIndex ? endingIndex : currentEndIndex;
+    //     // Doing this iteratively in order to avoid OutOfMemory errors that can happen on large bounds sets.
+    //     do {
+    //         currentStartIndex = startingIndex + iterations * indexInterval;
+    //         currentEndIndex = currentStartIndex + indexInterval;
+    //         currentEndIndex = currentEndIndex > endingIndex ? endingIndex : currentEndIndex;
 
-            if (currentStartIndex <= currentEndIndex) {
-                this.generateFilledPath(dataSet, currentStartIndex, currentEndIndex, filled);
+    //         if (currentStartIndex <= currentEndIndex) {
+    //             this.generateFilledPath(dataSet, currentStartIndex, currentEndIndex, filled);
 
-                trans.pathValueToPixel(filled);
+    //             trans.pathValueToPixel(filled);
 
-                const drawable = dataSet.getFillDrawable();
-                if (drawable != null) {
-                    this.drawFilledPathBitmap(c, filled, drawable);
-                } else {
-                    this.drawFilledPath(c, filled, dataSet.getFillColor(), dataSet.getFillAlpha());
-                }
-            }
+    //             const drawable = dataSet.getFillDrawable();
+    //             if (drawable != null) {
+    //                 this.drawFilledPathBitmap(c, filled, drawable);
+    //             } else {
+    //                 this.drawFilledPath(c, filled, dataSet.getFillColor(), dataSet.getFillAlpha());
+    //             }
+    //         }
 
-            iterations++;
-        } while (currentStartIndex <= currentEndIndex);
-    }
+    //         iterations++;
+    //     } while (currentStartIndex <= currentEndIndex);
+    // }
 
     /**
      * Generates a path that is used for filled drawing.
@@ -522,46 +621,46 @@ export class LineChartRenderer extends LineRadarRenderer {
      * @return
      */
     @profile
-    private generateFilledPath(dataSet: ILineDataSet, startIndex, endIndex, outputPath: Path) {
-        const fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
-        const phaseY = this.mAnimator.getPhaseY();
-        const isDrawSteppedEnabled = dataSet.getMode() == Mode.STEPPED;
-        const xKey = dataSet.xProperty;
-        const yKey = dataSet.yProperty;
+    // private generateFilledPath(dataSet: ILineDataSet, startIndex, endIndex, outputPath: Path) {
+    //     const fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
+    //     const phaseY = this.mAnimator.getPhaseY();
+    //     const isDrawSteppedEnabled = dataSet.getMode() == Mode.STEPPED;
+    //     const xKey = dataSet.xProperty;
+    //     const yKey = dataSet.yProperty;
 
-        const filled = outputPath;
-        filled.reset();
+    //     const filled = outputPath;
+    //     filled.reset();
 
-        const entry = dataSet.getEntryForIndex(startIndex);
+    //     const entry = dataSet.getEntryForIndex(startIndex);
 
-        filled.moveTo(entry[xKey], fillMin);
-        filled.lineTo(entry[xKey], entry[yKey] * phaseY);
+    //     filled.moveTo(entry[xKey], fillMin);
+    //     filled.lineTo(entry[xKey], entry[yKey] * phaseY);
 
-        // create a new path
-        let currentEntry = null;
-        let previousEntry = entry;
-        for (let x = startIndex + 1; x <= endIndex; x++) {
-            currentEntry = dataSet.getEntryForIndex(x);
-            if (!currentEntry[yKey]) {
-                continue;
-            }
+    //     // create a new path
+    //     let currentEntry = null;
+    //     let previousEntry = entry;
+    //     for (let x = startIndex + 1; x <= endIndex; x++) {
+    //         currentEntry = dataSet.getEntryForIndex(x);
+    //         if (!currentEntry[yKey]) {
+    //             continue;
+    //         }
 
-            if (isDrawSteppedEnabled) {
-                filled.lineTo(currentEntry[xKey], previousEntry[yKey] * phaseY);
-            }
+    //         if (isDrawSteppedEnabled) {
+    //             filled.lineTo(currentEntry[xKey], previousEntry[yKey] * phaseY);
+    //         }
 
-            filled.lineTo(currentEntry[xKey], currentEntry[yKey] * phaseY);
+    //         filled.lineTo(currentEntry[xKey], currentEntry[yKey] * phaseY);
 
-            previousEntry = currentEntry;
-        }
+    //         previousEntry = currentEntry;
+    //     }
 
-        // close up
-        if (currentEntry != null) {
-            filled.lineTo(currentEntry[xKey], fillMin);
-        }
+    //     // close up
+    //     if (currentEntry != null) {
+    //         filled.lineTo(currentEntry[xKey], fillMin);
+    //     }
 
-        filled.close();
-    }
+    //     filled.close();
+    // }
 
     @profile
     public drawValues(c: Canvas) {
@@ -719,12 +818,13 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             if (set == null || !set.isHighlightEnabled()) continue;
 
-            const xKey = set.xProperty;
-            const yKey = set.yProperty;
-            let e = set.getEntryForXValue(high[xKey], high[yKey]);
+            let e = lineData.getEntryForHighlight(high);
+            // let e = set.getEntryForXValue(high.x high.y);
 
             if (!this.isInBoundsX(e, set)) continue;
 
+            const xKey = set.xProperty;
+            const yKey = set.yProperty;
             let pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[xKey], e[yKey] * this.mAnimator.getPhaseY());
 
             high.drawX = pix.x;

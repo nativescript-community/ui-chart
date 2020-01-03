@@ -1,6 +1,7 @@
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from './Entry';
 import { AxisDependency } from '../components/YAxis';
+import { Highlight } from '../highlight/Highlight';
 
 export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
@@ -281,10 +282,13 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param highlight
      * @return the entry that is highlighted
      */
-    public getEntryForHighlight(highlight) {
-        if (highlight.getDataSetIndex() >= this.mDataSets.length) return null;
+    public getEntryForHighlight(highlight: Highlight) {
+        if (highlight.entry) {
+            return highlight.entry;
+        }
+        if (highlight.dataSetIndex >= this.mDataSets.length) return null;
         else {
-            return this.mDataSets[highlight.getDataSetIndex()].getEntryForXValue(highlight.getX(), highlight.getY());
+            return this.mDataSets[highlight.dataSetIndex].getEntryForXValue(highlight.x, highlight.y);
         }
     }
 

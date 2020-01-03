@@ -1,6 +1,7 @@
 import { Matrix, Path, Rect } from 'nativescript-canvas';
 import { ViewPortHandler } from './ViewPortHandler';
 import { Utils } from './Utils';
+import { profile } from '@nativescript/core/profiling/profiling';
 
 /**
  * Transformer class that contains all matrices and is responsible for
@@ -209,6 +210,7 @@ export class Transformer {
      *
      * @param path
      */
+    @profile
     public pathValueToPixel(path: Path) {
         path.transform(this.mMatrixValueToPx);
         path.transform(this.mViewPortHandler.getMatrixTouch());
@@ -232,16 +234,12 @@ export class Transformer {
      *
      * @param pts
      */
+    @profile
     public pointValuesToPixel(pts) {
-        const nArray = Utils.arrayoNativeArray(pts);
-        this.mMatrixValueToPx.mapPoints(nArray);
-        this.mViewPortHandler.getMatrixTouch().mapPoints(nArray);
-        this.mMatrixOffset.mapPoints(nArray);
-        if (nArray !== pts) {
-            for (let index = 0; index < pts.length; index++) {
-                pts[index] = nArray[index];
-            }
-        }
+        this.mMatrixValueToPx.mapPoints(pts);
+        this.mViewPortHandler.getMatrixTouch().mapPoints(pts);
+        this.mMatrixOffset.mapPoints(pts);
+
     }
 
     /**
@@ -330,29 +328,29 @@ export class Transformer {
      * @param pixels
      */
     public pixelsToValue(pixels: number[]) {
-        const nArray = Utils.arrayoNativeArray(pixels);
+        // const nArray = Utils.arrayoNativeArray(pixels);
         const tmp = this.mPixelToValueMatrixBuffer;
         tmp.reset();
         // invert all matrixes to convert back to the original value
         this.mMatrixOffset.invert(tmp);
-        tmp.mapPoints(nArray);
+        tmp.mapPoints(pixels);
 
         this.mViewPortHandler.getMatrixTouch().invert(tmp);
-        tmp.mapPoints(nArray);
+        tmp.mapPoints(pixels);
 
         this.mMatrixValueToPx.invert(tmp);
-        tmp.mapPoints(nArray);
-        if (nArray !== pixels) {
-            for (let index = 0; index < pixels.length; index++) {
-                pixels[index] = nArray[index];
-            }
-        }
+        tmp.mapPoints(pixels);
+        // if (nArray !== pixels) {
+        //     for (let index = 0; index < pixels.length; index++) {
+        //         pixels[index] = nArray[index];
+        //     }
+        // }
     }
 
     /**
      * buffer for performance
      */
-    ptsBuffer = [];
+    ptsBuffer = Array.create('float', 2);
 
     /**
      * Returns a recyclable MPPointD instance.

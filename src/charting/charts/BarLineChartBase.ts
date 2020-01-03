@@ -1216,6 +1216,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @return
      */
     public getDataSetByTouchPoint(x, y) {
+        console.log('getDataSetByTouchPoint', x, y);
         const h = this.getHighlightByTouchPoint(x, y);
         if (h != null) {
             return this.mData.getDataSetByIndex(h.dataSetIndex);
@@ -1479,7 +1480,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected mOnSizeChangedBuffer = Array.create('float', 2);
 
-    public onSizeChanged(w: number, h: number) {
+    public onSizeChanged(w: number, h: number, oldw:number, oldh:number) {
         // Saving current position of chart.
         this.mOnSizeChangedBuffer[0] = this.mOnSizeChangedBuffer[1] = 0;
 
@@ -1490,7 +1491,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         }
 
         //Superclass transforms chart.
-        super.onSizeChanged(w, h);
+        super.onSizeChanged(w, h, oldw, oldh);
 
         if (this.mKeepPositionOnRotation) {
             //Restoring old position of chart.

@@ -5,7 +5,7 @@ import { Entry } from '../data/Entry';
 import { LineDataSet } from '../data/LineDataSet';
 import { LineChartRenderer } from '../renderer/LineChartRenderer';
 
-export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {
+export default class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {
     // public LineChart(Context context) {
     //     super(context);
     // }
@@ -17,8 +17,14 @@ export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> im
     // public LineChart(Context context, AttributeSet attrs, let defStyle) {
     //     super(context, attrs, defStyle);
     // }
+    constructor() {
+        super();
+        console.log('LineChart','constructor')
+        this.init();
+    }
 
     protected init() {
+        console.log('LineChart', 'init');
         super.init();
 
         this.mRenderer = new LineChartRenderer(this, this.mAnimator, this.mViewPortHandler);

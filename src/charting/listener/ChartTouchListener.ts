@@ -66,31 +66,46 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
     panGestureHandler: PanGestureHandler;
     pinchGestureHandler: PinchGestureHandler;
     tapGestureHandler: TapGestureHandler;
-    longpressGestureHandler: LongPressGestureHandler;
+    doubleTapGestureHandler: TapGestureHandler;
+    // longpressGestureHandler: LongPressGestureHandler;
 
-    abstract onPanGesture(event: GestureStateEventData);
-    abstract onPinchGesture(event: GestureStateEventData);
+    abstract onPanGestureState(event: GestureStateEventData);
+    abstract onPanGestureTouch(event: GestureTouchEventData);
+    abstract onPinchGestureState(event: GestureStateEventData);
+    abstract onPinchGestureTouch(event: GestureTouchEventData);
     abstract onTapGesture(event: GestureStateEventData);
-    abstract onLongPressGesture(event: GestureStateEventData);
+    abstract onDoubleTapGesture(event: GestureStateEventData);
+    // abstract onLongPressGesture(event: GestureStateEventData);
     constructor(chart: T) {
         this.mChart = chart;
 
         const manager = Manager.getInstance();
-        this.panGestureHandler = manager.createGestureHandler(HandlerType.PAN, 11230, {
-            shouldCancelWhenOutside: false
-        });
-        this.panGestureHandler.on(GestureHandlerStateEvent, this.onPanGesture, this);
+        this.panGestureHandler = manager
+            .createGestureHandler(HandlerType.PAN, 11230, {
+                minPointers: 1,
+                maxPointers: 1,
+                shouldCancelWhenOutside: false
+            })
+            .on(GestureHandlerStateEvent, this.onPanGestureState, this)
+            .on(GestureHandlerTouchEvent, this.onPanGestureTouch, this);
 
-        this.pinchGestureHandler = manager.createGestureHandler(HandlerType.PINCH, 11231, {
-            shouldCancelWhenOutside: false
-        });
-        this.pinchGestureHandler.on(GestureHandlerStateEvent, this.onPinchGesture, this);
+        this.pinchGestureHandler = manager
+            .createGestureHandler(HandlerType.PINCH, 11231, {
+                minSpan:2,
+                // minPointers: 2,
+                // maxPointers: 2,
+                shouldCancelWhenOutside: false
+            })
+            .on(GestureHandlerStateEvent, this.onPinchGestureState, this)
+            .on(GestureHandlerTouchEvent, this.onPinchGestureTouch, this);
+            (this.pinchGestureHandler as any).minSpan = 0;
+        this.doubleTapGestureHandler = manager.createGestureHandler(HandlerType.TAP, 11234, { numberOfTaps: 2 }).on(GestureHandlerStateEvent, this.onDoubleTapGesture, this);
 
-        this.tapGestureHandler = manager.createGestureHandler(HandlerType.TAP, 11232, {});
-        this.tapGestureHandler.on(GestureHandlerStateEvent, this.onTapGesture, this);
+        this.tapGestureHandler = manager.createGestureHandler(HandlerType.TAP, 11232, { waitFor: [11234] }).on(GestureHandlerStateEvent, this.onTapGesture, this);
 
-        this.longpressGestureHandler = manager.createGestureHandler(HandlerType.LONG_PRESS, 11233, {});
-        this.longpressGestureHandler.on(GestureHandlerStateEvent, this.onLongPressGesture, this);
+        // this.longpressGestureHandler = manager
+        //     .createGestureHandler(HandlerType.LONG_PRESS, 11233, { minPointers: 1, maxPointers: 1, minDurationMs: 800 })
+        //     .on(GestureHandlerStateEvent, this.onLongPressGesture, this);
 
         // this.mGestureDetector = new GestureDetector(chart.getContext(), this);
     }
@@ -99,14 +114,15 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
         this.panGestureHandler.detachFromView(chart);
         this.pinchGestureHandler.detachFromView(chart);
         this.tapGestureHandler.detachFromView(chart);
-        this.longpressGestureHandler.detachFromView(chart);
+        // this.longpressGestureHandler.detachFromView(chart);
     }
     init() {
         const chart = this.mChart;
+        console.log('ChartTouchListener', 'init', chart, chart.nativeViewProtected);
         this.panGestureHandler.attachToView(chart);
         this.pinchGestureHandler.attachToView(chart);
         this.tapGestureHandler.attachToView(chart);
-        this.longpressGestureHandler.attachToView(chart);
+        // this.longpressGestureHandler.attachToView(chart);
     }
     /**
      * Calls the OnChartGestureListener to do the start callback
