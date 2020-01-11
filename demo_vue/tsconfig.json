@@ -21,8 +21,8 @@
             "nativescript-vue": ["./node_modules/nativescript-akylas-vue"],
             "tns-core-modules": ["./node_modules/@nativescript/core"],
             "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
-            "nativescript-chart": ["../src"],
-            "nativescript-chart/*": ["../src/*"],
+            "nativescript-chart": ["../src/charting"],
+            "nativescript-chart/*": ["../src/charting/*"],
             "*": ["node_modules/*"]
         }
     },

@@ -72,7 +72,7 @@ module.exports = env => {
     }
 
     if (development) {
-        alias['nativescript-chart'] = resolve(projectRoot, '..', 'src');
+        alias['nativescript-chart'] = resolve(projectRoot, '..', 'src', 'charting');
 
     }
 
@@ -296,7 +296,7 @@ module.exports = env => {
 
     if (development) {
         config.plugins.push(
-            new webpack.ContextReplacementPlugin(/nativescript-chart/, resolve(projectRoot, '..', 'src'))
+            new webpack.ContextReplacementPlugin(/nativescript-chart/, resolve(projectRoot, '..', 'src', 'charting'))
         );
     }
 

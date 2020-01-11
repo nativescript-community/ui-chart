@@ -11,7 +11,7 @@ Vue.use(RadChart);
 
 // setShowDebug(true);
 
-Vue.registerElement('LineChart', () => require('nativescript-chart/charting/charts/LineChart').default);
+Vue.registerElement('LineChart', () => require('nativescript-chart/charts/LineChart').default);
 
 
 declare var com;

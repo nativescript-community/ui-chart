@@ -692,7 +692,7 @@ export namespace Utils {
             // } else if (force) {
             return new FloatConstructor(length) as any;
         }
-        return [];
+        // return [];
     });
     export const pointsFromBuffer = profile('pointsFromBuffer', function(float32Array) {
         if (isAndroid) {

@@ -21,13 +21,13 @@
         "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "outDir": "./plugin",
-        "rootDir": "./src",
+        "rootDir": "./src/charting",
         "paths": {
             
             "tns-core-modules": ["node_modules/@nativescript/core"],
             "tns-core-modules/*": ["node_modules/@nativescript/core/*"],
-            "nativescript-chart": ["./src"],
-            "nativescript-chart/*": ["./src/*"],
+            "nativescript-chart": ["./src/charting"],
+            "nativescript-chart/*": ["./src/charting/*"],
             "*": ["node_modules/*"]
         }
     },
