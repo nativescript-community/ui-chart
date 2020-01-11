@@ -243,6 +243,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             return [points, index];
         } else {
             outputPath.reset();
+            return [];
         }
     }
     @profile
@@ -277,7 +278,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             let next = cur;
             let nextIndex = -1;
 
-            if (cur == null) return;
+            if (cur == null) return [];
 
             var float32arr = this.mLineBuffer;
             float32arr[0] = cur[xKey];
@@ -315,6 +316,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             return [points, index];
         } else {
             outputPath.reset();
+            return [];
         }
     }
     @profile
@@ -371,6 +373,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             return [points, index];
         } else {
             outputPath.reset();
+            return [];
         }
     }
 
