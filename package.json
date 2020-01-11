@@ -38,23 +38,23 @@
     "readmeFilename": "README.md",
     "devDependencies": {
         "@angular/core": "^8.2.14",
-        "@commitlint/cli": "^8.2.0",
-        "@commitlint/config-conventional": "^8.2.0",
-        "@nativescript/core": "6.3.1",
+        "@commitlint/cli": "^8.3.4",
+        "@commitlint/config-conventional": "^8.3.4",
+        "@nativescript/core": "6.3.2",
         "@tweenjs/tween.js": "18.5.0",
-        "@types/node": "^12.12.21",
+        "@types/node": "^13.1.5",
         "@types/tween.js": "^17.2.0",
         "cpy-cli": "^3.0.0",
         "husky": "^3.1.0",
-        "lerna": "^3.19.0",
+        "lerna": "^3.20.2",
         "nativescript-canvas": "2.1.10",
-        "nativescript-gesturehandler": "^0.1.0",
+        "nativescript-gesturehandler": "^0.1.1",
         "nativescript-tween": "0.0.5",
         "npm-watch": "^0.6.0",
         "number-format.js": "^2.0.9",
         "prompt": "^1.0.0",
         "rimraf": "^3.0.0",
-        "tns-platform-declarations": "^6.3.1",
+        "tns-platform-declarations": "^6.3.2",
         "tslint": "^5.20.1",
         "tslint-config-prettier": "^1.18.0",
         "tslint-config-standard": "^9.0.0",
@@ -67,6 +67,5 @@
         ]
     },
     "dependencies": {
-        "transformation-matrix": "^2.2.0"
     }
 }
