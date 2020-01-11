@@ -1,7 +1,7 @@
 {
     "name": "nativescript-chart",
     "version": "1.0.0",
-    "description": "Nativescript plugin for Carto Mobile SDK",
+    "description": "Nativescript plugin for Charts",
     "scripts": {
         "tsc": "cpy '**/*.d.ts' '../plugin' --parents --cwd=src && tsc -skipLibCheck",
         "clean": "rimraf ./plugin/**/*.d.ts ./plugin/**/*.js ./plugin/**/*.js.map plugin/node_modules plugin/package-lock.json",

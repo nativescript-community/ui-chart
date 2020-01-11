@@ -173,6 +173,8 @@ export class LineChartRenderer extends LineRadarRenderer {
         if (dataSet.getEntryCount() < 1) return false;
         this.mRenderPaint.setStrokeWidth(dataSet.getLineWidth());
         this.mRenderPaint.setPathEffect(dataSet.getDashPathEffect());
+        this.mRenderPaint.setColor(dataSet.getColor());
+        this.mRenderPaint.setStyle(Style.STROKE);
         let result = false;
         switch (dataSet.getMode()) {
             default:
@@ -390,15 +392,10 @@ export class LineChartRenderer extends LineRadarRenderer {
             // result = true;
         }
 
-        this.mRenderPaint.setColor(dataSet.getColor());
-
-        this.mRenderPaint.setStyle(Style.STROKE);
-
         trans.pathValueToPixel(this.linePath);
 
         this.drawPath(c, this.linePath, this.mRenderPaint);
 
-        this.mRenderPaint.setPathEffect(null);
         return result;
     }
 
@@ -420,15 +417,11 @@ export class LineChartRenderer extends LineRadarRenderer {
             // result = true;
         }
 
-        this.mRenderPaint.setColor(dataSet.getColor());
-
-        this.mRenderPaint.setStyle(Style.STROKE);
 
         trans.pathValueToPixel(this.linePath);
 
         this.drawPath(c, this.linePath, this.mRenderPaint);
 
-        this.mRenderPaint.setPathEffect(null);
         return result;
     }
 
@@ -450,10 +443,6 @@ export class LineChartRenderer extends LineRadarRenderer {
             // result = true;
         }
 
-        this.mRenderPaint.setColor(dataSet.getColor());
-
-        this.mRenderPaint.setStyle(Style.STROKE);
-
         if (isAndroid) {
             trans.pathValueToPixel(this.linePath);
             this.drawPath(c, this.linePath, this.mRenderPaint);
@@ -463,7 +452,6 @@ export class LineChartRenderer extends LineRadarRenderer {
             c.drawLines(points, 0, length, this.mRenderPaint, trans.getValueToPixelMatrix());
         }
 
-        this.mRenderPaint.setPathEffect(null);
         return result;
     }
 
