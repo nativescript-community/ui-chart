@@ -2,6 +2,7 @@
     <Page>
         <ActionBar title="NS Chart">
             <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onNavigationButtonTap"></NavigationButton>
+            <Switch text/>
         </ActionBar>
         <ScrollView>
         <StackLayout @loaded="onLoaded" height="2000">
@@ -81,7 +82,7 @@ export default Vue.extend({
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
             // chart.setLogEnabled(true);
             const jsonData = this.loadData();
-            const locs = jsonData[0].locs;
+            const locs = jsonData[0].locs.slice(0, 400);
 
             const sets = [];
             ['speed', 'bearing', 'altitude', 'computedSpeed', 'mslAltitude', 'pressure'].forEach((prop, i) => {
