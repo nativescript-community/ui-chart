@@ -28,5 +28,6 @@
         "nativescript-canvas": "2.1.10",
         "nativescript-gesturehandler": "^0.1.0",
         "nativescript-tween": "0.0.5"
+        "number-format.js": "^2.0.9"
     }
 }

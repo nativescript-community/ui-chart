@@ -4,19 +4,19 @@ export class DefaultValueFormatter extends ValueFormatter {
     /**
      * DecimalFormat for formatting
      */
-    protected mFormat: java.text.DecimalFormat;
+    protected formatter: NSNumberFormatter;
 
-    protected mDecimalDigits;
+    protected decimals;
 
     /**
      * Constructor that specifies to how many digits the value should be
      * formatted.
      *
-     * @param digits
+     * @param decimals
      */
-    constructor(digits) {
+    constructor(decimals) {
         super();
-        this.setup(digits);
+        this.setup(decimals);
     }
 
     /**
@@ -24,23 +24,26 @@ export class DefaultValueFormatter extends ValueFormatter {
      *
      * @param digits
      */
-    public setup(digits) {
-        this.mDecimalDigits = digits;
+    public setup(decimals) {
+        this.decimals = decimals;
 
-        let b = '';
-        for (let i = 0; i < digits; i++) {
-            if (i == 0) b += '.';
-            b += '0';
-        }
+        // let b = '';
+        // for (let i = 0; i < digits; i++) {
+        //     if (i == 0) b += '.';
+        //     b += '0';
+        // }
 
-        this.mFormat = new java.text.DecimalFormat('###,###,###,##0' + b);
+        this.formatter =  NSNumberFormatter.new();
+        this.formatter.usesGroupingSeparator = (true);
+        this.formatter.minimumFractionDigits = (decimals);
+        this.formatter.maximumFractionDigits = (decimals);
     }
 
     public getFormattedValue(value) {
         // put more logic here ...
         // avoid memory allocations here (for performance reasons)
 
-        return this.mFormat.format(value);
+        return this.formatter.stringFromNumber(value);
     }
 
     /**
@@ -49,6 +52,6 @@ export class DefaultValueFormatter extends ValueFormatter {
      * @return
      */
     public getDecimalDigits() {
-        return this.mDecimalDigits;
+        return this.decimals;
     }
 }

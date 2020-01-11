@@ -51,6 +51,7 @@
         "nativescript-gesturehandler": "^0.1.0",
         "nativescript-tween": "0.0.5",
         "npm-watch": "^0.6.0",
+        "number-format.js": "^2.0.9",
         "prompt": "^1.0.0",
         "rimraf": "^3.0.0",
         "tns-platform-declarations": "^6.3.1",

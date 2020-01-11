@@ -7,35 +7,38 @@ export class DefaultAxisValueFormatter extends ValueFormatter {
     /**
      * decimalformat for formatting
      */
-    protected mFormat: java.text.DecimalFormat;
+    protected formatter: NSNumberFormatter;
 
     /**
      * the number of decimal digits this formatter uses
      */
-    protected digits;
+    protected decimals;
 
     /**
      * Constructor that specifies to how many digits the value should be
      * formatted.
      *
-     * @param digits
+     * @param decimals
      */
-    constructor(digits) {
+    constructor(decimals) {
         super();
-        this.digits = digits;
+        this.decimals = decimals;
 
-        let b = '';
-        for (let i = 0; i < digits; i++) {
-            if (i == 0) b += '.';
-            b += '0';
-        }
+        // let b = '';
+        // for (let i = 0; i < digits; i++) {
+        //     if (i == 0) b += '.';
+        //     b += '0';
+        // }
 
-        this.mFormat = new java.text.DecimalFormat('###,###,###,##0' + b);
+        this.formatter =  NSNumberFormatter.new();
+        this.formatter.usesGroupingSeparator = (true);
+        this.formatter.minimumFractionDigits = (decimals);
+        this.formatter.maximumFractionDigits = (decimals);
     }
 
-    public getFormattedValue(value) {
+    public getFormattedValue(value: number) {
         // avoid memory allocations here (for performance)
-        return this.mFormat.format(value);
+        return this.formatter.stringFromNumber(value);
     }
 
     /**
@@ -44,6 +47,6 @@ export class DefaultAxisValueFormatter extends ValueFormatter {
      * @return
      */
     public getDecimalDigits() {
-        return this.digits;
+        return this.decimals;
     }
 }
