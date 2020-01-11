@@ -82,9 +82,9 @@ module.exports = env => {
     const entryPath = `.${sep}${entryModule}`;
     const entries = { bundle: entryPath };
     const areCoreModulesExternal = Array.isArray(env.externals) && env.externals.some(e => e.indexOf('tns-core-modules') > -1);
-    if (platform === 'ios' && !areCoreModulesExternal) {
-        entries['tns_modules/tns-core-modules/inspector_modules'] = 'inspector_modules';
-    }
+    // if (platform === 'ios' && !areCoreModulesExternal) {
+    //     entries['tns_modules/tns-core-modules/inspector_modules'] = 'inspector_modules';
+    // }
     console.log(`Bundling application for entryPath ${entryPath}...`);
 
     let sourceMapFilename = nsWebpack.getSourceMapFilename(hiddenSourceMap, __dirname, dist);

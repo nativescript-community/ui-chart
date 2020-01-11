@@ -66,6 +66,7 @@ export default Vue.extend({
                             y: l[prop]
                         })) as Array<DataSetChartInterface>
                 };
+                
                 sets.push(set);
             });
             return sets;
@@ -73,7 +74,6 @@ export default Vue.extend({
     },
     methods: {
         onLoaded() {
-            console.log('onLoaded', this.startTime);
         },
         onNavigationButtonTap() {
             frameModule.topmost().goBack();

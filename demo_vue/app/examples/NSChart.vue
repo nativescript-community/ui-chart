@@ -3,9 +3,12 @@
         <ActionBar title="NS Chart">
             <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onNavigationButtonTap"></NavigationButton>
         </ActionBar>
-        <StackLayout @loaded="onLoaded">
-            <LineChart ref="lineChart" backgroundColor="lightgray" width="100%"> </LineChart>
+        <ScrollView>
+        <StackLayout @loaded="onLoaded" height="2000">
+            <LineChart ref="lineChart" backgroundColor="lightgray" width="300" height="400"> </LineChart>
+            <Label fontSize="10">speed</Label>
         </StackLayout>
+        </ScrollView>
     </Page>
 </template>
 
@@ -17,13 +20,22 @@ import { LimitLine, LimitLabelPosition } from 'nativescript-chart/charting/compo
 import { LegendForm } from 'nativescript-chart/charting/components/Legend';
 import { knownFolders, path } from '@nativescript/core/file-system';
 import { profile } from '@nativescript/core/profiling/profiling';
-import { LineDataSet } from 'nativescript-chart/charting/data/LineDataSet';
+import { LineDataSet, Mode } from 'nativescript-chart/charting/data/LineDataSet';
 import { LineData } from 'nativescript-chart/charting/data/LineData';
 import { Color } from '@nativescript/core/color/color';
 import { ColorTemplate } from 'nativescript-chart/charting/utils/ColorTemplate';
 
 export const title = 'NS Chart';
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
+function getRandomColor() {
+    var r = getRandomInt(0, 255);
+    var g = getRandomInt(0, 255);
+    var b = getRandomInt(0, 255);
+    return new Color(255, r, g, b);
+}
 export default Vue.extend({
     name: 'NSChart',
     data() {
@@ -34,15 +46,25 @@ export default Vue.extend({
     },
     created() {
         this.startTime = Date.now();
-        console.log('created', this.startTime);
+        // console.log('created', this.startTime);
+    },
+    computed: {
+        chartColor() {
+            return (index: number) => {
+                // console.log('chartColor', index);
+                if (!this.colors[index]) {
+                    this.colors[index] = getRandomColor();
+                }
+                return this.colors[index];
+            };
+        }
     },
     methods: {
         onLoaded() {
-            console.log('onLoaded', this.startTime);
 
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
-            // chart.setLogEnabled(true);
-            chart.setHardwareAccelerationEnabled(true);
+            chart.setLogEnabled(true);
+            // chart.setHardwareAccelerationEnabled(true);
         },
         onNavigationButtonTap() {
             frameModule.topmost().goBack();
@@ -64,13 +86,33 @@ export default Vue.extend({
             const sets = [];
             ['speed', 'bearing', 'altitude', 'computedSpeed', 'mslAltitude', 'pressure'].forEach((prop, i) => {
                 const set = new LineDataSet(locs, prop, 'relativeTimestamp', prop);
+                console.log('creating set', prop, i, locs[0][prop])
+                if (i === 0) {
+                    // set.setMode(Mode.CUBIC_BEZIER);
+
+                }
+                if (i === 1) {
+                    set.enableDashedLine(6,2, 0);
+                }
+                if (i === 2) {
+                    // set.setMode(Mode.HORIZONTAL_BEZIER);
+
+                }
+                if (i === 3) {
+                    set.setVisible(false);
+                }
+                set.setDrawValues(true);
                 // set.xProperty = 'relativeTimestamp';
                 // set.yProperty = 'mslAltitude';
                 // set.setDrawIcons(false);
                 // // line thickness and point size
                 // set.setLineWidth(3);
                 // set.setCircleRadius(3);
-                set.setColor(ColorTemplate.MATERIAL_COLORS[i % ColorTemplate.MATERIAL_COLORS.length]);
+                const color = getRandomColor();
+                set.setColor(color);
+                set.setDrawFilled(true);
+                set.setFillColor(color);
+                // set.setGradientColor(color, getRandomColor());
 
                 // // draw points as solid circles
                 // set.setDrawCircleHole(false);
@@ -110,7 +152,7 @@ export default Vue.extend({
         }
     },
     mounted() {
-        console.log('mounted');
+        // console.log('mounted');
         const chart = this.$refs.lineChart['nativeView'] as LineChart;
         // chart.setLogEnabled(true);
         // background color
@@ -121,7 +163,7 @@ export default Vue.extend({
         // chart.setTouchEnabled(true);
 
         // set listeners
-        chart.on('valueSelected', (e: any) => console.log(e.entry, e.highlight));
+        // chart.on('valueSelected', (e: any) => console.log(e.highlight));
         // chart.setDrawGridBackground(false);
 
         // enable scaling and dragging
