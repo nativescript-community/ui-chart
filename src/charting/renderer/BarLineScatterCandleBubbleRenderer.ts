@@ -42,6 +42,7 @@ export class XBounds {
         let entryTo = dataSet.getEntryForXValue(high, NaN, Rounding.UP);
         this.min = entryFrom == null ? 0 : dataSet.getEntryIndex(entryFrom);
         this.max = entryTo == null ? 0 : dataSet.getEntryIndex(entryTo);
+
         this.range = (this.max - this.min) * phaseX;
     }
 }

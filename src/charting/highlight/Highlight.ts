@@ -1,4 +1,5 @@
 import { AxisDependency } from '../components/YAxis';
+import { Entry } from '../data/Entry';
 
 /**
  * Contains information needed to determine the highlighted value.
@@ -59,5 +60,5 @@ export interface Highlight {
     /**
      * the associated entry
      */
-    entry?;
+    entry?: Entry;
 }

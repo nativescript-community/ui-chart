@@ -91,29 +91,28 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
 
         this.pinchGestureHandler = manager
             .createGestureHandler(HandlerType.PINCH, 11231, {
-                minSpan:2,
-                // minPointers: 2,
-                // maxPointers: 2,
+                minSpan:20,
                 shouldCancelWhenOutside: false
             })
             .on(GestureHandlerStateEvent, this.onPinchGestureState, this)
             .on(GestureHandlerTouchEvent, this.onPinchGestureTouch, this);
-            (this.pinchGestureHandler as any).minSpan = 0;
         this.doubleTapGestureHandler = manager.createGestureHandler(HandlerType.TAP, 11234, { numberOfTaps: 2 }).on(GestureHandlerStateEvent, this.onDoubleTapGesture, this);
 
         this.tapGestureHandler = manager.createGestureHandler(HandlerType.TAP, 11232, { waitFor: [11234] }).on(GestureHandlerStateEvent, this.onTapGesture, this);
 
         // this.longpressGestureHandler = manager
-        //     .createGestureHandler(HandlerType.LONG_PRESS, 11233, { minPointers: 1, maxPointers: 1, minDurationMs: 800 })
+            // .createGestureHandler(HandlerType.LONG_PRESS, 11233, { minPointers: 1, maxPointers: 1, minDurationMs: 800 })
         //     .on(GestureHandlerStateEvent, this.onLongPressGesture, this);
 
         // this.mGestureDetector = new GestureDetector(chart.getContext(), this);
     }
     dispose() {
+        console.log('ChartTouchListener', 'dispose');
         const chart = this.mChart;
         this.panGestureHandler.detachFromView(chart);
         this.pinchGestureHandler.detachFromView(chart);
         this.tapGestureHandler.detachFromView(chart);
+        this.doubleTapGestureHandler.detachFromView(chart); 
         // this.longpressGestureHandler.detachFromView(chart);
     }
     init() {
@@ -122,6 +121,7 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
         this.panGestureHandler.attachToView(chart);
         this.pinchGestureHandler.attachToView(chart);
         this.tapGestureHandler.attachToView(chart);
+        this.doubleTapGestureHandler.attachToView(chart);
         // this.longpressGestureHandler.attachToView(chart);
     }
     /**

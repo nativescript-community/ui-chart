@@ -19,13 +19,13 @@ export class Description extends ComponentBase {
     /**
      * the alignment of the description text
      */
-    private mTextAlign = Align.CENTER;
+    private mTextAlign = Align.RIGHT;
 
     constructor() {
         super();
 
         // default size
-        this.mTextSize = Utils.convertDpToPixel(8);
+        this.mTextSize =8;
     }
 
     /**

@@ -2,9 +2,10 @@ import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { Poolable } from '../utils/ObjectPool';
 import { Transformer } from '../utils/Transformer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { Utils } from '../utils/Utils';
 
 export abstract class ViewPortJob  extends Poolable {
-    protected pts = Array.create('float', 2);
+    protected pts = Utils.createNativeArray(2);
 
     protected mViewPortHandler: ViewPortHandler;
     protected xValue = 0;

@@ -7,6 +7,7 @@ import { Utils } from '../utils/Utils';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Highlight } from '../highlight/Highlight';
+import { isAndroid } from '@nativescript/core/platform';
 
 /**
  * Superclass of all render classes for the different data types (line, bar, ...).
@@ -42,7 +43,8 @@ export abstract class DataRenderer extends Renderer {
         this.mAnimator = animator;
 
         this.mRenderPaint = new Paint();
-        this.mRenderPaint.setAntiAlias(true);
+        this.mRenderPaint.setAntiAlias(isAndroid);
+        // this.mRenderPaint.setFilterBitmap(false);
         this.mRenderPaint.setStyle(Style.FILL);
         // this.mRenderPaint.setStrokeCap(Cap.ROUND);
         // this.mRenderPaint.setStrokeJoin(Join.ROUND);
@@ -53,7 +55,7 @@ export abstract class DataRenderer extends Renderer {
         this.mValuePaint.setAntiAlias(true);
         this.mValuePaint.setColor(new Color(255, 63, 63, 63));
         this.mValuePaint.setTextAlign(Align.CENTER);
-        this.mValuePaint.setTextSize(Utils.convertDpToPixel(9));
+        this.mValuePaint.setTextSize(9);
 
         this.mHighlightPaint = new Paint();
         this.mHighlightPaint.setAntiAlias(true);

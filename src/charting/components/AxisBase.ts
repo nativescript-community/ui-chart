@@ -109,6 +109,11 @@ export abstract class AxisBase extends ComponentBase {
     protected mDrawGridLinesBehindData = true;
 
     /**
+     * flag indicating the mark ticks should be drawn
+     */
+    protected mDrawMarkTicks = true;
+
+    /**
      * Extra spacing for `axisMinimum` to be added to automatically calculated `axisMinimum`
      */
     protected mSpaceMin = 0;
@@ -428,6 +433,14 @@ export abstract class AxisBase extends ComponentBase {
 
     public isDrawGridLinesBehindDataEnabled() {
         return this.mDrawGridLinesBehindData;
+    }
+
+    public setDrawMarkTicks(enabled) {
+        this.mDrawMarkTicks = enabled;
+    }
+
+    public isDrawMarkTicksEnabled() {
+        return this.mDrawMarkTicks;
     }
 
     /**

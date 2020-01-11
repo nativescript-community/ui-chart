@@ -2,6 +2,9 @@ import { Matrix, Path, Rect } from 'nativescript-canvas';
 import { ViewPortHandler } from './ViewPortHandler';
 import { Utils } from './Utils';
 import { profile } from '@nativescript/core/profiling/profiling';
+import { IDataSet } from '../interfaces/datasets/IDataSet';
+import { Entry } from '../data/Entry';
+import { CandleDataSet } from '../data/CandleDataSet';
 
 /**
  * Transformer class that contains all matrices and is responsible for
@@ -77,32 +80,34 @@ export class Transformer {
      * @param data
      * @return
      */
-    public fgenerateTransformedValuesScatter(data, phaseX, phaseY, from, to) {
-        let count = ((to - from) * phaseX + 1) * 2;
+    // public generateTransformedValuesScatter(dataSet: IDataSet<Entry>, phaseX, phaseY, from, to) {
+    //     let count = ((to - from) * phaseX + 1) * 2;
 
-        if (this.valuePointsForGenerateTransformedValuesScatter.length != count) {
-            this.valuePointsForGenerateTransformedValuesScatter = [];
-        }
-        const valuePoints = this.valuePointsForGenerateTransformedValuesScatter;
+    //     if (this.valuePointsForGenerateTransformedValuesScatter.length != count) {
+    //         this.valuePointsForGenerateTransformedValuesScatter = [];
+    //     }
+    //     const valuePoints = this.valuePointsForGenerateTransformedValuesScatter;
 
-        for (let j = 0; j < count; j += 2) {
-            const e = data.getEntryForIndex(j / 2 + from);
+    //     const xProperty = dataSet.xProperty;
+    //     const yProperty = dataSet.yProperty;
+    //     for (let j = 0; j < count; j += 2) {
+    //         const e = dataSet.getEntryForIndex(j / 2 + from);
 
-            if (e != null) {
-                valuePoints[j] = e.getX();
-                valuePoints[j + 1] = e.getY() * phaseY;
-            } else {
-                valuePoints[j] = 0;
-                valuePoints[j + 1] = 0;
-            }
-        }
+    //         if (e != null) {
+    //             valuePoints[j] = e[xProperty];
+    //             valuePoints[j + 1] = e[yProperty] * phaseY;
+    //         } else {
+    //             valuePoints[j] = 0;
+    //             valuePoints[j + 1] = 0;
+    //         }
+    //     }
 
-        this.getValueToPixelMatrix().mapPoints(valuePoints);
+    //     this.getValueToPixelMatrix().mapPoints(valuePoints);
 
-        return valuePoints;
-    }
+    //     return valuePoints;
+    // }
 
-    protected valuePointsForGenerateTransformedValuesBubble = [];
+    protected valuePointsForGenerateTransformedValues:number[];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -111,32 +116,37 @@ export class Transformer {
      * @param data
      * @return
      */
-    public generateTransformedValuesBubble(data, phaseY, from, to) {
-        let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
+    public generateTransformedValues(dataSet: IDataSet<Entry>, phaseX, phaseY, from, to) {
+        let count = ((to - from) * phaseX + 1) * 2;
+    // let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
 
-        if (this.valuePointsForGenerateTransformedValuesBubble.length != count) {
-            this.valuePointsForGenerateTransformedValuesBubble = [];
+        if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length <  count) {
+            this.valuePointsForGenerateTransformedValues = Utils.createArrayBuffer(count);;
         }
-        let valuePoints = this.valuePointsForGenerateTransformedValuesBubble;
+        // let valuePoints = this.valuePointsForGenerateTransformedValues;
+        const valuePoints = this.valuePointsForGenerateTransformedValues;
 
+        const xProperty = dataSet.xProperty;
+        const yProperty = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
-            const e = data.getEntryForIndex(j / 2 + from);
+            const e = dataSet.getEntryForIndex(j / 2 + from);
 
-            if (e != null) {
-                valuePoints[j] = e.getX();
-                valuePoints[j + 1] = e.getY() * phaseY;
+            if (e) {
+                valuePoints[j] = e[xProperty];
+                valuePoints[j + 1] = e[yProperty] * phaseY;
             } else {
                 valuePoints[j] = 0;
                 valuePoints[j + 1] = 0;
             }
         }
+        const points = Utils.pointsFromBuffer(this.valuePointsForGenerateTransformedValues);
 
-        this.getValueToPixelMatrix().mapPoints(valuePoints);
+        this.getValueToPixelMatrix().mapPoints(points);
 
-        return valuePoints;
+        return points;
     }
 
-    protected valuePointsForGenerateTransformedValuesLine = [];
+    // protected valuePointsForGenerateTransformedValuesLine = [];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -145,32 +155,34 @@ export class Transformer {
      * @param data
      * @return
      */
-    public generateTransformedValuesLine(data, phaseX, phaseY, min, max) {
-        let count = ((max - min) * phaseX + 1) * 2;
+    // public generateTransformedValuesLine(dataSet: IDataSet<Entry>, phaseX, phaseY, min, max) {
+    //     let count = ((max - min) * phaseX + 1) * 2;
 
-        if (this.valuePointsForGenerateTransformedValuesLine.length != count) {
-            this.valuePointsForGenerateTransformedValuesLine = [];
-        }
-        const valuePoints = this.valuePointsForGenerateTransformedValuesLine;
+    //     if (this.valuePointsForGenerateTransformedValuesLine.length != count) {
+    //         this.valuePointsForGenerateTransformedValuesLine = [];
+    //     }
+    //     const valuePoints = this.valuePointsForGenerateTransformedValuesLine;
 
-        for (let j = 0; j < count; j += 2) {
-            const e = data.getEntryForIndex(j / 2 + min);
+    //     const xProperty = dataSet.xProperty;
+    //     const yProperty = dataSet.yProperty;
+    //     for (let j = 0; j < count; j += 2) {
+    //         const e = dataSet.getEntryForIndex(j / 2 + min);
 
-            if (e != null) {
-                valuePoints[j] = e.getX();
-                valuePoints[j + 1] = e.getY() * phaseY;
-            } else {
-                valuePoints[j] = 0;
-                valuePoints[j + 1] = 0;
-            }
-        }
+    //         if (e != null) {
+    //             valuePoints[j] = e[xProperty];
+    //             valuePoints[j + 1] = e[yProperty] * phaseY;
+    //         } else {
+    //             valuePoints[j] = 0;
+    //             valuePoints[j + 1] = 0;
+    //         }
+    //     }
 
-        this.getValueToPixelMatrix().mapPoints(valuePoints);
+    //     this.getValueToPixelMatrix().mapPoints(valuePoints);
 
-        return valuePoints;
-    }
+    //     return valuePoints;
+    // }
 
-    protected valuePointsForGenerateTransformedValuesCandle = [];
+    protected valuePointsForGenerateTransformedValuesCandle: number[];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -179,27 +191,32 @@ export class Transformer {
      * @param data
      * @return
      */
-    public generateTransformedValuesCandle(data, phaseX, phaseY, from, to) {
+    public generateTransformedValuesCandle(dataSet: CandleDataSet, phaseX, phaseY, from, to) {
         let count = ((to - from) * phaseX + 1) * 2;
 
         if (this.valuePointsForGenerateTransformedValuesCandle.length != count) {
-            this.valuePointsForGenerateTransformedValuesCandle = [];
+            this.valuePointsForGenerateTransformedValuesCandle = Utils.createArrayBuffer(count);
         }
         const valuePoints = this.valuePointsForGenerateTransformedValuesCandle;
 
+        const xProperty = dataSet.xProperty;
+        const yProperty = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
-            const e = data.getEntryForIndex(j / 2 + from);
+            const e = dataSet.getEntryForIndex(j / 2 + from);
 
+            const xProperty = dataSet.xProperty;
+            const highProperty = dataSet.highProperty;
             if (e != null) {
-                valuePoints[j] = e.getX();
-                valuePoints[j + 1] = e.getHigh() * phaseY;
+                valuePoints[j] = e[xProperty];
+                valuePoints[j + 1] = e[highProperty] * phaseY;
             } else {
                 valuePoints[j] = 0;
                 valuePoints[j + 1] = 0;
             }
         }
+        const points = Utils.pointsFromBuffer(this.valuePointsForGenerateTransformedValuesCandle);
 
-        this.getValueToPixelMatrix().mapPoints(valuePoints);
+        this.getValueToPixelMatrix().mapPoints(points);
 
         return valuePoints;
     }
@@ -212,9 +229,11 @@ export class Transformer {
      */
     @profile
     public pathValueToPixel(path: Path) {
-        path.transform(this.mMatrixValueToPx);
-        path.transform(this.mViewPortHandler.getMatrixTouch());
-        path.transform(this.mMatrixOffset);
+        const tmp = this.getValueToPixelMatrix();
+        path.transform(tmp);
+        // path.transform(this.mMatrixValueToPx);
+        // path.transform(this.mViewPortHandler.getMatrixTouch());
+        // path.transform(this.mMatrixOffset);
     }
 
     /**
@@ -236,10 +255,11 @@ export class Transformer {
      */
     @profile
     public pointValuesToPixel(pts) {
-        this.mMatrixValueToPx.mapPoints(pts);
-        this.mViewPortHandler.getMatrixTouch().mapPoints(pts);
-        this.mMatrixOffset.mapPoints(pts);
-
+        // this.mMatrixValueToPx.mapPoints(pts);
+        // this.mViewPortHandler.getMatrixTouch().mapPoints(pts);
+        // this.mMatrixOffset.mapPoints(pts);
+        const tmp = this.getValueToPixelMatrix();
+        tmp.mapPoints(pts);
     }
 
     /**
@@ -248,9 +268,12 @@ export class Transformer {
      * @param r
      */
     public rectValueToPixel(r) {
-        this.mMatrixValueToPx.mapRect(r);
-        this.mViewPortHandler.getMatrixTouch().mapRect(r);
-        this.mMatrixOffset.mapRect(r);
+        // this.mMatrixValueToPx.mapRect(r);
+        // this.mViewPortHandler.getMatrixTouch().mapRect(r);
+        // this.mMatrixOffset.mapRect(r);
+
+        const tmp = this.getValueToPixelMatrix();
+        tmp.mapRect(r);
     }
 
     /**
@@ -263,20 +286,22 @@ export class Transformer {
         // multiply the height of the rect with the phase
         r.top *= phaseY;
         r.bottom *= phaseY;
+        this.rectValueToPixel(r);
 
-        this.mMatrixValueToPx.mapRect(r);
-        this.mViewPortHandler.getMatrixTouch().mapRect(r);
-        this.mMatrixOffset.mapRect(r);
+        // this.mMatrixValueToPx.mapRect(r);
+        // this.mViewPortHandler.getMatrixTouch().mapRect(r);
+        // this.mMatrixOffset.mapRect(r);
     }
 
     public rectToPixelPhaseHorizontal(r: Rect, phaseY) {
         // multiply the height of the rect with the phase
         r.left *= phaseY;
         r.right *= phaseY;
+        this.rectValueToPixel(r);
 
-        this.mMatrixValueToPx.mapRect(r);
-        this.mViewPortHandler.getMatrixTouch().mapRect(r);
-        this.mMatrixOffset.mapRect(r);
+        // this.mMatrixValueToPx.mapRect(r);
+        // this.mViewPortHandler.getMatrixTouch().mapRect(r);
+        // this.mMatrixOffset.mapRect(r);
     }
 
     /**
@@ -302,10 +327,11 @@ export class Transformer {
             r.left *= phaseY;
             r.right *= phaseY;
         }
+        this.rectValueToPixel(r);
 
-        this.mMatrixValueToPx.mapRect(r);
-        this.mViewPortHandler.getMatrixTouch().mapRect(r);
-        this.mMatrixOffset.mapRect(r);
+        // this.mMatrixValueToPx.mapRect(r);
+        // this.mViewPortHandler.getMatrixTouch().mapRect(r);
+        // this.mMatrixOffset.mapRect(r);
     }
 
     /**
@@ -329,28 +355,28 @@ export class Transformer {
      */
     public pixelsToValue(pixels: number[]) {
         // const nArray = Utils.arrayoNativeArray(pixels);
-        const tmp = this.mPixelToValueMatrixBuffer;
-        tmp.reset();
-        // invert all matrixes to convert back to the original value
-        this.mMatrixOffset.invert(tmp);
-        tmp.mapPoints(pixels);
+        // const tmp = this.mPixelToValueMatrixBuffer;
+        // tmp.reset();
+        // // invert all matrixes to convert back to the original value
+        // this.mMatrixOffset.invert(tmp);
+        // tmp.mapPoints(pixels);
 
-        this.mViewPortHandler.getMatrixTouch().invert(tmp);
-        tmp.mapPoints(pixels);
+        // this.mViewPortHandler.getMatrixTouch().invert(tmp);
+        // tmp.mapPoints(pixels);
 
-        this.mMatrixValueToPx.invert(tmp);
+        // this.mMatrixValueToPx.invert(tmp);
+        // tmp.mapPoints(pixels);
+
+
+        const tmp = this.getPixelToValueMatrix();
         tmp.mapPoints(pixels);
-        // if (nArray !== pixels) {
-        //     for (let index = 0; index < pixels.length; index++) {
-        //         pixels[index] = nArray[index];
-        //     }
-        // }
     }
 
     /**
      * buffer for performance
      */
-    ptsBuffer = Array.create('float', 2);
+    ptsBuffer = Utils.createNativeArray(2);
+    // ptsBuffer = new Float32Array(Utils.createArrayBuffer(2));
 
     /**
      * Returns a recyclable MPPointD instance.

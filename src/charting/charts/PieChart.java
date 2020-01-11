@@ -685,7 +685,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * @param size
      */
     public setEntryLabelTextSize(let size) {
-        ((PieChartRenderer) this.mRenderer).getPaintEntryLabels().setTextSize(Utils.convertDpToPixel(size));
+        ((PieChartRenderer) this.mRenderer).getPaintEntryLabels().setTextSize(size);
     }
 
     /**

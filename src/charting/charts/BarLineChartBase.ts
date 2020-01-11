@@ -2,7 +2,7 @@ import { IBarLineScatterCandleBubbleDataSet } from '../interfaces/datasets/IBarL
 import { Entry } from '../data/Entry';
 import { BarLineScatterCandleBubbleData } from '../data/BarLineScatterCandleBubbleData';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
-import { CanvasView, Paint, Canvas, Style, Matrix, Rect } from 'nativescript-canvas';
+import { CanvasView, Paint, Canvas, Style, Matrix, RectF } from 'nativescript-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { Utils } from '../utils/Utils';
 import { Color } from '@nativescript/core/color/color';
@@ -237,6 +237,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.drawMarkers(canvas);
 
+        this.notify({ eventName: 'drawn', object: this });
         if (this.mLogEnabled) {
             const drawtime = Date.now() - starttime;
             this.totalTime += drawtime;
@@ -244,7 +245,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             const average = this.totalTime / this.drawCycles;
             console.log(LOG_TAG, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
         }
-        this.notify({ eventName: 'drawn', object: this });
     }
 
     /**
@@ -373,7 +373,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         }
     }
 
-    private mOffsetsBuffer = new Rect(0, 0, 0, 0);
+    private mOffsetsBuffer = new RectF(0, 0, 0, 0);
 
     public calculateOffsets(force = true) {
         if (this.mOffsetsCalculated && !force) {
@@ -392,6 +392,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             offsetTop += this.mOffsetsBuffer.top;
             offsetRight += this.mOffsetsBuffer.right;
             offsetBottom += this.mOffsetsBuffer.bottom;
+
 
             // offsets for y-labels
             if (this.mAxisLeft.needsOffset()) {
@@ -421,7 +422,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             offsetBottom += this.getExtraBottomOffset();
             offsetLeft += this.getExtraLeftOffset();
 
-            let minOffset = Utils.convertDpToPixel(this.mMinOffset);
+            let minOffset = this.mMinOffset;
 
             this.mViewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
 
@@ -549,7 +550,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param y
      */
     public zoom(scaleX, scaleY, x, y) {
-        this.mViewPortHandler.zoomAtPosition(scaleX, scaleY, x, -y, this.mZoomMatrixBuffer);
+        this.mViewPortHandler.zoomAtPosition(scaleX, scaleY, x, y, this.mZoomMatrixBuffer);
         this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
 
         // Range might have changed, which means that Y-axis labels
@@ -1256,6 +1257,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     public getHighestVisibleX() {
         this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX);
+        // console.log('getHighestVisibleX', this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX, this.mXAxis.mAxisMaximum);
         let result = Math.min(this.mXAxis.mAxisMaximum, this.posForGetHighestVisibleX.x);
         return result;
     }
@@ -1478,7 +1480,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         return null;
     }
 
-    protected mOnSizeChangedBuffer = Array.create('float', 2);
+    protected mOnSizeChangedBuffer = Utils.createNativeArray(2);
 
     public onSizeChanged(w: number, h: number, oldw:number, oldh:number) {
         // Saving current position of chart.

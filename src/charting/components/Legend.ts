@@ -146,9 +146,9 @@ export class Legend extends ComponentBase {
      */
     constructor(entries?: LegendEntry[]) {
         super();
-        this.mTextSize = Utils.convertDpToPixel(10);
-        this.mXOffset = Utils.convertDpToPixel(5);
-        this.mYOffset = Utils.convertDpToPixel(3);
+        this.mTextSize = 10;
+        this.mXOffset = 5;
+        this.mYOffset = 3;
         if (entries) {
             this.mEntries = entries;
         }

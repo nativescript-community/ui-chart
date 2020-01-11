@@ -49,7 +49,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     protected mGradientColor = null;
 
-    protected mGradientColors = null;
+    protected mGradientColors: GradientColor[] = null;
 
     /**
      * List representing all colors that are used for drawing the actual values for this DataSet
@@ -163,7 +163,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         if (index === undefined) {
             return this.mGradientColor;
         }
-        return this.mGradientColors.get(index % this.mGradientColors.length);
+        return this.mGradientColors[index % this.mGradientColors.length];
     }
 
     // /**
@@ -204,7 +204,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      *
      * @param gradientColors
      */
-    public setGradientColors(gradientColors) {
+    public setGradientColors(gradientColors:  GradientColor[]) {
         this.mGradientColors = gradientColors;
     }
 

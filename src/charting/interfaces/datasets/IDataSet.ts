@@ -5,8 +5,9 @@ import { GradientColor } from '../../model/GradientColor';
 import { ValueFormatter } from '../../formatter/ValueFormatter';
 import { MPPointF } from '../../utils/MPPointF';
 import { LegendForm } from '../../components/Legend';
-import { DashPathEffect, Typeface } from 'nativescript-canvas';
+import { DashPathEffect } from 'nativescript-canvas';
 import { Color } from '@nativescript/core/color/color';
+import { Font } from '@nativescript/core/ui/styling/font';
 
 /**
  * Created by Philipp Jahoda on 21/10/15.
@@ -384,7 +385,7 @@ export interface IDataSet<T extends Entry> {
      *
      * @return
      */
-    getValueTypeface(): Typeface;
+    getValueTypeface(): Font;
 
     /**
      * Returns the text size that is used for drawing the values inside the chart

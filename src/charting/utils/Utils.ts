@@ -2,6 +2,17 @@ import { screen } from '@nativescript/core/platform';
 import { Paint, Rect, Canvas, StaticLayout, FontMetrics, Align } from 'nativescript-canvas';
 import { ValueFormatter } from '../formatter/ValueFormatter';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
+import { profile } from '@nativescript/core/profiling/profiling';
+import { isAndroid } from '@nativescript/core/platform';
+
+export type FloatArray = Float32Array | Float64Array;
+export let FloatConstructor: typeof Float32Array | typeof Float64Array;
+if (isAndroid) {
+    FloatConstructor = Float32Array;
+} else {
+    FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
+}
+
 /**
  * Utilities class that has some helper methods. Needs to be initialized by
  * calling Utils.init(...) before usage. Inside the Chart.init() method, this is
@@ -12,7 +23,7 @@ import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
  */
 export namespace Utils {
     // const mainScreen = screen.mainScreen;
-    const density = screen.mainScreen.scale;
+    export const density = screen.mainScreen.scale;
     //    const mMetrics;
     // const mMinimumFlingVelocity = 50;
     // const mMaximumFlingVelocity = 8000;
@@ -28,7 +39,6 @@ export namespace Utils {
      * @param context
      */
     export function init(context) {
-    
         if (context == null) {
             // noinspection deprecation
             // this.mMinimumFlingVelocity = android.view.ViewConfiguration.getMinimumFlingVelocity();
@@ -55,8 +65,8 @@ export namespace Utils {
      * device density
      */
     export function convertDpToPixel(dp) {
-        // return dp * density;
-        return dp;
+        return dp * density;
+        // return dp;
     }
 
     /**
@@ -67,7 +77,8 @@ export namespace Utils {
      * @return A let value to represent dp equivalent to px value
      */
     export function convertPixelsToDp(px) {
-        return px / density;
+        return px;
+        // return px / density;
     }
 
     /**
@@ -92,10 +103,10 @@ export namespace Utils {
      * @return
      */
     export function calcTextHeight(paint: Paint, demoText: string) {
-        let r = new Rect(0, 0, 0, 0);
-        paint.getTextBounds(demoText, 0, demoText.length, r);
-        mCalcTextHeightRect = r;
-        return r.height();
+        mCalcTextHeightRect.set(0, 0, 0, 0);
+        paint.getTextBounds(demoText, 0, demoText.length, mCalcTextHeightRect);
+        // mCalcTextHeightRect = r;
+        return mCalcTextHeightRect.height();
     }
 
     // let mFontMetrics = null;
@@ -453,28 +464,24 @@ export namespace Utils {
     }
 
     let mDrawTextRectBuffer = new Rect(0, 0, 0, 0);
-    let mFontMetricsBuffer = new FontMetrics();
 
-    export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees) {
+    export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees, lineHeight, fontMetrics: FontMetrics) {
         let drawOffsetX = 0;
         let drawOffsetY = 0;
 
-        const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
-        paint.getTextBounds(text, 0, text.length, mDrawTextRectBuffer);
-
         // Android sometimes has pre-padding
-        drawOffsetX -= mDrawTextRectBuffer.left;
+        // drawOffsetX -= mDrawTextRectBuffer.left;
 
         // Android does not snap the bounds to line boundaries,
         //  and draws from bottom to top.
         // And we want to normalize it.
-        drawOffsetY += -mFontMetricsBuffer.ascent;
+        drawOffsetY += -fontMetrics.ascent;
 
         // To have a consistent point of reference, we always draw left-aligned
-        const originalTextAlign = paint.getTextAlign();
-        paint.setTextAlign(Align.LEFT);
 
         if (angleDegrees != 0) {
+            const originalTextAlign = paint.getTextAlign();
+            paint.setTextAlign(Align.LEFT);
             // Move the text drawing rect in a way that it always rotates around its center
             drawOffsetX -= mDrawTextRectBuffer.width() * 0.5;
             drawOffsetY -= lineHeight * 0.5;
@@ -484,6 +491,7 @@ export namespace Utils {
 
             // Move the "outer" rect relative to the anchor, assuming its centered
             if (anchor.x != 0.5 || anchor.y != 0.5) {
+                paint.getTextBounds(text, 0, text.length, mDrawTextRectBuffer);
                 const rotatedSize = getSizeOfRotatedRectangleSizeByDegrees(mDrawTextRectBuffer.width(), lineHeight, angleDegrees);
 
                 translateX -= rotatedSize.width * (anchor.x - 0.5);
@@ -498,9 +506,10 @@ export namespace Utils {
             c.drawText(text, drawOffsetX, drawOffsetY, paint);
 
             c.restore();
+            paint.setTextAlign(originalTextAlign);
         } else {
             if (anchor.x != 0 || anchor.y != 0) {
-                drawOffsetX -= mDrawTextRectBuffer.width() * anchor.x;
+                // drawOffsetX -= mDrawTextRectBuffer.width() * anchor.x;
                 drawOffsetY -= lineHeight * anchor.y;
             }
 
@@ -509,17 +518,13 @@ export namespace Utils {
 
             c.drawText(text, drawOffsetX, drawOffsetY, paint);
         }
-
-        paint.setTextAlign(originalTextAlign);
     }
 
-    export function drawMultilineText(c: Canvas, textLayout, x, y, textpaint: Paint, anchor, angleDegrees) {
+    export function drawMultilineText(c: Canvas, textLayout, x, y, textpaint: Paint, anchor, angleDegrees, lineHeight) {
         let drawOffsetX = 0;
         let drawOffsetY = 0;
         let drawWidth;
         let drawHeight;
-
-        const lineHeight = textpaint.getFontMetrics(mFontMetricsBuffer);
 
         drawWidth = textLayout.getWidth();
         drawHeight = textLayout.getLineCount() * lineHeight;
@@ -581,10 +586,10 @@ export namespace Utils {
         // paint.setTextAlign(originalTextAlign);
     }
 
-    export function drawMultilineTextConstrained(c: Canvas, text, x, y, paint: Paint, constrainedToSize, anchor, angleDegrees) {
+    export function drawMultilineTextConstrained(c: Canvas, text, x, y, paint: Paint, constrainedToSize, anchor, angleDegrees, lineHeight) {
         const textLayout = new StaticLayout(text, paint, Math.max(Math.ceil(constrainedToSize.width), 1), 0 /*Layout.Alignment.ALIGN_NORMAL*/, 1, 0, false);
 
-        drawMultilineText(c, textLayout, x, y, paint, anchor, angleDegrees);
+        drawMultilineText(c, textLayout, x, y, paint, anchor, angleDegrees, lineHeight);
     }
 
     /**
@@ -676,6 +681,47 @@ export namespace Utils {
         return descriptor;
     }
 
+    export const createArrayBuffer = profile('createArrayBuffer', function(length: number, force = false): number[] {
+        if (isAndroid) {
+            var bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            const result = (ArrayBuffer as any).from(bb);
+            // result.bb = bb;
+            const array = new Float32Array(result);
+            return array as any;
+        } else {
+            // } else if (force) {
+            return new FloatConstructor(length) as any;
+        }
+        return [];
+    });
+    export const pointsFromBuffer = profile('pointsFromBuffer', function(float32Array) {
+        if (isAndroid) {
+            const buffer = float32Array.buffer;
+            const length = float32Array.length;
+            const testArray = Array.create('float', length);
+            // bb.asFloatBuffer().get(testArray);
+            ((buffer as any).nativeObject as java.nio.ByteBuffer).asFloatBuffer().get(testArray, 0, length);
+            return testArray;
+        }
+        return float32Array;
+    });
+    export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
+        if (isAndroid) {
+            const result = [];
+            for (let index = 0; index < array.length; index++) {
+                result[index] = array[index];
+            }
+
+            return result as number[];
+        }
+        return array;
+    });
+    export function createNativeArray(length) {
+        if (isAndroid) {
+            return Array.create('float', length);
+        }
+        return [];
+    }
     export function arrayoNativeArray(array: number[]) {
         if (!Array.isArray(array)) {
             return array;
@@ -689,13 +735,18 @@ export namespace Utils {
     }
 
     export function clipPathSupported() {
-        return android.os.Build.VERSION.SDK_INT >= 18;
+        if (isAndroid) {
+            return android.os.Build.VERSION.SDK_INT >= 18;
+        }
+        return false;
     }
     export function setHardwareAccelerationEnabled(view: android.view.View, enabled) {
-        console.log('setHardwareAccelerationEnabled', view,enabled);
-        if (view) {
-            if (enabled) view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
-            else view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
+        // console.log('setHardwareAccelerationEnabled', view, enabled);
+        if (isAndroid) {
+            if (view) {
+                if (enabled) view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+                else view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
+            }
         }
     }
 }

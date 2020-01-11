@@ -1,10 +1,12 @@
 import { LineScatterCandleRadarRenderer } from './LineScatterCandleRadarRenderer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { Canvas, Path, Style } from 'nativescript-canvas';
+import { Canvas, Path, Style, Paint } from 'nativescript-canvas';
 import { Utils } from '../utils/Utils';
 import { profile } from '@nativescript/core/profiling/profiling';
 import { Color } from '@nativescript/core/color/color';
+
+// export const SCALE_FACTOR = 1;
 
 /**
  * Created by Philipp Jahoda on 25/01/16.
@@ -21,10 +23,10 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      * @param filledPath
      * @param drawable
      */
-    @profile
     protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable) {
         if (this.clipPathSupported()) {
             let save = c.save();
+            // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
             c.clipPath(filledPath);
 
             drawable.setBounds(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom());
@@ -36,6 +38,14 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
         }
     }
 
+    @profile
+    drawPath(canvas: Canvas, path: Path, paint: Paint) {
+        canvas.save()
+        // canvas.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
+        canvas.drawPath(path, paint);
+        canvas.restore()
+    }
+
     /**
      * Draws the provided path in filled mode with the provided color and alpha.
      * Special thanks to Angelo Suzuki (https://github.com/tinsukE) for this.
@@ -45,14 +55,13 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      * @param fillColor
      * @param fillAlpha
      */
-    @profile
     protected drawFilledPath(c: Canvas, filledPath: Path, fillColor: Color, fillAlpha: number) {
         const color = new Color(fillAlpha, fillColor.r, fillColor.g, fillColor.b);
         // let color = (fillAlpha << 24) | (fillColor & 0xffffff);
 
         if (this.clipPathSupported()) {
             let save = c.save();
-
+            // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
             c.clipPath(filledPath);
 
             c.drawColor(color);
@@ -65,8 +74,8 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
             // set
             this.mRenderPaint.setStyle(Style.FILL);
             this.mRenderPaint.setColor(color);
-
-            c.drawPath(filledPath, this.mRenderPaint);
+            this.drawPath(c, filledPath, this.mRenderPaint);
+            // c.drawPath(filledPath, this.mRenderPaint);
 
             // restore
             this.mRenderPaint.setColor(previousColor);

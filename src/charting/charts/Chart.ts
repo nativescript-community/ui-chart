@@ -19,8 +19,9 @@ import { profile } from '@nativescript/core/profiling/profiling';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
+import { isIOS } from '@nativescript/core/platform';
 
-const LOG_TAG = 'MPAndroidChart';
+const LOG_TAG = 'NSChart';
 
 // declare module '@nativescript/core/ui/core/view' {
 //     interface View {
@@ -159,6 +160,9 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     initNativeView() {
         console.log('initNativeView')
+        if (isIOS) {
+            this.nativeViewProtected.opaque = false;
+        }
         super.initNativeView();
         this.mChartTouchListener && this.mChartTouchListener.init();
     }
@@ -171,7 +175,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * initialize all paints and stuff
      */
-    @profile
     protected init() {
         console.log('init')
         this.mAnimator = new ChartAnimator(()=>{
@@ -196,7 +199,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.mInfoPaint.setAntiAlias(true);
         this.mInfoPaint.setColor(new Color(255, 247, 189, 51)); // orange
         this.mInfoPaint.setTextAlign(Align.CENTER);
-        this.mInfoPaint.setTextSize(Utils.convertDpToPixel(12));
+        this.mInfoPaint.setTextSize(12);
 
         if (this.mLogEnabled) console.log('', 'Chart.init()');
     }
@@ -433,14 +436,15 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             this.mDescPaint.setTypeface(this.mDescription.getTypeface());
             this.mDescPaint.setTextSize(this.mDescription.getTextSize());
             this.mDescPaint.setColor(this.mDescription.getTextColor());
-            // this.mDescPaint.setTextAlign(this.mDescription.getTextAlign());
+            this.mDescPaint.setTextAlign(this.mDescription.getTextAlign());
 
             let x, y;
 
+            const vph = this.mViewPortHandler;
             // if no position specified, draw on default position
             if (position == null) {
-                x = this.getMeasuredWidth() - this.mViewPortHandler.offsetRight() - this.mDescription.getXOffset();
-                y = this.getMeasuredHeight() - this.mViewPortHandler.offsetBottom() - this.mDescription.getYOffset();
+                x = vph.getChartWidth() - vph.offsetRight() - this.mDescription.getXOffset();
+                y = vph.getChartHeight() - vph.offsetBottom() - this.mDescription.getYOffset();
             } else {
                 x = position.x;
                 y = position.y;
@@ -614,7 +618,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         if (high == null) this.mIndicesToHighlight = null;
         else {
-            if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted', high);
+            // if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted', high);
 
             e = this.mData.getEntryForHighlight(high);
             if (e == null) {
@@ -702,8 +706,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
             const set = this.mData.getDataSetByIndex(highlight.dataSetIndex);
 
-            const e = this.mData.getEntryForHighlight(this.mIndicesToHighlight[i]);
-            let entryIndex = set.getEntryIndex(e);
+            const e = highlight.entry || this.mData.getEntryForHighlight(highlight);
+            let entryIndex = set.getEntryIndex(e as any);
 
             // make sure entry not null
             if (e == null || entryIndex > set.getEntryCount() * this.mAnimator.getPhaseX()) continue;
@@ -926,7 +930,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @return
      */
     public getCenter() {
-        return { x: Utils.convertPixelsToDp(this.getMeasuredWidth() / 2), y: Utils.convertPixelsToDp(this.getMeasuredHeight() / 2) };
+        return { x:this.mViewPortHandler.getChartWidth() / 2, y: this.mViewPortHandler.getChartHeight() / 2 };
     }
 
     /**
@@ -1555,10 +1559,10 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         if (w > 0 && h > 0 && h < 10000 && h < 10000) {
             if (this.mLogEnabled) console.log(LOG_TAG, 'Setting chart dimens, width: ' + w + ', height: ' + h);
-            this.mViewPortHandler.setChartDimens(Utils.convertPixelsToDp(w), Utils.convertPixelsToDp(h));
+            this.mViewPortHandler.setChartDimens(w, h);
         } else {
             if (this.mLogEnabled) console.warn(LOG_TAG, '*Avoiding* setting chart dimens! width: ' + w + ', height: ' + h);
-        }
+        } 
 
         // This may cause the chart view to mutate properties affecting the view port --
         //   lets do this before we try to run any pending jobs on the view port itself

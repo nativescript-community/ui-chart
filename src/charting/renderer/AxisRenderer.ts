@@ -49,6 +49,7 @@ export abstract class AxisRenderer extends Renderer {
 
             this.mAxisLabelPaint = new Paint();
             this.mAxisLabelPaint.setAntiAlias(true);
+            this.mAxisLabelPaint.setFontFamily('arial');
 
             this.mGridPaint = new Paint();
             this.mGridPaint.setColor('gray');
@@ -142,7 +143,6 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @return
      */
-    @profile
     protected computeAxisValues( min,  max) {
 
         let yMin = min;

@@ -376,7 +376,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             // add the entry to the dataset
             if (!set.addEntry(e)) return;
 
-            this.calcMinMaxForEntry(e, set.getAxisDependency());
+            this.calcMinMaxForEntry(set, e, set.getAxisDependency());
         } else {
             console.error('addEntry', 'Cannot add Entry because dataSetIndex too high or too low.');
         }
@@ -388,19 +388,21 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param e
      * @param axis
      */
-    protected calcMinMaxForEntry(e, axis) {
-        if (this.mYMax < e.getY()) this.mYMax = e.getY();
-        if (this.mYMin > e.getY()) this.mYMin = e.getY();
+    protected calcMinMaxForEntry(set:IDataSet<Entry>, e: Entry, axis) {
+        const xProperty = set.xProperty;
+        const yProperty = set.yProperty;
+        if (this.mYMax < e[yProperty]) this.mYMax = e[yProperty];
+        if (this.mYMin > e[yProperty]) this.mYMin = e[yProperty];
 
-        if (this.mXMax < e.getX()) this.mXMax = e.getX();
-        if (this.mXMin > e.getX()) this.mXMin = e.getX();
+        if (this.mXMax < e[xProperty]) this.mXMax = e[xProperty];
+        if (this.mXMin > e[xProperty]) this.mXMin = e[xProperty];
 
         if (axis == AxisDependency.LEFT) {
-            if (this.mLeftAxisMax < e.getY()) this.mLeftAxisMax = e.getY();
-            if (this.mLeftAxisMin > e.getY()) this.mLeftAxisMin = e.getY();
+            if (this.mLeftAxisMax < e[yProperty]) this.mLeftAxisMax = e[yProperty];
+            if (this.mLeftAxisMin > e[yProperty]) this.mLeftAxisMin = e[yProperty];
         } else {
-            if (this.mRightAxisMax < e.getY()) this.mRightAxisMax = e.getY();
-            if (this.mRightAxisMin > e.getY()) this.mRightAxisMin = e.getY();
+            if (this.mRightAxisMax < e[yProperty]) this.mRightAxisMax = e[yProperty];
+            if (this.mRightAxisMin > e[yProperty]) this.mRightAxisMin = e[yProperty];
         }
     }
 
@@ -476,14 +478,16 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param e
      * @return
      */
-    public getDataSetForEntry(e) {
+    public getDataSetForEntry(e: Entry) {
         if (e == null) return null;
 
         for (let i = 0; i < this.mDataSets.length; i++) {
             const set = this.mDataSets[i];
 
+            const xProperty = set.xProperty;
+            const yProperty = set.yProperty;
             for (let j = 0; j < set.getEntryCount(); j++) {
-                if (e.equalTo(set.getEntryForXValue(e.getX(), e.getY()))) return set;
+                if (e === set.getEntryForXValue(e[xProperty], e[yProperty])) return set;
             }
         }
 

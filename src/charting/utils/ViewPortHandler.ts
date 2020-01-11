@@ -1,5 +1,5 @@
-import { Matrix, Rect, CanvasView } from "nativescript-canvas";
-import { Utils } from "./Utils";
+import { Matrix, Rect, RectF, CanvasView } from 'nativescript-canvas';
+import { Utils } from './Utils';
 
 /**
  * Class that contains information about the charts current viewport settings, including offsets, scale & translation
@@ -8,7 +8,6 @@ import { Utils } from "./Utils";
  * @author Philipp Jahoda
  */
 export class ViewPortHandler {
-
     /**
      * matrix used for touch events
      */
@@ -17,30 +16,30 @@ export class ViewPortHandler {
     /**
      * this rectangle defines the area in which graph values can be drawn
      */
-    protected mContentRect = new Rect(0,0,0,0);
+    protected mContentRect = new RectF(0.0, 0.0, 0.0, 0.0);
 
-    protected  mChartWidth = 0;
-    protected  mChartHeight = 0;
+    protected mChartWidth = 0;
+    protected mChartHeight = 0;
 
     /**
      * minimum scale value on the y-axis
      */
-    private  mMinScaleY = 1;
+    private mMinScaleY = 1;
 
     /**
      * maximum scale value on the y-axis
      */
-    private  mMaxScaleY = Number.MAX_VALUE;
+    private mMaxScaleY = Number.MAX_VALUE;
 
     /**
      * minimum scale value on the x-axis
      */
-    private  mMinScaleX = 1;
+    private mMinScaleX = 1;
 
     /**
      * maximum scale value on the x-axis
      */
-    private  mMaxScaleX = Number.MAX_VALUE;
+    private mMaxScaleX = Number.MAX_VALUE;
 
     /**
      * contains the current scale factor of the x-axis
@@ -72,8 +71,6 @@ export class ViewPortHandler {
      */
     private mTransOffsetY = 0;
 
- 
-
     /**
      * Sets the width and height of the chart.
      *
@@ -81,30 +78,24 @@ export class ViewPortHandler {
      * @param height
      */
 
-    public setChartDimens( width,  height) {
-
+    public setChartDimens(width, height) {
         let offsetLeft = this.offsetLeft();
         let offsetTop = this.offsetTop();
         let offsetRight = this.offsetRight();
         let offsetBottom = this.offsetBottom();
 
-        this.mChartHeight = height;
-        this.mChartWidth = width;
-
+        this.mChartHeight = Math.round(height);
+        this.mChartWidth = Math.round(width);
         this.restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom);
     }
 
     public hasChartDimens() {
-        if (this.mChartHeight > 0 && this.mChartWidth > 0)
-            return true;
-        else
-            return false;
+        if (this.mChartHeight > 0 && this.mChartWidth > 0) return true;
+        else return false;
     }
 
-    public restrainViewPort( offsetLeft,  offsetTop,  offsetRight,
-                                  offsetBottom) {
-        this.mContentRect.set(offsetLeft, offsetTop, this.mChartWidth - offsetRight, this.mChartHeight
-                - offsetBottom);
+    public restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom) {
+        this.mContentRect.set(offsetLeft, offsetTop, this.mChartWidth - offsetRight, this.mChartHeight - offsetBottom);
     }
 
     public offsetLeft() {
@@ -147,12 +138,12 @@ export class ViewPortHandler {
         return this.mContentRect.height();
     }
 
-    public  getContentRect() {
+    public getContentRect() {
         return this.mContentRect;
     }
 
-    public  getContentCenter() {
-        return {x:this.mContentRect.centerX(), y:this.mContentRect.centerY()};
+    public getContentCenter() {
+        return { x: this.mContentRect.centerX(), y: this.mContentRect.centerY() };
     }
 
     public getChartHeight() {
@@ -184,10 +175,10 @@ export class ViewPortHandler {
      * @param x
      * @param y
      */
-    
-    public zoomIn( x,  y,  outputMatrix) {
+
+    public zoomIn(x, y, outputMatrix) {
         if (!outputMatrix) {
-            outputMatrix= new Matrix()
+            outputMatrix = new Matrix();
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
@@ -195,10 +186,9 @@ export class ViewPortHandler {
         return outputMatrix;
     }
 
-
-    public zoomOut( x,  y,  outputMatrix) {
+    public zoomOut(x, y, outputMatrix) {
         if (!outputMatrix) {
-            outputMatrix= new Matrix()
+            outputMatrix = new Matrix();
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
@@ -210,7 +200,7 @@ export class ViewPortHandler {
      * Zooms out to original size.
      * @param outputMatrix
      */
-    public resetZoom( outputMatrix) {
+    public resetZoom(outputMatrix) {
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
         outputMatrix.postScale(1.0, 1.0, 0.0, 0.0);
@@ -223,11 +213,10 @@ export class ViewPortHandler {
      * @param scaleY
      * @return
      */
- 
 
-    public zoom( scaleX,  scaleY,  outputMatrix) {
+    public zoom(scaleX, scaleY, outputMatrix) {
         if (!outputMatrix) {
-            outputMatrix= new Matrix()
+            outputMatrix = new Matrix();
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
@@ -245,9 +234,9 @@ export class ViewPortHandler {
      * @return
      */
 
-    public zoomAtPosition( scaleX,  scaleY,  x,  y,  outputMatrix) {
+    public zoomAtPosition(scaleX, scaleY, x, y, outputMatrix: Matrix) {
         if (!outputMatrix) {
-            outputMatrix= new Matrix()
+            outputMatrix = new Matrix();
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
@@ -263,10 +252,9 @@ export class ViewPortHandler {
      * @return
      */
 
-
-    public setZoom( scaleX,  scaleY,  outputMatrix) {
+    public setZoom(scaleX, scaleY, outputMatrix) {
         if (!outputMatrix) {
-            outputMatrix= new Matrix()
+            outputMatrix = new Matrix();
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
@@ -283,8 +271,7 @@ export class ViewPortHandler {
      * @param y
      * @return
      */
-    public  setZoomAtPosition( scaleX,  scaleY,  x,  y) {
-
+    public setZoomAtPosition(scaleX, scaleY, x, y) {
         const save = new Matrix();
         save.set(this.mMatrixTouch);
 
@@ -293,15 +280,15 @@ export class ViewPortHandler {
         return save;
     }
 
-    protected  valsBufferForFitScreen = [];
+    protected valsBufferForFitScreen = [];
 
     /**
      * Resets all zooming and dragging and makes the chart fit exactly it's
      * bounds.  Output Matrix is available for those who wish to cache the object.
      */
-    public fitScreen( outputMatrix?) {
+    public fitScreen(outputMatrix?) {
         if (!outputMatrix) {
-            outputMatrix= new Matrix()
+            outputMatrix = new Matrix();
         }
         this.mMinScaleX = 1;
         this.mMinScaleY = 1;
@@ -325,21 +312,20 @@ export class ViewPortHandler {
         return outputMatrix;
     }
 
-
     /**
      * Post-translates to the specified points.  Output matrix allows for caching objects.
      *
      * @param transformedPts
      * @return
      */
-    public translate( transformedPts,  outputMatrix?) {
+    public translate(transformedPts, outputMatrix?) {
         if (!outputMatrix) {
-            outputMatrix= new Matrix()
+            outputMatrix = new Matrix();
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
-         let x = transformedPts[0] - this.offsetLeft();
-         let y = transformedPts[1] - this.offsetTop();
+        let x = transformedPts[0] - this.offsetLeft();
+        let y = transformedPts[1] - this.offsetTop();
         outputMatrix.postTranslate(-x, -y);
         return outputMatrix;
     }
@@ -356,14 +342,13 @@ export class ViewPortHandler {
      * @param view
      * @return save
      */
-    public centerViewPort( transformedPts,   view: CanvasView) {
-
+    public centerViewPort(transformedPts, view: CanvasView) {
         const save = this.mCenterViewPortMatrixBuffer;
         save.reset();
         save.set(this.mMatrixTouch);
 
-         let x = transformedPts[0] - this.offsetLeft();
-         let y = transformedPts[1] - this.offsetTop();
+        let x = transformedPts[0] - this.offsetLeft();
+        let y = transformedPts[1] - this.offsetTop();
 
         save.postTranslate(-x, -y);
 
@@ -373,7 +358,7 @@ export class ViewPortHandler {
     /**
      * buffer for storing the 9 matrix values of a 3x3 matrix
      */
-    protected matrixBuffer = Array.create('float', 9);
+    protected matrixBuffer = Utils.createNativeArray(9);
 
     /**
      * call this method to refresh the graph with a given matrix
@@ -381,15 +366,13 @@ export class ViewPortHandler {
      * @param newMatrix
      * @return
      */
-    public  refresh( newMatrix: Matrix,  chart: CanvasView,  invalidate) {
-
+    public refresh(newMatrix: Matrix, chart: CanvasView, invalidate) {
         this.mMatrixTouch.set(newMatrix);
 
         // make sure scale and translation are within their bounds
         this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
 
-        if (invalidate)
-            chart.invalidate();
+        if (invalidate) chart.invalidate();
 
         newMatrix.set(this.mMatrixTouch);
         return newMatrix;
@@ -400,8 +383,8 @@ export class ViewPortHandler {
      *
      * @param matrix
      */
-    public limitTransAndScale( matrix:Matrix,  content:Rect) {
-
+    public limitTransAndScale(matrix: Matrix, content: Rect) {
+        // TODO: native buffer to be optimized (or rewrite matrix!)
         matrix.getValues(this.matrixBuffer);
 
         let curTransX = this.matrixBuffer[Matrix.MTRANS_X];
@@ -444,10 +427,8 @@ export class ViewPortHandler {
      *
      * @param xScale
      */
-    public setMinimumScaleX( xScale) {
-
-        if (xScale < 1)
-            xScale = 1;
+    public setMinimumScaleX(xScale) {
+        if (xScale < 1) xScale = 1;
 
         this.mMinScaleX = xScale;
 
@@ -459,10 +440,8 @@ export class ViewPortHandler {
      *
      * @param xScale
      */
-    public setMaximumScaleX( xScale) {
-
-        if (xScale == 0)
-            xScale = Number.MAX_VALUE;
+    public setMaximumScaleX(xScale) {
+        if (xScale == 0) xScale = Number.MAX_VALUE;
 
         this.mMaxScaleX = xScale;
 
@@ -475,13 +454,10 @@ export class ViewPortHandler {
      * @param minScaleX
      * @param maxScaleX
      */
-    public setMinMaxScaleX( minScaleX,  maxScaleX) {
+    public setMinMaxScaleX(minScaleX, maxScaleX) {
+        if (minScaleX < 1) minScaleX = 1;
 
-        if (minScaleX < 1)
-            minScaleX = 1;
-
-        if (maxScaleX == 0)
-            maxScaleX = Number.MAX_VALUE;
+        if (maxScaleX == 0) maxScaleX = Number.MAX_VALUE;
 
         this.mMinScaleX = minScaleX;
         this.mMaxScaleX = maxScaleX;
@@ -494,10 +470,8 @@ export class ViewPortHandler {
      *
      * @param yScale
      */
-    public setMinimumScaleY( yScale) {
-
-        if (yScale < 1)
-            yScale = 1;
+    public setMinimumScaleY(yScale) {
+        if (yScale < 1) yScale = 1;
 
         this.mMinScaleY = yScale;
 
@@ -509,23 +483,18 @@ export class ViewPortHandler {
      *
      * @param yScale
      */
-    public setMaximumScaleY( yScale) {
-
-        if (yScale == 0)
-            yScale = Number.MAX_VALUE;
+    public setMaximumScaleY(yScale) {
+        if (yScale == 0) yScale = Number.MAX_VALUE;
 
         this.mMaxScaleY = yScale;
 
         this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
     }
 
-    public setMinMaxScaleY( minScaleY,  maxScaleY) {
+    public setMinMaxScaleY(minScaleY, maxScaleY) {
+        if (minScaleY < 1) minScaleY = 1;
 
-        if (minScaleY < 1)
-            minScaleY = 1;
-
-        if (maxScaleY == 0)
-            maxScaleY = Number.MAX_VALUE;
+        if (maxScaleY == 0) maxScaleY = Number.MAX_VALUE;
 
         this.mMinScaleY = minScaleY;
         this.mMaxScaleY = maxScaleY;
@@ -538,7 +507,7 @@ export class ViewPortHandler {
      *
      * @return
      */
-    public  getMatrixTouch() {
+    public getMatrixTouch() {
         return this.mMatrixTouch;
     }
 
@@ -549,33 +518,33 @@ export class ViewPortHandler {
      * BELOW METHODS FOR BOUNDS CHECK
      */
 
-    public isInBoundsX( x) {
+    public isInBoundsX(x) {
         return this.isInBoundsLeft(x) && this.isInBoundsRight(x);
     }
 
-    public isInBoundsY( y) {
+    public isInBoundsY(y) {
         return this.isInBoundsTop(y) && this.isInBoundsBottom(y);
     }
 
-    public isInBounds( x,  y) {
+    public isInBounds(x, y) {
         return this.isInBoundsX(x) && this.isInBoundsY(y);
     }
 
-    public isInBoundsLeft( x) {
+    public isInBoundsLeft(x) {
         return this.mContentRect.left <= x + 1;
     }
 
-    public isInBoundsRight( x) {
-        x =  ( (x * 100)) / 100;
+    public isInBoundsRight(x) {
+        x = (x * 100) / 100;
         return this.mContentRect.right >= x - 1;
     }
 
-    public isInBoundsTop( y) {
+    public isInBoundsTop(y) {
         return this.mContentRect.top <= y;
     }
 
-    public isInBoundsBottom( y) {
-        y =  ( (y * 100)) / 100;
+    public isInBoundsBottom(y) {
+        y = (y * 100) / 100;
         return this.mContentRect.bottom >= y;
     }
 
@@ -633,7 +602,6 @@ export class ViewPortHandler {
      * @return
      */
     public isFullyZoomedOut() {
-
         return this.isFullyZoomedOutX() && this.isFullyZoomedOutY();
     }
 
@@ -662,7 +630,7 @@ export class ViewPortHandler {
      *
      * @param offset
      */
-    public setDragOffsetX( offset) {
+    public setDragOffsetX(offset) {
         this.mTransOffsetX = Utils.convertDpToPixel(offset);
     }
 
@@ -672,7 +640,7 @@ export class ViewPortHandler {
      *
      * @param offset
      */
-    public setDragOffsetY( offset) {
+    public setDragOffsetY(offset) {
         this.mTransOffsetY = Utils.convertDpToPixel(offset);
     }
 

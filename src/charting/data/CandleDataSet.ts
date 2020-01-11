@@ -6,6 +6,16 @@ import { ColorTemplate } from '../utils/ColorTemplate';
 import { Utils } from '../utils/Utils';
 
 export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> implements ICandleDataSet {
+        /**
+     * property to access the "high" value of an entry for this set
+     *
+     */
+    highProperty: string = 'high';
+        /**
+     * property to access the "low" value of an entry for this set
+     *
+     */
+    lowProperty: string = 'low';
     /**
      * the width of the shadow of the candle
      */

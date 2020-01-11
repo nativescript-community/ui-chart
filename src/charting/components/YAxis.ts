@@ -302,7 +302,7 @@ export class YAxis extends AxisBase {
      * @param width
      */
     public setZeroLineWidth(width) {
-        this.mZeroLineWidth = Utils.convertDpToPixel(width);
+        this.mZeroLineWidth = width;
     }
 
     /**
@@ -317,15 +317,14 @@ export class YAxis extends AxisBase {
 
         const label = this.getLongestLabel();
         let width =  Utils.calcTextWidth(p, label) + this.getXOffset() * 2;
-
         let minWidth = this.getMinWidth();
         let maxWidth = this.getMaxWidth();
 
         if (minWidth > 0)
-            minWidth = Utils.convertDpToPixel(minWidth);
+            minWidth = minWidth;
 
         if (maxWidth > 0 && maxWidth != Number.POSITIVE_INFINITY)
-            maxWidth = Utils.convertDpToPixel(maxWidth);
+            maxWidth = maxWidth;
 
         width = Math.max(minWidth, Math.min(width, maxWidth > 0.0 ? maxWidth : width));
 

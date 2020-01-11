@@ -146,7 +146,7 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 this.mXBounds.set(mChart, dataSet);
 
                 final float[] positions = this.mChart.getTransformer(dataSet.getAxisDependency())
-                        .generateTransformedValuesBubble(dataSet, phaseY, this.mXBounds.min, this.mXBounds.max);
+                        .generateTransformedValuesBubble(dataSet, 1, phaseY, this.mXBounds.min, this.mXBounds.max);
 
                 const alpha = phaseX == 1 ? phaseY : phaseX;
 

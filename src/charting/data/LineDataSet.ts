@@ -94,7 +94,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      *
      * @return
      */
-    public setMode(mode) {
+    public setMode(mode: Mode) {
         this.mMode = mode;
     }
 
@@ -182,7 +182,8 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * @param phase       offset, in degrees (normally, use 0)
      */
     public enableDashedLine(lineLength, spaceLength, phase) {
-        this.mDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`) ;
+        this.mDashPathEffect = new DashPathEffect([lineLength,spaceLength], phase);;
+        // this.mDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`) ;
     }
 
     /**
@@ -215,11 +216,11 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     public isDrawCubicEnabled() {
-        return this.mMode == Mode.CUBIC_BEZIER;
+        return this.mMode === Mode.CUBIC_BEZIER;
     }
 
     public isDrawSteppedEnabled() {
-        return this.mMode == Mode.STEPPED;
+        return this.mMode === Mode.STEPPED;
     }
 
     /** ALL CODE BELOW RELATED TO CIRCLE-COLORS */

@@ -34,7 +34,7 @@ export class LegendRenderer extends Renderer {
         this.mLegend = legend;
 
         this.mLegendLabelPaint = new Paint();
-        this.mLegendLabelPaint.setTextSize(Utils.convertDpToPixel(9));
+        this.mLegendLabelPaint.setTextSize(9);
         this.mLegendLabelPaint.setAntiAlias(true);
         this.mLegendLabelPaint.setTextAlign(Align.LEFT);
 
@@ -68,7 +68,6 @@ export class LegendRenderer extends Renderer {
      *
      * @param data
      */
-    @profile
     public computeLegend(data: ChartData<any, IDataSet<any>>) {
         if (!this.mLegend.isLegendCustom()) {
             this.computedEntries = [];
@@ -162,28 +161,27 @@ export class LegendRenderer extends Renderer {
         if (!this.mLegend.isEnabled()) return;
 
         const tf = this.mLegend.getTypeface();
-
         if (tf != null) this.mLegendLabelPaint.setTypeface(tf);
 
         this.mLegendLabelPaint.setTextSize(this.mLegend.getTextSize());
         this.mLegendLabelPaint.setColor(this.mLegend.getTextColor());
 
         let labelLineHeight = Utils.getLineHeight(this.mLegendLabelPaint, this.legendFontMetrics);
-        let labelLineSpacing = Utils.getLineSpacing(this.mLegendLabelPaint, this.legendFontMetrics) + Utils.convertDpToPixel(this.mLegend.getYEntrySpace());
+        let labelLineSpacing = Utils.getLineSpacing(this.mLegendLabelPaint, this.legendFontMetrics) + this.mLegend.getYEntrySpace();
         let formYOffset = labelLineHeight - Utils.calcTextHeight(this.mLegendLabelPaint, 'ABC') / 2;
 
         const entries = this.mLegend.getEntries();
 
-        let formToTextSpace = Utils.convertDpToPixel(this.mLegend.getFormToTextSpace());
-        let xEntrySpace = Utils.convertDpToPixel(this.mLegend.getXEntrySpace());
+        let formToTextSpace = this.mLegend.getFormToTextSpace();
+        let xEntrySpace = this.mLegend.getXEntrySpace();
         const orientation = this.mLegend.getOrientation();
         const horizontalAlignment = this.mLegend.getHorizontalAlignment();
         const verticalAlignment = this.mLegend.getVerticalAlignment();
         const direction = this.mLegend.getDirection();
-        let defaultFormSize = Utils.convertDpToPixel(this.mLegend.getFormSize());
+        let defaultFormSize = this.mLegend.getFormSize();
 
         // space between the entries
-        let stackSpace = Utils.convertDpToPixel(this.mLegend.getStackSpace());
+        let stackSpace = this.mLegend.getStackSpace();
 
         let yoffset = this.mLegend.getYOffset();
         let xoffset = this.mLegend.getXOffset();
@@ -249,7 +247,7 @@ export class LegendRenderer extends Renderer {
                 for (let i = 0, count = entries.length; i < count; i++) {
                     let e = entries[i];
                     let drawingForm = e.form != LegendForm.NONE;
-                    let formSize = isNaN(e.formSize) ? defaultFormSize : Utils.convertDpToPixel(e.formSize);
+                    let formSize = isNaN(e.formSize) ? defaultFormSize : e.formSize;
 
                     if (i < calculatedLabelBreakPoints.length && calculatedLabelBreakPoints[i]) {
                         posX = originPosX;
@@ -312,7 +310,7 @@ export class LegendRenderer extends Renderer {
                 for (let i = 0; i < entries.length; i++) {
                     let e = entries[i];
                     let drawingForm = e.form != LegendForm.NONE;
-                    let formSize = isNaN(e.formSize) ? defaultFormSize : Utils.convertDpToPixel(e.formSize);
+                    let formSize = isNaN(e.formSize) ? defaultFormSize : e.formSize;
 
                     let posX = originPosX;
 
@@ -364,7 +362,6 @@ export class LegendRenderer extends Renderer {
      * @param entry  the entry to render
      * @param legend the legend context
      */
-    @profile
     protected drawForm(c: Canvas, x, y, entry: LegendEntry, legend: Legend) {
         if (entry.formColor === ColorTemplate.COLOR_SKIP || entry.formColor == ColorTemplate.COLOR_NONE || entry.formColor === null) return;
 
@@ -375,7 +372,7 @@ export class LegendRenderer extends Renderer {
 
         this.mLegendFormPaint.setColor(entry.formColor);
 
-        const formSize = Utils.convertDpToPixel(isNaN(entry.formSize) ? legend.getFormSize() : entry.formSize);
+        const formSize = isNaN(entry.formSize) ? legend.getFormSize() : entry.formSize;
         const half = formSize / 2;
 
         switch (form) {
