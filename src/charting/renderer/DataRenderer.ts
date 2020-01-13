@@ -43,11 +43,8 @@ export abstract class DataRenderer extends Renderer {
         this.mAnimator = animator;
 
         this.mRenderPaint = new Paint();
-        this.mRenderPaint.setAntiAlias(isAndroid);
-        // this.mRenderPaint.setFilterBitmap(false);
+        this.mRenderPaint.setAntiAlias(true);
         this.mRenderPaint.setStyle(Style.FILL);
-        // this.mRenderPaint.setStrokeCap(Cap.ROUND);
-        // this.mRenderPaint.setStrokeJoin(Join.ROUND);
 
         this.mDrawPaint = new Paint();
         this.mDrawPaint.setDither(true);
