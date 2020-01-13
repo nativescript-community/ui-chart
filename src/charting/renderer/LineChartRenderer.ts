@@ -446,7 +446,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             // result = true;
         }
 
-        if (isAndroid) {
+        if (isAndroid || dataSet.isDashedLineEnabled()) {
             trans.pathValueToPixel(this.linePath);
             this.drawPath(c, this.linePath, this.mRenderPaint);
         } else {
