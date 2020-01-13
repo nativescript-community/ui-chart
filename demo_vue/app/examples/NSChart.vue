@@ -6,7 +6,7 @@
         </ActionBar>
         <ScrollView>
         <StackLayout @loaded="onLoaded" height="2000">
-            <LineChart ref="lineChart" backgroundColor="lightgray" width="300" height="400"> </LineChart>
+            <LineChart ref="lineChart" backgroundColor="lightgray" width="300" height="400" @tap="onChartTap"> </LineChart>
             <Label fontSize="10">speed</Label>
         </StackLayout>
         </ScrollView>
@@ -66,6 +66,9 @@ export default Vue.extend({
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
             chart.setLogEnabled(true);
             // chart.setHardwareAccelerationEnabled(true);
+        },
+        onChartTap(e) {
+            console.log('onChartTap', e.data.extraData, e.highlight);
         },
         onNavigationButtonTap() {
             frameModule.topmost().goBack();
