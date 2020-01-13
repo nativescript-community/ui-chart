@@ -506,8 +506,6 @@ export class LineChartRenderer extends LineRadarRenderer {
                 const formatter = dataSet.getValueFormatter();
 
                 const iconsOffset = Object.assign({}, dataSet.getIconsOffset());
-                iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-                iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
 
                 for (let j = 0; j < positions.length; j += 2) {
                     let x = positions[j];
