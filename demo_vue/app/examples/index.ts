@@ -11,10 +11,10 @@ export const getExamples = () => {
         {
             title: nsUIChartTitle,
             component: NSUIChart
-        },
-        {
-            title: nsMPChartTitle,
-            component: NSMPChart
+        // },
+        // {
+        //     title: nsMPChartTitle,
+        //     component: NSMPChart
         }
     ] as any[];
 };

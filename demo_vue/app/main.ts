@@ -15,7 +15,7 @@ Vue.registerElement('LineChart', () => require('nativescript-chart/charts/LineCh
 
 
 declare var com;
-import { MPLineChart } from 'nativescript-mpchart-fork-adrianoop/chart/line-chart/nativescript-line-chart';
+// import { MPLineChart } from 'nativescript-mpchart-fork-adrianoop/chart/line-chart/nativescript-line-chart';
 // class CustomLineChart extends com.github.mikephil.charting.charts.LineChart {
 //     _owner: WeakRef<CustomMPLineChart>;
 //     constructor(context) {
