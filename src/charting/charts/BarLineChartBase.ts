@@ -23,11 +23,15 @@ import { AnimatedMoveViewJob } from '../jobs/AnimatedMoveViewJob';
 import { AnimatedZoomJob } from '../jobs/AnimatedZoomJob';
 import { ZoomJob } from '../jobs/ZoomJob';
 import { BarLineChartTouchListener } from '../listener/BarLineChartTouchListener';
+import { getEventOrGestureName, EventData, Observable } from '@nativescript/core/ui/page/page';
+import { GestureTypes, fromString as gestureFromString } from '@nativescript/core/ui/gestures/gestures';
 
 const LOG_TAG = 'BarLineChartBase';
 
 export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatterCandleBubbleDataSet<U>, T extends BarLineScatterCandleBubbleData<U, D>> extends Chart<U, D, T>
     implements BarLineScatterCandleBubbleDataProvider {
+    protected mChartTouchListener: BarLineChartTouchListener;
+
     /**
      * the maximum number of entries to which values will be drawn
      * (entry numbers greater than this value will cause value-labels to disappear)
@@ -49,22 +53,22 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * flag that indicates if double tap zoom is enabled or not
      */
-    protected mDoubleTapToZoomEnabled = true;
+    protected mDoubleTapToZoomEnabled = false;
 
     /**
      * flag that indicates if highlighting per dragging over a fully zoomed out
      * chart is enabled
      */
-    protected mHighlightPerDragEnabled = true;
+    protected mHighlightPerDragEnabled = false;
 
     /**
      * if true, dragging is enabled for the chart
      */
-    private mDragXEnabled = true;
-    private mDragYEnabled = true;
+    private mDragXEnabled = false;
+    private mDragYEnabled = false;
 
-    private mScaleXEnabled = true;
-    private mScaleYEnabled = true;
+    private mScaleXEnabled = false;
+    private mScaleYEnabled = false;
 
     /**
      * palet object for the (by default) lightgrey background of the grid
@@ -134,7 +138,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.setHighlighter(new ChartHighlighter(this));
 
-        this.mChartTouchListener = new BarLineChartTouchListener(this, this.mViewPortHandler.getMatrixTouch(), 3);
+        // this.mChartTouchListener = new BarLineChartTouchListener(this, this.mViewPortHandler.getMatrixTouch(), 3);
 
         this.mGridBackgroundPaint = new Paint();
         this.mGridBackgroundPaint.setStyle(Style.FILL);
@@ -146,6 +150,16 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mBorderPaint.setStyle(Style.STROKE);
         this.mBorderPaint.setColor('black');
         this.mBorderPaint.setStrokeWidth(Utils.convertDpToPixel(1));
+    }
+
+    getOrCreateBarTouchListener() {
+        if (!this.mChartTouchListener) {
+            this.mChartTouchListener = new BarLineChartTouchListener(this, this.mViewPortHandler.getMatrixTouch(), 3);
+            if (!!this.nativeViewProtected) {
+                this.mChartTouchListener.init();
+            }
+        }
+        return this.mChartTouchListener;
     }
 
     // for performance tracking
@@ -256,7 +270,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     }
 
     protected prepareValuePxMatrix() {
-        if (this.mLogEnabled) console.log(LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.mXAxis.mAxisMinimum + ', xmax: ' + this.mXAxis.mAxisMaximum + ', xdelta: ' + this.mXAxis.mAxisRange);
+        if (this.mLogEnabled) {
+            console.log(LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.mXAxis.mAxisMinimum + ', xmax: ' + this.mXAxis.mAxisMaximum + ', xdelta: ' + this.mXAxis.mAxisRange);
+        }
 
         this.mRightAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
         this.mLeftAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
@@ -269,13 +285,19 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     public notifyDataSetChanged() {
         if (this.mData == null) {
-            if (this.mLogEnabled) console.log(LOG_TAG, 'Preparing... DATA NOT SET.');
+            if (this.mLogEnabled) {
+                console.log(LOG_TAG, 'Preparing... DATA NOT SET.');
+            }
             return;
         } else if (!this.mViewPortHandler.hasChartDimens()) {
-            if (this.mLogEnabled) console.log(LOG_TAG, 'Preparing... NOT SIZED YET.');
+            if (this.mLogEnabled) {
+                console.log(LOG_TAG, 'Preparing... NOT SIZED YET.');
+            }
             return;
         } else {
-            if (this.mLogEnabled) console.log(LOG_TAG, 'Preparing...');
+            if (this.mLogEnabled) {
+                console.log(LOG_TAG, 'Preparing...');
+            }
         }
 
         if (this.mRenderer != null) this.mRenderer.initBuffers();
@@ -393,7 +415,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             offsetRight += this.mOffsetsBuffer.right;
             offsetBottom += this.mOffsetsBuffer.bottom;
 
-
             // offsets for y-labels
             if (this.mAxisLeft.needsOffset()) {
                 offsetLeft += this.mAxisLeft.getRequiredWidthSpace(this.mAxisRendererLeft.getPaintAxisLabels());
@@ -476,8 +497,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     // }
 
     // public computeScroll() {
-        // if (this.mChartTouchListener instanceof BarLineChartTouchListener)
-        //     (this.mChartTouchListener).computeScroll();
+    // if (this.mChartTouchListener instanceof BarLineChartTouchListener)
+    //     (this.mChartTouchListener).computeScroll();
     // }
 
     /**
@@ -1054,6 +1075,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public setDoubleTapToZoomEnabled(enabled) {
         this.mDoubleTapToZoomEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setDoubleTap(true);
+        } else if (this.mChartTouchListener) {
+            this.mChartTouchListener.setDoubleTap(false);
+        }
     }
 
     /**
@@ -1217,7 +1243,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @return
      */
     public getDataSetByTouchPoint(x, y) {
-        console.log('getDataSetByTouchPoint', x, y);
         const h = this.getHighlightByTouchPoint(x, y);
         if (h != null) {
             return this.mData.getDataSetByIndex(h.dataSetIndex);
@@ -1482,7 +1507,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected mOnSizeChangedBuffer = Utils.createNativeArray(2);
 
-    public onSizeChanged(w: number, h: number, oldw:number, oldh:number) {
+    public onSizeChanged(w: number, h: number, oldw: number, oldh: number) {
         // Saving current position of chart.
         this.mOnSizeChangedBuffer[0] = this.mOnSizeChangedBuffer[1] = 0;
 
@@ -1502,6 +1527,60 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         } else {
             // a resize of the view will redraw the view anyway?
             this.mViewPortHandler.refresh(this.mViewPortHandler.getMatrixTouch(), this, false);
+        }
+    }
+
+    public addEventListener(arg: string | GestureTypes, callback: (data: EventData) => void, thisArg?: any) {
+        if (typeof arg === 'number') {
+            arg = GestureTypes[arg];
+        }
+        if (typeof arg === 'string') {
+            arg = getEventOrGestureName(arg);
+            let events = arg.split(',');
+            if (events.length > 0) {
+                for (let i = 0; i < events.length; i++) {
+                    let evt = events[i].trim();
+                    if (arg === 'tap') {
+                        this.getOrCreateBarTouchListener().setTap(true);
+                    } else if (arg === 'doubleTap') {
+                        this.getOrCreateBarTouchListener().setDoubleTap(true);
+                    } else if (arg === 'pan') {
+                        this.getOrCreateBarTouchListener().setPan(true);
+                    } else if (arg === 'pinch') {
+                        this.getOrCreateBarTouchListener().setPinch(true);
+                    }
+                    Observable.prototype.addEventListener.call(this, evt, callback, thisArg);
+                }
+            } else {
+                Observable.prototype.addEventListener.call(this, arg, callback, thisArg);
+            }
+        }
+    }
+
+    public removeEventListener(arg: string | GestureTypes, callback?: any, thisArg?: any) {
+        if (typeof arg === 'number') {
+            arg = GestureTypes[arg];
+        }
+        if (typeof arg === 'string') {
+            arg = getEventOrGestureName(arg);
+            let events = arg.split(',');
+            if (events.length > 0) {
+                for (let i = 0; i < events.length; i++) {
+                    let evt = events[i].trim();
+                    if (arg === 'tap' && !this.isHighlightPerTapEnabled()) {
+                        this.getOrCreateBarTouchListener().setTap(false);
+                    } else if (arg === 'doubleTap' && !this.isDoubleTapToZoomEnabled()) {
+                        this.getOrCreateBarTouchListener().setDoubleTap(false);
+                    } else if (arg === 'pan' && !this.isHighlightPerDragEnabled() && !this.isDragEnabled()) {
+                        this.getOrCreateBarTouchListener().setPan(false);
+                    } else if (arg === 'pinch' && !this.isPinchZoomEnabled()) {
+                        this.getOrCreateBarTouchListener().setPinch(false);
+                    }
+                    Observable.prototype.removeEventListener.call(this, evt, callback, thisArg);
+                }
+            } else {
+                Observable.prototype.removeEventListener.call(this, arg, callback, thisArg);
+            }
         }
     }
 }

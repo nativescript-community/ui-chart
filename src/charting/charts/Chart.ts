@@ -53,7 +53,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * Flag that indicates if highlighting per tap (touch) is enabled
      */
-    protected mHighLightPerTapEnabled = true;
+    protected mHighLightPerTapEnabled = false;
 
     /**
      * If set to true, chart continues to scroll after touch up
@@ -105,11 +105,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     protected mLegend: Legend;
 
-    /**
-     * listener that is called when a value on the chart is selected
-     */
-    // protected  mSelectionListener: OnChartValueSelectedListener;
-
     protected mChartTouchListener: ChartTouchListener<any>;
 
     /**
@@ -139,7 +134,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * object responsible for animations
      */
-    protected mAnimator: ChartAnimator; 
+    protected mAnimator: ChartAnimator;
 
     /**
      * Extra offsets to be appended to the viewport
@@ -154,12 +149,12 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     constructor() {
         super();
-        console.log('constructor')
+        console.log('constructor');
         this.init();
     }
 
     initNativeView() {
-        console.log('initNativeView')
+        console.log('initNativeView');
         if (isIOS) {
             this.nativeViewProtected.opaque = false;
         }
@@ -167,7 +162,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.mChartTouchListener && this.mChartTouchListener.init();
     }
     disposeNativeView() {
-        console.log('disposeNativeView')
+        console.log('disposeNativeView');
         super.disposeNativeView();
         this.mChartTouchListener && this.mChartTouchListener.dispose();
     }
@@ -176,8 +171,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * initialize all paints and stuff
      */
     protected init() {
-        console.log('init')
-        this.mAnimator = new ChartAnimator(()=>{
+        console.log('init');
+        this.mAnimator = new ChartAnimator(() => {
             this.invalidate();
         });
 
@@ -203,7 +198,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         if (this.mLogEnabled) console.log('', 'Chart.init()');
     }
-
 
     // public addEventListener(arg: string | GestureTypes, callback: (data: EventData) => void, thisArg?: any) {
     //     if (typeof arg === "string") {
@@ -327,7 +321,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.mData = null;
         this.mOffsetsCalculated = false;
         this.mIndicesToHighlight = null;
-        this.mChartTouchListener.setLastHighlighted(null);
+        this.mChartTouchListener && this.mChartTouchListener.setLastHighlighted(null);
         this.invalidate();
     }
 
@@ -530,6 +524,9 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param highs
      */
     protected setLastHighlighted(highs) {
+        if (!this.mChartTouchListener) {
+            return;
+        }
         if (highs == null || highs.length <= 0 || highs[0] == null) {
             this.mChartTouchListener.setLastHighlighted(null);
         } else {
@@ -930,7 +927,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @return
      */
     public getCenter() {
-        return { x:this.mViewPortHandler.getChartWidth() / 2, y: this.mViewPortHandler.getChartHeight() / 2 };
+        return { x: this.mViewPortHandler.getChartWidth() / 2, y: this.mViewPortHandler.getChartHeight() / 2 };
     }
 
     /**
@@ -1551,8 +1548,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     //     this.onSizeChanged(this.getMeasuredWidth(), this.getMeasuredHeight());
     // }
 
-    public onSizeChanged(w: number, h: number, oldw:number, oldh:number): void {
-        super.onSizeChanged(w, h,oldw,oldh);
+    public onSizeChanged(w: number, h: number, oldw: number, oldh: number): void {
+        super.onSizeChanged(w, h, oldw, oldh);
         // super.setMeasuredDimension(measuredWidth, measuredHeight);
         const needsDataSetChanged = !this.mViewPortHandler.hasChartDimens();
         if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged);
@@ -1562,7 +1559,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             this.mViewPortHandler.setChartDimens(w, h);
         } else {
             if (this.mLogEnabled) console.warn(LOG_TAG, '*Avoiding* setting chart dimens! width: ' + w + ', height: ' + h);
-        } 
+        }
 
         // This may cause the chart view to mutate properties affecting the view port --
         //   lets do this before we try to run any pending jobs on the view port itself
