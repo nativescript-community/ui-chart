@@ -77,3 +77,4 @@ Pods
 plugin/**/*.d.ts
 /schema
 pnpm-lock.yaml
+/plugin/README.md
