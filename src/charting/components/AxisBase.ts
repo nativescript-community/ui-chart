@@ -111,7 +111,7 @@ export abstract class AxisBase extends ComponentBase {
     /**
      * flag indicating the mark ticks should be drawn
      */
-    protected mDrawMarkTicks = true;
+    protected mDrawMarkTicks = false;
 
     /**
      * Extra spacing for `axisMinimum` to be added to automatically calculated `axisMinimum`
