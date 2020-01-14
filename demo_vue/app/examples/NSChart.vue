@@ -120,7 +120,7 @@ export default Vue.extend({
 
                 // // draw points as solid circles
                 // set.setDrawCircleHole(false);
-                set.setDrawCircles(false);
+                // set.setDrawCircles(false);
 
                 // // customize legend entry
                 // set.setFormLineWidth(1);
