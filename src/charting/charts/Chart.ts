@@ -500,6 +500,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     public setHighlightPerTapEnabled(enabled) {
         this.mHighLightPerTapEnabled = enabled;
+        
     }
 
     /**

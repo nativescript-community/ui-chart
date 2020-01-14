@@ -100,7 +100,6 @@ export class YAxisRenderer extends AxisRenderer {
         const mYAxis = this.mYAxis;
         let from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
         let to = mYAxis.isDrawTopYLabelEntryEnabled() ? mYAxis.mEntryCount : mYAxis.mEntryCount - 1;
-        console.log('drawYLabels', fixedPosition, positions, offset, from ,to);
         // draw
         for (let i = from; i < to; i++) {
             let text = mYAxis.getFormattedLabel(i);

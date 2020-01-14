@@ -206,9 +206,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         // make sure the data cannot be drawn outside the content-rect
         let clipRestoreCount = canvas.save();
         canvas.clipRect(this.mViewPortHandler.getContentRect());
-        console.log('about to drawData');
         this.mRenderer.drawData(canvas);
-        console.log('drawData done');
 
         if (!this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
 
@@ -229,12 +227,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mAxisLeft.isEnabled() && !this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
 
         if (this.mAxisRight.isEnabled() && !this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
-        console.log('onDraw8');
 
         this.mXAxisRenderer.renderAxisLabels(canvas);
         this.mAxisRendererLeft.renderAxisLabels(canvas);
         this.mAxisRendererRight.renderAxisLabels(canvas);
-        console.log('onDraw9');
 
         if (this.isClipValuesToContentEnabled()) {
             clipRestoreCount = canvas.save();
@@ -971,6 +967,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public setHighlightPerDragEnabled(enabled) {
         this.mHighlightPerDragEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setPan(true);
+        } else if (this.mChartTouchListener) {
+            this.mChartTouchListener.setPan(false);
+        }
     }
 
     public isHighlightPerDragEnabled() {
@@ -996,6 +997,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public setDragEnabled(enabled) {
         this.mDragXEnabled = enabled;
         this.mDragYEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setPan(true);
+        } else if (this.mChartTouchListener) {
+            this.mChartTouchListener.setPan(false);
+        }
     }
 
     /**
@@ -1052,6 +1058,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public setScaleEnabled(enabled) {
         this.mScaleXEnabled = enabled;
         this.mScaleYEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setPinch(true);
+        } else if (this.mChartTouchListener) {
+            this.mChartTouchListener.setPinch(false);
+        }
     }
 
     public setScaleXEnabled(enabled) {
@@ -1082,6 +1093,15 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             this.getOrCreateBarTouchListener().setDoubleTap(true);
         } else if (this.mChartTouchListener) {
             this.mChartTouchListener.setDoubleTap(false);
+        }
+    }
+
+    public setHighlightPerTapEnabled(enabled) {
+        super.setHighlightPerTapEnabled(enabled);
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setTap(true);
+        } else if (this.mChartTouchListener) {
+            this.mChartTouchListener.setTap(false);
         }
     }
 

@@ -546,7 +546,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         let yTrans = 0;
 
         // check if axis is inverted
-        console.log('getTrans', x, y, vph.offsetLeft(), vph.offsetTop(), vph.offsetBottom(), vph.getChartHeight());
         if (this.inverted()) {
             yTrans = -(y - vph.offsetTop());
         } else {
@@ -601,7 +600,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             }
             if (chart.isDoubleTapToZoomEnabled() && chart.getData().getEntryCount() > 0) {
                 const trans = this.getTrans(event.data.extraData.x, event.data.extraData.y);
-                console.log('onDoubleTapGesture', event.data.extraData.x, event.data.extraData.y, trans.x, trans.y);
 
                 chart.zoom(chart.isScaleXEnabled() ? 1.4 : 1, chart.isScaleYEnabled() ? 1.4 : 1, trans.x, trans.y);
 
