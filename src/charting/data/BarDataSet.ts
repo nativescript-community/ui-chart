@@ -13,11 +13,11 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
     /**
      * the color used for drawing the bar shadows
      */
-    private mBarShadowColor = new Color(255, 215, 215, 215);
+    private mBarShadowColor = '#D7D7D7';
 
     private mBarBorderWidth = 0.0;
 
-    private mBarBorderColor = new Color('black');
+    private mBarBorderColor = 'black';
 
     /**
      * the alpha value used to draw the highlight indicator bar
@@ -37,7 +37,7 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
     constructor(yVals, label) {
         super(yVals, label);
 
-        this.mHighLightColor = new Color(255, 0, 0, 0);
+        this.mHighLightColor = 'black';
 
         this.calcStackSize(yVals);
         this.calcEntryCountIncludingStacks(yVals);

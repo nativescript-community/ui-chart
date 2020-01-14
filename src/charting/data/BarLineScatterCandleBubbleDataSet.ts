@@ -12,7 +12,7 @@ export abstract class BarLineScatterCandleBubbleDataSet<T extends Entry> extends
     /**
      * default highlight color
      */
-    mHighLightColor = new Color(255, 255, 187, 115);
+    mHighLightColor: string | Color = '#FFBB73';
 
     // constructor(yVals, label) {
     //     super(yVals, label);

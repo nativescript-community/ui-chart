@@ -25,7 +25,7 @@
     "homepage": "https://github.com/Akylas/nativescript-chart",
     "readmeFilename": "README.md",
     "dependencies": {
-        "nativescript-canvas": "^2.1.16",
+        "nativescript-canvas": "^2.1.17",
         "nativescript-gesturehandler": "^0.1.4",
         "nativescript-tween": "^0.0.5",
         "number-format.js": "^2.0.9"

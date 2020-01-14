@@ -13,7 +13,7 @@ export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
     /**
      * the color that is used for filling the line surface
      */
-    private mFillColor = new Color(255, 140, 234, 255); // rgb(140,234,255)
+    private mFillColor: string | Color = '#8CEAFF'; // rgb(140,234,255)
 
     /**
      * the drawable to be used for filling the line surface
@@ -45,7 +45,7 @@ export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
      *
      * @param color
      */
-    public setFillColor(color) {
+    public setFillColor(color: string | Color) {
         this.mFillColor = color;
         this.mFillDrawable = null;
     }

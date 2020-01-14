@@ -143,7 +143,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mGridBackgroundPaint = new Paint();
         this.mGridBackgroundPaint.setStyle(Style.FILL);
         // this.mGridBackgroundPaint.setColor(Color.WHITE);
-        this.mGridBackgroundPaint.setColor(new Color(255, 240, 240, 240)); // light
+        this.mGridBackgroundPaint.setColor('#F0F0F0'); // light
         // grey
 
         this.mBorderPaint = new Paint();

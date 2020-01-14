@@ -89,7 +89,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * if true, y-values are drawn on the chart
      */
-    protected mDrawValues = true;
+    protected mDrawValues = false;
 
     /**
      * if true, y-icons are drawn on the chart
@@ -127,8 +127,8 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         }
 
         // default color
-        this.mColors.push(new Color(255, 140, 234, 255));
-        this.mValueColors.push(new Color('black'));
+        this.mColors.push('#8CEAFF');
+        this.mValueColors.push('black');
         this.mLabel = label;
     }
 
@@ -184,7 +184,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      *
      * @param color
      */
-    public addColor(color) {
+    public addColor(color: string | Color) {
         if (this.mColors == null) this.mColors = [];
         this.mColors.push(color);
     }
@@ -214,12 +214,13 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * @param color
      * @param alpha from 0-255
      */
-    public setColor(color: Color, alpha?: number) {
+    public setColor(color: string | Color, alpha?: number) {
         this.resetColors();
         if (alpha === undefined) {
             this.mColors.push(color);
         } else {
-            this.mColors.push(new Color(color.r, color.g, color.b, alpha));
+            const actColor = color instanceof Color ? color: new Color(color)
+            this.mColors.push(new Color(actColor.r, actColor.g, actColor.b, alpha));
         }
     }
 

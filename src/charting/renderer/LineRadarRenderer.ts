@@ -55,8 +55,12 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      * @param fillColor
      * @param fillAlpha
      */
-    protected drawFilledPath(c: Canvas, filledPath: Path, fillColor: Color, fillAlpha: number) {
-        const color = new Color(fillAlpha, fillColor.r, fillColor.g, fillColor.b);
+    protected drawFilledPath(c: Canvas, filledPath: Path, fillColor: Color | string, fillAlpha: number = 1) {
+        let color = fillColor;
+        if (fillAlpha < 1) {
+            fillColor = fillColor instanceof  Color ? fillColor : new Color(fillColor);
+            color = new Color(fillAlpha, fillColor.r, fillColor.g, fillColor.b);
+        }
         // let color = (fillAlpha << 24) | (fillColor & 0xffffff);
 
         if (this.clipPathSupported()) {

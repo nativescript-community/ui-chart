@@ -50,7 +50,7 @@ export abstract class DataRenderer extends Renderer {
         this.mDrawPaint.setDither(true);
         this.mValuePaint = new Paint();
         this.mValuePaint.setAntiAlias(true);
-        this.mValuePaint.setColor(new Color(255, 63, 63, 63));
+        this.mValuePaint.setColor('#3F3F3F');
         this.mValuePaint.setTextAlign(Align.CENTER);
         this.mValuePaint.setTextSize(9);
 
@@ -58,7 +58,7 @@ export abstract class DataRenderer extends Renderer {
         this.mHighlightPaint.setAntiAlias(true);
         this.mHighlightPaint.setStyle(Style.STROKE);
         this.mHighlightPaint.setStrokeWidth(2);
-        this.mHighlightPaint.setColor(new Color(255, 255, 187, 115));
+        this.mHighlightPaint.setColor('#FFBB73');
     }
 
     protected isDrawingValuesAllowed(chart: ChartInterface) {

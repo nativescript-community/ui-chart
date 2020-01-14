@@ -23,12 +23,12 @@ export class ColorTemplate {
      * THE COLOR THEMES ARE PREDEFINED (predefined color integer arrays), FEEL
      * FREE TO CREATE YOUR OWN WITH AS MANY DIFFERENT COLORS AS YOU WANT
      */
-    public static LIBERTY_COLORS = [new Color(255, 207, 248, 246), new Color(255, 148, 212, 212), new Color(255, 136, 180, 187), new Color(255, 118, 174, 175), new Color(255, 42, 109, 130)];
-    public static JOYFUL_COLORS = [new Color(255, 217, 80, 138), new Color(255, 254, 149, 7), new Color(255, 254, 247, 120), new Color(255, 106, 167, 134), new Color(255, 53, 194, 209)];
-    public static PASTEL_COLORS = [new Color(255, 64, 89, 128), new Color(255, 149, 165, 124), new Color(255, 217, 184, 162), new Color(255, 191, 134, 134), new Color(255, 179, 48, 80)];
-    public static COLORFUL_COLORS = [new Color(255, 193, 37, 82), new Color(255, 255, 102, 0), new Color(255, 245, 199, 0), new Color(255, 106, 150, 31), new Color(255, 179, 100, 53)];
-    public static VORDIPLOM_COLORS = [new Color(255, 192, 255, 140), new Color(255, 255, 247, 140), new Color(255, 255, 208, 140), new Color(255, 140, 234, 255), new Color(255, 255, 140, 157)];
-    public static MATERIAL_COLORS = [new Color('#2ecc71'), new Color('#f1c40f'), new Color('#e74c3c'), new Color('#3498db')];
+    public static LIBERTY_COLORS = ['rgb(207, 248, 246)', 'rgb(148, 212, 212)', 'rgb(136, 180, 187)', 'rgb(118, 174, 175)', 'rgb(42, 109, 130)'];
+    public static JOYFUL_COLORS = ['rgb(217, 80, 138)', 'rgb(254, 149, 7)', 'rgb(254, 247, 120)', 'rgb(106, 167, 134)', 'rgb(53, 194, 209)'];
+    public static PASTEL_COLORS = ['rgb(64, 89, 128)', 'rgb(149, 165, 124)', 'rgb(217, 184, 162)', 'rgb(191, 134, 134)', 'rgb(179, 48, 80)'];
+    public static COLORFUL_COLORS = ['rgb(193, 37, 82)', 'rgb(255, 102, 0)', 'rgb(245, 199, 0)', 'rgb(106, 150, 31)', 'rgb(179, 100, 53)'];
+    public static VORDIPLOM_COLORS = ['rgb(192, 255, 140)', 'rgb(255, 247, 140)', 'rgb(255, 208, 140)', 'rgb(140, 234, 255)', 'rgb(255, 140, 157)'];
+    public static MATERIAL_COLORS = ['#2ecc71', '#f1c40f', '#e74c3c', '#3498db'];
 
     /**
      * Returns the Android ICS holo blue light color.
@@ -36,7 +36,7 @@ export class ColorTemplate {
      * @return
      */
     public static getHoloBlue() {
-        return new Color(255, 51, 181, 229);
+        return 'rgb(51, 181, 229)';
     }
 
     /**

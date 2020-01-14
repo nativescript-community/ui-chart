@@ -63,7 +63,7 @@ export class YAxis extends AxisBase {
     /**
      * Color of the zero line
      */
-    protected mZeroLineColor = new Color('gray');
+    protected mZeroLineColor = 'gray';
 
     /**
      * Width of the zero line in pixels

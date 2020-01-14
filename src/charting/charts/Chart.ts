@@ -176,7 +176,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         // Utils.init(this._context);
         this.mMaxHighlightDistance = Utils.convertDpToPixel(500);
 
-        this.mDescription = new Description();
+        // this.mDescription = new Description();
         this.mLegend = new Legend();
 
         this.mLegendRenderer = new LegendRenderer(this.mViewPortHandler, this.mLegend);
@@ -188,7 +188,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         this.mInfoPaint = new Paint();
         this.mInfoPaint.setAntiAlias(true);
-        this.mInfoPaint.setColor(new Color(255, 247, 189, 51)); // orange
+        this.mInfoPaint.setColor('#F7BD33'); // orange
         this.mInfoPaint.setTextAlign(Align.CENTER);
         this.mInfoPaint.setTextSize(12);
 

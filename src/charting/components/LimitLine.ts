@@ -24,7 +24,7 @@ export class LimitLine extends ComponentBase {
     private mLineWidth = 2;
 
     /** the color of the limit line */
-    private mLineColor = 'new Color(237, 91, 91)';
+    private mLineColor = '#ED5B5B';
 
     /** the style of the label text */
     private mTextStyle = Style.FILL_AND_STROKE;
