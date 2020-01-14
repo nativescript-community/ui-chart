@@ -37,7 +37,7 @@ declare var com;
 //         return lineChartView;
 //     }
 // }
-Vue.registerElement('MPLineChart', () => MPLineChart);
+// Vue.registerElement('MPLineChart', () => MPLineChart);
 
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = false;
