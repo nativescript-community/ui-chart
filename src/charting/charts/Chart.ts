@@ -149,7 +149,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     constructor() {
         super();
-        console.log('constructor');
         this.init();
     }
 
@@ -169,7 +168,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * initialize all paints and stuff
      */
     protected init() {
-        console.log('init');
         this.mAnimator = new ChartAnimator(() => {
             this.invalidate();
         });
