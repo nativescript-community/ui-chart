@@ -170,7 +170,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     protected onDraw(canvas: Canvas) {
         super.onDraw(canvas);
 
-        if (this.mData == null) return;
+        if (this.mData === null) return;
 
         const starttime = Date.now();
 

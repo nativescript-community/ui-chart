@@ -154,15 +154,13 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     }
 
     initNativeView() {
-        console.log('initNativeView');
+        super.initNativeView();
         if (isIOS) {
             this.nativeViewProtected.opaque = false;
         }
-        super.initNativeView();
         this.mChartTouchListener && this.mChartTouchListener.init();
     }
     disposeNativeView() {
-        console.log('disposeNativeView');
         super.disposeNativeView();
         this.mChartTouchListener && this.mChartTouchListener.dispose();
     }
@@ -398,10 +396,9 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     protected mOffsetsCalculated = false;
 
     protected onDraw(canvas: Canvas) {
-        // console.log('onDraw', Date.now());
         // super.onDraw(canvas);
 
-        if (this.mData == null) {
+        if (this.mData === null) {
             const hasText = this.mNoDataText && this.mNoDataText.length > 0;
 
             if (hasText) {
