@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.4](https://github.com/Akylas/nativescript-chart/compare/v0.0.3...v0.0.4) (2020-01-14)
+
+
+### Bug Fixes
+
+* demo fix ([7deba56](https://github.com/Akylas/nativescript-chart/commit/7deba56a7a48e71e2015cb85d97120a735f6117c))
+* ticks disabled by default ([234973d](https://github.com/Akylas/nativescript-chart/commit/234973dd3acc9c23d2aa6fad7940bbd3663b7c66))
+
+
+
+
+
 ## [0.0.3](https://github.com/Akylas/nativescript-chart/compare/v0.0.2...v0.0.3) (2020-01-13)
 
 
