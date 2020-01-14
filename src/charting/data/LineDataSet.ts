@@ -6,6 +6,7 @@ import { Utils } from '../utils/Utils';
 import { DefaultFillFormatter } from '../formatter/DefaultFillFormatter';
 import { IFillFormatter } from '../formatter/IFillFormatter';
 import { DashPathEffect, parseDashEffect } from 'nativescript-canvas';
+import { ColorTemplate } from 'nativescript-chart/utils/ColorTemplate';
 
 export enum Mode {
     LINEAR,
@@ -28,17 +29,17 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     /**
      * the color of the inner circles
      */
-    private mCircleHoleColor = new Color('white');
+    private mCircleHoleColor = ColorTemplate.COLOR_NONE;
 
     /**
      * the radius of the circle-shaped value indicators
      */
-    private mCircleRadius = 8;
+    private mCircleRadius = 4;
 
     /**
      * the hole radius of the circle-shaped value indicators
      */
-    private mCircleHoleRadius = 4;
+    private mCircleHoleRadius = 2;
 
     /**
      * sets the intensity of the cubic lines
@@ -58,7 +59,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     /**
      * if true, drawing circles is enabled
      */
-    private mDrawCircles = true;
+    private mDrawCircles = false;
 
     private mDrawCircleHole = true;
 
@@ -76,7 +77,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
         // default colors
         // this.mColors.add(new Color(255, 192, 255, 140));
         // this.mColors.add(new Color(255, 255, 247, 140));
-        this.mCircleColors.push(new Color(255, 140, 234, 255));
+        // this.mCircleColors.push(new Color(255, 140, 234, 255));
     }
 
     /**
@@ -235,11 +236,11 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     public getCircleColor(index) {
-        return this.mCircleColors[index];
+        return this.mCircleColors[index] || this.getColor();
     }
 
     public getCircleColorCount() {
-        return this.mCircleColors.length;
+        return this.mCircleColors.length || 1;
     }
 
     /**

@@ -206,8 +206,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         // make sure the data cannot be drawn outside the content-rect
         let clipRestoreCount = canvas.save();
         canvas.clipRect(this.mViewPortHandler.getContentRect());
-
+        console.log('about to drawData');
         this.mRenderer.drawData(canvas);
+        console.log('drawData done');
 
         if (!this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
 
@@ -228,10 +229,12 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mAxisLeft.isEnabled() && !this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
 
         if (this.mAxisRight.isEnabled() && !this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+        console.log('onDraw8');
 
         this.mXAxisRenderer.renderAxisLabels(canvas);
         this.mAxisRendererLeft.renderAxisLabels(canvas);
         this.mAxisRendererRight.renderAxisLabels(canvas);
+        console.log('onDraw9');
 
         if (this.isClipValuesToContentEnabled()) {
             clipRestoreCount = canvas.save();

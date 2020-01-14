@@ -19,12 +19,10 @@ export default class LineChart extends BarLineChartBase<Entry, LineDataSet, Line
     // }
     constructor() {
         super();
-        console.log('LineChart','constructor')
         this.init();
     }
 
     protected init() {
-        console.log('LineChart', 'init');
         super.init();
 
         this.mRenderer = new LineChartRenderer(this, this.mAnimator, this.mViewPortHandler);

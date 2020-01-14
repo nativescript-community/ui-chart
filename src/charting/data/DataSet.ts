@@ -45,8 +45,6 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
      */
     protected mXMin = Number.MAX_VALUE;
 
-    
-
     /**
      * Creates a new DataSet object with the given values (entries) it represents. Also, a
      * label that describes the DataSet can be specified. The label can also be
@@ -99,7 +97,6 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
      */
     protected calcMinMaxForEntry(e?: T) {
         if (e == null) return;
-
         this.calcMinMaxX(e);
 
         this.calcMinMaxY(e);
@@ -118,16 +115,18 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
                 this.calcMinMaxForEntry(e);
             }
         } else {
-            if (e[this.xProperty] < this.mXMin) this.mXMin = e[this.xProperty];
+            const x = e[this.xProperty] || 0;
+            if (x < this.mXMin) this.mXMin = x;
 
-            if (e[this.xProperty] > this.mXMax) this.mXMax = e[this.xProperty];
+            if (x > this.mXMax) this.mXMax = x;
         }
     }
 
     protected calcMinMaxY(e: T) {
-        if (e[this.yProperty] < this.mYMin) this.mYMin = e[this.yProperty];
+        const y = e[this.yProperty] || 0;
+        if (y < this.mYMin) this.mYMin = y;
 
-        if (e[this.yProperty] > this.mYMax) this.mYMax = e[this.yProperty];
+        if (y > this.mYMax) this.mYMax = y;
     }
 
     public getEntryCount() {

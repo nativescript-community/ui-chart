@@ -208,7 +208,7 @@ export class XAxisRenderer extends AxisRenderer {
      * @param length
      */
     protected  drawMarkTicket ( c: Canvas,  pos,  ticklength) {
-        if (!this.mXAxis.isDrawMarkTicksEnabled() || !this.mXAxis.isEnabled()) return;
+        if (!this.mXAxis.isDrawMarkTicksEnabled()) return;
 
         const length = this.mAxis.mEntryCount * 2;
         if (this.mRenderGridLinesBuffer.length != length) {

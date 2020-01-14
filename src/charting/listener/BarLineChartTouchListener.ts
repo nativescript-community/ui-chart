@@ -171,7 +171,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         }
     }
     dispose() {
-        console.log('ChartTouchListener', 'dispose');
         super.dispose();
         const chart = this.mChart;
         this.panGestureHandler && this.panGestureHandler.detachFromView(chart);
@@ -183,7 +182,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     init() {
         const chart = this.mChart;
         super.init();
-        console.log('ChartTouchListener', 'init', chart, chart.nativeViewProtected);
 
         if (this.mChart.isDoubleTapToZoomEnabled()) {
             this.setDoubleTap(true);

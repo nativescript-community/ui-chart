@@ -1,6 +1,6 @@
 import { LineRadarRenderer } from './LineRadarRenderer';
 import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
-import { Direction, Paint, Canvas, Path, Style, createImage, releaseImage } from 'nativescript-canvas';
+import { Direction, Paint, Canvas, Path, Style, createImage, releaseImage, FillType } from 'nativescript-canvas';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
@@ -27,7 +27,7 @@ export class DataSetImageCache {
      * @param set
      * @return
      */
-    protected init(set: ILineDataSet) {
+    init(set: ILineDataSet) {
         let size = set.getCircleColorCount();
         let changeRequired = false;
 
@@ -49,14 +49,13 @@ export class DataSetImageCache {
      * @param drawCircleHole
      * @param drawTransparentCircleHole
      */
-    protected fill(set: ILineDataSet, mRenderPaint, mCirclePaintInner, drawCircleHole: boolean, drawTransparentCircleHole: boolean) {
+    fill(set: ILineDataSet, mRenderPaint, mCirclePaintInner, drawCircleHole: boolean, drawTransparentCircleHole: boolean) {
         let colorCount = set.getCircleColorCount();
         let circleRadius = set.getCircleRadius();
         let circleHoleRadius = set.getCircleHoleRadius();
 
         for (let i = 0; i < colorCount; i++) {
-            // Bitmap.Config conf = Bitmap.Config.ARGB_4444;
-            const circleBitmap = createImage({ width: circleRadius * 2.1, height: circleRadius * 2.1 });
+            const circleBitmap = createImage({ width: circleRadius * 2.1, height: circleRadius * 2.1, scale: Utils.density });
 
             let canvas = new Canvas(circleBitmap);
             mRenderPaint.setColor(set.getCircleColor(i));
@@ -64,14 +63,16 @@ export class DataSetImageCache {
             if (drawTransparentCircleHole) {
                 // Begin path for circle with hole
                 this.mCirclePathBuffer.reset();
-
+                const oldType = this.mCirclePathBuffer.getFillType();
+                this.mCirclePathBuffer.setFillType(FillType.EVEN_ODD);
                 this.mCirclePathBuffer.addCircle(circleRadius, circleRadius, circleRadius, Direction.CW);
 
                 // Cut hole in path
-                this.mCirclePathBuffer.addCircle(circleRadius, circleRadius, circleHoleRadius, Direction.CCW);
+                this.mCirclePathBuffer.addCircle(circleRadius, circleRadius, circleHoleRadius, Direction.CW);
 
                 // Fill in-between
                 canvas.drawPath(this.mCirclePathBuffer, mRenderPaint);
+                this.mCirclePathBuffer.setFillType(oldType);
             } else {
                 canvas.drawCircle(circleRadius, circleRadius, circleRadius, mRenderPaint);
 
@@ -89,7 +90,7 @@ export class DataSetImageCache {
      * @param index
      * @return
      */
-    protected getBitmap(index) {
+    getBitmap(index) {
         return this.circleBitmaps[index % this.circleBitmaps.length];
     }
 }
@@ -143,6 +144,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     public drawData(c: Canvas) {
         let width = this.mViewPortHandler.getChartWidth();
         let height = this.mViewPortHandler.getChartHeight();
+        console.log('drawData', width, height);
 
         let drawBitmap = this.mDrawBitmap == null ? null : this.mDrawBitmap.get();
 
@@ -420,7 +422,6 @@ export class LineChartRenderer extends LineRadarRenderer {
             // result = true;
         }
 
-
         trans.pathValueToPixel(this.linePath);
 
         this.drawPath(c, this.linePath, this.mRenderPaint);
@@ -436,7 +437,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
         const res = this.generateLinearPath(dataSet, this.linePath);
-
         // if filled is enabled, close the path
         if (dataSet.isDrawFilledEnabled()) {
             this.fillPath.reset();
@@ -580,7 +580,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             let drawCircleHole = dataSet.isDrawCircleHoleEnabled() && circleHoleRadius < circleRadius && circleHoleRadius > 0;
             let drawTransparentCircleHole = drawCircleHole && dataSet.getCircleHoleColor() == ColorTemplate.COLOR_NONE;
 
-            let imageCache;
+            let imageCache: DataSetImageCache;
 
             if (this.mImageCaches.get(dataSet)) {
                 imageCache = this.mImageCaches.get(dataSet);

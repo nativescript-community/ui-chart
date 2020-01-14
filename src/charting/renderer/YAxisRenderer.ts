@@ -97,12 +97,13 @@ export class YAxisRenderer extends AxisRenderer {
      */
     @profile
     protected drawYLabels(c: Canvas, fixedPosition, positions, offset) {
-        let from = this.mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
-        let to = this.mYAxis.isDrawTopYLabelEntryEnabled() ? this.mYAxis.mEntryCount : this.mYAxis.mEntryCount - 1;
-
+        const mYAxis = this.mYAxis;
+        let from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
+        let to = mYAxis.isDrawTopYLabelEntryEnabled() ? mYAxis.mEntryCount : mYAxis.mEntryCount - 1;
+        console.log('drawYLabels', fixedPosition, positions, offset, from ,to);
         // draw
         for (let i = from; i < to; i++) {
-            let text = this.mYAxis.getFormattedLabel(i);
+            let text = mYAxis.getFormattedLabel(i);
 
             c.drawText(text, fixedPosition, positions[i * 2 + 1] + offset, this.mAxisLabelPaint);
         }
@@ -118,7 +119,7 @@ export class YAxisRenderer extends AxisRenderer {
 
     protected  drawMarkTicket ( c:Canvas,  fixedPosition, positions,  ticklength) {
         const mYAxis = this.mYAxis;
-        if (!mYAxis.isDrawMarkTicksEnabled() || !mYAxis.isEnabled()) return;
+        if (!mYAxis.isDrawMarkTicksEnabled() ) return;
 
         const from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
         const to = mYAxis.isDrawTopYLabelEntryEnabled()
