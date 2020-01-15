@@ -117,8 +117,12 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         this.mXMax = -Number.MAX_VALUE;
         this.mXMin = Number.MAX_VALUE;
 
-        for (let set of this.mDataSets) {
-            this.calcMinMaxForDataSet(set);
+        const visibleDatasets = this.mDataSets.filter(s => s.isVisible());
+
+        for (let set of visibleDatasets) {
+            if (set.isVisible()) {
+                this.calcMinMaxForDataSet(set);
+            }
         }
 
         this.mLeftAxisMax = -Number.MAX_VALUE;
@@ -127,13 +131,13 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         this.mRightAxisMin = Number.MAX_VALUE;
 
         // left axis
-        const firstLeft = this.getFirstLeft(this.mDataSets);
+        const firstLeft = this.getFirstLeft(visibleDatasets);
 
         if (firstLeft != null) {
             this.mLeftAxisMax = firstLeft.getYMax();
             this.mLeftAxisMin = firstLeft.getYMin();
 
-            for (let dataSet of this.mDataSets) {
+            for (let dataSet of visibleDatasets) {
                 if (dataSet.getAxisDependency() == AxisDependency.LEFT) {
                     if (dataSet.getYMin() < this.mLeftAxisMin) this.mLeftAxisMin = dataSet.getYMin();
 
@@ -143,13 +147,13 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         }
 
         // right axis
-        const firstRight = this.getFirstRight(this.mDataSets);
+        const firstRight = this.getFirstRight(visibleDatasets);
 
         if (firstRight != null) {
             this.mRightAxisMax = firstRight.getYMax();
             this.mRightAxisMin = firstRight.getYMin();
 
-            for (let dataSet of this.mDataSets) {
+            for (let dataSet of visibleDatasets) {
                 if (dataSet.getAxisDependency() == AxisDependency.RIGHT) {
                     if (dataSet.getYMin() < this.mRightAxisMin) this.mRightAxisMin = dataSet.getYMin();
 
@@ -308,7 +312,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         else return this.mDataSets[index];
     }
 
-    public getDataSetByIndex(index:number) {
+    public getDataSetByIndex(index: number) {
         if (this.mDataSets == null || index < 0 || index >= this.mDataSets.length) return null;
 
         return this.mDataSets[index];
@@ -321,8 +325,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     public addDataSet(d: T) {
         if (d == null) return;
-
-        this.calcMinMaxForDataSet(d);
+        if (d.isVisible()) {
+            this.calcMinMaxForDataSet(d);
+        }
 
         this.mDataSets.push(d);
     }
@@ -376,7 +381,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             // add the entry to the dataset
             if (!set.addEntry(e)) return;
 
-            this.calcMinMaxForEntry(set, e, set.getAxisDependency());
+            if (set.isVisible()) {
+                this.calcMinMaxForEntry(set, e, set.getAxisDependency());
+            }
         } else {
             console.error('addEntry', 'Cannot add Entry because dataSetIndex too high or too low.');
         }
@@ -388,7 +395,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param e
      * @param axis
      */
-    protected calcMinMaxForEntry(set:IDataSet<Entry>, e: Entry, axis) {
+    protected calcMinMaxForEntry(set: IDataSet<Entry>, e: Entry, axis) {
         const xProperty = set.xProperty;
         const yProperty = set.yProperty;
         if (this.mYMax < e[yProperty]) this.mYMax = e[yProperty];

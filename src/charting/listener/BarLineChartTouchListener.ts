@@ -614,7 +614,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         if (event.data.state === GestureState.END && event.data.prevState === GestureState.ACTIVE) {
             this.mLastGesture = ChartGesture.SINGLE_TAP;
             const chart = this.mChart;
-            console.log('onTapGesture', chart.isHighlightPerTapEnabled(), event.data.extraData.x, event.data.extraData.y, event.data.extraData);
 
             // OnChartGestureListener l = this.mChart.getOnChartGestureListener();
             const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
