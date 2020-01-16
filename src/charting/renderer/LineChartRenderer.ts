@@ -144,7 +144,6 @@ export class LineChartRenderer extends LineRadarRenderer {
     public drawData(c: Canvas) {
         let width = this.mViewPortHandler.getChartWidth();
         let height = this.mViewPortHandler.getChartHeight();
-        console.log('drawData', width, height);
 
         let drawBitmap = this.mDrawBitmap == null ? null : this.mDrawBitmap.get();
 
@@ -223,7 +222,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             // this.cubicPath.moveTo(cur[xKey], cur[yKey] * phaseY);
             let index = 2;
 
-            for (let j = firstIndex; j <= lastIndex; j++) {
+            for (let j = firstIndex + 1; j <= lastIndex; j++) {
                 prev = cur;
                 cur = dataSet.getEntryForIndex(j);
                 if (cur[yKey] === undefined || cur[yKey] === null) {
@@ -288,7 +287,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             // let the spline start
             // outputPath.moveTo(cur[xKey], cur[yKey] * phaseY);
             let index = 2;
-            for (let j = firstIndex; j <= lastIndex; j++) {
+            for (let j = firstIndex +1; j <= lastIndex; j++) {
                 prevPrev = prev;
                 prev = cur;
                 cur = nextIndex == j ? next : dataSet.getEntryForIndex(j);
@@ -349,7 +348,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             // create a new path
             let currentEntry = null;
             let previousEntry = entry;
-            for (let x = firstIndex; x <= lastIndex; x++) {
+            for (let x = firstIndex+1; x <= lastIndex; x++) {
                 currentEntry = dataSet.getEntryForIndex(x);
                 if (currentEntry[yKey] === undefined || currentEntry[yKey] === null) {
                     continue;
@@ -516,6 +515,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
 
                     let entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
+                    if (!entry) continue;
 
                     if (dataSet.isDrawValuesEnabled()) {
                         this.drawValue(c, formatter.getFormattedValue(entry[yKey]), x, y - valOffset, dataSet.getValueTextColor(j / 2));
