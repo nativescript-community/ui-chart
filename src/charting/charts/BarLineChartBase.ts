@@ -310,6 +310,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mLegend != null) this.mLegendRenderer.computeLegend(this.mData);
 
         this.calculateOffsets(); // needs chart size
+        this.invalidate();
     }
 
     /**
