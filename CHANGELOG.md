@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.10](https://github.com/Akylas/nativescript-chart/compare/v0.0.9...v0.0.10) (2020-01-16)
+
+
+### Bug Fixes
+
+* a few fixes ([471d73b](https://github.com/Akylas/nativescript-chart/commit/471d73bfc74c98c81b30f4fb6ff53b014f791492))
+* prevent infinite loop ([c0c1f8b](https://github.com/Akylas/nativescript-chart/commit/c0c1f8bacce665ffdf5d6c0021a76fa527d578b4))
+
+
+
+
+
 ## [0.0.9](https://github.com/Akylas/nativescript-chart/compare/v0.0.8...v0.0.9) (2020-01-16)
 
 
