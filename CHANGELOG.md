@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/Akylas/nativescript-chart/compare/v0.0.8...v0.0.9) (2020-01-16)
+
+
+### Bug Fixes
+
+* dont calcuate min/max for hidden sets ([5cb3c01](https://github.com/Akylas/nativescript-chart/commit/5cb3c01b9e68fad7d0f855fecf9635aec4655f60))
+* invalidate on notifyDataChanged ([4dae12d](https://github.com/Akylas/nativescript-chart/commit/4dae12d80c0d8a72dfc25e57d2e97f8dd0d62332))
+
+
+
+
+
 ## [0.0.8](https://github.com/Akylas/nativescript-chart/compare/v0.0.7...v0.0.8) (2020-01-14)
 
 
