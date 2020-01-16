@@ -275,9 +275,7 @@ export namespace Utils {
      */
     export function getDecimals(number) {
         const i = roundToNextSignificant(number);
-
-        if (!Number.isFinite(i)) return 0;
-
+        if (!Number.isFinite(i) || i === 0) return 0;
         return Math.ceil(-Math.log10(i)) + 2;
     }
 
