@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.12](https://github.com/Akylas/nativescript-chart/compare/v0.0.11...v0.0.12) (2020-01-17)
+
+
+### Bug Fixes
+
+* alawys use drawPath for now ([f5c0d6d](https://github.com/Akylas/nativescript-chart/commit/f5c0d6d5091c8fee12252f3a071e8d8fd0b43cf7))
+* correctly ignore undefined points ([9ae2b61](https://github.com/Akylas/nativescript-chart/commit/9ae2b61138d904e421b12f66b37e4e2490b3808c))
+* fixed fill transparency ([5f8e917](https://github.com/Akylas/nativescript-chart/commit/5f8e917172a60c0556cf78b94ce06d6e3f10771d))
+* no need to enable pinch ([fbf36bf](https://github.com/Akylas/nativescript-chart/commit/fbf36bfb5a7f881481542ddbcd51f1c81c310b9b))
+* only call refresh when necessary ([ece31f0](https://github.com/Akylas/nativescript-chart/commit/ece31f066fd6c62b97d02d9ee63e84ebc2a28ea2))
+* smaller grid line by default ([a96d512](https://github.com/Akylas/nativescript-chart/commit/a96d512f4905560d0b8297d15fa8e1e7235ecc2f))
+* values size fix ([dd3c736](https://github.com/Akylas/nativescript-chart/commit/dd3c73685af17cbd0de3c5859c29ff3f4fe008ae))
+
+
+
+
+
 ## [0.0.11](https://github.com/Akylas/nativescript-chart/compare/v0.0.10...v0.0.11) (2020-01-17)
 
 
