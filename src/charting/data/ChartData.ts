@@ -117,7 +117,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         this.mXMax = -Number.MAX_VALUE;
         this.mXMin = Number.MAX_VALUE;
 
-        const visibleDatasets = this.mDataSets.filter(s => s.isVisible());
+        const visibleDatasets = this.getVisibleDataSets();
 
         for (let set of visibleDatasets) {
             if (set.isVisible()) {
@@ -242,6 +242,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     public getDataSets() {
         return this.mDataSets;
+    }
+    public getVisibleDataSets() {
+        return this.mDataSets.filter(s => s.isVisible());
     }
 
     /**

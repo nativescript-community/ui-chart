@@ -159,10 +159,8 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         const lineData = this.mChart.getLineData();
         let needsBitmapDrawing = false;
-        for (let set of lineData.getDataSets()) {
-            if (set.isVisible()) {
+        for (let set of lineData.getVisibleDataSets()) {
                 needsBitmapDrawing = this.drawDataSet(c, set) || needsBitmapDrawing;
-            }
         }
         if (needsBitmapDrawing) {
             c.drawBitmap(drawBitmap, 0, 0, this.mRenderPaint);
