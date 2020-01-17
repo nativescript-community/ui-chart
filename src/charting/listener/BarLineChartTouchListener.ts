@@ -180,7 +180,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         // this.longpressGestureHandler.detachFromView(chart);
     }
     init() {
-        const chart = this.mChart;
         super.init();
 
         if (this.mChart.isDoubleTapToZoomEnabled()) {
@@ -408,10 +407,10 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 }
                 // }
             }
+            this.mMatrix = this.mChart.getViewPortHandler().refresh(this.mMatrix, this.mChart, true);
             // }
         }
 
-        this.mMatrix = this.mChart.getViewPortHandler().refresh(this.mMatrix, this.mChart, true);
     }
 
     /**
