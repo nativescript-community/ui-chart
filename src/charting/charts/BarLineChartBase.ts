@@ -1068,10 +1068,20 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     public setScaleXEnabled(enabled) {
         this.mScaleXEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setPinch(true);
+        } else if (!this.mScaleYEnabled && this.mChartTouchListener) {
+            this.mChartTouchListener.setPinch(false);
+        }
     }
 
     public setScaleYEnabled(enabled) {
         this.mScaleYEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setPinch(true);
+        } else if (!this.mScaleXEnabled && this.mChartTouchListener) {
+            this.mChartTouchListener.setPinch(false);
+        }
     }
 
     public isScaleXEnabled() {
@@ -1389,6 +1399,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public setPinchZoom(enabled) {
         this.mPinchZoomEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setPinch(true);
+        } else if (this.mChartTouchListener) {
+            this.mChartTouchListener.setPinch(false);
+        }
     }
 
     /**
