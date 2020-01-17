@@ -104,7 +104,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * the size of the value-text labels
      */
-    protected mValueTextSize = 17;
+    protected mValueTextSize = 13;
 
     /**
      * flag that indicates if the DataSet is visible or not
@@ -294,7 +294,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public setValueTextSize(size) {
-        this.mValueTextSize = Utils.convertDpToPixel(size);
+        this.mValueTextSize = size;
     }
 
     public getValueTextColor(index = 0) {
