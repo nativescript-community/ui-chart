@@ -23,6 +23,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      * @param filledPath
      * @param drawable
      */
+    @profile
     protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable) {
         if (this.clipPathSupported()) {
             let save = c.save();
@@ -55,6 +56,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      * @param fillColor
      * @param fillAlpha
      */
+    @profile
     protected drawFilledPath(c: Canvas, filledPath: Path, fillColor: Color | string, fillAlpha: number = 1) {
         let color = fillColor;
         if (fillAlpha < 255) {
