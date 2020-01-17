@@ -1,6 +1,6 @@
 {
     "name": "nativescript-chart",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "Nativescript Chart plugin.",
     "nativescript": {
         "platforms": {

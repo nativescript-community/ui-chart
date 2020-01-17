@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.11](https://github.com/Akylas/nativescript-chart/compare/v0.0.10...v0.0.11) (2020-01-17)
+
+
+### Bug Fixes
+
+* correctly enable gestures for pinch ([6214f05](https://github.com/Akylas/nativescript-chart/commit/6214f05c45fa0ae6921eac84a3d4e3db85f19f7d))
+
+
+
+
+
 ## [0.0.10](https://github.com/Akylas/nativescript-chart/compare/v0.0.9...v0.0.10) (2020-01-16)
 
 
