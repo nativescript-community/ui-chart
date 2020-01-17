@@ -220,11 +220,13 @@ export class LineChartRenderer extends LineRadarRenderer {
             let index = 2;
 
             for (let j = firstIndex + 1; j <= lastIndex; j++) {
-                prev = cur;
-                cur = dataSet.getEntryForIndex(j);
-                if (cur[yKey] === undefined || cur[yKey] === null) {
+                const newEntry = dataSet.getEntryForIndex(j);
+                if (newEntry[yKey] === undefined || newEntry[yKey] === null) {
                     continue;
                 }
+                prev = cur;
+                cur = dataSet.getEntryForIndex(j);
+                
 
                 let cpx = prev[xKey] + (cur[xKey] - prev[xKey]) / 2.0;
 
@@ -284,17 +286,21 @@ export class LineChartRenderer extends LineRadarRenderer {
             // let the spline start
             // outputPath.moveTo(cur[xKey], cur[yKey] * phaseY);
             let index = 2;
-            for (let j = firstIndex +1; j <= lastIndex; j++) {
-                prevPrev = prev;
-                prev = cur;
-                cur = nextIndex == j ? next : dataSet.getEntryForIndex(j);
-                if (cur[yKey] === undefined || cur[yKey] === null) {
+            for (let j = firstIndex + 1; j <= lastIndex; j++) {
+                const newEntry = dataSet.getEntryForIndex(j);
+                if (newEntry[yKey] === undefined || newEntry[yKey] === null) {
                     continue;
                 }
+                prevPrev = prev;
+                prev = cur;
+                cur = nextIndex == j ? next : newEntry;
+                
 
                 nextIndex = j + 1 < dataSet.getEntryCount() ? j + 1 : j;
                 next = dataSet.getEntryForIndex(nextIndex);
-
+                if (next[yKey] === undefined || next[yKey] === null) {
+                    continue;
+                }
                 prevDx = (cur[xKey] - prevPrev[xKey]) * intensity;
                 prevDy = (cur[yKey] - prevPrev[yKey]) * intensity;
                 curDx = (next[xKey] - prev[xKey]) * intensity;
@@ -345,7 +351,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             // create a new path
             let currentEntry = null;
             let previousEntry = entry;
-            for (let x = firstIndex+1; x <= lastIndex; x++) {
+            for (let x = firstIndex + 1; x <= lastIndex; x++) {
                 currentEntry = dataSet.getEntryForIndex(x);
                 if (currentEntry[yKey] === undefined || currentEntry[yKey] === null) {
                     continue;
