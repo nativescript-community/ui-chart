@@ -1399,11 +1399,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public setPinchZoom(enabled) {
         this.mPinchZoomEnabled = enabled;
-        if (enabled) {
-            this.getOrCreateBarTouchListener().setPinch(true);
-        } else if (this.mChartTouchListener) {
-            this.mChartTouchListener.setPinch(false);
-        }
+        // if (enabled) {
+        //     this.getOrCreateBarTouchListener().setPinch(true);
+        // } else if (this.mChartTouchListener) {
+        //     this.mChartTouchListener.setPinch(false);
+        // }
     }
 
     /**
