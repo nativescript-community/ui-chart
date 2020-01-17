@@ -171,8 +171,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         super.onDraw(canvas);
 
         if (this.mData === null) return;
+        const startTime = Date.now();
 
-        const starttime = Date.now();
 
         // execute all drawing commands
         this.drawGridBackground(canvas);
@@ -252,7 +252,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.notify({ eventName: 'drawn', object: this });
         if (this.mLogEnabled) {
-            const drawtime = Date.now() - starttime;
+            const drawtime = Date.now() - startTime;
             this.totalTime += drawtime;
             this.drawCycles += 1;
             const average = this.totalTime / this.drawCycles;
