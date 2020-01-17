@@ -1,6 +1,6 @@
 import { LineRadarRenderer } from './LineRadarRenderer';
 import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
-import { Direction, Paint, Canvas, Path, Style, createImage, releaseImage, FillType } from 'nativescript-canvas';
+import { Direction, Paint, Canvas, Path, Style, createImage, releaseImage, FillType, Matrix } from 'nativescript-canvas';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
@@ -487,56 +487,57 @@ export class LineChartRenderer extends LineRadarRenderer {
     private mLineBuffer: number[];
 
     @profile
+    public drawValuesForDataset(c: Canvas, dataSet: LineDataSet) {
+        const yKey = dataSet.yProperty;
+        // apply the text-styling defined by the DataSet
+        this.applyValueTextStyle(dataSet);
+
+        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+
+        // make sure the values do not interfear with the circles
+        let valOffset = dataSet.getCircleRadius() * 1.75;
+
+        if (!dataSet.isDrawCirclesEnabled()) valOffset = valOffset / 2;
+
+        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+
+        const positions = trans.generateTransformedValues(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
+        const formatter = dataSet.getValueFormatter();
+
+        const iconsOffset = Object.assign({}, dataSet.getIconsOffset());
+
+        for (let j = 0; j < positions.length; j += 2) {
+            let x = positions[j];
+            let y = positions[j + 1];
+
+            if (!this.mViewPortHandler.isInBoundsRight(x)) break;
+
+            if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
+
+            let entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
+            if (!entry) continue;
+
+            if (dataSet.isDrawValuesEnabled()) {
+                this.drawValue(c, formatter.getFormattedValue(entry[yKey]), x, y - valOffset, dataSet.getValueTextColor(j / 2));
+            }
+
+            if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
+                let icon = entry.icon;
+
+                Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+            }
+        }
+    }
+
     public drawValues(c: Canvas) {
         if (this.isDrawingValuesAllowed(this.mChart)) {
             const dataSets = this.mChart.getLineData().getDataSets();
 
             for (let i = 0; i < dataSets.length; i++) {
                 const dataSet = dataSets[i];
-                const yKey = dataSet.yProperty;
 
                 if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
-
-                // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle(dataSet);
-
-                const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
-
-                // make sure the values do not interfear with the circles
-                let valOffset = dataSet.getCircleRadius() * 1.75;
-
-                if (!dataSet.isDrawCirclesEnabled()) valOffset = valOffset / 2;
-
-                this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
-
-                const positions = trans.generateTransformedValues(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
-                const formatter = dataSet.getValueFormatter();
-
-                const iconsOffset = Object.assign({}, dataSet.getIconsOffset());
-
-                for (let j = 0; j < positions.length; j += 2) {
-                    let x = positions[j];
-                    let y = positions[j + 1];
-
-                    if (!this.mViewPortHandler.isInBoundsRight(x)) break;
-
-                    if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
-
-                    let entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
-                    if (!entry) continue;
-
-                    if (dataSet.isDrawValuesEnabled()) {
-                        this.drawValue(c, formatter.getFormattedValue(entry[yKey]), x, y - valOffset, dataSet.getValueTextColor(j / 2));
-                    }
-
-                    if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
-                        let icon = entry.icon;
-
-                        Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-                    }
-                }
-
-                // MPPointF.recycleInstance(iconsOffset);
+                this.drawValuesForDataset(c, dataSet);
             }
         }
     }
@@ -560,72 +561,76 @@ export class LineChartRenderer extends LineRadarRenderer {
      */
     private mCirclesBuffer = Utils.createNativeArray(2);
 
+    @profile
+    protected drawCirclesForDataset(c: Canvas, dataSet: LineDataSet) {
+        this.mCirclePaintInner.setColor(dataSet.getCircleHoleColor());
+        let phaseY = this.mAnimator.getPhaseY();
+
+        const xKey = dataSet.xProperty;
+        const yKey = dataSet.yProperty;
+        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+
+        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+
+        let circleRadius = dataSet.getCircleRadius();
+        let circleHoleRadius = dataSet.getCircleHoleRadius();
+        let drawCircleHole = dataSet.isDrawCircleHoleEnabled() && circleHoleRadius < circleRadius && circleHoleRadius > 0;
+        let drawTransparentCircleHole = drawCircleHole && dataSet.getCircleHoleColor() == ColorTemplate.COLOR_NONE;
+
+        let imageCache: DataSetImageCache;
+
+        if (this.mImageCaches.get(dataSet)) {
+            imageCache = this.mImageCaches.get(dataSet);
+        } else {
+            imageCache = new DataSetImageCache();
+            this.mImageCaches.set(dataSet, imageCache);
+        }
+
+        let changeRequired = imageCache.init(dataSet);
+
+        // only fill the cache with new bitmaps if a change is required
+        if (changeRequired) {
+            imageCache.fill(dataSet, this.mRenderPaint, this.mCirclePaintInner, drawCircleHole, drawTransparentCircleHole);
+        }
+
+        let boundsRangeCount = this.mXBounds.range + this.mXBounds.min;
+
+        for (let j = this.mXBounds.min; j <= boundsRangeCount; j++) {
+            let e = dataSet.getEntryForIndex(j);
+
+            if (e == null) break;
+
+            this.mCirclesBuffer[0] = e[xKey];
+            this.mCirclesBuffer[1] = e[yKey] * phaseY;
+
+            trans.pointValuesToPixel(this.mCirclesBuffer);
+
+            if (!this.mViewPortHandler.isInBoundsRight(this.mCirclesBuffer[0])) break;
+
+            if (!this.mViewPortHandler.isInBoundsLeft(this.mCirclesBuffer[0]) || !this.mViewPortHandler.isInBoundsY(this.mCirclesBuffer[1])) continue;
+
+            let circleBitmap = imageCache.getBitmap(j);
+
+            if (circleBitmap != null) {
+                c.drawBitmap(circleBitmap, this.mCirclesBuffer[0] - circleRadius, this.mCirclesBuffer[1] - circleRadius, null);
+            }
+        }
+    }
+
     protected drawCircles(c: Canvas) {
         this.mRenderPaint.setStyle(Style.FILL);
 
-        let phaseY = this.mAnimator.getPhaseY();
 
         this.mCirclesBuffer[0] = 0;
         this.mCirclesBuffer[1] = 0;
 
-        const dataSets = this.mChart.getLineData().getDataSets();
+        const dataSets = this.mChart.getLineData().getVisibleDataSets();
 
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
-            const xKey = dataSet.xProperty;
-            const yKey = dataSet.yProperty;
 
-            if (!dataSet.isVisible() || !dataSet.isDrawCirclesEnabled() || dataSet.getEntryCount() == 0) continue;
-
-            this.mCirclePaintInner.setColor(dataSet.getCircleHoleColor());
-
-            const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
-
-            this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
-
-            let circleRadius = dataSet.getCircleRadius();
-            let circleHoleRadius = dataSet.getCircleHoleRadius();
-            let drawCircleHole = dataSet.isDrawCircleHoleEnabled() && circleHoleRadius < circleRadius && circleHoleRadius > 0;
-            let drawTransparentCircleHole = drawCircleHole && dataSet.getCircleHoleColor() == ColorTemplate.COLOR_NONE;
-
-            let imageCache: DataSetImageCache;
-
-            if (this.mImageCaches.get(dataSet)) {
-                imageCache = this.mImageCaches.get(dataSet);
-            } else {
-                imageCache = new DataSetImageCache();
-                this.mImageCaches.set(dataSet, imageCache);
-            }
-
-            let changeRequired = imageCache.init(dataSet);
-
-            // only fill the cache with new bitmaps if a change is required
-            if (changeRequired) {
-                imageCache.fill(dataSet, this.mRenderPaint, this.mCirclePaintInner, drawCircleHole, drawTransparentCircleHole);
-            }
-
-            let boundsRangeCount = this.mXBounds.range + this.mXBounds.min;
-
-            for (let j = this.mXBounds.min; j <= boundsRangeCount; j++) {
-                let e = dataSet.getEntryForIndex(j);
-
-                if (e == null) break;
-
-                this.mCirclesBuffer[0] = e[xKey];
-                this.mCirclesBuffer[1] = e[yKey] * phaseY;
-
-                trans.pointValuesToPixel(this.mCirclesBuffer);
-
-                if (!this.mViewPortHandler.isInBoundsRight(this.mCirclesBuffer[0])) break;
-
-                if (!this.mViewPortHandler.isInBoundsLeft(this.mCirclesBuffer[0]) || !this.mViewPortHandler.isInBoundsY(this.mCirclesBuffer[1])) continue;
-
-                let circleBitmap = imageCache.getBitmap(j);
-
-                if (circleBitmap != null) {
-                    c.drawBitmap(circleBitmap, this.mCirclesBuffer[0] - circleRadius, this.mCirclesBuffer[1] - circleRadius, null);
-                }
-            }
+            if (!dataSet.isDrawCirclesEnabled() || dataSet.getEntryCount() == 0) continue;
+            this.drawCirclesForDataset(c, dataSet);
         }
     }
 
