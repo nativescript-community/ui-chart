@@ -2,13 +2,14 @@
     <Page>
         <ActionBar title="NS Chart">
             <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onNavigationButtonTap"></NavigationButton>
-            <Switch text/>
+            <Button text="redraw" @tap="redraw" />
+            <!-- <Switch text /> -->
         </ActionBar>
         <ScrollView>
-        <StackLayout @loaded="onLoaded" height="2000">
-            <LineChart ref="lineChart" backgroundColor="lightgray" width="300" height="400" @tap="onChartTap"> </LineChart>
-            <Label fontSize="10">speed</Label>
-        </StackLayout>
+            <StackLayout @loaded="onLoaded" height="2000">
+                <LineChart ref="lineChart" backgroundColor="lightgray" width="300" height="400" @tap="onChartTap"> </LineChart>
+                <Label fontSize="10">speed</Label>
+            </StackLayout>
         </ScrollView>
     </Page>
 </template>
@@ -62,13 +63,19 @@ export default Vue.extend({
     },
     methods: {
         onLoaded() {
-
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
-            chart.setLogEnabled(true);
+            chart.drawFameRate = true;
+            // chart.setLogEnabled(true);
+            chart.setScaleEnabled(true);
+            chart.setDragEnabled(true);
             // chart.setHardwareAccelerationEnabled(true);
         },
         onChartTap(e) {
             console.log('onChartTap', e.data.extraData, e.highlight);
+        },
+        redraw() {
+            const chart = this.$refs.lineChart['nativeView'] as LineChart;
+            chart.invalidate();
         },
         onNavigationButtonTap() {
             frameModule.topmost().goBack();
@@ -85,26 +92,30 @@ export default Vue.extend({
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
             // chart.setLogEnabled(true);
             const jsonData = this.loadData();
-            const locs = jsonData[0].locs.slice(0, 400);
-
+            // const locs = jsonData[2].locs;
+            // console.log('setData', locs.length);
+            const locs = jsonData[2].locs.slice(0, 1000);
             const sets = [];
             ['speed', 'bearing', 'altitude', 'computedSpeed', 'mslAltitude', 'pressure'].forEach((prop, i) => {
+                if (!locs[0][prop]) {
+                    return;
+                }
                 const set = new LineDataSet(locs, prop, 'relativeTimestamp', prop);
-                console.log('creating set', prop, i, locs[0][prop])
-                if (i === 0) {
-                    // set.setMode(Mode.CUBIC_BEZIER);
+                console.log('creating set', prop, i, locs[0][prop], locs.length);
+                // if (i === 0) {
+                set.setMode(Mode.CUBIC_BEZIER);
 
-                }
-                if (i === 1) {
-                    set.enableDashedLine(6,2, 0);
-                }
-                if (i === 2) {
-                    // set.setMode(Mode.HORIZONTAL_BEZIER);
+                // }
+                // if (i === 1) {
+                // set.enableDashedLine(6,2, 0);
+                // }
+                // if (i === 2) {
+                // set.setMode(Mode.HORIZONTAL_BEZIER);
 
-                }
-                if (i === 3) {
-                    set.setVisible(false);
-                }
+                // }
+                // if (i === 3) {
+                //     set.setVisible(false);
+                // }
                 set.setDrawValues(true);
                 // set.xProperty = 'relativeTimestamp';
                 // set.yProperty = 'mslAltitude';
