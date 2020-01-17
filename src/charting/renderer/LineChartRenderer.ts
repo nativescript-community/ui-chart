@@ -448,19 +448,24 @@ export class LineChartRenderer extends LineRadarRenderer {
             // result = true;
         }
 
-        if (isAndroid || dataSet.isDashedLineEnabled()) {
-            trans.pathValueToPixel(this.linePath);
-            this.drawPath(c, this.linePath, this.mRenderPaint);
-        } else {
-            const points = res[0];
-            const length = res[1];
-            c.drawLines(points, 0, length, this.mRenderPaint, trans.getValueToPixelMatrix());
-        }
+        // if (isAndroid || dataSet.isDashedLineEnabled()) {
+        trans.pathValueToPixel(this.linePath);
+        this.drawPath(c, this.linePath, this.mRenderPaint);
+        // } else {
+        //     const points = res[0];
+        //     const length = res[1];
+        //     this.drawLines(c, points, 0, length, this.mRenderPaint, trans.getValueToPixelMatrix());
+        // }
 
         return result;
     }
 
     @profile
+    drawLines(canvas: Canvas, points: number[], offest, length, paint: Paint, matrix: Matrix) {
+        console.log('drawLines', points.length, length, typeof points, Array.isArray(points));
+        canvas.drawLines(points, offest, length, paint, matrix);
+    }
+
     protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, bounds: XBounds) {
         const xKey = dataSet.xProperty;
         let fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
