@@ -124,7 +124,7 @@ export class XAxisRenderer extends AxisRenderer {
         this.mAxisLabelPaint.setTextAlign(align);
         // MPPointF.recycleInstance(pointF);
     }
-
+    
     public renderAxisLine(c: Canvas) {
         if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled()) return;
 
@@ -230,7 +230,6 @@ export class XAxisRenderer extends AxisRenderer {
     protected mRenderGridLinesPath = new Path();
     protected mRenderGridLinesBuffer = [];
 
-    @profile
     public renderGridLines(c: Canvas) {
         if (!this.mXAxis.isDrawGridLinesEnabled() || !this.mXAxis.isEnabled()) return;
 

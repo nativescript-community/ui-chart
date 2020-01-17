@@ -679,7 +679,8 @@ export namespace Utils {
         return descriptor;
     }
 
-    export const createArrayBuffer = profile('createArrayBuffer', function(length: number, force = false): number[] {
+    // export const createArrayBuffer = profile('createArrayBuffer', function(length: number, force = false): number[] {
+    export function createArrayBuffer(length: number, force = false): number[] {
         if (isAndroid) {
             var bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
             const result = (ArrayBuffer as any).from(bb);
@@ -691,8 +692,9 @@ export namespace Utils {
             return new FloatConstructor(length) as any;
         }
         // return [];
-    });
-    export const pointsFromBuffer = profile('pointsFromBuffer', function(float32Array) {
+    };
+    // export const pointsFromBuffer = profile('pointsFromBuffer', function(float32Array) {
+    export function pointsFromBuffer(float32Array) {
         if (isAndroid) {
             const buffer = float32Array.buffer;
             const length = float32Array.length;
@@ -702,8 +704,9 @@ export namespace Utils {
             return testArray;
         }
         return float32Array;
-    });
-    export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
+    };
+    // export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
+    export function nativeArrayToArray(array) {
         if (isAndroid) {
             const result = [];
             for (let index = 0; index < array.length; index++) {
@@ -713,7 +716,7 @@ export namespace Utils {
             return result as number[];
         }
         return array;
-    });
+    };
     export function createNativeArray(length) {
         if (isAndroid) {
             return Array.create('float', length);

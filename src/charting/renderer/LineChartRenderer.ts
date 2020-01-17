@@ -169,7 +169,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    @profile
     protected drawDataSet(c: Canvas, dataSet: ILineDataSet): boolean {
         if (dataSet.getEntryCount() < 1) return false;
         this.mRenderPaint.setStrokeWidth(dataSet.getLineWidth());
@@ -320,7 +319,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             return [];
         }
     }
-    @profile
+
     generateLinearPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
             const isDrawSteppedEnabled = dataSet.getMode() == Mode.STEPPED;

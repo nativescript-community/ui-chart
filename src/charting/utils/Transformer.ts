@@ -227,7 +227,6 @@ export class Transformer {
      *
      * @param path
      */
-    @profile
     public pathValueToPixel(path: Path) {
         const tmp = this.getValueToPixelMatrix();
         path.transform(tmp);
@@ -253,7 +252,6 @@ export class Transformer {
      *
      * @param pts
      */
-    @profile
     public pointValuesToPixel(pts) {
         // this.mMatrixValueToPx.mapPoints(pts);
         // this.mViewPortHandler.getMatrixTouch().mapPoints(pts);
