@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.13](https://github.com/Akylas/nativescript-chart/compare/v0.0.12...v0.0.13) (2020-01-20)
+
+
+### Bug Fixes
+
+* handle empty set or null values ([b1eef1e](https://github.com/Akylas/nativescript-chart/commit/b1eef1e50c58a6127de30d9730eeea904f45b69b))
+
+
+
+
+
 ## [0.0.12](https://github.com/Akylas/nativescript-chart/compare/v0.0.11...v0.0.12) (2020-01-17)
 
 
