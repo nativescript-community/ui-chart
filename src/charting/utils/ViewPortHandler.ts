@@ -29,7 +29,7 @@ export class ViewPortHandler {
     /**
      * maximum scale value on the y-axis
      */
-    private mMaxScaleY = Number.MAX_VALUE;
+    private mMaxScaleY = Infinity;
 
     /**
      * minimum scale value on the x-axis
@@ -39,7 +39,7 @@ export class ViewPortHandler {
     /**
      * maximum scale value on the x-axis
      */
-    private mMaxScaleX = Number.MAX_VALUE;
+    private mMaxScaleX = Infinity;
 
     /**
      * contains the current scale factor of the x-axis
@@ -441,7 +441,7 @@ export class ViewPortHandler {
      * @param xScale
      */
     public setMaximumScaleX(xScale) {
-        if (xScale == 0) xScale = Number.MAX_VALUE;
+        if (xScale == 0) xScale = Infinity;
 
         this.mMaxScaleX = xScale;
 
@@ -457,7 +457,7 @@ export class ViewPortHandler {
     public setMinMaxScaleX(minScaleX, maxScaleX) {
         if (minScaleX < 1) minScaleX = 1;
 
-        if (maxScaleX == 0) maxScaleX = Number.MAX_VALUE;
+        if (maxScaleX == 0) maxScaleX = Infinity;
 
         this.mMinScaleX = minScaleX;
         this.mMaxScaleX = maxScaleX;
@@ -484,7 +484,7 @@ export class ViewPortHandler {
      * @param yScale
      */
     public setMaximumScaleY(yScale) {
-        if (yScale == 0) yScale = Number.MAX_VALUE;
+        if (yScale == 0) yScale = Infinity;
 
         this.mMaxScaleY = yScale;
 
@@ -494,7 +494,7 @@ export class ViewPortHandler {
     public setMinMaxScaleY(minScaleY, maxScaleY) {
         if (minScaleY < 1) minScaleY = 1;
 
-        if (maxScaleY == 0) maxScaleY = Number.MAX_VALUE;
+        if (maxScaleY == 0) maxScaleY = Infinity;
 
         this.mMinScaleY = minScaleY;
         this.mMaxScaleY = maxScaleY;

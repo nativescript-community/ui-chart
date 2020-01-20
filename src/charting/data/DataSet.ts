@@ -28,22 +28,22 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     /**
      * maximum y-value in the value array
      */
-    protected mYMax = -Number.MAX_VALUE;
+    protected mYMax = -Infinity;
 
     /**
      * minimum y-value in the value array
      */
-    protected mYMin = Number.MAX_VALUE;
+    protected mYMin = Infinity;
 
     /**
      * maximum x-value in the value array
      */
-    protected mXMax = -Number.MAX_VALUE;
+    protected mXMax = -Infinity;
 
     /**
      * minimum x-value in the value array
      */
-    protected mXMin = Number.MAX_VALUE;
+    protected mXMin = Infinity;
 
     /**
      * Creates a new DataSet object with the given values (entries) it represents. Also, a
@@ -65,10 +65,10 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     calcMinMax() {
         if (this.mValues == null || this.mValues.length === 0) return;
 
-        this.mYMax = -Number.MAX_VALUE;
-        this.mYMin = Number.MAX_VALUE;
-        this.mXMax = -Number.MAX_VALUE;
-        this.mXMin = Number.MAX_VALUE;
+        this.mYMax = -Infinity;
+        this.mYMin = Infinity;
+        this.mXMax = -Infinity;
+        this.mXMin = Infinity;
 
         for (let e of this.mValues) {
             this.calcMinMaxForEntry(e);
@@ -78,8 +78,8 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     public calcMinMaxYRange(fromX, toX) {
         if (this.mValues == null || this.mValues.length === 0) return;
 
-        this.mYMax = -Number.MAX_VALUE;
-        this.mYMin = Number.MAX_VALUE;
+        this.mYMax = -Infinity;
+        this.mYMin = Infinity;
 
         let indexFrom = this.getEntryIndexForXValue(fromX, NaN, Rounding.DOWN);
         let indexTo = this.getEntryIndexForXValue(toX, NaN, Rounding.UP);
@@ -106,10 +106,10 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         if (!e) {
             if (this.mValues == null || this.mValues.length === 0) return;
 
-            this.mYMax = -Number.MAX_VALUE;
-            this.mYMin = Number.MAX_VALUE;
-            this.mXMax = -Number.MAX_VALUE;
-            this.mXMin = Number.MAX_VALUE;
+            this.mYMax = -Infinity;
+            this.mYMin = Infinity;
+            this.mXMax = -Infinity;
+            this.mXMin = Infinity;
 
             for (let e of this.mValues) {
                 this.calcMinMaxForEntry(e);

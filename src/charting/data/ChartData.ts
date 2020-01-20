@@ -7,30 +7,30 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
      * maximum y-value in the value array across all axes
      */
-    mYMax = -Number.MAX_VALUE;
+    mYMax = -Infinity;
 
     /**
      * the minimum y-value in the value array across all axes
      */
-    mYMin = Number.MAX_VALUE;
+    mYMin = Infinity;
 
     /**
      * maximum x-value in the value array
      */
-    mXMax = -Number.MAX_VALUE;
+    mXMax = -Infinity;
 
     /**
      * minimum x-value in the value array
      */
-    mXMin = Number.MAX_VALUE;
+    mXMin = Infinity;
 
-    mLeftAxisMax = -Number.MAX_VALUE;
+    mLeftAxisMax = -Infinity;
 
-    mLeftAxisMin = Number.MAX_VALUE;
+    mLeftAxisMin = Infinity;
 
-    mRightAxisMax = -Number.MAX_VALUE;
+    mRightAxisMax = -Infinity;
 
-    mRightAxisMin = Number.MAX_VALUE;
+    mRightAxisMin = Infinity;
 
     /**
      * array that holds all DataSets the ChartData object represents
@@ -112,10 +112,10 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     protected calcMinMax() {
         if (this.mDataSets == null) return;
 
-        this.mYMax = -Number.MAX_VALUE;
-        this.mYMin = Number.MAX_VALUE;
-        this.mXMax = -Number.MAX_VALUE;
-        this.mXMin = Number.MAX_VALUE;
+        this.mYMax = -Infinity;
+        this.mYMin = Infinity;
+        this.mXMax = -Infinity;
+        this.mXMin = Infinity;
 
         const visibleDatasets = this.getVisibleDataSets();
 
@@ -125,10 +125,10 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             }
         }
 
-        this.mLeftAxisMax = -Number.MAX_VALUE;
-        this.mLeftAxisMin = Number.MAX_VALUE;
-        this.mRightAxisMax = -Number.MAX_VALUE;
-        this.mRightAxisMin = Number.MAX_VALUE;
+        this.mLeftAxisMax = -Infinity;
+        this.mLeftAxisMin = Infinity;
+        this.mRightAxisMax = -Infinity;
+        this.mRightAxisMin = Infinity;
 
         // left axis
         const firstLeft = this.getFirstLeft(visibleDatasets);
@@ -186,11 +186,17 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             return this.mYMin;
         }
         if (axis == AxisDependency.LEFT) {
-            if (this.mLeftAxisMin == Number.MAX_VALUE) {
+            if (!Number.isFinite(this.mLeftAxisMin)) {
+                if (!Number.isFinite(this.mRightAxisMin)) {
+                    return 0;
+                }
                 return this.mRightAxisMin;
             } else return this.mLeftAxisMin;
         } else {
-            if (this.mRightAxisMin == Number.MAX_VALUE) {
+            if (!Number.isFinite(this.mRightAxisMin)) {
+                if (!Number.isFinite(this.mLeftAxisMin)) {
+                    return 0;
+                }
                 return this.mLeftAxisMin;
             } else return this.mRightAxisMin;
         }
@@ -207,11 +213,17 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             return this.mYMax;
         }
         if (axis == AxisDependency.LEFT) {
-            if (this.mLeftAxisMax == -Number.MAX_VALUE) {
+            if (!Number.isFinite(this.mLeftAxisMax)) {
+                if (!Number.isFinite(this.mRightAxisMax)) {
+                    return 0;
+                }
                 return this.mRightAxisMax;
             } else return this.mLeftAxisMax;
         } else {
-            if (this.mRightAxisMax == -Number.MAX_VALUE) {
+            if (!Number.isFinite(this.mRightAxisMax)) {
+                if (!Number.isFinite(this.mLeftAxisMax)) {
+                    return 0;
+                }
                 return this.mLeftAxisMax;
             } else return this.mRightAxisMax;
         }
@@ -260,9 +272,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     protected getDataSetIndexByLabel(dataSets, label, ignorecase) {
         if (ignorecase) {
-            for (let i = 0; i < dataSets.length; i++) if (label.equalsIgnoreCase(dataSets.get(i).getLabel())) return i;
+            for (let i = 0; i < dataSets.length; i++) if (label.equalsIgnoreCase(dataSets[i].getLabel())) return i;
         } else {
-            for (let i = 0; i < dataSets.length; i++) if (label.equals(dataSets.get(i).getLabel())) return i;
+            for (let i = 0; i < dataSets.length; i++) if (label.equals(dataSets[i].getLabel())) return i;
         }
 
         return -1;

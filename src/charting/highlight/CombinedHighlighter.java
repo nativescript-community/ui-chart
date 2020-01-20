@@ -73,7 +73,7 @@ public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
 //    protected Highlight getClosest(let x, let y, Highlight... highs) {
 //
 //        Highlight closest = null;
-//        let minDistance = Number.MAX_VALUE;
+//        let minDistance = Infinity;
 //
 //        for (Highlight high : highs) {
 //

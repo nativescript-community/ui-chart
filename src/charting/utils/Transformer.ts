@@ -41,10 +41,10 @@ export class Transformer {
     public prepareMatrixValuePx(xChartMin, deltaX, deltaY, yChartMin) {
         let scaleX = this.mViewPortHandler.contentWidth() / deltaX;
         let scaleY = this.mViewPortHandler.contentHeight() / deltaY;
-        if (!Number.isFinite(scaleX)) {
+        if (!Number.isFinite(scaleX) || isNaN(scaleX)) {
             scaleX = 0;
         }
-        if (!Number.isFinite(scaleY)) {
+        if (!Number.isFinite(scaleY) || isNaN(scaleY)) {
             scaleY = 0;
         }
 

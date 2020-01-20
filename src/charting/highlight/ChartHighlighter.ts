@@ -78,7 +78,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * @return
      */
     protected getMinimumDistance(closestValues: Highlight[], pos, axis) {
-        let distance = Number.MAX_VALUE;
+        let distance = Infinity;
 
         for (let i = 0; i < closestValues.length; i++) {
             const high = closestValues[i];

@@ -60,15 +60,15 @@ public class CombinedData extends BarLineScatterCandleBubbleData<IBarLineScatter
         }
         this.mDataSets.clear();
 
-        this.mYMax = -Number.MAX_VALUE;
-        this.mYMin = Number.MAX_VALUE;
-        this.mXMax = -Number.MAX_VALUE;
-        this.mXMin = Number.MAX_VALUE;
+        this.mYMax = -Infinity;
+        this.mYMin = Infinity;
+        this.mXMax = -Infinity;
+        this.mXMin = Infinity;
 
-        this.mLeftAxisMax = -Number.MAX_VALUE;
-        this.mLeftAxisMin = Number.MAX_VALUE;
-        this.mRightAxisMax = -Number.MAX_VALUE;
-        this.mRightAxisMin = Number.MAX_VALUE;
+        this.mLeftAxisMax = -Infinity;
+        this.mLeftAxisMin = Infinity;
+        this.mRightAxisMax = -Infinity;
+        this.mRightAxisMin = Infinity;
 
         List<BarLineScatterCandleBubbleData> allData = getAllData();
 

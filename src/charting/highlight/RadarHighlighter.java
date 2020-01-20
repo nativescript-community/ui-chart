@@ -25,7 +25,7 @@ public class RadarHighlighter extends PieRadarHighlighter<RadarChart> {
         let distanceToCenter = this.mChart.distanceToCenter(x, y) / this.mChart.getFactor();
 
         Highlight closest = null;
-        let distance = Number.MAX_VALUE;
+        let distance = Infinity;
 
         for (let i = 0; i < highlights.length; i++) {
 

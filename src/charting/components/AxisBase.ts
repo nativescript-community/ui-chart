@@ -705,6 +705,12 @@ export abstract class AxisBase extends ComponentBase {
             max = max + 1;
             min = min - 1;
         }
+        if (!Number.isFinite(min)) {
+            min = 0;
+        }
+        if (!Number.isFinite(max)) {
+            max = 0;
+        }
 
         this.mAxisMinimum = min;
         this.mAxisMaximum = max;
