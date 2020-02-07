@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.14](https://github.com/Akylas/nativescript-chart/compare/v0.0.13...v0.0.14) (2020-02-07)
+
+
+### Bug Fixes
+
+* disable icons by default ([392ae00](https://github.com/Akylas/nativescript-chart/commit/392ae00031e8c58605d41ab17588e9d2e0d14938))
+* dont convert extra offset ([115935f](https://github.com/Akylas/nativescript-chart/commit/115935f06e9afd53d96e671c9279f9043f1b42a2))
+* reset values colors ([9767ebf](https://github.com/Akylas/nativescript-chart/commit/9767ebf2ff53d6cda371eecf9744afdec2225869))
+
+
+### Features
+
+* fill shader support ([58ff562](https://github.com/Akylas/nativescript-chart/commit/58ff5622e57586ca596d22b997ad4d2c0868bdd8))
+* values label offset ([354bf64](https://github.com/Akylas/nativescript-chart/commit/354bf64cef124f60feccca50eb1e08a807e734bb))
+
+
+
+
+
 ## [0.0.13](https://github.com/Akylas/nativescript-chart/compare/v0.0.12...v0.0.13) (2020-01-20)
 
 
