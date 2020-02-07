@@ -92,6 +92,11 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     protected mDrawValues = false;
 
     /**
+     * the offset for drawing values (in dp)
+     */
+    protected mValuesOffset = { x: 0, y: 0 };
+
+    /**
      * if true, y-icons are drawn on the chart
      */
     protected mDrawIcons = false;
@@ -347,6 +352,14 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     public isDrawValuesEnabled() {
         return this.mDrawValues;
+    }
+
+    public getValuesOffset() {
+        return this.mValuesOffset;
+    }
+    public setValuesOffset(offsetDp) {
+        this.mValuesOffset.x = offsetDp.x;
+        this.mValuesOffset.y = offsetDp.y;
     }
 
     public setDrawIcons(enabled) {

@@ -462,7 +462,6 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     @profile
     drawLines(canvas: Canvas, points: number[], offest, length, paint: Paint, matrix: Matrix) {
-        console.log('drawLines', points.length, length, typeof points, Array.isArray(points));
         canvas.drawLines(points, offest, length, paint, matrix);
     }
 
@@ -504,8 +503,10 @@ export class LineChartRenderer extends LineRadarRenderer {
         const positions = trans.generateTransformedValues(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
         const formatter = dataSet.getValueFormatter();
 
-        const iconsOffset = Object.assign({}, dataSet.getIconsOffset());
-
+        const iconsOffset = dataSet.getIconsOffset();
+        const valuesOffset = dataSet.getValuesOffset();
+        const drawIcons = dataSet.isDrawIconsEnabled();
+        const drawValues = dataSet.isDrawValuesEnabled();
         for (let j = 0; j < positions.length; j += 2) {
             let x = positions[j];
             let y = positions[j + 1];
@@ -517,11 +518,11 @@ export class LineChartRenderer extends LineRadarRenderer {
             let entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
             if (!entry) continue;
 
-            if (dataSet.isDrawValuesEnabled()) {
-                this.drawValue(c, formatter.getFormattedValue(entry[yKey]), x, y - valOffset, dataSet.getValueTextColor(j / 2));
+            if (drawValues) {
+                this.drawValue(c, formatter.getFormattedValue(entry[yKey]), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2));
             }
 
-            if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
+            if (drawIcons && entry.icon != null) {
                 let icon = entry.icon;
 
                 Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
