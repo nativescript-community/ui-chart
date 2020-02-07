@@ -958,7 +958,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * Set an extra offset to be appended to the viewport's top
      */
     public setExtraTopOffset(offset) {
-        this.mExtraTopOffset = Utils.convertDpToPixel(offset);
+        this.mExtraTopOffset = offset;
     }
 
     /**
@@ -972,7 +972,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * Set an extra offset to be appended to the viewport's right
      */
     public setExtraRightOffset(offset) {
-        this.mExtraRightOffset = Utils.convertDpToPixel(offset);
+        this.mExtraRightOffset = offset;
     }
 
     /**
@@ -986,7 +986,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * Set an extra offset to be appended to the viewport's bottom
      */
     public setExtraBottomOffset(offset) {
-        this.mExtraBottomOffset = Utils.convertDpToPixel(offset);
+        this.mExtraBottomOffset = offset;
     }
 
     /**
@@ -1000,7 +1000,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * Set an extra offset to be appended to the viewport's left
      */
     public setExtraLeftOffset(offset) {
-        this.mExtraLeftOffset = Utils.convertDpToPixel(offset);
+        this.mExtraLeftOffset = offset;
     }
 
     /**
