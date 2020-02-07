@@ -3,6 +3,8 @@
         "target": "es5",
         "module": "commonjs",
         "moduleResolution": "node",
+        "incremental": true,
+        "tsBuildInfoFile": ".tsbuildinfo",
         "removeComments": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -18,14 +20,11 @@
         "baseUrl": ".",
         "paths": {
             "~/*": ["app/*"],
-            "nativescript-vue": ["./node_modules/nativescript-akylas-vue"],
             "tns-core-modules": ["./node_modules/@nativescript/core"],
             "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
-            "nativescript-chart": ["../src/charting"],
-            "nativescript-chart/*": ["../src/charting/*"],
-            "*": ["node_modules/*"]
+            "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
         }
     },
-    "include": ["app/**/*", "../src/**/*.ts", "references.d.ts" , "vue-shims.d.ts"],
+    "include": ["app/**/*", "references.d.ts"],
     "exclude": ["node_modules", "platforms", "**/angular"]
 }

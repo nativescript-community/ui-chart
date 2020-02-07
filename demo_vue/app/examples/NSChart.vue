@@ -65,7 +65,7 @@ export default Vue.extend({
         onLoaded() {
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
             chart.drawFameRate = true;
-            // chart.setLogEnabled(true);
+            chart.setLogEnabled(true);
             chart.setScaleEnabled(true);
             chart.setDragEnabled(true);
             // chart.setHardwareAccelerationEnabled(true);
@@ -91,79 +91,84 @@ export default Vue.extend({
         setData() {
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
             // chart.setLogEnabled(true);
-            const jsonData = this.loadData();
+            // const jsonData = this.loadData();
             // const locs = jsonData[2].locs;
-            // console.log('setData', locs.length);
-            const locs = jsonData[2].locs.slice(0, 1000);
+
+            const data = new Array(1_000).fill(0).map((v,i)=>({
+                index:i,
+                value: Math.random() * 1
+            }))
+            console.log('setData', data.length, data[0]);
             const sets = [];
-            ['speed', 'bearing', 'altitude', 'computedSpeed', 'mslAltitude', 'pressure'].forEach((prop, i) => {
-                if (!locs[0][prop]) {
-                    return;
-                }
-                const set = new LineDataSet(locs, prop, 'relativeTimestamp', prop);
-                console.log('creating set', prop, i, locs[0][prop], locs.length);
-                // if (i === 0) {
-                set.setMode(Mode.CUBIC_BEZIER);
+             const set = new LineDataSet(data, 'value', 'index', 'value');
+             set.setColor(getRandomColor());
+             sets.push(set)
+        //     ['speed', 'bearing', 'altitude', 'computedSpeed', 'mslAltitude', 'pressure'].forEach((prop, i) => {
+        //         if (!locs[0][prop]) {
+        //             return;
+        //         }
+        //         const set = new LineDataSet(locs, prop, 'timestamp', prop);
+        //         console.log('creating set', prop, i, locs[0][prop], locs.length);
+        //         // if (i === 0) {
+        //         // set.setMode(Mode.CUBIC_BEZIER);
 
-                // }
-                // if (i === 1) {
-                // set.enableDashedLine(6,2, 0);
-                // }
-                // if (i === 2) {
-                // set.setMode(Mode.HORIZONTAL_BEZIER);
+        //         // }
+        //         // if (i === 1) {
+        //         // set.enableDashedLine(6,2, 0);
+        //         // }
+        //         // if (i === 2) {
+        //         // set.setMode(Mode.HORIZONTAL_BEZIER);
 
-                // }
-                // if (i === 3) {
-                //     set.setVisible(false);
-                // }
-                set.setDrawValues(true);
-                // set.xProperty = 'relativeTimestamp';
-                // set.yProperty = 'mslAltitude';
-                // set.setDrawIcons(false);
-                // // line thickness and point size
-                // set.setLineWidth(3);
-                // set.setCircleRadius(3);
-                const color = getRandomColor();
-                set.setColor(color);
-                set.setDrawFilled(true);
-                set.setFillColor(color);
-                // set.setGradientColor(color, getRandomColor());
+        //         // }
+        //         // if (i === 3) {
+        //         //     set.setVisible(false);
+        //         // }
+        //         set.setDrawValues(true);
+        //         // set.setDrawIcons(false);
+        //         // // line thickness and point size
+        //         // set.setLineWidth(3);
+        //         // set.setCircleRadius(3);
+        //         const color = getRandomColor();
+        //         set.setColor(color);
+        //         set.setDrawFilled(true);
+        //         set.setFillColor(color);
+        //         // set.setGradientColor(color, getRandomColor());
 
-                // // draw points as solid circles
-                // set.setDrawCircleHole(false);
-                // set.setDrawCircles(false);
+        //         // // draw points as solid circles
+        //         // set.setDrawCircleHole(false);
+        //         // set.setDrawCircles(false);
 
-                // // customize legend entry
-                // set.setFormLineWidth(1);
-                // set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
-                // set.setFormSize(10);
-                // set.setDrawFilled(true);
-                sets.push(set);
-            });
+        //         // // customize legend entry
+        //         // set.setFormLineWidth(1);
+        //         // set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+        //         // set.setFormSize(10);
+        //         // set.setDrawFilled(true);
+        //         sets.push(set);
+        //     });
 
-            // const set = new LineDataSet(locs, 'DataSet 1', 'relativeTimestamp', 'mslAltitude');
-            // // set.xProperty = 'relativeTimestamp';
-            // // set.yProperty = 'mslAltitude';
-            // set.setDrawIcons(false);
-            // // // line thickness and point size
-            // set.setLineWidth(3);
-            // set.setCircleRadius(3);
+        //     // const set = new LineDataSet(locs, 'DataSet 1', 'relativeTimestamp', 'mslAltitude');
+        //     // // set.xProperty = 'relativeTimestamp';
+        //     // // set.yProperty = 'mslAltitude';
+        //     // set.setDrawIcons(false);
+        //     // // // line thickness and point size
+        //     // set.setLineWidth(3);
+        //     // set.setCircleRadius(3);
 
-            // // // draw points as solid circles
-            // set.setDrawCircleHole(false);
-            // set.setDrawCircles(false);
+        //     // // // draw points as solid circles
+        //     // set.setDrawCircleHole(false);
+        //     // set.setDrawCircles(false);
 
-            // // // customize legend entry
-            // set.setFormLineWidth(1);
-            // // set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
-            // set.setFormSize(10);
-            // set.setDrawFilled(true);
+        //     // // // customize legend entry
+        //     // set.setFormLineWidth(1);
+        //     // // set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+        //     // set.setFormSize(10);
+        //     // set.setDrawFilled(true);
 
-            // create a data object with the data sets
-            const data = new LineData(sets);
+        //     // create a data object with the data sets
+            const linedata = new LineData(sets);
 
-            // set data
-            chart.setData(data);
+        //     // set data
+            chart.setData(linedata);
         }
     },
     mounted() {
