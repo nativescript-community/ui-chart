@@ -241,11 +241,13 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         let low = 0;
         let high = this.mValues.length - 1;
         let closest = high;
-
+        const xProperty = this.xProperty;
+        const yProperty = this.yProperty;
+        const values = this.mValues;
         while (low < high) {
             let m = Math.floor((low + high) / 2);
-            const d1 = this.mValues[m][this.xProperty] - xValue,
-                d2 = this.mValues[m + 1][this.xProperty] - xValue,
+            const d1 = values[m][xProperty] - xValue,
+                d2 = values[m + 1][xProperty] - xValue,
                 ad1 = Math.abs(d1),
                 ad2 = Math.abs(d2);
 
@@ -273,10 +275,10 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         }
 
         if (closest != -1) {
-            const closestXValue = this.mValues[closest][this.xProperty];
+            const closestXValue = values[closest][xProperty];
             if (rounding == Rounding.UP) {
                 // If rounding up, and found x-value is lower than specified x, and we can go upper...
-                if (closestXValue < xValue && closest < this.mValues.length - 1) {
+                if (closestXValue < xValue && closest < values.length - 1) {
                     ++closest;
                 }
             } else if (rounding == Rounding.DOWN) {
@@ -288,20 +290,20 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
             // Search by closest to y-value
             if (!isNaN(closestToY)) {
-                while (closest > 0 && this.mValues[closest - 1][this.xProperty] == closestXValue) closest -= 1;
+                while (closest > 0 && values[closest - 1][xProperty] == closestXValue) closest -= 1;
 
-                let closestYValue = this.mValues[closest][this.yProperty];
+                let closestYValue = values[closest][yProperty];
                 let closestYIndex = closest;
 
                 while (true) {
                     closest += 1;
-                    if (closest >= this.mValues.length) break;
+                    if (closest >= values.length) break;
 
-                    const value = this.mValues[closest];
+                    const value = values[closest];
 
-                    if (value[this.xProperty] != closestXValue) break;
+                    if (value[xProperty] != closestXValue) break;
 
-                    if (Math.abs(value[this.yProperty] - closestToY) < Math.abs(closestYValue - closestToY)) {
+                    if (Math.abs(value[yProperty] - closestToY) < Math.abs(closestYValue - closestToY)) {
                         closestYValue = closestToY;
                         closestYIndex = closest;
                     }
@@ -320,19 +322,21 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         let low = 0;
         let high = this.mValues.length - 1;
 
+        const xProperty = this.xProperty;
+        const values = this.mValues;
         while (low <= high) {
             let m = Math.floor((high + low) / 2);
-            let entry = this.mValues[m];
+            let entry = values[m];
             // if we have a match
-            if (xValue === entry[this.xProperty]) {
-                while (m > 0 && this.mValues[m - 1][this.xProperty] === xValue) m--;
+            if (xValue === entry[xProperty]) {
+                while (m > 0 && values[m - 1][xProperty] === xValue) m--;
 
-                high = this.mValues.length;
+                high = values.length;
 
                 // loop over all "equal" entries
                 for (; m < high; m++) {
-                    entry = this.mValues[m];
-                    if (entry[this.xProperty] === xValue) {
+                    entry = values[m];
+                    if (entry[xProperty] === xValue) {
                         entries.push(entry);
                     } else {
                         break;
@@ -341,7 +345,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
                 break;
             } else {
-                if (xValue > entry[this.xProperty]) low = m + 1;
+                if (xValue > entry[xProperty]) low = m + 1;
                 else high = m - 1;
             }
         }
