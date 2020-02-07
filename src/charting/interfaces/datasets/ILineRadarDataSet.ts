@@ -18,6 +18,12 @@ export interface ILineRadarDataSet<T extends Entry> extends ILineScatterCandleRa
      * @return
      */
     getFillDrawable();
+    /**
+     * Returns the shader used for filling the area below the line.
+     *
+     * @return
+     */
+    getFillShader();
 
     /**
      * Returns the alpha value that is used for filling the line surface,

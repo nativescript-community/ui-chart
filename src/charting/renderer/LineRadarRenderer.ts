@@ -24,7 +24,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      * @param drawable
      */
     @profile
-    protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable) {
+    protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable, shader) {
         if (this.clipPathSupported()) {
             let save = c.save();
             // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
@@ -57,35 +57,40 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      * @param fillAlpha
      */
     @profile
-    protected drawFilledPath(c: Canvas, filledPath: Path, fillColor: Color | string, fillAlpha: number = 1) {
+    protected drawFilledPath(c: Canvas, filledPath: Path, fillColor: Color | string, fillAlpha: number = 255, shader?) {
         let color = fillColor;
         if (fillAlpha < 255) {
-            fillColor = fillColor instanceof  Color ? fillColor : new Color(fillColor);
+            fillColor = fillColor instanceof Color ? fillColor : new Color(fillColor);
             color = new Color(fillAlpha, fillColor.r, fillColor.g, fillColor.b);
+        }
+
+        // save
+        const previous = this.mRenderPaint.getStyle();
+        let previousColor = this.mRenderPaint.getColor();
+        let previousShader = this.mRenderPaint.getShader();
+
+        this.mRenderPaint.setStyle(Style.FILL);
+
+        if (shader) {
+            this.mRenderPaint.setColor('black');
+            this.mRenderPaint.setShader(shader);
+        } else {
+            this.mRenderPaint.setColor(color);
+
         }
 
         if (this.clipPathSupported()) {
             let save = c.save();
-            // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
             c.clipPath(filledPath);
-
-            c.drawColor(color);
+            c.drawPaint(this.mRenderPaint);
             c.restoreToCount(save);
         } else {
-            // save
-            const previous = this.mRenderPaint.getStyle();
-            let previousColor = this.mRenderPaint.getColor();
-
-            // set
-            this.mRenderPaint.setStyle(Style.FILL);
-            this.mRenderPaint.setColor(color);
             this.drawPath(c, filledPath, this.mRenderPaint);
-            // c.drawPath(filledPath, this.mRenderPaint);
-
-            // restore
-            this.mRenderPaint.setColor(previousColor);
-            this.mRenderPaint.setStyle(previous);
         }
+        // restore
+        this.mRenderPaint.setColor(previousColor);
+        this.mRenderPaint.setShader(previousShader);
+        this.mRenderPaint.setStyle(previous);
     }
 
     /**

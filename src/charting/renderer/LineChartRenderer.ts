@@ -478,9 +478,9 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         const drawable = dataSet.getFillDrawable();
         if (drawable != null) {
-            this.drawFilledPathBitmap(c, spline, drawable);
+            this.drawFilledPathBitmap(c, spline, drawable, dataSet.getFillShader());
         } else {
-            this.drawFilledPath(c, spline, dataSet.getFillColor(), dataSet.getFillAlpha());
+            this.drawFilledPath(c, spline, dataSet.getFillColor(), dataSet.getFillAlpha(), dataSet.getFillShader());
         }
     }
 
