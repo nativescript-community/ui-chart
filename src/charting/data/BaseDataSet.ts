@@ -281,7 +281,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public setValueTextColor(color) {
-        this.resetColors();
+        this.mValueColors = [];
         this.mValueColors.push(color);
     }
 
