@@ -94,7 +94,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * if true, y-icons are drawn on the chart
      */
-    protected mDrawIcons = true;
+    protected mDrawIcons = false;
 
     /**
      * the offset for drawing icons (in dp)
