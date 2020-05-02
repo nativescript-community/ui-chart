@@ -160,7 +160,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         const lineData = this.mChart.getLineData();
         let needsBitmapDrawing = false;
         for (let set of lineData.getVisibleDataSets()) {
-                needsBitmapDrawing = this.drawDataSet(c, set) || needsBitmapDrawing;
+            needsBitmapDrawing = this.drawDataSet(c, set) || needsBitmapDrawing;
         }
         if (needsBitmapDrawing) {
             c.drawBitmap(drawBitmap, 0, 0, this.mRenderPaint);
@@ -226,7 +226,6 @@ export class LineChartRenderer extends LineRadarRenderer {
                 }
                 prev = cur;
                 cur = dataSet.getEntryForIndex(j);
-                
 
                 let cpx = prev[xKey] + (cur[xKey] - prev[xKey]) / 2.0;
 
@@ -294,7 +293,6 @@ export class LineChartRenderer extends LineRadarRenderer {
                 prevPrev = prev;
                 prev = cur;
                 cur = nextIndex == j ? next : newEntry;
-                
 
                 nextIndex = j + 1 < dataSet.getEntryCount() ? j + 1 : j;
                 next = dataSet.getEntryForIndex(nextIndex);
@@ -399,9 +397,10 @@ export class LineChartRenderer extends LineRadarRenderer {
             // result = true;
         }
 
-        trans.pathValueToPixel(this.linePath);
-
-        this.drawPath(c, this.linePath, this.mRenderPaint);
+        if (dataSet.getLineWidth() > 0) {
+            trans.pathValueToPixel(this.linePath);
+            this.drawPath(c, this.linePath, this.mRenderPaint);
+        }
 
         return result;
     }
@@ -424,9 +423,10 @@ export class LineChartRenderer extends LineRadarRenderer {
             // result = true;
         }
 
-        trans.pathValueToPixel(this.linePath);
-
-        this.drawPath(c, this.linePath, this.mRenderPaint);
+        if (dataSet.getLineWidth() > 0) {
+            trans.pathValueToPixel(this.linePath);
+            this.drawPath(c, this.linePath, this.mRenderPaint);
+        }
 
         return result;
     }
@@ -449,8 +449,10 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
 
         // if (isAndroid || dataSet.isDashedLineEnabled()) {
-        trans.pathValueToPixel(this.linePath);
-        this.drawPath(c, this.linePath, this.mRenderPaint);
+        if (dataSet.getLineWidth() > 0) {
+            trans.pathValueToPixel(this.linePath);
+            this.drawPath(c, this.linePath, this.mRenderPaint);
+        }
         // } else {
         //     const points = res[0];
         //     const length = res[1];
@@ -620,7 +622,6 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     protected drawCircles(c: Canvas) {
         this.mRenderPaint.setStyle(Style.FILL);
-
 
         this.mCirclesBuffer[0] = 0;
         this.mCirclesBuffer[1] = 0;

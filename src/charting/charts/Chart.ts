@@ -19,7 +19,8 @@ import { profile } from '@nativescript/core/profiling/profiling';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
-import { isIOS } from '@nativescript/core/platform';
+import { isAndroid, isIOS } from '@nativescript/core/platform';
+import { layout } from '@nativescript/core/utils/utils';
 
 const LOG_TAG = 'NSChart';
 
@@ -110,7 +111,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * text that is displayed when the chart is empty
      */
-    private mNoDataText = 'No chart data available.';
+    private mNoDataText = null;
 
     /**
      * Gesture listener for custom callbacks when making gestures on the chart.
@@ -1544,17 +1545,15 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     //     this.onSizeChanged(this.getMeasuredWidth(), this.getMeasuredHeight());
     // }
 
-    public onSizeChanged(w: number, h: number, oldw: number, oldh: number): void {
-        super.onSizeChanged(w, h, oldw, oldh);
-        // super.setMeasuredDimension(measuredWidth, measuredHeight);
+    onSetWidthHeight(w: number, h: number) {
         const needsDataSetChanged = !this.mViewPortHandler.hasChartDimens();
-        if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged);
+        if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged, new Error().stack);
 
         if (w > 0 && h > 0 && h < 10000 && h < 10000) {
             if (this.mLogEnabled) console.log(LOG_TAG, 'Setting chart dimens, width: ' + w + ', height: ' + h);
             this.mViewPortHandler.setChartDimens(w, h);
         } else {
-            if (this.mLogEnabled) console.warn(LOG_TAG, '*Avoiding* setting chart dimens! width: ' + w + ', height: ' + h);
+            console.warn(LOG_TAG, '*Avoiding* setting chart dimens! width: ' + w + ', height: ' + h);
         }
 
         // This may cause the chart view to mutate properties affecting the view port --
@@ -1574,7 +1573,20 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         this.mJobs = [];
 
-        // super.onSizeChanged(w, h);
+    }
+    public onLayout(left: number, top: number, right: number, bottom: number) {
+        super.onLayout(left, top, right, bottom);
+       
+        if (isIOS) {
+            this.onSetWidthHeight(layout.toDeviceIndependentPixels(right - left), layout.toDeviceIndependentPixels(bottom - top));
+        }
+
+    }
+    public onSizeChanged(w: number, h: number, oldw: number, oldh: number): void {
+        super.onSizeChanged(w, h, oldw, oldh);
+        if (isAndroid) {
+            this.onSetWidthHeight(w, h);
+        }
     }
 
     /**

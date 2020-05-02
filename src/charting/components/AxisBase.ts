@@ -475,7 +475,7 @@ export abstract class AxisBase extends ComponentBase {
      *
      * @param f
      */
-    public setValueFormatter(f) {
+    public setValueFormatter(f: ValueFormatter) {
         if (f == null) this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);
         else this.mAxisValueFormatter = f;
     }

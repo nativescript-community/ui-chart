@@ -126,7 +126,7 @@ export class XAxisRenderer extends AxisRenderer {
     }
     
     public renderAxisLine(c: Canvas) {
-        if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled()) return;
+        if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled() || this.mXAxis.getAxisLineWidth() === 0) return;
 
         this.mAxisLinePaint.setColor(this.mXAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mXAxis.getAxisLineWidth());
@@ -164,7 +164,9 @@ export class XAxisRenderer extends AxisRenderer {
             } else {
                 positions[i] = mXAxis.mEntries[i / 2];
             }
-            positions[i + 1] = 0;
+            if (i + 1 < length) {
+                positions[i + 1] = 0;
+            }
         }
         this.mTrans.pointValuesToPixel(positions);
         const chartWidth = mViewPortHandler.getChartWidth();
@@ -217,7 +219,9 @@ export class XAxisRenderer extends AxisRenderer {
         const positions = this.mRenderGridLinesBuffer;
         for (let i = 0; i < length; i += 2) {
             positions[i] = this.mXAxis.mEntries[i / 2];
-            positions[i+1] = 0;
+            if (i+1 < length) {
+                positions[i+1] = 0;
+            }
         }
         this.mTrans.pointValuesToPixel(positions);
 
@@ -287,7 +291,7 @@ export class XAxisRenderer extends AxisRenderer {
         gridLinePath.reset();
     }
 
-    protected mRenderLimitLinesBuffer = [];
+    protected mRenderLimitLinesBuffer = Utils.createNativeArray(2);
     protected mLimitLineClippingRect = new RectF(0, 0, 0, 0);
 
     /**
@@ -309,10 +313,11 @@ export class XAxisRenderer extends AxisRenderer {
             const l = limitLines[i];
 
             if (!l.isEnabled()) continue;
+            const lineWidth = l.getLineWidth();
 
             let clipRestoreCount = c.save();
             this.mLimitLineClippingRect.set(this.mViewPortHandler.getContentRect());
-            this.mLimitLineClippingRect.inset(-l.getLineWidth(), 0);
+            this.mLimitLineClippingRect.inset(-lineWidth, 0);
             c.clipRect(this.mLimitLineClippingRect);
 
             position[0] = l.getLimit();
@@ -320,7 +325,9 @@ export class XAxisRenderer extends AxisRenderer {
 
             this.mTrans.pointValuesToPixel(position);
 
-            this.renderLimitLineLine(c, l, position);
+            if (lineWidth > 0) {
+                this.renderLimitLineLine(c, l, position);
+            }
             this.renderLimitLineLabel(c, l, position, 2 + l.getYOffset());
 
             c.restoreToCount(clipRestoreCount);

@@ -78,7 +78,7 @@ export class XAxis extends AxisBase {
      *
      * @param pos
      */
-    public setPosition(pos) {
+    public setPosition(pos:XAxisPosition) {
         this.mPosition = pos;
     }
 

@@ -77,7 +77,7 @@ export class YAxisRenderer extends AxisRenderer {
     }
 
     public renderAxisLine(c: Canvas) {
-        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawAxisLineEnabled()) return;
+        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawAxisLineEnabled() || this.mYAxis.getAxisLineWidth() === 0) return;
 
         this.mAxisLinePaint.setColor(this.mYAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mYAxis.getAxisLineWidth());
@@ -244,7 +244,7 @@ export class YAxisRenderer extends AxisRenderer {
     }
 
     protected mRenderLimitLines = new Path();
-    protected mRenderLimitLinesBuffer = [];
+    protected mRenderLimitLinesBuffer = Utils.createNativeArray(2);
     protected mLimitLineClippingRect = new RectF(0, 0, 0, 0);
     /**
      * Draws the LimitLines associated with this axis to the screen.
@@ -266,26 +266,26 @@ export class YAxisRenderer extends AxisRenderer {
             const l = limitLines[i];
 
             if (!l.isEnabled()) continue;
-
+            const lineWidth = l.getLineWidth();
             let clipRestoreCount = c.save();
             this.mLimitLineClippingRect.set(this.mViewPortHandler.getContentRect());
-            this.mLimitLineClippingRect.inset(0, -l.getLineWidth());
+            this.mLimitLineClippingRect.inset(0, -lineWidth);
             c.clipRect(this.mLimitLineClippingRect);
 
             this.mLimitLinePaint.setStyle(Style.STROKE);
             this.mLimitLinePaint.setColor(l.getLineColor());
-            this.mLimitLinePaint.setStrokeWidth(l.getLineWidth());
+            this.mLimitLinePaint.setStrokeWidth(lineWidth);
             this.mLimitLinePaint.setPathEffect(l.getDashPathEffect());
 
             pts[1] = l.getLimit();
-
             this.mTrans.pointValuesToPixel(pts);
-
-            limitLinePath.moveTo(this.mViewPortHandler.contentLeft(), pts[1]);
-            limitLinePath.lineTo(this.mViewPortHandler.contentRight(), pts[1]);
-
-            c.drawPath(limitLinePath, this.mLimitLinePaint);
-            limitLinePath.reset();
+            
+            if (lineWidth > 0) {
+                limitLinePath.moveTo(this.mViewPortHandler.contentLeft(), pts[1]);
+                limitLinePath.lineTo(this.mViewPortHandler.contentRight(), pts[1]);
+                c.drawPath(limitLinePath, this.mLimitLinePaint);
+                limitLinePath.reset();
+            }
             // c.drawLines(pts, this.mLimitLinePaint);
 
             let label = l.getLabel();

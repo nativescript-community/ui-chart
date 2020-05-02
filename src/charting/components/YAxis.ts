@@ -162,7 +162,7 @@ export class YAxis extends AxisBase {
      *
      * @param pos
      */
-    public setPosition( pos) {
+    public setPosition( pos: YAxisLabelPosition) {
         this.mPosition = pos;
     }
 
