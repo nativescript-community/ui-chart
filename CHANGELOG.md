@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.15](https://github.com/Akylas/nativescript-chart/compare/v0.0.14...v0.0.15) (2020-05-02)
+
+
+### Bug Fixes
+
+* a few fixes ([663ea99](https://github.com/Akylas/nativescript-chart/commit/663ea995718a4b20f1bb9a309963868ba805ba61))
+
+
+
+
+
 ## [0.0.14](https://github.com/Akylas/nativescript-chart/compare/v0.0.13...v0.0.14) (2020-02-07)
 
 
