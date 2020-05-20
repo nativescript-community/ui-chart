@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.17](https://github.com/Akylas/nativescript-chart/compare/v0.0.16...v0.0.17) (2020-05-20)
+
+
+### Features
+
+* axis option to not draw limitlines ([b22d641](https://github.com/Akylas/nativescript-chart/commit/b22d641f374c8371d6090dc6b32534202ecdfbfd))
+
+
+
+
+
 ## [0.0.16](https://github.com/Akylas/nativescript-chart/compare/v0.0.15...v0.0.16) (2020-05-02)
 
 **Note:** Version bump only for package nativescript-chart
