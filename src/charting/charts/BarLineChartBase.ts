@@ -173,19 +173,24 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mData === null) return;
         const startTime = Date.now();
 
-
         // execute all drawing commands
         this.drawGridBackground(canvas);
 
         if (this.mAutoScaleMinMaxEnabled) {
             this.autoScale();
         }
+        const leftEnabled = this.mAxisLeft.isEnabled();
+        const rightEnabled = this.mAxisRight.isEnabled();
+        const xEnabled = this.mXAxis.isEnabled();
+        const leftLimitEnabled = leftEnabled && this.mAxisLeft.isDrawLimitLinesEnabled();
+        const rightLimitEnabled =  rightEnabled && this.mAxisRight.isDrawLimitLinesEnabled();
+        const xLimitEnabled =  xEnabled && this.mXAxis.isDrawLimitLinesEnabled();
 
-        if (this.mAxisLeft.isEnabled()) this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
+        if (leftEnabled) this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
 
-        if (this.mAxisRight.isEnabled()) this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
+        if (rightEnabled) this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
 
-        if (this.mXAxis.isEnabled()) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+        if (xEnabled) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
 
         this.mXAxisRenderer.renderAxisLine(canvas);
         this.mAxisRendererLeft.renderAxisLine(canvas);
@@ -197,11 +202,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         if (this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
 
-        if (this.mXAxis.isEnabled() && this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
+        if (xLimitEnabled && this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
 
-        if (this.mAxisLeft.isEnabled() && this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
+        if (leftLimitEnabled && this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
 
-        if (this.mAxisRight.isEnabled() && this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+        if (rightLimitEnabled && this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
 
         // make sure the data cannot be drawn outside the content-rect
         let clipRestoreCount = canvas.save();
@@ -222,11 +227,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.mRenderer.drawExtras(canvas);
 
-        if (this.mXAxis.isEnabled() && !this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
+        if (xLimitEnabled && !this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
 
-        if (this.mAxisLeft.isEnabled() && !this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
+        if (leftLimitEnabled && !this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
 
-        if (this.mAxisRight.isEnabled() && !this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+        if (rightLimitEnabled && !this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
 
         this.mXAxisRenderer.renderAxisLabels(canvas);
         this.mAxisRendererLeft.renderAxisLabels(canvas);

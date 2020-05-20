@@ -99,6 +99,10 @@ export abstract class AxisBase extends ComponentBase {
     protected mLimitLines: LimitLine[] = [];
 
     /**
+     * flag indicating if the limit lines are drawn
+     */
+    protected mDrawLimitLines = true;
+    /**
      * flag indicating the limit lines layer depth
      */
     protected mDrawLimitLineBehindData = false;
@@ -419,6 +423,19 @@ export abstract class AxisBase extends ComponentBase {
 
     public isDrawLimitLinesBehindDataEnabled() {
         return this.mDrawLimitLineBehindData;
+    }
+    /**
+     * If this is set to false, the LimitLines are not drawn
+     * otherwise on top. Default: false
+     *
+     * @param enabled
+     */
+    public setDrawLimitLines(enabled) {
+        this.mDrawLimitLines = enabled;
+    }
+
+    public isDrawLimitLinesEnabled() {
+        return this.mDrawLimitLines;
     }
 
     /**
