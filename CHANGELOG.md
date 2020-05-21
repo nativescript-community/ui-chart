@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.18](https://github.com/Akylas/nativescript-chart/compare/v0.0.17...v0.0.18) (2020-05-21)
+
+
+### Bug Fixes
+
+* full esm support ([c12ff77](https://github.com/Akylas/nativescript-chart/commit/c12ff7783cee70ccb5c3d517687e5b5a3ad1512b))
+
+
+
+
+
 ## [0.0.17](https://github.com/Akylas/nativescript-chart/compare/v0.0.16...v0.0.17) (2020-05-20)
 
 
