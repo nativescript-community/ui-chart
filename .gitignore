@@ -1,80 +1,24 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Folder config file
-Desktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
-.DS_Store
-.AppleDouble
-.LSOverride
 .idea
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-
-bin
-obj
-build
-.vs
-.tscache
-*.user
-*.js
-*.map
-!gruntfile.js
+.vscode
 node_modules
-*.tmp.*
 platforms
-lib
-*.css
-!webpack.*.js
-report
-*.log
-
+hooks
+package-lock.json
+.DS_Store
+npm-debug.log.*
+demo*/app/**/*.js
+demo*/typings
 *.framework
-*.aar
-
-Pods
-*.lock
-*.xcworkspace
-*.framework/
-*.tgz
-
-/plugin/**/*.d.ts
-!plugin/platforms
-*.aar*
-/plugin/package-lock.json
+**/*.js.map
+src/**/*.js
+plugin/**/*.js
 plugin/**/*.d.ts
-/schema
-pnpm-lock.yaml
+bin
+build
+Pods
+!plugin/platforms
+/plugin/platforms/android/*.aar
+*.xcuserdatad
 /plugin/README.md
+plugin/**/*js.map
+plugin/**/*js
