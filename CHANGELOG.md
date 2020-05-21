@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.19](https://github.com/Akylas/nativescript-chart/compare/v0.0.18...v0.0.19) (2020-05-21)
+
+
+### Bug Fixes
+
+* esm using import for tree shaking ([e493fc6](https://github.com/Akylas/nativescript-chart/commit/e493fc6c62f276a5be6fa1bb03974da03999cccc))
+
+
+
+
+
 ## [0.0.18](https://github.com/Akylas/nativescript-chart/compare/v0.0.17...v0.0.18) (2020-05-21)
 
 
