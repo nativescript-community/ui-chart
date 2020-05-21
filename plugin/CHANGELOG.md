@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.20](https://github.com/Akylas/nativescript-chart/compare/v0.0.19...v0.0.20) (2020-05-21)
+
+
+### Bug Fixes
+
+* sideEffects for tree shacking ([ec1aa9a](https://github.com/Akylas/nativescript-chart/commit/ec1aa9a808ebfcd0e2a1027d74fb5fff9d5dc018))
+
+
+
+
+
 ## [0.0.19](https://github.com/Akylas/nativescript-chart/compare/v0.0.18...v0.0.19) (2020-05-21)
 
 **Note:** Version bump only for package nativescript-chart
