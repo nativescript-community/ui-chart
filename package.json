@@ -5,7 +5,7 @@
     "scripts": {
         "tsc": "tsc -skipLibCheck -d",
         "clean": "rimraf ./plugin/**/*.d.ts ./plugin/**/*.js ./plugin/**/*.js.map plugin/node_modules plugin/package-lock.json",
-        "build.esm": "tsc -skipLibCheck --target es2015 --removeComments --outDir build/esm",
+        "build.esm": "tsc -skipLibCheck --target es2015 --module esnext --removeComments --outDir build/esm",
         "build": "cp README.md plugin/ && rm -f .tsbuildinfo && npm run tsc && npm run build.esm && node ./build.esm.js",
         "demo.ios": "npm i && npm run tsc && cd demo && tns run ios",
         "demo.android": "npm i && npm run tsc && cd demo && tns run android",
