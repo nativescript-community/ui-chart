@@ -86,7 +86,7 @@ export class LegendRenderer extends Renderer {
 
                     for (let j = 0; j < clrs.length && j < bds.getStackSize(); j++) {
                         this.computedEntries.push(
-                            new LegendEntry(sLabels[j % sLabels.length], dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j])
+                            new LegendEntry(sLabels[j % sLabels.length], dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j].color)
                         );
                     }
 
@@ -99,7 +99,7 @@ export class LegendRenderer extends Renderer {
 
                     for (let j = 0; j < clrs.length && j < entryCount; j++) {
                         this.computedEntries.push(
-                            new LegendEntry(pds.getEntryForIndex(j).label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j])
+                            new LegendEntry(pds.getEntryForIndex(j).label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j].color)
                         );
                     }
 
@@ -130,7 +130,7 @@ export class LegendRenderer extends Renderer {
                             label = data.getDataSetByIndex(i).getLabel();
                         }
 
-                        this.computedEntries.push(new LegendEntry(label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j]));
+                        this.computedEntries.push(new LegendEntry(label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j].color));
                     }
                 }
             }
@@ -369,7 +369,6 @@ export class LegendRenderer extends Renderer {
 
         let form = entry.form;
         if (form == LegendForm.DEFAULT) form = legend.getForm();
-
         this.mLegendFormPaint.setColor(entry.formColor);
 
         const formSize = isNaN(entry.formSize) ? legend.getFormSize() : entry.formSize;

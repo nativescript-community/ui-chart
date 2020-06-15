@@ -1547,7 +1547,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     onSetWidthHeight(w: number, h: number) {
         const needsDataSetChanged = !this.mViewPortHandler.hasChartDimens();
-        if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged, new Error().stack);
+        if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged);
 
         if (w > 0 && h > 0 && h < 10000 && h < 10000) {
             if (this.mLogEnabled) console.log(LOG_TAG, 'Setting chart dimens, width: ' + w + ', height: ' + h);

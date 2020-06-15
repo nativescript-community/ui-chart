@@ -19,5 +19,5 @@ export interface IAxisValueFormatter {
    *
    *  Extend {@link ValueFormatter} and use {@link ValueFormatter#getAxisLabel(float, AxisBase)}
    */
-  getFormattedValue(value, axis: AxisBase): string;
+  getAxisLabel(value, axis: AxisBase): string;
 }

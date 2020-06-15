@@ -370,7 +370,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             const points = Utils.pointsFromBuffer(float32arr);
             // console.log('generateLinearPath', index, points.length);
             // if (isAndroid) {
-            outputPath.setLines(points, index);
+            outputPath.setLines(points, 0, index);
             // }
             return [points, index];
         } else {
@@ -439,6 +439,9 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
         const res = this.generateLinearPath(dataSet, this.linePath);
+
+        const colors = dataSet.getColors();
+        const nbColors = colors.length;
         // if filled is enabled, close the path
         if (dataSet.isDrawFilledEnabled()) {
             this.fillPath.reset();
@@ -450,8 +453,23 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         // if (isAndroid || dataSet.isDashedLineEnabled()) {
         if (dataSet.getLineWidth() > 0) {
-            trans.pathValueToPixel(this.linePath);
-            this.drawPath(c, this.linePath, this.mRenderPaint);
+            if (nbColors === 1) {
+                trans.pathValueToPixel(this.linePath);
+                this.drawPath(c, this.linePath, this.mRenderPaint);
+            } else {
+                    const xKey = dataSet.xProperty;
+                    const points = res[0];
+                    let lastIndex = 0;
+                    trans.pointValuesToPixel(points);
+                    for (let index = 0; index < nbColors; index++) {
+                        const color = colors[index];
+                        let colorIndex = color[xKey] as number;
+                        this.mRenderPaint.setColor(color.color);
+                        this.linePath.setLines(points, lastIndex*2, (colorIndex - lastIndex + 1)*2);
+                        this.drawPath(c, this.linePath, this.mRenderPaint);
+                        lastIndex = colorIndex;
+                    }
+                }
         }
         // } else {
         //     const points = res[0];
@@ -463,8 +481,12 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     @profile
-    drawLines(canvas: Canvas, points: number[], offest, length, paint: Paint, matrix: Matrix) {
-        canvas.drawLines(points, offest, length, paint, matrix);
+    drawLines(canvas: Canvas, points: number[], offest, length, paint: Paint, matrix?: Matrix) {
+        if (matrix) {
+            canvas.drawLines(points, offest, length, paint, matrix);
+        } else {
+            canvas.drawLines(points, offest, length, paint);
+        }
     }
 
     protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, bounds: XBounds) {

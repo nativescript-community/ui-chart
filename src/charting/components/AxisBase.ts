@@ -3,6 +3,7 @@ import { LimitLine } from './LimitLine';
 import { DashPathEffect, parseDashEffect } from 'nativescript-canvas';
 import { ValueFormatter } from '../formatter/ValueFormatter';
 import { DefaultAxisValueFormatter } from '../formatter/DefaultAxisValueFormatter';
+import { IAxisValueFormatter } from 'nativescript-chart/formatter/IAxisValueFormatter';
 
 /**
  * Base-class of all axes (previously called labels).
@@ -13,7 +14,7 @@ export abstract class AxisBase extends ComponentBase {
     /**
      * custom formatter that is used instead of the auto-formatter if set
      */
-    protected mAxisValueFormatter: ValueFormatter;
+    protected mAxisValueFormatter: IAxisValueFormatter;
 
     private mGridColor = 'gray';
 
@@ -492,7 +493,7 @@ export abstract class AxisBase extends ComponentBase {
      *
      * @param f
      */
-    public setValueFormatter(f: ValueFormatter) {
+    public setValueFormatter(f: IAxisValueFormatter) {
         if (f == null) this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);
         else this.mAxisValueFormatter = f;
     }

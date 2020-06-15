@@ -255,7 +255,7 @@ export interface IDataSet<T extends Entry> {
      *
      * @return
      */
-    getColors(): Array<string | Color>;
+    getColors(): Array<{color:string | Color, [k:string]:number | string | Color}>;
 
     /**
      * Returns the first color (index 0) of the colors-array this DataSet

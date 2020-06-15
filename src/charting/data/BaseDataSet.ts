@@ -45,7 +45,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * List representing all colors that are used for this DataSet
      */
-    protected mColors: Array<string | Color> = null;
+    protected mColors: Array<{color:string | Color, [k:string]:number | string | Color}> = null;
 
     protected mGradientColor = null;
 
@@ -132,7 +132,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         }
 
         // default color
-        this.mColors.push('#8CEAFF');
+        this.mColors.push({color:'#8CEAFF'});
         this.mValueColors.push('black');
         this.mLabel = label;
     }
@@ -157,7 +157,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getColor(index = 0) {
-        return this.mColors[index % this.mColors.length];
+        return this.mColors[index % this.mColors.length].color;
     }
 
     public getGradientColors() {
@@ -189,9 +189,9 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      *
      * @param color
      */
-    public addColor(color: string | Color) {
+    public addColor(value:{color:string | Color, [k:string]:number | string | Color}) {
         if (this.mColors == null) this.mColors = [];
-        this.mColors.push(color);
+        this.mColors.push(value);
     }
 
     /**
@@ -221,12 +221,11 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      */
     public setColor(color: string | Color, alpha?: number) {
         this.resetColors();
-        if (alpha === undefined) {
-            this.mColors.push(color);
-        } else {
+        if (alpha !== undefined) {
             const actColor = color instanceof Color ? color: new Color(color)
-            this.mColors.push(new Color(actColor.r, actColor.g, actColor.b, alpha));
+            color = new Color(actColor.r, actColor.g, actColor.b, alpha);
         }
+        this.mColors.push({color});
     }
 
     /**
