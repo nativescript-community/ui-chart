@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.21](https://github.com/Akylas/nativescript-chart/compare/v0.0.20...v0.0.21) (2020-06-15)
+
+
+### Bug Fixes
+
+* support latest Canvas plugin. working on multiple colors per dataset ([95a33a5](https://github.com/Akylas/nativescript-chart/commit/95a33a56e8936b574c0eea3f89c8897a2a52b78b))
+
+
+
+
+
 ## [0.0.20](https://github.com/Akylas/nativescript-chart/compare/v0.0.19...v0.0.20) (2020-05-21)
 
 
