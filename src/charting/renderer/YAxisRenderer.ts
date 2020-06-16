@@ -69,10 +69,9 @@ export class YAxisRenderer extends AxisRenderer {
 
         this.drawYLabels(c, xPos, positions, yoffset);
         if (dependency == AxisDependency.LEFT) {
-            this.drawMarkTicket(c, this.mViewPortHandler.contentLeft(), positions, -xoffset/2);
-
+            this.drawMarkTicket(c, this.mViewPortHandler.contentLeft(), positions, -xoffset / 2);
         } else {
-            this.drawMarkTicket(c, this.mViewPortHandler.contentRight(),positions, +xoffset/2);
+            this.drawMarkTicket(c, this.mViewPortHandler.contentRight(), positions, +xoffset / 2);
         }
     }
 
@@ -116,20 +115,17 @@ export class YAxisRenderer extends AxisRenderer {
      * @param length
      */
 
-    protected  drawMarkTicket ( c:Canvas,  fixedPosition, positions,  ticklength) {
+    protected drawMarkTicket(c: Canvas, fixedPosition, positions, ticklength) {
         const mYAxis = this.mYAxis;
-        if (!mYAxis.isDrawMarkTicksEnabled() ) return;
+        if (!mYAxis.isDrawMarkTicksEnabled()) return;
 
         const from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
-        const to = mYAxis.isDrawTopYLabelEntryEnabled()
-                ? mYAxis.mEntryCount
-                : (mYAxis.mEntryCount - 1);
+        const to = mYAxis.isDrawTopYLabelEntryEnabled() ? mYAxis.mEntryCount : mYAxis.mEntryCount - 1;
 
         // draw
         for (let i = from; i < to; i++) {
-            c.drawLine(fixedPosition, positions[i * 2 + 1], fixedPosition+ticklength, positions[i * 2 + 1], this.mAxisLinePaint);
+            c.drawLine(fixedPosition, positions[i * 2 + 1], fixedPosition + ticklength, positions[i * 2 + 1], this.mAxisLinePaint);
         }
-
     }
 
     // protected mRenderGridLinesPath = new Path();
@@ -198,7 +194,7 @@ export class YAxisRenderer extends AxisRenderer {
      * @return
      */
     protected getTransformedPositions() {
-        const length= this.mYAxis.mEntryCount * 2
+        const length = this.mYAxis.mEntryCount * 2;
         if (this.mGetTransformedPositionsBuffer.length != length) {
             this.mGetTransformedPositionsBuffer = Utils.createArrayBuffer(length);
         }
@@ -208,7 +204,7 @@ export class YAxisRenderer extends AxisRenderer {
             positions[i] = 0;
             positions[i + 1] = this.mYAxis.mEntries[i / 2];
         }
-        const result = Utils.pointsFromBuffer(positions)
+        const result = Utils.pointsFromBuffer(positions);
         this.mTrans.pointValuesToPixel(result);
         return Utils.nativeArrayToArray(result);
     }
@@ -279,7 +275,7 @@ export class YAxisRenderer extends AxisRenderer {
 
             pts[1] = l.getLimit();
             this.mTrans.pointValuesToPixel(pts);
-            
+
             if (lineWidth > 0) {
                 limitLinePath.moveTo(this.mViewPortHandler.contentLeft(), pts[1]);
                 limitLinePath.lineTo(this.mViewPortHandler.contentRight(), pts[1]);
