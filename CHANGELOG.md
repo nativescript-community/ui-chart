@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.22](https://github.com/Akylas/nativescript-chart/compare/v0.0.21...v0.0.22) (2020-06-16)
+
+
+### Bug Fixes
+
+* cubic line rendering ([adafd84](https://github.com/Akylas/nativescript-chart/commit/adafd84d48043161d7735a9e27acb990dbd89aa5))
+
+
+
+
+
 ## [0.0.21](https://github.com/Akylas/nativescript-chart/compare/v0.0.20...v0.0.21) (2020-06-15)
 
 
