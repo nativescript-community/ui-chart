@@ -238,7 +238,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 // this.cubicPath.cubicTo(cpx, prev[yKey] * phaseY, cpx, cur[yKey] * phaseY, cur[xKey], cur[yKey] * phaseY);
             }
             const points = Utils.pointsFromBuffer(float32arr);
-            outputPath.setCubicLines(points, index);
+            outputPath.setCubicLines(points, 0, index);
             return [points, index];
         } else {
             outputPath.reset();
@@ -314,7 +314,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             }
             const points = Utils.pointsFromBuffer(float32arr);
             // console.log('generateCubicPath', index, points.length);
-            outputPath.setCubicLines(points, index);
+            outputPath.setCubicLines(points, 0, index);
             return [points, index];
         } else {
             outputPath.reset();
