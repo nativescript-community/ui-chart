@@ -8,6 +8,7 @@ import { LegendForm } from '../../components/Legend';
 import { DashPathEffect } from 'nativescript-canvas';
 import { Color } from '@nativescript/core/color/color';
 import { Font } from '@nativescript/core/ui/styling/font';
+import { IValueFormatter } from 'nativescript-chart/formatter/IValueFormatter';
 
 /**
  * Created by Philipp Jahoda on 21/10/15.
@@ -320,14 +321,14 @@ export interface IDataSet<T extends Entry> {
      *
      * @param f
      */
-    setValueFormatter(f: ValueFormatter);
+    setValueFormatter(f: IValueFormatter);
 
     /**
      * Returns the formatter used for drawing the values inside the chart.
      *
      * @return
      */
-    getValueFormatter(): ValueFormatter;
+    getValueFormatter(): IValueFormatter;
 
     /**
      * Returns true if the valueFormatter object of this DataSet is null.

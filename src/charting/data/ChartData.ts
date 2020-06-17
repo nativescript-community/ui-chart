@@ -2,6 +2,7 @@ import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from './Entry';
 import { AxisDependency } from '../components/YAxis';
 import { Highlight } from '../highlight/Highlight';
+import { IValueFormatter } from 'nativescript-chart/formatter/IValueFormatter';
 
 export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
@@ -587,7 +588,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      *
      * @param f
      */
-    public setValueFormatter(f) {
+    public setValueFormatter(f: IValueFormatter) {
         if (f == null) return;
         else {
             for (let set of this.mDataSets) {

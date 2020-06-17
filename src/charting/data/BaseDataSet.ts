@@ -7,6 +7,7 @@ import { GradientColor } from '../model/GradientColor';
 import { Color } from '@nativescript/core/color/color';
 import { Utils } from '../utils/Utils';
 import { Rounding } from './DataSet';
+import { IValueFormatter } from 'nativescript-chart/formatter/IValueFormatter';
 
 /**
  * Created by Philipp Jahoda on 21/10/15.
@@ -74,7 +75,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * custom formatter that is used instead of the auto-formatter if set
      */
-    protected mValueFormatter: ValueFormatter;
+    protected mValueFormatter: IValueFormatter;
 
     /**
      * the typeface used for the value text
@@ -270,7 +271,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return this.mHighlightEnabled;
     }
 
-    public setValueFormatter(f) {
+    public setValueFormatter(f: IValueFormatter) {
         if (f == null) return;
         else this.mValueFormatter = f;
     }

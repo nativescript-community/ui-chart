@@ -4,6 +4,7 @@ import { ValueFormatter } from '../formatter/ValueFormatter';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { profile } from '@nativescript/core/profiling/profiling';
 import { isAndroid } from '@nativescript/core/platform';
+import { IValueFormatter } from 'nativescript-chart/formatter/IValueFormatter';
 
 export type FloatArray = Float32Array | Float64Array;
 export let FloatConstructor: typeof Float32Array | typeof Float64Array;
@@ -157,7 +158,7 @@ export namespace Utils {
      */
     const POW_10 = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
 
-    let mDefaultValueFormatter: ValueFormatter = generateDefaultValueFormatter();
+    let mDefaultValueFormatter: IValueFormatter = generateDefaultValueFormatter();
 
     export function generateDefaultValueFormatter() {
         return new DefaultValueFormatter(1);
