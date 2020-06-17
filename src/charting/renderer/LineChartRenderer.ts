@@ -173,6 +173,10 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.mRenderPaint.setPathEffect(dataSet.getDashPathEffect());
         this.mRenderPaint.setColor(dataSet.getColor());
         this.mRenderPaint.setStyle(Style.STROKE);
+
+        const scaleX = this.mViewPortHandler.getScaleX();
+        dataSet.applyFiltering(scaleX);
+
         let result = false;
         switch (dataSet.getMode()) {
             default:
