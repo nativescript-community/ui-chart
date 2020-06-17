@@ -576,14 +576,16 @@ export class LineChartRenderer extends LineRadarRenderer {
                 const dataSet = dataSets[i];
 
                 if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
-                this.drawValuesForDataset(c, dataSet);
+                this.drawValuesForDataset(c, dataSet, i);
             }
         }
     }
 
     public drawValue(c: Canvas, valueText, x, y, color) {
-        this.mValuePaint.setColor(color);
-        c.drawText(valueText, x, y, this.mValuePaint);
+        if (valueText) {
+            this.mValuePaint.setColor(color);
+            c.drawText(valueText, x, y, this.mValuePaint);
+        }
     }
 
     public drawExtras(c: Canvas) {
