@@ -11,13 +11,13 @@ export class ColorTemplate {
     /**
      * an "invalid" color that indicates that no color is set
      */
-    public static COLOR_NONE = null as any;
+    public static COLOR_NONE = new Color(-1);
 
     /**
      * this "color" is used for the Legend creation and indicates that the next
      * form should be skipped
      */
-    public static COLOR_SKIP = 0x00112234 as any;
+    public static COLOR_SKIP = new Color(0x00112234);
 
     /**
      * THE COLOR THEMES ARE PREDEFINED (predefined color integer arrays), FEEL
