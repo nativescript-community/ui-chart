@@ -510,7 +510,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     private mLineBuffer: number[];
 
     @profile
-    public drawValuesForDataset(c: Canvas, dataSet: LineDataSet) {
+    public drawValuesForDataset(c: Canvas, dataSet: LineDataSet, dataSetIndex: number) {
         const yKey = dataSet.yProperty;
         // apply the text-styling defined by the DataSet
         this.applyValueTextStyle(dataSet);
@@ -524,26 +524,36 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-        const positions = trans.generateTransformedValues(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
+        const { points, count } = trans.generateTransformedValues(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
         const formatter = dataSet.getValueFormatter();
 
         const iconsOffset = dataSet.getIconsOffset();
         const valuesOffset = dataSet.getValuesOffset();
         const drawIcons = dataSet.isDrawIconsEnabled();
         const drawValues = dataSet.isDrawValuesEnabled();
-        for (let j = 0; j < positions.length; j += 2) {
-            let x = positions[j];
-            let y = positions[j + 1];
+        const length = count;
+        const dataSetCount = dataSet.getEntryCount();
+        for (let j = 0; j < length; j += 2) {
+            let x = points[j];
+            let y = points[j + 1];
 
             if (!this.mViewPortHandler.isInBoundsRight(x)) break;
 
             if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
 
-            let entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
+            const index = j / 2 + this.mXBounds.min;
+            let entry = dataSet.getEntryForIndex(index);
             if (!entry) continue;
 
             if (drawValues) {
-                this.drawValue(c, formatter.getFormattedValue(entry[yKey]), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2));
+                // console.log('drawValue', entry[yKey], entry, index, dataSetCount);
+                this.drawValue(
+                    c,
+                    formatter.getFormattedValue(entry[yKey], entry, index, dataSetCount, dataSetIndex, this.mViewPortHandler),
+                    valuesOffset.x + x,
+                    valuesOffset.y + y - valOffset,
+                    dataSet.getValueTextColor(j / 2)
+                );
             }
 
             if (drawIcons && entry.icon != null) {

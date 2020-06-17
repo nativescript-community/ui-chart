@@ -14,6 +14,8 @@ export interface IValueFormatter {
    *
    * @param value           the value to be formatted
    * @param entry           the entry the value belongs to - in e.g. BarChart, this is of class BarEntry
+   * @param index    index of the drawn value
+   * @param count    total number of values drawn (useful to draw first or last)
    * @param dataSetIndex    the index of the DataSet the entry in focus belongs to
    * @param viewPortHandler provides information about the current chart state (scale, translation, ...)
    * @return the formatted label ready for being drawn
@@ -23,6 +25,8 @@ export interface IValueFormatter {
   getFormattedValue(
     value: number,
     entry: Entry,
+    index,
+    count,
     dataSetIndex,
     viewPortHandler
   ): string;

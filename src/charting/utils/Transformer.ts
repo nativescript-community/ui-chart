@@ -121,7 +121,7 @@ export class Transformer {
     // let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
 
         if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length <  count) {
-            this.valuePointsForGenerateTransformedValues = Utils.createArrayBuffer(count);;
+            this.valuePointsForGenerateTransformedValues = Utils.createArrayBuffer(count);
         }
         // let valuePoints = this.valuePointsForGenerateTransformedValues;
         const valuePoints = this.valuePointsForGenerateTransformedValues;
@@ -143,7 +143,7 @@ export class Transformer {
 
         this.getValueToPixelMatrix().mapPoints(points);
 
-        return points;
+        return {points, count};
     }
 
     // protected valuePointsForGenerateTransformedValuesLine = [];
