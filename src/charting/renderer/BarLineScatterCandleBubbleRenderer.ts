@@ -32,7 +32,7 @@ export class XBounds {
      * @param chart
      * @param dataSet
      */
-    public set(chart: BarLineScatterCandleBubbleDataProvider, dataSet: IBarLineScatterCandleBubbleDataSet<any>, animator: ChartAnimator) {
+    public set<T extends Entry>(chart: BarLineScatterCandleBubbleDataProvider, dataSet: IBarLineScatterCandleBubbleDataSet<T>, animator: ChartAnimator) {
         let phaseX = Math.max(0, Math.min(1, animator.getPhaseX()));
         let low = chart.getLowestVisibleX();
         let high = chart.getHighestVisibleX();
