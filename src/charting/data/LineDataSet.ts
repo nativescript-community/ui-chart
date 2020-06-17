@@ -7,12 +7,13 @@ import { DefaultFillFormatter } from '../formatter/DefaultFillFormatter';
 import { IFillFormatter } from '../formatter/IFillFormatter';
 import { DashPathEffect, parseDashEffect } from 'nativescript-canvas';
 import { ColorTemplate } from 'nativescript-chart/utils/ColorTemplate';
+import { createLTTB } from 'downsample';
 
 export enum Mode {
     LINEAR,
     STEPPED,
     CUBIC_BEZIER,
-    HORIZONTAL_BEZIER
+    HORIZONTAL_BEZIER,
 }
 
 export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet {
@@ -63,6 +64,58 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     private mDrawCircleHole = true;
 
+    /**
+     * the max number allowed point before filtering. <= O means disabled
+     */
+    private mMaxFilterNumber = 0;
+
+    public getMaxFilterNumber() {
+        return this.mMaxFilterNumber;
+    }
+
+    /**
+     * Sets the max number allowed point before filtering.
+     *
+     * @param value: number
+     */
+    public setMaxFilterNumber(value: number) {
+        this.mMaxFilterNumber = value;
+    }
+
+    protected mFilteredValues: Entry[] = null;
+    protected mFilterFunction;
+    public applyFiltering(scaleX: number) {
+        // console.log('applyFiltering', scaleX, this.mMaxFilterNumber, this.mValues.length, this.mFilteredValues && this.mFilteredValues.length);
+        if (this.mMaxFilterNumber > 0 && this.mValues.length / scaleX > this.mMaxFilterNumber) {
+            const filterCount = Math.round(this.mMaxFilterNumber * scaleX);
+            if (!this.mFilteredValues || this.mFilteredValues.length !== filterCount) {
+                if (!this.mFilterFunction) {
+                    this.mFilterFunction = createLTTB({
+                        x: this.xProperty,
+                        y: this.yProperty,
+                    } as any);
+                }
+                this.mFilteredValues = this.mFilterFunction(this.mValues, filterCount);
+            }
+        } else if (this.mFilteredValues) {
+            this.mFilteredValues = null;
+        }
+    }
+
+    mIgnoreFiltered = false
+    protected getInternalValues() {
+        if (this.mFilteredValues && !this.mIgnoreFiltered) {
+            return this.mFilteredValues;
+        }
+        return this.mValues;
+    }
+    setIgnoreFiltered(value) {
+        this.mIgnoreFiltered = value;
+    }
+    isFiltered() {
+        return !!this.mFilteredValues;
+    }
+
     constructor(yVals, label, xProperty?, yProperty?) {
         super(yVals, label, xProperty, yProperty);
 
@@ -72,7 +125,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
         // if (this.mCircleColors == null) {
         //     this.mCircleColors = [];
         // }
-        this.mCircleColors = []
+        this.mCircleColors = [];
 
         // default colors
         // this.mColors.add(new Color(255, 192, 255, 140));
@@ -183,7 +236,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * @param phase       offset, in degrees (normally, use 0)
      */
     public enableDashedLine(lineLength, spaceLength, phase) {
-        this.mDashPathEffect = new DashPathEffect([lineLength,spaceLength], phase);;
+        this.mDashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
         // this.mDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`) ;
     }
 
@@ -272,7 +325,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      */
     public resetCircleColors() {
         // if (this.mCircleColors == null) {
-            this.mCircleColors = [];
+        this.mCircleColors = [];
         // }
         // this.mCircleColors.clear();
     }

@@ -129,8 +129,13 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         if (y > this.mYMax) this.mYMax = y;
     }
 
+    protected getInternalValues() {
+        return this.mValues;
+
+    }
+
     public getEntryCount() {
-        return this.mValues.length;
+        return this.getInternalValues().length;
     }
 
     /**
@@ -222,28 +227,29 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     public getEntryIndex(e: T) {
-        return this.mValues.indexOf(e);
+        return this.getInternalValues().indexOf(e);
     }
 
     public getEntryForXValue(xValue, closestToY, rounding = Rounding.CLOSEST): T {
         let index = this.getEntryIndexForXValue(xValue, closestToY, rounding);
-        if (index > -1) return this.mValues[index];
+        if (index > -1) return this.getInternalValues()[index];
         return null;
     }
 
     public getEntryForIndex(index) {
-        return this.mValues[index];
+        return this.getInternalValues()[index];
     }
 
+
     public getEntryIndexForXValue(xValue, closestToY, rounding) {
-        if (this.mValues == null || this.mValues.length === 0) return -1;
+        const values = this.getInternalValues();
+        if (values == null || values.length === 0) return -1;
 
         let low = 0;
-        let high = this.mValues.length - 1;
+        let high = values.length - 1;
         let closest = high;
         const xProperty = this.xProperty;
         const yProperty = this.yProperty;
-        const values = this.mValues;
         while (low < high) {
             let m = Math.floor((low + high) / 2);
             const d1 = values[m][xProperty] - xValue,
@@ -319,11 +325,11 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     public getEntriesForXValue(xValue) {
         const entries = [];
 
+        const values = this.getInternalValues();
         let low = 0;
-        let high = this.mValues.length - 1;
+        let high = values.length - 1;
 
         const xProperty = this.xProperty;
-        const values = this.mValues;
         while (low <= high) {
             let m = Math.floor((high + low) / 2);
             let entry = values[m];

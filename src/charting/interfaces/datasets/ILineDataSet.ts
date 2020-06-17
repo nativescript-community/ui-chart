@@ -92,4 +92,7 @@ export interface ILineDataSet extends ILineRadarDataSet<Entry> {
      * @return
      */
     getFillFormatter();
+
+    applyFiltering(scaleX: number);
+    setMaxFilterNumber(value: number);
 }
