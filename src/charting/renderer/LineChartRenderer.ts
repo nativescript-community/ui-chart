@@ -13,6 +13,7 @@ import { XBounds } from './BarLineScatterCandleBubbleRenderer';
 import { Transformer } from '../utils/Transformer';
 import { profile } from '@nativescript/core/profiling/profiling';
 import { isAndroid } from '@nativescript/core/platform';
+import { Rounding } from 'nativescript-chart/data/DataSet';
 
 // fix drawing "too" thin paths on iOS
 
@@ -461,19 +462,57 @@ export class LineChartRenderer extends LineRadarRenderer {
                 trans.pathValueToPixel(this.linePath);
                 this.drawPath(c, this.linePath, this.mRenderPaint);
             } else {
-                    const xKey = dataSet.xProperty;
-                    const points = res[0];
-                    let lastIndex = 0;
-                    trans.pointValuesToPixel(points);
-                    for (let index = 0; index < nbColors; index++) {
-                        const color = colors[index];
-                        let colorIndex = color[xKey] as number;
-                        this.mRenderPaint.setColor(color.color);
-                        this.linePath.setLines(points, lastIndex*2, (colorIndex - lastIndex + 1)*2);
-                        this.drawPath(c, this.linePath, this.mRenderPaint);
-                        lastIndex = colorIndex;
+                const xKey = dataSet.xProperty;
+                const points = res[0];
+                trans.pointValuesToPixel(points);
+                let firstColorIndex = -1;
+                let firstIndex = Math.max(0, this.mXBounds.min);
+                let lastIndex = this.mXBounds.min + this.mXBounds.range;
+                for (let index = 0; index < nbColors; index++) {
+                    const color = colors[index];
+                    let colorIndex = color[xKey] as number;
+                    // if filtered we need to get the real index
+                    if ((dataSet as any).isFiltered()) {
+                        (dataSet as any).setIgnoreFiltered(true);
+                        let entry = dataSet.getEntryForIndex(colorIndex);
+                        (dataSet as any).setIgnoreFiltered(false);
+                        if (entry !== null) {
+                            colorIndex = dataSet.getEntryIndexForXValue(entry.x, NaN, Rounding.DOWN);
+                        }
+                    }
+                    if (firstColorIndex === -1 && colorIndex >= firstIndex) {
+                        firstColorIndex = Math.max(index - 1, 0);
+                        break;
                     }
                 }
+
+                let lastDrawnIndex = 0;
+                for (let index = firstColorIndex; index < nbColors; index++) {
+                    const color = colors[index];
+                    let colorIndex = Math.max(color[xKey] as number, 0);
+                    if ((dataSet as any).isFiltered()) {
+                        (dataSet as any).setIgnoreFiltered(true);
+                        let entry = dataSet.getEntryForIndex(colorIndex);
+                        (dataSet as any).setIgnoreFiltered(false);
+                        if (entry !== null) {
+                            colorIndex = dataSet.getEntryIndexForXValue(entry.x, NaN, Rounding.DOWN);
+                        }
+                    }
+
+                    const startIndex = lastDrawnIndex;
+                    const nbItems = Math.max(Math.min(colorIndex - firstIndex - lastDrawnIndex+1, lastIndex - (startIndex + firstIndex) + 1), 0);
+                    if (nbItems === 0) {
+                        continue;
+                    }
+                    this.mRenderPaint.setColor(color.color);
+                    this.linePath.setLines(points, startIndex * 2, (nbItems) * 2);
+                    this.drawPath(c, this.linePath, this.mRenderPaint);
+                    lastDrawnIndex = startIndex + nbItems - 1;
+                    if (colorIndex >= lastIndex) {
+                        break;
+                    }
+                }
+            }
         }
         // } else {
         //     const points = res[0];
@@ -639,7 +678,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         for (let j = this.mXBounds.min; j <= boundsRangeCount; j++) {
             let e = dataSet.getEntryForIndex(j);
 
-            if (e == null) break;
+            if (e == null) continue;
 
             this.mCirclesBuffer[0] = e[xKey];
             this.mCirclesBuffer[1] = e[yKey] * phaseY;
