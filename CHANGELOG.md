@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.23](https://github.com/Akylas/nativescript-chart/compare/v0.0.22...v0.0.23) (2020-06-17)
+
+
+### Bug Fixes
+
+* applying filtering when necessary ([ad99dc6](https://github.com/Akylas/nativescript-chart/commit/ad99dc6d95021907098af42403b79b16e39a7282))
+* missing from drawValues changes ([82adf4b](https://github.com/Akylas/nativescript-chart/commit/82adf4b9393ea833380cfc04800a40cd67a43e91))
+* more flexible drawValues and value formatter ([7c1fbac](https://github.com/Akylas/nativescript-chart/commit/7c1fbac8c8e3530e8f2bfa0e7c6019294dff9df5))
+* rollback because of crash with circles ([423b79a](https://github.com/Akylas/nativescript-chart/commit/423b79a83c26814cc0152197d1f37ff9b0969f5e))
+* signature fixes ([c0abe7b](https://github.com/Akylas/nativescript-chart/commit/c0abe7b403ec82d47861570995d7aeae1a3b3ec3))
+
+
+### Features
+
+* filtering support! ([11e26e3](https://github.com/Akylas/nativescript-chart/commit/11e26e33c99aeb10c8afabbb010e0d6528a6c887))
+* working multicolors line ([341ba6d](https://github.com/Akylas/nativescript-chart/commit/341ba6d5993850b870774c68123558d39b370dd4))
+
+
+
+
+
 ## [0.0.22](https://github.com/Akylas/nativescript-chart/compare/v0.0.21...v0.0.22) (2020-06-16)
 
 
