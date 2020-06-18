@@ -560,8 +560,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * Zooms out to original size.
      */
     public resetZoom() {
+        this.mViewPortHandler.mMatrixTouch.reset();
         this.mViewPortHandler.resetZoom(this.mZoomMatrixBuffer);
         this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
+
 
         // Range might have changed, which means that Y-axis labels
         // could have changed in size, affecting Y-axis size.
