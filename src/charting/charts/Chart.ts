@@ -1074,7 +1074,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      *
      * @param marker
      */
-    public setMarker(marker) {
+    public setMarker(marker: IMarker) {
         this.mMarker = marker;
     }
 
@@ -1087,7 +1087,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         return this.mMarker;
     }
 
-    public setMarkerView(v) {
+    public setMarkerView(v: IMarker) {
         this.setMarker(v);
     }
 
