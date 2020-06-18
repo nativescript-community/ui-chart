@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.24](https://github.com/Akylas/nativescript-chart/compare/v0.0.23...v0.0.24) (2020-06-18)
+
+
+### Bug Fixes
+
+* correctly handle resetZoom ([5ebd1b9](https://github.com/Akylas/nativescript-chart/commit/5ebd1b97c1e3a29e15a67313721cbfe4e60bb28a))
+* custom highlight set high entry ([cf85b61](https://github.com/Akylas/nativescript-chart/commit/cf85b61aedf0d6fd4fb88d671123988d4a521663))
+* filter too small lines for better/faster rendering ([d5e7b09](https://github.com/Akylas/nativescript-chart/commit/d5e7b0908330d4bd4f4d1526c468ddc6721ef03b))
+* use highlight draw flag ([301eaaa](https://github.com/Akylas/nativescript-chart/commit/301eaaae87cff6521f29845b6c5800c90de1fc57))
+
+
+### Features
+
+* flag to disable highlight lines ([9b1dda4](https://github.com/Akylas/nativescript-chart/commit/9b1dda4749c1b7c074741b9d2f0ee2cb793400ba))
+
+
+
+
+
 ## [0.0.23](https://github.com/Akylas/nativescript-chart/compare/v0.0.22...v0.0.23) (2020-06-17)
 
 
