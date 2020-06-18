@@ -149,6 +149,7 @@ export abstract class DataRenderer extends Renderer {
      *
      * @param c
      * @param indices the highlighted values
+     * @param actualDraw whether to draw or not
      */
-    public abstract drawHighlighted(c: Canvas, indices: Highlight[]);
+    public abstract drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?:boolean);
 }

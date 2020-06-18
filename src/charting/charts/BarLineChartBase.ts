@@ -86,6 +86,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected mClipValuesToContent = false;
 
+    protected mDrawHighlight = true;
+
     /**
      * Sets the minimum offset (padding) around the chart, defaults to 15
      */
@@ -220,7 +222,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (!this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
 
         // if highlighting is enabled
-        if (this.valuesToHighlight()) this.mRenderer.drawHighlighted(canvas, this.mIndicesToHighlight);
+        if (this.valuesToHighlight()) {
+            this.mRenderer.drawHighlighted(canvas, this.mIndicesToHighlight, this.isDrawHighlightEnabled());
+        }
 
         // Removes clipping rectangle
         canvas.restoreToCount(clipRestoreCount);
@@ -1178,6 +1182,15 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public isClipValuesToContentEnabled() {
         return this.mClipValuesToContent;
     }
+
+    public setDrawHighlight(enabled) {
+        this.mDrawHighlight = enabled;
+    }
+
+    public isDrawHighlightEnabled() {
+        return this.mDrawHighlight;
+    }
+
 
     /**
      * Sets the width of the border lines in dp.
