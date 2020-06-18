@@ -722,7 +722,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    public drawHighlighted(c: Canvas, indices: Highlight[]) {
+    public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?:boolean) {
         let lineData = this.mChart.getLineData();
 
         for (let high of indices) {
@@ -744,7 +744,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             // high.setDraw( pix.x,  pix.y);
 
             // draw the lines
-            this.drawHighlightLines(c, pix.x, pix.y, set);
+            actualDraw && this.drawHighlightLines(c, pix.x, pix.y, set);
         }
     }
 
