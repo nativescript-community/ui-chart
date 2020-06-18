@@ -500,12 +500,21 @@ export class LineChartRenderer extends LineRadarRenderer {
                     }
 
                     const startIndex = lastDrawnIndex;
-                    const nbItems = Math.max(Math.min(colorIndex - firstIndex - lastDrawnIndex+1, lastIndex - (startIndex + firstIndex) + 1), 0);
+                    const nbItems = Math.max(Math.min(colorIndex - firstIndex - lastDrawnIndex + 1, lastIndex - (startIndex + firstIndex) + 1), 0);
                     if (nbItems === 0) {
                         continue;
+                    } else if (nbItems <= 2) {
+                        const pxDist = Math.sqrt(
+                            Math.pow(points[(startIndex + nbItems) * 2] - points[startIndex * 2], 2) + Math.pow(points[(startIndex + nbItems) * 2 + 1] - points[startIndex * 2 + 1], 2)
+                        );
+                        if (pxDist <= 2) {
+                            // console.log('filtering line ', index, color.color, nbItems, pxDist);
+                            continue;
+                        }
                     }
+
                     this.mRenderPaint.setColor(color.color);
-                    this.linePath.setLines(points, startIndex * 2, (nbItems) * 2);
+                    this.linePath.setLines(points, startIndex * 2, nbItems * 2);
                     this.drawPath(c, this.linePath, this.mRenderPaint);
                     lastDrawnIndex = startIndex + nbItems - 1;
                     if (colorIndex >= lastIndex) {
