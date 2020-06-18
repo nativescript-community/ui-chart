@@ -53,7 +53,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * @return
      */
     protected getHighlightForX(xVal, x, y) {
-        const closestValues = this.getHighlightsAtXValue(xVal, x, y);
+        const closestValues = this.getHighlightsAtXValue(xVal);
         if (closestValues.length === 0) {
             return null;
         }
@@ -103,11 +103,9 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * The returned list contains two objects per DataSet (closest rounding up, closest rounding down).
      *
      * @param xVal the transformed x-value of the x-touch position
-     * @param x    touch position
-     * @param y    touch position
      * @return
      */
-    protected getHighlightsAtXValue(xVal, x, y) {
+    protected getHighlightsAtXValue(xVal) {
         this.mHighlightBuffer = [];
 
         const data = this.getData();
