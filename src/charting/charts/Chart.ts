@@ -619,6 +619,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
                 this.mIndicesToHighlight = null;
                 high = null;
             } else {
+                high.entry = e;
                 // set the indices to highlight
                 this.mIndicesToHighlight = [high];
             }
