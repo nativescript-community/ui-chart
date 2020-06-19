@@ -64,6 +64,8 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     private mDrawCircleHole = true;
 
+    private mUserColorsFoFill = false;
+
     /**
      * the max number allowed point before filtering. <= O means disabled
      */
@@ -369,5 +371,13 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     public getFillFormatter() {
         return this.mFillFormatter;
+    }
+
+    getUseColorsForFill() {
+        return this.mUserColorsFoFill;
+    }
+
+    setUseColorsForFill(value: boolean) {
+        this.mUserColorsFoFill = value;
     }
 }

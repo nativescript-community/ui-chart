@@ -24,6 +24,10 @@ export interface ILineDataSet extends ILineRadarDataSet<Entry> {
 
     isDrawSteppedEnabled();
 
+
+    getUseColorsForFill(): boolean;
+    setUseColorsForFill(value: boolean);
+
     /**
      * Returns the size of the drawn circles.
      */

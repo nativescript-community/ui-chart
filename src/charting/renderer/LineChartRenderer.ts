@@ -394,11 +394,12 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.generateCubicPath(dataSet, this.linePath);
 
         // if filled is enabled, close the path
+        const xKey = dataSet.xProperty;
         if (dataSet.isDrawFilledEnabled()) {
             this.fillPath.reset();
             this.fillPath.addPath(this.linePath);
 
-            this.drawFill(c, dataSet, this.fillPath, trans, this.mXBounds);
+            this.drawFill(c, dataSet, this.fillPath, trans, dataSet.getEntryForIndex(this.mXBounds.min)[xKey], dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range)[xKey]);
             // result = true;
         }
 
@@ -420,11 +421,12 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.generateHorizontalBezierPath(dataSet, this.linePath);
 
         // if filled is enabled, close the path
+        const xKey = dataSet.xProperty;
         if (dataSet.isDrawFilledEnabled()) {
             this.fillPath.reset();
             this.fillPath.addPath(this.linePath);
 
-            this.drawFill(c, dataSet, this.fillPath, trans, this.mXBounds);
+            this.drawFill(c, dataSet, this.fillPath, trans, dataSet.getEntryForIndex(this.mXBounds.min)[xKey], dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range)[xKey]);
             // result = true;
         }
 
@@ -439,6 +441,11 @@ export class LineChartRenderer extends LineRadarRenderer {
     @profile
     protected drawLinear(c: Canvas, dataSet: ILineDataSet) {
         let result = false;
+        const drawFilled = dataSet.isDrawFilledEnabled();
+        const drawLine = dataSet.getLineWidth() > 0;
+        if (!drawFilled && !drawLine) {
+            return result;
+        }
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
@@ -447,93 +454,93 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         const colors = dataSet.getColors();
         const nbColors = colors.length;
-        // if filled is enabled, close the path
-        if (dataSet.isDrawFilledEnabled()) {
+
+        const xKey = dataSet.xProperty;
+        const useColorsForFill = dataSet.getUseColorsForFill();
+        if (drawFilled && (nbColors === 1 || !useColorsForFill)) {
             this.fillPath.reset();
             this.fillPath.addPath(this.linePath);
-
-            this.drawFill(c, dataSet, this.fillPath, trans, this.mXBounds);
-            // result = true;
+            this.drawFill(c, dataSet, this.fillPath, trans, dataSet.getEntryForIndex(this.mXBounds.min)[xKey], dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range)[xKey]);
         }
-
-        // if (isAndroid || dataSet.isDashedLineEnabled()) {
-        if (dataSet.getLineWidth() > 0) {
-            if (nbColors === 1) {
+        if (nbColors === 1) {
+            if (drawLine) {
                 trans.pathValueToPixel(this.linePath);
                 this.drawPath(c, this.linePath, this.mRenderPaint);
-            } else {
-                const xKey = dataSet.xProperty;
-                const points = res[0];
-                trans.pointValuesToPixel(points);
-                let firstColorIndex = -1;
-                let firstIndex = Math.max(0, this.mXBounds.min);
-                let lastIndex = this.mXBounds.min + this.mXBounds.range;
-                for (let index = 0; index < nbColors; index++) {
-                    const color = colors[index];
-                    let colorIndex = color[xKey] as number;
-                    // if filtered we need to get the real index
-                    if ((dataSet as any).isFiltered()) {
-                        (dataSet as any).setIgnoreFiltered(true);
-                        let entry = dataSet.getEntryForIndex(colorIndex);
-                        (dataSet as any).setIgnoreFiltered(false);
-                        if (entry !== null) {
-                            colorIndex = dataSet.getEntryIndexForXValue(entry.x, NaN, Rounding.DOWN);
-                        }
-                    }
-                    if (firstColorIndex === -1 && colorIndex >= firstIndex) {
-                        firstColorIndex = Math.max(index - 1, 0);
-                        break;
+            }
+        } else {
+            const points = res[0];
+            trans.pointValuesToPixel(points);
+            let firstIndex = Math.max(0, this.mXBounds.min);
+            let lastIndex = this.mXBounds.min + this.mXBounds.range;
+            const colorsToBeDrawn = [];
+            let lastDrawnIndex = 0,
+                nbItems;
+            for (let index = 0; index < nbColors; index++) {
+                const color = colors[index];
+                let colorIndex = color[xKey] as number;
+                // if filtered we need to get the real index
+                if ((dataSet as any).isFiltered()) {
+                    (dataSet as any).setIgnoreFiltered(true);
+                    let entry = dataSet.getEntryForIndex(colorIndex);
+                    (dataSet as any).setIgnoreFiltered(false);
+                    if (entry !== null) {
+                        colorIndex = dataSet.getEntryIndexForXValue(entry.x, NaN, Rounding.DOWN);
                     }
                 }
-
-                let lastDrawnIndex = 0;
-                for (let index = firstColorIndex; index < nbColors; index++) {
-                    const color = colors[index];
-                    let colorIndex = Math.max(color[xKey] as number, 0);
-                    if ((dataSet as any).isFiltered()) {
-                        (dataSet as any).setIgnoreFiltered(true);
-                        let entry = dataSet.getEntryForIndex(colorIndex);
-                        (dataSet as any).setIgnoreFiltered(false);
-                        if (entry !== null) {
-                            colorIndex = dataSet.getEntryIndexForXValue(entry.x, NaN, Rounding.DOWN);
-                        }
-                    }
-
-                    const startIndex = lastDrawnIndex;
-                    const nbItems = Math.max(Math.min(colorIndex - firstIndex - lastDrawnIndex + 1, lastIndex - (startIndex + firstIndex) + 1), 0);
-                    if (nbItems === 0) {
+                if (colorIndex < firstIndex) {
+                    continue;
+                }
+                const startIndex = lastDrawnIndex;
+                nbItems = Math.max(colorIndex - (firstIndex + lastDrawnIndex) + 1, 0);
+                if (nbItems > lastIndex - (startIndex + firstIndex) + 1) {
+                    nbItems = lastIndex - (startIndex + firstIndex) + 1;
+                }
+                if (nbItems === 0) {
+                    continue;
+                } else {
+                    // too small "horizontal" sections can be ignored
+                    const pxDist = Math.abs(points[(startIndex + nbItems) * 2] - points[startIndex * 2]);
+                    if (pxDist <= 3) {
                         continue;
-                    } else if (nbItems <= 2) {
-                        const pxDist = Math.sqrt(
-                            Math.pow(points[(startIndex + nbItems) * 2] - points[startIndex * 2], 2) + Math.pow(points[(startIndex + nbItems) * 2 + 1] - points[startIndex * 2 + 1], 2)
-                        );
-                        if (pxDist <= 2) {
-                            // console.log('filtering line ', index, color.color, nbItems, pxDist);
-                            continue;
-                        }
                     }
+                }
+                lastDrawnIndex = startIndex + nbItems;
+                const isLast = lastDrawnIndex + firstIndex >= lastIndex;
+                if (isLast && lastDrawnIndex + firstIndex === lastIndex) {
+                    nbItems += 1;
+                    lastDrawnIndex += 1;
+                }
+                colorsToBeDrawn.push({
+                    color: color.color,
+                    startIndex,
+                    nbItems,
+                });
 
-                    this.mRenderPaint.setColor(color.color);
-                    this.linePath.setLines(points, startIndex * 2, nbItems * 2);
-                    this.drawPath(c, this.linePath, this.mRenderPaint);
-                    lastDrawnIndex = startIndex + nbItems - 1;
-                    if (colorIndex >= lastIndex) {
-                        break;
-                    }
+                if (isLast) {
+                    break;
+                } else {
+                    lastDrawnIndex -= 1;
                 }
             }
+            colorsToBeDrawn.forEach((color) => {
+                this.linePath.setLines(points, color.startIndex * 2, color.nbItems * 2);
+                if (drawFilled && useColorsForFill) {
+                    this.fillPath.reset();
+                    this.fillPath.addPath(this.linePath);
+                    this.drawFill(c, dataSet, this.fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color.color);
+                }
+                if (drawLine) {
+                    this.mRenderPaint.setColor(color.color);
+                    this.drawPath(c, this.linePath, this.mRenderPaint);
+                }
+            });
         }
-        // } else {
-        //     const points = res[0];
-        //     const length = res[1];
-        //     this.drawLines(c, points, 0, length, this.mRenderPaint, trans.getValueToPixelMatrix());
-        // }
 
         return result;
     }
 
     @profile
-    drawLines(canvas: Canvas, points: number[], offest, length, paint: Paint, matrix?: Matrix) {
+    drawLines(canvas: Canvas, points: number[], offest: number, length: number, paint: Paint, matrix?: Matrix) {
         if (matrix) {
             canvas.drawLines(points, offest, length, paint, matrix);
         } else {
@@ -541,21 +548,21 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, bounds: XBounds) {
+    protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?) {
         const xKey = dataSet.xProperty;
         let fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
 
-        spline.lineTo(dataSet.getEntryForIndex(bounds.min + bounds.range)[xKey], fillMin);
-        spline.lineTo(dataSet.getEntryForIndex(bounds.min)[xKey], fillMin);
+        spline.lineTo(max, fillMin);
+        spline.lineTo(min, fillMin);
         spline.close();
 
-        trans.pathValueToPixel(spline);
+        trans && trans.pathValueToPixel(spline);
 
         const drawable = dataSet.getFillDrawable();
         if (drawable != null) {
             this.drawFilledPathBitmap(c, spline, drawable, dataSet.getFillShader());
         } else {
-            this.drawFilledPath(c, spline, dataSet.getFillColor(), dataSet.getFillAlpha(), dataSet.getFillShader());
+            this.drawFilledPath(c, spline, color || dataSet.getFillColor(), dataSet.getFillAlpha(), dataSet.getFillShader());
         }
     }
 
@@ -722,7 +729,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?:boolean) {
+    public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?: boolean) {
         let lineData = this.mChart.getLineData();
 
         for (let high of indices) {
