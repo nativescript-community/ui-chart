@@ -18,7 +18,7 @@ export abstract class AxisBase extends ComponentBase {
 
     private mGridColor = 'gray';
 
-    private mGridLineWidth = 0.5;
+    private mGridLineWidth = 1;
 
     private mAxisLineColor = 'gray';
 
