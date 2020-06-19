@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.25](https://github.com/Akylas/nativescript-chart/compare/v0.0.24...v0.0.25) (2020-06-19)
+
+
+### Bug Fixes
+
+* a little bigger grid line for better rendering ([2b1481f](https://github.com/Akylas/nativescript-chart/commit/2b1481fa28f30d95704c4bf618c4125da08df700))
+
+
+
+
+
 ## [0.0.24](https://github.com/Akylas/nativescript-chart/compare/v0.0.23...v0.0.24) (2020-06-18)
 
 
