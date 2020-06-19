@@ -87,7 +87,6 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     protected mFilteredValues: Entry[] = null;
     protected mFilterFunction;
     public applyFiltering(scaleX: number) {
-        // console.log('applyFiltering', scaleX, this.mMaxFilterNumber, this.mValues.length, this.mFilteredValues && this.mFilteredValues.length);
         if (this.mMaxFilterNumber > 0 && this.mValues.length / scaleX > this.mMaxFilterNumber) {
             const filterCount = Math.round(this.mMaxFilterNumber * scaleX);
             if (!this.mFilteredValues || this.mFilteredValues.length !== filterCount) {
@@ -97,14 +96,16 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
                         y: this.yProperty,
                     } as any);
                 }
+                // const startTime = Date.now();
                 this.mFilteredValues = this.mFilterFunction(this.mValues, filterCount);
+                // console.log('filtered data', filterCount, Date.now() - startTime, 'ms');
             }
         } else if (this.mFilteredValues) {
             this.mFilteredValues = null;
         }
     }
 
-    mIgnoreFiltered = false
+    mIgnoreFiltered = false;
     protected getInternalValues() {
         if (this.mFilteredValues && !this.mIgnoreFiltered) {
             return this.mFilteredValues;
