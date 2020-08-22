@@ -7,8 +7,8 @@ exports.onLoaded = function(args)
     page.bindingContext = observableModule.fromObject(
     {
         examples: [
-            {title: "NSChart", moduleName: "examples/NSChart"},
-            {title: "NSUIChart", moduleName: null}
+            {title: "NS Chart", moduleName: "examples/NSChart"},
+            {title: "NS UI Chart", moduleName: "examples/NSUIChart"}
         ]
     });
 };

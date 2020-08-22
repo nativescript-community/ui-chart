@@ -54,11 +54,6 @@ exports.onChartLoaded = function(args)
     // chart.setHardwareAccelerationEnabled(true);
 };
 
-exports.onChartTapped = function(args)
-{
-    console.log('onChartTap', args.data.extraData, args.highlight);
-};
-
 exports.redraw = function(args)
 {
     const page = args.object.page;

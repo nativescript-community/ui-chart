@@ -1,5 +1,5 @@
 {
-    "name": "com.akylas.nativescript.chartdemo",
+    "name": "chartdemo",
     "version": "1.0.0",
     "description": "A native application built with NativeScript-Core JS",
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
