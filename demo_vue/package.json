@@ -1,5 +1,5 @@
 {
-    "name": "com.akylas.nativescript.chartdemo",
+    "name": "com.akylas.nativescript.chartdemovue",
     "version": "1.0.0",
     "description": "A native application built with NativeScript-Vue",
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
@@ -16,6 +16,7 @@
     "dependencies": {
         "@nativescript/core": "~6.3.2",
         "nativescript-canvas": "3.0.8",
+        "nativescript-gesturehandler": "^0.1.16",
         "nativescript-chart": "../plugin",
         "nativescript-perms": "^2.0.11",
         "nativescript-ui-chart": "7.1.1",

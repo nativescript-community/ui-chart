@@ -5,7 +5,7 @@ import { Entry } from '../data/Entry';
 import { LineDataSet } from '../data/LineDataSet';
 import { LineChartRenderer } from '../renderer/LineChartRenderer';
 
-export default class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {
+export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {
     // public LineChart(Context context) {
     //     super(context);
     // }

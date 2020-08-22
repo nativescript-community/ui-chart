@@ -1,0 +1,28 @@
+{
+    "name": "com.akylas.nativescript.chartdemo",
+    "version": "1.0.0",
+    "description": "A native application built with NativeScript-Core JS",
+    "author": "Martin Guillon <martin.guillon@akylas.fr>",
+    "license": "MIT",
+    "nativescript": {
+        "id": "com.akylas.nativescript.chartdemo",
+        "tns-android": {
+            "version": "6.5.0"
+        },
+        "tns-ios": {
+            "version": "6.5.0"
+        }
+    },
+    "dependencies": {
+        "@nativescript/theme": "~2.3.0",
+        "@nativescript/core": "~6.5.0",
+        "nativescript-canvas": "3.0.8",
+        "nativescript-gesturehandler": "^0.1.16",
+        "nativescript-chart": "../plugin",
+        "nativescript-perms": "^2.0.11",
+        "nativescript-ui-chart": "7.1.1"
+    },
+    "devDependencies": {
+        "nativescript-dev-webpack": "~1.5.0"
+    }
+}

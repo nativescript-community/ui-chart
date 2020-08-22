@@ -17,7 +17,7 @@
 <script lang="ts">
 import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'vue';
-import LineChart from 'nativescript-chart/charts/LineChart';
+import { LineChart } from 'nativescript-chart/charts/LineChart';
 import { LimitLine, LimitLabelPosition } from 'nativescript-chart/components/LimitLine';
 import { LegendForm } from 'nativescript-chart/components/Legend';
 import { knownFolders, path } from '@nativescript/core/file-system';
