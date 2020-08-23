@@ -10,6 +10,9 @@
         "demo.ios": "npm i && npm run tsc && cd demo && tns run ios",
         "demo.android": "npm i && npm run tsc && cd demo && tns run android",
         "clean.demo": "rimraf demo/hooks demo/node_modules demo/platforms",
+        "demo.ios.vue": "npm i && npm run tsc && cd demo_vue && tns run ios",
+        "demo.android.vue": "npm i && npm run tsc && cd demo_vue && tns run android",
+        "clean.demo.vue": "rimraf demo_vue/hooks demo_vue/node_modules demo_vue/platforms",
         "plugin.watch.tsc": "npm run tsc -- -w",
         "plugin.watch": "npm run plugin.watch.tsc",
         "publish": "npm run build && lerna publish",
@@ -64,6 +67,5 @@
             "@commitlint/config-conventional"
         ]
     },
-    "dependencies": {
-    }
+    "dependencies": {}
 }

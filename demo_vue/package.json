@@ -1,21 +1,22 @@
 {
-    "name": "com.akylas.nativescript.chartdemo",
+    "name": "chartdemovue",
     "version": "1.0.0",
     "description": "A native application built with NativeScript-Vue",
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
     "license": "MIT",
     "nativescript": {
-        "id": "com.akylas.nativescript.chartdemo",
+        "id": "com.akylas.nativescript.chartdemovue",
         "tns-android": {
-            "version": "6.3.1"
+            "version": "6.5.0"
         },
         "tns-ios": {
-            "version": "6.4.0-beta.1-v8-2020-01-22-160614-03"
+            "version": "6.5.0"
         }
     },
     "dependencies": {
         "@nativescript/core": "~6.3.2",
         "nativescript-canvas": "3.0.8",
+        "nativescript-gesturehandler": "^0.1.16",
         "nativescript-chart": "../plugin",
         "nativescript-perms": "^2.0.11",
         "nativescript-ui-chart": "7.1.1",

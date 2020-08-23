@@ -1,0 +1,12 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:chart="nativescript-chart">
+    <ActionBar title="NS Chart">
+        <NavigationButton text="Back" android.systemIcon="ic_menu_back" tap="onNavigationButtonTap"/>
+        <Button text="Redraw" tap="redraw" />
+    </ActionBar>
+    <ScrollView>
+        <StackLayout height="800">
+            <chart:LineChart id="line-chart" backgroundColor="lightgray" width="300" height="400" tap="onChartTap" loaded="onChartLoaded"/>
+            <Label text="Speed" fontSize="10"/>
+        </StackLayout>
+    </ScrollView>
+</Page>
