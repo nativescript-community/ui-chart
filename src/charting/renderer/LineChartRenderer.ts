@@ -511,7 +511,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     lastDrawnIndex += 1;
                 }
                 colorsToBeDrawn.push({
-                    color: color.color,
+                    color: color,
                     startIndex,
                     nbItems,
                 });
@@ -527,10 +527,10 @@ export class LineChartRenderer extends LineRadarRenderer {
                 if (drawFilled && useColorsForFill) {
                     this.fillPath.reset();
                     this.fillPath.addPath(this.linePath);
-                    this.drawFill(c, dataSet, this.fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color.color);
+                    this.drawFill(c, dataSet, this.fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color);
                 }
                 if (drawLine) {
-                    this.mRenderPaint.setColor(color.color);
+                    this.mRenderPaint.setColor(color);
                     this.drawPath(c, this.linePath, this.mRenderPaint);
                 }
             });
@@ -608,7 +608,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 // console.log('drawValue', entry[yKey], entry, index, dataSetCount);
                 this.drawValue(
                     c,
-                    formatter.getFormattedValue(entry[yKey], entry, index, dataSetCount, dataSetIndex, this.mViewPortHandler),
+                    formatter.getFormattedValue(entry[yKey]),
                     valuesOffset.x + x,
                     valuesOffset.y + y - valOffset,
                     dataSet.getValueTextColor(j / 2)

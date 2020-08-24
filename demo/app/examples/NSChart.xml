@@ -5,8 +5,10 @@
     </ActionBar>
     <ScrollView>
         <StackLayout height="800">
-            <chart:LineChart id="line-chart" backgroundColor="lightgray" width="300" height="400" tap="onChartTap" loaded="onChartLoaded"/>
-            <Label text="Speed" fontSize="10"/>
+            <Label text="Line Chart" fontSize="20"/>
+            <chart:LineChart id="line-chart" backgroundColor="lightgray" width="300" height="350" loaded="onLineChartLoaded"/>
+            <Label text="Bar Chart" fontSize="20"/>
+            <chart:BarChart id="bar-chart" backgroundColor="lightgray" width="300" height="350" loaded="onBarChartLoaded"/>
         </StackLayout>
     </ScrollView>
 </Page>

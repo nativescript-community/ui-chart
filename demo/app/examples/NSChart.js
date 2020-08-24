@@ -1,5 +1,8 @@
 const Color = require("@nativescript/core/color").Color;
 const fs = require("@nativescript/core/file-system");
+const bd = require("nativescript-chart/data/BarData");
+const bds = require("nativescript-chart/data/BarDataSet");
+const be = require("nativescript-chart/data/BarEntry");
 const ld = require("nativescript-chart/data/LineData");
 const lds = require("nativescript-chart/data/LineDataSet");
 
@@ -26,9 +29,42 @@ function loadData()
     );
 }
 
-exports.onChartLoaded = function(args)
+exports.onBarChartLoaded = function(args)
 {
     const chart = args.object;
+
+    chart.drawFameRate = true;
+    chart.setLogEnabled(true);
+    chart.setScaleEnabled(true);
+    chart.setDragEnabled(true);
+    chart.getAxisRight().setEnabled(false);
+    // chart.setHardwareAccelerationEnabled(true);
+
+    const data = new Array(20).fill(0).map((v, i) => (new be.BarEntry(i, Math.random() * 1)));
+
+    console.log('setData', data.length, data[0]);
+    const sets = [];
+    const set = new bds.BarDataSet(data, 'value', 'index', 'value');
+    set.setColor(getRandomColor());
+    set.setDrawValues(true);
+    sets.push(set);
+
+    // create a data object with the data sets
+    const bardata = new bd.BarData(sets);
+
+    // set data
+    chart.setData(bardata);
+};
+
+exports.onLineChartLoaded = function(args)
+{
+    const chart = args.object;
+
+    chart.drawFameRate = true;
+    chart.setLogEnabled(true);
+    chart.setScaleEnabled(true);
+    chart.setDragEnabled(true);
+    // chart.setHardwareAccelerationEnabled(true);
 
     const data = new Array(1000).fill(0).map((v, i)=>({
         index:i,
@@ -46,21 +82,22 @@ exports.onChartLoaded = function(args)
 
     // set data
     chart.setData(linedata);
-
-    chart.drawFameRate = true;
-    chart.setLogEnabled(true);
-    chart.setScaleEnabled(true);
-    chart.setDragEnabled(true);
-    // chart.setHardwareAccelerationEnabled(true);
 };
 
 exports.redraw = function(args)
 {
     const page = args.object.page;
-    const chart = page.getViewById("line-chart");
-    if (chart)
+
+    const bc = page.getViewById("bar-chart");
+    if (bc)
     {
-        chart.invalidate();
+        bc.invalidate();
+    }
+
+    const lc = page.getViewById("line-chart");
+    if (lc)
+    {
+        lc.invalidate();
     }
 };
 

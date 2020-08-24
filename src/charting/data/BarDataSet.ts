@@ -51,7 +51,7 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         this.mEntryCountStacks = 0;
 
         for (let i = 0; i < yVals.length; i++) {
-            const vals = yVals.get(i).getYVals();
+            const vals = yVals[i].getYVals();
 
             if (vals == null) this.mEntryCountStacks++;
             else this.mEntryCountStacks += vals.length;
@@ -64,7 +64,7 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
      */
     private calcStackSize(yVals) {
         for (let i = 0; i < yVals.length; i++) {
-            const vals = yVals.get(i).getYVals();
+            const vals = yVals[i].getYVals();
 
             if (vals != null && vals.length > this.mStackSize) this.mStackSize = vals.length;
         }

@@ -20,7 +20,7 @@ export interface IValueFormatter {
    * @param viewPortHandler provides information about the current chart state (scale, translation, ...)
    * @return the formatted label ready for being drawn
    *
-   *  Extend {@link ValueFormatter} and override an appropriate method
+   * @deprecated Extend {@link ValueFormatter} and override an appropriate method
    */
   getFormattedValue(
     value: number,

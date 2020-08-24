@@ -1,5 +1,6 @@
 import { IAxisValueFormatter } from "./IAxisValueFormatter";
 import { IValueFormatter } from "./IValueFormatter";
+import { BarEntry } from "../data/BarEntry";
 import { Entry } from "../data/Entry";
 import { AxisBase } from "../components/AxisBase";
 
@@ -60,9 +61,9 @@ export abstract class ValueFormatter implements IAxisValueFormatter, IValueForma
      * @param barEntry bar being labeled
      * @return formatted string label
      */
-    // public  getBarLabel( barEntry: BarEntry) {
-    //     return this.getFormattedValue(barEntry.getY());
-    // }
+    public getBarLabel( barEntry: BarEntry) {
+        return this.getFormattedValue(barEntry.y);
+    }
 
     /**
      * Used to draw stacked bar labels, calls {@link #getFormattedValue} by default.
@@ -71,9 +72,9 @@ export abstract class ValueFormatter implements IAxisValueFormatter, IValueForma
      * @param stackedEntry stacked entry being labeled, contains all Y values
      * @return formatted string label
      */
-    // public  getBarStackedLabel( value,  stackedEntry: BarEntry) {
-    //     return this.getFormattedValue(value);
-    // }
+    public getBarStackedLabel( value,  stackedEntry: BarEntry) {
+        return this.getFormattedValue(value);
+    }
 
     /**
      * Used to draw line and scatter labels, calls {@link #getFormattedValue} by default.
