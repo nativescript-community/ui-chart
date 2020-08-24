@@ -15,12 +15,12 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
 
     /**
      * Sets the width each bar should have on the x-axis (in values, not pixels).
-     * Default 0.85f
+     * Default 0.85
      *
      * @param this.mBarWidth
      */
-    public setBarWidth(mBarWidth) {
-        this.mBarWidth = this.mBarWidth;
+    public setBarWidth(value) {
+        this.mBarWidth = value;
     }
 
     public getBarWidth() {
