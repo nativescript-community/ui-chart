@@ -1,9 +1,8 @@
-
 import TWEEN from 'nativescript-tween';
-import { BarLineChartBase } from "../charts/BarLineChartBase";
-import { Transformer } from "../utils/Transformer";
-import { ViewPortHandler } from "../utils/ViewPortHandler";
-import { ViewPortJob } from "./ViewPortJob";
+import { BarLineChartBase } from '../charts/BarLineChartBase';
+import { Transformer } from '../utils/Transformer';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { ViewPortJob } from './ViewPortJob';
 
 export interface AnimatorUpdateListener {
     onAnimationUpdate(animation: TWEEN.Tween);
@@ -17,40 +16,37 @@ export interface AnimatorListener {
  * Created by Philipp Jahoda on 19/02/16.
  */
 export abstract class AnimatedViewPortJob extends ViewPortJob implements AnimatorUpdateListener, AnimatorListener {
+    protected animator: TWEEN.Tween;
 
-    protected  animator: TWEEN.Tween;
+    protected phase;
 
-    protected  phase;
+    protected xOrigin;
+    protected yOrigin;
 
-    protected  xOrigin;
-    protected  yOrigin;
-
-    constructor(viewPortHandler: ViewPortHandler,  xValue,  yValue,  trans: Transformer,  v:BarLineChartBase<any, any, any>,  xOrigin,  yOrigin,  duration) {
+    constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, duration) {
         super(viewPortHandler, xValue, yValue, trans, v);
         this.xOrigin = xOrigin;
         this.yOrigin = yOrigin;
-        this.createAnimator(duration) 
+        this.createAnimator(duration);
         // this.animator = ObjectAnimator.ofFloat(this, "phase", 0, 1);
         // animator.setDuration(duration);
         // animator.addUpdateListener(this);
         // animator.addListener(this);
     }
 
-
     createAnimator(duration) {
         this.animator = new TWEEN.Tween({ value: 0 })
-        .to({ value: 1 }, duration)
-        .onStop(()=>this.onAnimationCancel(this.animator))
-        .onComplete(()=>this.onAnimationEnd(this.animator))
-        .onStart(()=>this.onAnimationStart(this.animator))
-        .onUpdate(obj => {
-            // this.log('onUpdate', obj.value);
-            this.phase = obj.value;
-            ()=>this.onAnimationUpdate(this.animator)
-        })
+            .to({ value: 1 }, duration)
+            .onStop(() => this.onAnimationCancel(this.animator))
+            .onComplete(() => this.onAnimationEnd(this.animator))
+            .onStart(() => this.onAnimationStart(this.animator))
+            .onUpdate((obj) => {
+                // this.log('onUpdate', obj.value);
+                this.phase = obj.value;
+                () => this.onAnimationUpdate(this.animator);
+            });
     }
 
-    
     public run() {
         this.animator.start();
     }
@@ -59,7 +55,7 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
         return this.phase;
     }
 
-    public setPhase( phase) {
+    public setPhase(phase) {
         this.phase = phase;
     }
 
@@ -71,9 +67,9 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
         return this.yOrigin;
     }
 
-    public abstract  recycleSelf();
+    public abstract recycleSelf();
 
-    protected resetAnimator(){
+    protected resetAnimator() {
         this.animator.stop();
         this.animator.update(0);
         // this.animator.reset();
@@ -82,31 +78,23 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
         // this.animator.addListener(this);
     }
 
-    
-    public onAnimationStart( animation: TWEEN.Tween) {
+    public onAnimationStart(animation: TWEEN.Tween) {}
 
-    }
-
-    
-    public onAnimationEnd( animation: TWEEN.Tween) {
-        try{
+    public onAnimationEnd(animation: TWEEN.Tween) {
+        try {
             this.recycleSelf();
-        }catch ( e){
+        } catch (e) {
             // don't worry about it.
         }
     }
 
-    
-    public onAnimationCancel( animation: TWEEN.Tween) {
-        try{
+    public onAnimationCancel(animation: TWEEN.Tween) {
+        try {
             this.recycleSelf();
-        }catch ( e){
+        } catch (e) {
             // don't worry about it.
         }
     }
 
-    
-    public onAnimationUpdate( animation: TWEEN.Tween) {
-
-    }
+    public onAnimationUpdate(animation: TWEEN.Tween) {}
 }

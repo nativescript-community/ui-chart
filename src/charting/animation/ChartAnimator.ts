@@ -68,7 +68,7 @@ export class ChartAnimator {
      */
     public animateX(durationMillis, easing?: EasingFunction) {
         const animatorX = this.xAnimator(durationMillis, easing, this.mListener);
-        animatorX.start();
+        animatorX.start(0);
     }
 
     /**
@@ -82,8 +82,8 @@ export class ChartAnimator {
     public animateXY(durationMillisX, durationMillisY, easingX: EasingFunction, easingY: EasingFunction) {
         const xAnimator = this.xAnimator(durationMillisX, easingX, durationMillisX > durationMillisY ? this.mListener : undefined);
         const yAnimator = this.yAnimator(durationMillisY, easingY || easingX, durationMillisX > durationMillisY ? undefined : this.mListener);
-        xAnimator.start();
-        yAnimator.start();
+        xAnimator.start(0);
+        yAnimator.start(0);
     }
 
     /**
