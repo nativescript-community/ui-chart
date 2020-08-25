@@ -6,41 +6,42 @@ import { Entry } from '../data/Entry';
  *
  * @author Philipp Jahoda
  */
-export interface Highlight {
+export class Highlight
+{
     /**
      * the x-value of the highlighted value
      */
-    x;
+    x: number;
 
     /**
      * the y-value of the highlighted value
      */
-    y;
+    y: number;
 
     /**
      * the x-pixel of the highlight
      */
-    xPx?;
+    xPx?: number;
 
     /**
      * the y-pixel of the highlight
      */
-    yPx?;
+    yPx?: number;
 
     /**
      * the index of the data object - in case it refers to more than one
      */
-    dataIndex?;
+    dataIndex?: number;
 
     /**
      * the index of the dataset the highlighted value is in
      */
-    dataSetIndex?;
+    dataSetIndex?: number;
 
     /**
      * index which value of a stacked bar entry is highlighted, default -1
      */
-    stackIndex?;
+    stackIndex?: number;
 
     /**
      * the axis the highlighted value belongs to
@@ -50,12 +51,12 @@ export interface Highlight {
     /**
      * the x-position (pixels) on which this highlight object was last drawn
      */
-    drawX?;
+    drawX?: number;
 
     /**
      * the y-position (pixels) on which this highlight object was last drawn
      */
-    drawY?;
+    drawY?: number;
 
     /**
      * the associated entry

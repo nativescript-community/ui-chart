@@ -1,5 +1,5 @@
 import { BarLineScatterCandleBubbleData } from './BarLineScatterCandleBubbleData';
-import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
+import { BarDataSet } from './BarDataSet';
 import { BarEntry } from './BarEntry';
 
 /**
@@ -7,7 +7,7 @@ import { BarEntry } from './BarEntry';
  *
  * @author Philipp Jahoda
  */
-export class BarData extends BarLineScatterCandleBubbleData<BarEntry, IBarDataSet> {
+export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet> {
     /**
      * the width of the bars on the x-axis, in values (not pixels)
      */
@@ -15,12 +15,12 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, IBarDataSe
 
     /**
      * Sets the width each bar should have on the x-axis (in values, not pixels).
-     * Default 0.85f
+     * Default 0.85
      *
      * @param this.mBarWidth
      */
-    public setBarWidth(mBarWidth) {
-        this.mBarWidth = this.mBarWidth;
+    public setBarWidth(value) {
+        this.mBarWidth = value;
     }
 
     public getBarWidth() {

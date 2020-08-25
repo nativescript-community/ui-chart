@@ -7,7 +7,6 @@ import { GradientColor } from '../model/GradientColor';
 import { Color } from '@nativescript/core/color/color';
 import { Utils } from '../utils/Utils';
 import { Rounding } from './DataSet';
-import { IValueFormatter } from 'nativescript-chart/formatter/IValueFormatter';
 
 /**
  * Created by Philipp Jahoda on 21/10/15.
@@ -43,10 +42,13 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      *
      */
     yProperty: string = 'y';
+
     /**
      * List representing all colors that are used for this DataSet
      */
-    protected mColors: Array<{color:string | Color, [k:string]:number | string | Color}> = null;
+    protected mColors: Array<string | Color> = null;
+
+    private mColorDefault = '#8CEAFF';
 
     protected mGradientColor = null;
 
@@ -75,7 +77,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * custom formatter that is used instead of the auto-formatter if set
      */
-    protected mValueFormatter: IValueFormatter;
+    protected mValueFormatter: ValueFormatter;
 
     /**
      * the typeface used for the value text
@@ -132,8 +134,6 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
             this.yProperty = yProperty;
         }
 
-        // default color
-        this.mColors.push({color:'#8CEAFF'});
         this.mValueColors.push('black');
         this.mLabel = label;
     }
@@ -149,7 +149,11 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * ###### ###### COLOR GETTING RELATED METHODS ##### ######
      */
 
-    public getColors() {
+    public getColors(): Array<string | Color> {
+        if (this.mColors.length == 0)
+        {
+            return [this.mColorDefault];
+        }
         return this.mColors;
     }
 
@@ -158,7 +162,11 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getColor(index = 0) {
-        return this.mColors[index % this.mColors.length].color;
+        if (this.mColors.length <= index || this.mColors.length == 0)
+        {
+            return this.mColorDefault;
+        }
+        return this.mColors[index % this.mColors.length];
     }
 
     public getGradientColors() {
@@ -190,7 +198,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      *
      * @param color
      */
-    public addColor(value:{color:string | Color, [k:string]:number | string | Color}) {
+    public addColor(value: string | Color) {
         if (this.mColors == null) this.mColors = [];
         this.mColors.push(value);
     }
@@ -226,7 +234,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
             const actColor = color instanceof Color ? color: new Color(color)
             color = new Color(actColor.r, actColor.g, actColor.b, alpha);
         }
-        this.mColors.push({color});
+        this.mColors.push(color);
     }
 
     /**
@@ -271,7 +279,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return this.mHighlightEnabled;
     }
 
-    public setValueFormatter(f: IValueFormatter) {
+    public setValueFormatter(f: ValueFormatter) {
         if (f == null) return;
         else this.mValueFormatter = f;
     }

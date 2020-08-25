@@ -86,7 +86,7 @@ export class LegendRenderer extends Renderer {
 
                     for (let j = 0; j < clrs.length && j < bds.getStackSize(); j++) {
                         this.computedEntries.push(
-                            new LegendEntry(sLabels[j % sLabels.length], dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j].color)
+                            new LegendEntry(sLabels[j % sLabels.length], dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j])
                         );
                     }
 
@@ -99,7 +99,7 @@ export class LegendRenderer extends Renderer {
 
                     for (let j = 0; j < clrs.length && j < entryCount; j++) {
                         this.computedEntries.push(
-                            new LegendEntry(pds.getEntryForIndex(j).label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j].color)
+                            new LegendEntry(pds.getEntryForIndex(j).label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j])
                         );
                     }
 
@@ -130,7 +130,7 @@ export class LegendRenderer extends Renderer {
                             label = data.getDataSetByIndex(i).getLabel();
                         }
 
-                        this.computedEntries.push(new LegendEntry(label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j].color));
+                        this.computedEntries.push(new LegendEntry(label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j]));
                     }
                 }
             }

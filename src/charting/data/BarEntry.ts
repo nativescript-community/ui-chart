@@ -39,9 +39,10 @@ export class BarEntry implements Entry {
      * @param data - Spot for additional data this Entry represents.
      * @param icon - icon image
      */
-    constructor( x,  y,  data?, icon?) {
+    constructor(x, y, data?, icon?)
+    {
         this.x = x;
-        this.y = x;
+        this.y = y;
         this.data = data;
         this.icon = icon;
     }
@@ -115,7 +116,7 @@ export class BarEntry implements Entry {
      *
      * @return
      */
-    public  getYVals() {
+    public getYVals() {
         return this.mYVals;
     }
 
@@ -124,7 +125,8 @@ export class BarEntry implements Entry {
      *
      * @param vals
      */
-    public  setVals( vals) {
+    public setVals(vals)
+    {
         this.y = (BarEntry.calcSum(vals));
         this.mYVals = vals;
         this.calcPosNegSum();
@@ -146,19 +148,19 @@ export class BarEntry implements Entry {
      *
      * @return
      */
-    public  isStacked() {
-        return this.mYVals != null;
+    public isStacked() {
+        return this.mYVals != null && this.mYVals.length > 0;
     }
 
     /**
      * Use `getSumBelow(stackIndex)` instead.
      */
     
-    public  getBelowSum( stackIndex) {
+    public getBelowSum( stackIndex) {
         return this.getSumBelow(stackIndex);
     }
 
-    public  getSumBelow( stackIndex) {
+    public getSumBelow( stackIndex) {
 
         if (this.mYVals == null)
             return 0;
@@ -179,7 +181,7 @@ export class BarEntry implements Entry {
      *
      * @return
      */
-    public  getPositiveSum() {
+    public getPositiveSum() {
         return this.mPositiveSum;
     }
 
@@ -188,12 +190,11 @@ export class BarEntry implements Entry {
      *
      * @return
      */
-    public  getNegativeSum() {
+    public getNegativeSum() {
         return this.mNegativeSum;
     }
 
-    private  calcPosNegSum() {
-
+    private calcPosNegSum() {
         if (this.mYVals == null) {
             this.mNegativeSum = 0;
             this.mPositiveSum = 0;
@@ -220,7 +221,7 @@ export class BarEntry implements Entry {
      * @param vals
      * @return
      */
-     static  calcSum(vals) {
+     static calcSum(vals) {
 
         if (vals == null)
             return 0;
@@ -233,8 +234,7 @@ export class BarEntry implements Entry {
         return sum;
     }
 
-    protected  calcRanges() {
-
+    protected calcRanges() {
         const values = this.getYVals();
 
         if (values == null || values.length == 0)
