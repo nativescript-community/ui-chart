@@ -1,10 +1,9 @@
-// require('./ts_helpers');
 import Vue from 'nativescript-vue';
 import App from './App.vue';
 import './styles.scss';
 import RadChart from 'nativescript-ui-chart/vue';
 
-import {install} from 'nativescript-gesturehandler'
+import { install } from 'nativescript-gesturehandler';
 install();
 
 Vue.use(RadChart);
@@ -13,8 +12,7 @@ Vue.use(RadChart);
 
 Vue.registerElement('LineChart', () => require('nativescript-chart/charts/LineChart').LineChart);
 
-
-declare var com;
+declare let com;
 // import { MPLineChart } from 'nativescript-mpchart-fork-adrianoop/chart/line-chart/nativescript-line-chart';
 // class CustomLineChart extends com.github.mikephil.charting.charts.LineChart {
 //     _owner: WeakRef<CustomMPLineChart>;
@@ -48,10 +46,10 @@ Vue.config.errorHandler = (e, vm, info) => {
     }
 };
 
-Vue.config.warnHandler = function(msg, vm, trace) {
+Vue.config.warnHandler = function (msg, vm, trace) {
     console.warn('[Vue][Warn]', `[${msg}]`);
     // cwarn(msg, trace);
 };
 new Vue({
-    render: h => h('frame', [h(App)])
+    render: (h) => h('frame', [h(App)]),
 }).$start();

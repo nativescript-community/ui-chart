@@ -32,15 +32,15 @@
 <script lang="ts">
 import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'vue';
-import { LineChart } from 'nativescript-chart/charting/charts/LineChart';
-import { LimitLine, LimitLabelPosition } from 'nativescript-chart/charting/components/LimitLine';
-import { LegendForm } from 'nativescript-chart/charting/components/Legend';
+import { LineChart } from 'nativescript-chart/charts/LineChart';
+import { LimitLine, LimitLabelPosition } from 'nativescript-chart/components/LimitLine';
+import { LegendForm } from 'nativescript-chart/components/Legend';
 import { knownFolders, path } from '@nativescript/core/file-system';
 import { profile } from '@nativescript/core/profiling/profiling';
-import { LineDataSet } from 'nativescript-chart/charting/data/LineDataSet';
-import { LineData } from 'nativescript-chart/charting/data/LineData';
+import { LineDataSet } from 'nativescript-chart/data/LineDataSet';
+import { LineData } from 'nativescript-chart/data/LineData';
 import { Color } from '@nativescript/core/color/color';
-import { ColorTemplate } from 'nativescript-chart/charting/utils/ColorTemplate';
+import { ColorTemplate } from 'nativescript-chart/utils/ColorTemplate';
 
 export const title = 'NS UI Chart';
 

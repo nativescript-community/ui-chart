@@ -17,6 +17,7 @@
         "allowSyntheticDefaultImports": true,
         "noImplicitUseStrict": true,
         "lib": ["es6", "dom", "es2015.iterable"],
+        "types": ["vue"],
         "baseUrl": ".",
         "paths": {
             "~/*": ["app/*"],
@@ -25,6 +26,6 @@
             "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
         }
     },
-    "include": ["app/**/*", "references.d.ts"],
+    "include": ["app/**/*", "references.d.ts", "vue-shims.d.ts"],
     "exclude": ["node_modules", "platforms", "**/angular"]
 }
