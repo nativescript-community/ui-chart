@@ -1,7 +1,7 @@
 import { DataSet } from './DataSet';
 import { Entry } from './Entry';
 import { IBarLineScatterCandleBubbleDataSet } from '../interfaces/datasets/IBarLineScatterCandleBubbleDataSet';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 
 /**
  * Baseclass of all DataSets for Bar-, Line-, Scatter- and CandleStickChart.

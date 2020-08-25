@@ -3,8 +3,8 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { Canvas, Path, Style, Paint } from 'nativescript-canvas';
 import { Utils } from '../utils/Utils';
-import { profile } from '@nativescript/core/profiling/profiling';
-import { Color } from '@nativescript/core/color/color';
+import { profile } from '@nativescript/core/profiling';
+import { Color } from '@nativescript/core/color';
 
 // export const SCALE_FACTOR = 1;
 

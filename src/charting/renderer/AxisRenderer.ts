@@ -5,7 +5,7 @@ import { Paint, Style, Canvas } from 'nativescript-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core/profiling';
 /**
  * Baseclass of all axis renderers.
  *

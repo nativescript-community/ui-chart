@@ -5,7 +5,7 @@ import { Transformer } from '../utils/Transformer';
 import { Paint, Style, Canvas, Align, Path, RectF } from 'nativescript-canvas';
 import { Utils } from '../utils/Utils';
 import { LimitLabelPosition } from '../components/LimitLine';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core/profiling';
 
 export class YAxisRenderer extends AxisRenderer {
     protected mYAxis: YAxis;

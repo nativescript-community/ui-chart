@@ -6,7 +6,7 @@ import { ValueFormatter } from '../../formatter/ValueFormatter';
 import { MPPointF } from '../../utils/MPPointF';
 import { LegendForm } from '../../components/Legend';
 import { DashPathEffect } from 'nativescript-canvas';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Font } from '@nativescript/core/ui/styling/font';
 import { IValueFormatter } from 'nativescript-chart/formatter/IValueFormatter';
 

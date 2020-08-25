@@ -1,4 +1,4 @@
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 
 /**
  * Class that holds predefined color integer arrays (e.g.

@@ -3,7 +3,7 @@ import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ILineScatterCandleRadarDataSet } from '../interfaces/datasets/ILineScatterCandleRadarDataSet';
 import { Path, Canvas } from 'nativescript-canvas';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core/profiling';
 
 /**
  * Created by Philipp Jahoda on 11/07/15.

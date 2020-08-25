@@ -1,7 +1,7 @@
 import { BarLineScatterCandleBubbleDataSet } from './BarLineScatterCandleBubbleDataSet';
 import { BarEntry } from './BarEntry';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 
 export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> implements IBarDataSet {
     /**

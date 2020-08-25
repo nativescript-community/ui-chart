@@ -1,6 +1,6 @@
 import { LegendForm } from './Legend';
 import { DashPathEffect } from 'nativescript-canvas';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 
 export class LegendEntry {
     /**

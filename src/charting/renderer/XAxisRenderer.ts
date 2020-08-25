@@ -6,7 +6,7 @@ import { Align, Canvas, Path, Style, RectF, Paint, FontMetrics } from 'nativescr
 import { Utils } from '../utils/Utils';
 import { MPPointF } from '../utils/MPPointF';
 import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core/profiling';
 
 export class XAxisRenderer extends AxisRenderer {
     protected mXAxis: XAxis;

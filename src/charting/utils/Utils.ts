@@ -2,7 +2,7 @@ import { screen } from '@nativescript/core/platform';
 import { Paint, Rect, Canvas, StaticLayout, FontMetrics, Align } from 'nativescript-canvas';
 import { ValueFormatter } from '../formatter/ValueFormatter';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core/profiling';
 import { isAndroid } from '@nativescript/core/platform';
 
 export type FloatArray = Float32Array | Float64Array;

@@ -1,7 +1,7 @@
 import { Entry } from './Entry';
 import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
 import { LineRadarDataSet } from './LineRadarDataSet';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Utils } from '../utils/Utils';
 import { DefaultFillFormatter } from '../formatter/DefaultFillFormatter';
 import { IFillFormatter } from '../formatter/IFillFormatter';

@@ -9,7 +9,7 @@ import { LegendEntry } from '../components/LegendEntry';
 import { ColorTemplate } from '../utils/ColorTemplate';
 import { PieDataSet } from '../data/PieDataSet';
 import { CandleDataSet } from '../data/CandleDataSet';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core/profiling';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 
 export class LegendRenderer extends Renderer {

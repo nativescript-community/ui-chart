@@ -5,7 +5,7 @@ import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
 import { CanvasView, Paint, Canvas, Style, Matrix, RectF } from 'nativescript-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { Utils } from '../utils/Utils';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Chart } from './Chart';
 import { Highlight } from '../highlight/Highlight';
 import { AxisDependency, YAxis } from '../components/YAxis';
@@ -23,8 +23,8 @@ import { AnimatedMoveViewJob } from '../jobs/AnimatedMoveViewJob';
 import { AnimatedZoomJob } from '../jobs/AnimatedZoomJob';
 import { ZoomJob } from '../jobs/ZoomJob';
 import { BarLineChartTouchListener } from '../listener/BarLineChartTouchListener';
-import { getEventOrGestureName, EventData, Observable } from '@nativescript/core/ui/page/page';
-import { GestureTypes, fromString as gestureFromString } from '@nativescript/core/ui/gestures/gestures';
+import { getEventOrGestureName, EventData, Observable } from '@nativescript/core/ui/page';
+import { GestureTypes, fromString as gestureFromString } from '@nativescript/core/ui/gestures';
 
 const LOG_TAG = 'BarLineChartBase';
 

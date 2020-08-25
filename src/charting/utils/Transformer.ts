@@ -1,7 +1,7 @@
 import { Matrix, Path, Rect } from 'nativescript-canvas';
 import { ViewPortHandler } from './ViewPortHandler';
 import { Utils } from './Utils';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core/profiling';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
 import { CandleDataSet } from '../data/CandleDataSet';

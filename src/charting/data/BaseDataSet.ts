@@ -4,7 +4,7 @@ import { LegendForm } from '../components/Legend';
 import { AxisDependency } from '../components/YAxis';
 import { ValueFormatter } from '../formatter/ValueFormatter';
 import { GradientColor } from '../model/GradientColor';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Utils } from '../utils/Utils';
 import { Rounding } from './DataSet';
 

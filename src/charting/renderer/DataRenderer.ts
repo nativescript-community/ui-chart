@@ -2,7 +2,7 @@ import { Renderer } from './Renderer';
 import { Paint, Style, Align, Canvas, Cap, Join } from 'nativescript-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Utils } from '../utils/Utils';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
 import { IDataSet } from '../interfaces/datasets/IDataSet';

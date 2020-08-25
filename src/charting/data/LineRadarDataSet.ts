@@ -1,7 +1,7 @@
 import { Entry } from './Entry';
 import { ILineRadarDataSet } from '../interfaces/datasets/ILineRadarDataSet';
 import { LineScatterCandleRadarDataSet } from './LineScatterCandleRadarDataSet';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Utils } from '../utils/Utils';
 
 /**

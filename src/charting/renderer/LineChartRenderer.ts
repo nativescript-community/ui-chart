@@ -11,7 +11,7 @@ import { ColorTemplate } from '../utils/ColorTemplate';
 import { Highlight } from '../highlight/Highlight';
 import { XBounds } from './BarLineScatterCandleBubbleRenderer';
 import { Transformer } from '../utils/Transformer';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core/profiling';
 import { isAndroid } from '@nativescript/core/platform';
 import { Rounding } from 'nativescript-chart/data/DataSet';
 
