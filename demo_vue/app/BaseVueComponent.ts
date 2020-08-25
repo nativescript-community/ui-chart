@@ -1,5 +1,5 @@
 import Vue from 'nativescript-vue';
-import { Page } from '@nativescript/core/ui/page/page';
+import { Page } from '@nativescript/core/ui/page';
 import { isAndroid, isIOS } from '@nativescript/core/platform/platform';
 // import { CartoMap } from 'nativescript-carto/ui/ui';
 
