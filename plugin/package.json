@@ -29,7 +29,7 @@
     "typings": "index.d.ts",
     "dependencies": {
         "downsample": "^1.3.0",
-        "nativescript-canvas": "^3.0.8",
+        "nativescript-canvas": "^3.0.10",
         "nativescript-gesturehandler": "^0.1.16",
         "nativescript-tween": "^0.0.10",
         "number-format.js": "^2.0.9"
