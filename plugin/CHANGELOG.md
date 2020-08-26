@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.26](https://github.com/Akylas/nativescript-chart/compare/v0.0.25...v0.0.26) (2020-08-26)
+
+**Note:** Version bump only for package nativescript-chart
+
+
+
+
+
 ## [0.0.25](https://github.com/Akylas/nativescript-chart/compare/v0.0.24...v0.0.25) (2020-06-19)
 
 **Note:** Version bump only for package nativescript-chart

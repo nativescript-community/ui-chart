@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.26](https://github.com/Akylas/nativescript-chart/compare/v0.0.25...v0.0.26) (2020-08-26)
+
+
+### Bug Fixes
+
+* Defined barWidth not applying to chart. ([42febf2](https://github.com/Akylas/nativescript-chart/commit/42febf26363400574ae4ad065f3f59ade201089e))
+
+
+
+
+
 ## [0.0.25](https://github.com/Akylas/nativescript-chart/compare/v0.0.24...v0.0.25) (2020-06-19)
 
 
