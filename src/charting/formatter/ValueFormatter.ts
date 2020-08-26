@@ -1,8 +1,8 @@
-import { IAxisValueFormatter } from "./IAxisValueFormatter";
-import { IValueFormatter } from "./IValueFormatter";
-import { BarEntry } from "../data/BarEntry";
-import { Entry } from "../data/Entry";
-import { AxisBase } from "../components/AxisBase";
+import { IAxisValueFormatter } from './IAxisValueFormatter';
+import { IValueFormatter } from './IValueFormatter';
+import { BarEntry } from '../data/BarEntry';
+import { Entry } from '../data/Entry';
+import { AxisBase } from '../components/AxisBase';
 
 /**
  * Class to format all values before they are drawn as labels.
@@ -28,8 +28,8 @@ export abstract class ValueFormatter implements IAxisValueFormatter, IValueForma
     //  * @param viewPortHandler provides information about the current chart state (scale, translation, ...)
     //  * @return formatted string label
     //  */
-    // 
-    // 
+    //
+    //
     // public String getFormattedValue(value, Entry entry, int dataSetIndex, viewPortHandler: ViewPortHandler) {
     //     return getFormattedValue(value);
     // }

@@ -1,9 +1,9 @@
 
-import { BarLineChartBase } from "../charts/BarLineChartBase";
-import { ObjectPool } from "../utils/ObjectPool";
-import { Transformer } from "../utils/Transformer";
-import { ViewPortHandler } from "../utils/ViewPortHandler";
-import { ViewPortJob } from "./ViewPortJob";
+import { BarLineChartBase } from '../charts/BarLineChartBase';
+import { ObjectPool } from '../utils/ObjectPool';
+import { Transformer } from '../utils/Transformer';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { ViewPortJob } from './ViewPortJob';
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
@@ -28,7 +28,7 @@ export class MoveViewJob extends ViewPortJob {
         super(viewPortHandler, xValue, yValue, trans, v);
     }
 
-    
+
     public run() {
 
         this.pts[0] = this.xValue;
@@ -40,7 +40,7 @@ export class MoveViewJob extends ViewPortJob {
         MoveViewJob.recycleInstance(this);
     }
 
-    
+
     public instantiate() {
         return new MoveViewJob(this.mViewPortHandler, this.xValue, this.yValue, this.mTrans, this.view);
     }

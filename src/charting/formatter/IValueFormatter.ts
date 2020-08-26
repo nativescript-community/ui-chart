@@ -1,4 +1,4 @@
-import { Entry } from "../data/Entry";
+import { Entry } from '../data/Entry';
 
 /**
  * Interface to format all values before they are drawn as labels.
@@ -7,7 +7,7 @@ import { Entry } from "../data/Entry";
  *  Extend {@link ValueFormatter} instead
  */
 export interface IValueFormatter {
-  /**
+    /**
    * Called when a value (from labels inside the chart) is formatted
    * before being drawn. For performance reasons, avoid excessive calculations
    * and memory allocations inside this method.
@@ -22,12 +22,12 @@ export interface IValueFormatter {
    *
    * @deprecated Extend {@link ValueFormatter} and override an appropriate method
    */
-  getFormattedValue(
-    value: number,
-    entry: Entry,
-    index,
-    count,
-    dataSetIndex,
-    viewPortHandler
-  ): string;
+    getFormattedValue(
+        value: number,
+        entry: Entry,
+        index,
+        count,
+        dataSetIndex,
+        viewPortHandler
+    ): string;
 }

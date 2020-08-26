@@ -1,12 +1,12 @@
 import { LineRadarRenderer } from './LineRadarRenderer';
 import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
-import { Direction, Paint, Canvas, Path, Style, createImage, releaseImage, FillType, Matrix } from 'nativescript-canvas';
+import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, releaseImage } from 'nativescript-canvas';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
 import { LineDataSet, Mode } from '../data/LineDataSet';
-import { Utils, FloatArray } from '../utils/Utils';
+import { FloatArray, Utils } from '../utils/Utils';
 import { ColorTemplate } from '../utils/ColorTemplate';
 import { Highlight } from '../highlight/Highlight';
 import { XBounds } from './BarLineScatterCandleBubbleRenderer';
@@ -29,13 +29,13 @@ export class DataSetImageCache {
      * @return
      */
     init(set: ILineDataSet) {
-        let size = set.getCircleColorCount();
+        const size = set.getCircleColorCount();
         let changeRequired = false;
 
         if (this.circleBitmaps == null) {
             this.circleBitmaps = [];
             changeRequired = true;
-        } else if (this.circleBitmaps.length != size) {
+        } else if (this.circleBitmaps.length !== size) {
             this.circleBitmaps = [];
             changeRequired = true;
         }
@@ -51,14 +51,14 @@ export class DataSetImageCache {
      * @param drawTransparentCircleHole
      */
     fill(set: ILineDataSet, mRenderPaint, mCirclePaintInner, drawCircleHole: boolean, drawTransparentCircleHole: boolean) {
-        let colorCount = set.getCircleColorCount();
-        let circleRadius = set.getCircleRadius();
-        let circleHoleRadius = set.getCircleHoleRadius();
+        const colorCount = set.getCircleColorCount();
+        const circleRadius = set.getCircleRadius();
+        const circleHoleRadius = set.getCircleHoleRadius();
 
         for (let i = 0; i < colorCount; i++) {
             const circleBitmap = createImage({ width: circleRadius * 2.1, height: circleRadius * 2.1, scale: Utils.density });
 
-            let canvas = new Canvas(circleBitmap);
+            const canvas = new Canvas(circleBitmap);
             mRenderPaint.setColor(set.getCircleColor(i));
 
             if (drawTransparentCircleHole) {
@@ -143,12 +143,12 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     @profile
     public drawData(c: Canvas) {
-        let width = this.mViewPortHandler.getChartWidth();
-        let height = this.mViewPortHandler.getChartHeight();
+        const width = this.mViewPortHandler.getChartWidth();
+        const height = this.mViewPortHandler.getChartHeight();
 
         let drawBitmap = this.mDrawBitmap == null ? null : this.mDrawBitmap.get();
 
-        if (drawBitmap == null || drawBitmap.width != width || drawBitmap.height != height) {
+        if (drawBitmap == null || drawBitmap.width !== width || drawBitmap.height !== height) {
             if (width > 0 && height > 0) {
                 this.mBitmapCanvas = new Canvas(width, height);
                 drawBitmap = this.mBitmapCanvas.getImage();
@@ -160,7 +160,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         const lineData = this.mChart.getLineData();
         let needsBitmapDrawing = false;
-        for (let set of lineData.getVisibleDataSets()) {
+        for (const set of lineData.getVisibleDataSets()) {
             needsBitmapDrawing = this.drawDataSet(c, set) || needsBitmapDrawing;
         }
         if (needsBitmapDrawing) {
@@ -202,24 +202,24 @@ export class LineChartRenderer extends LineRadarRenderer {
     @profile
     generateHorizontalBezierPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
-            let pointsPerEntryPair = 6;
-            let entryCount = dataSet.getEntryCount();
+            const pointsPerEntryPair = 6;
+            const entryCount = dataSet.getEntryCount();
             if (!this.mLineBuffer || this.mLineBuffer.length < Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2) {
                 this.mLineBuffer = Utils.createArrayBuffer(Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2);
             }
 
-            let phaseY = this.mAnimator.getPhaseY();
+            const phaseY = this.mAnimator.getPhaseY();
             const xKey = dataSet.xProperty;
             const yKey = dataSet.yProperty;
             let prev = dataSet.getEntryForIndex(this.mXBounds.min);
             let cur = prev;
-            var float32arr = this.mLineBuffer;
+            const float32arr = this.mLineBuffer;
             float32arr[0] = cur[xKey];
             float32arr[1] = cur[yKey] * phaseY;
 
-            let firstIndex = Math.max(0, this.mXBounds.min);
+            const firstIndex = Math.max(0, this.mXBounds.min);
             // let firstIndex = this.mXBounds.min + 1;
-            let lastIndex = this.mXBounds.min + this.mXBounds.range;
+            const lastIndex = this.mXBounds.min + this.mXBounds.range;
             // let the spline start
             // this.cubicPath.moveTo(cur[xKey], cur[yKey] * phaseY);
             let index = 2;
@@ -232,7 +232,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 prev = cur;
                 cur = dataSet.getEntryForIndex(j);
 
-                let cpx = prev[xKey] + (cur[xKey] - prev[xKey]) / 2.0;
+                const cpx = prev[xKey] + (cur[xKey] - prev[xKey]) / 2.0;
 
                 float32arr[index++] = cpx;
                 float32arr[index++] = prev[yKey] * phaseY;
@@ -253,15 +253,15 @@ export class LineChartRenderer extends LineRadarRenderer {
     @profile
     generateCubicPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
-            let pointsPerEntryPair = 6;
-            let entryCount = dataSet.getEntryCount();
+            const pointsPerEntryPair = 6;
+            const entryCount = dataSet.getEntryCount();
             if (!this.mLineBuffer || this.mLineBuffer.length < Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2) {
                 this.mLineBuffer = Utils.createArrayBuffer(Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2);
             }
-            let phaseY = this.mAnimator.getPhaseY();
+            const phaseY = this.mAnimator.getPhaseY();
             const xKey = dataSet.xProperty;
             const yKey = dataSet.yProperty;
-            let intensity = dataSet.getCubicIntensity();
+            const intensity = dataSet.getCubicIntensity();
             let prevDx = 0;
             let prevDy = 0;
             let curDx = 0;
@@ -272,9 +272,9 @@ export class LineChartRenderer extends LineRadarRenderer {
             // So in the starting `prev` and `cur`, go -2, -1
             // And in the `lastIndex`, add +1
 
-            let firstIndex = Math.max(0, this.mXBounds.min);
+            const firstIndex = Math.max(0, this.mXBounds.min);
             // let firstIndex = this.mXBounds.min + 1;
-            let lastIndex = this.mXBounds.min + this.mXBounds.range;
+            const lastIndex = this.mXBounds.min + this.mXBounds.range;
 
             let prevPrev;
             let prev = dataSet.getEntryForIndex(Math.max(firstIndex - 2, 0));
@@ -284,7 +284,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             if (cur == null) return [];
 
-            var float32arr = this.mLineBuffer;
+            const float32arr = this.mLineBuffer;
             float32arr[0] = cur[xKey];
             float32arr[1] = cur[yKey] * phaseY;
             // let the spline start
@@ -297,7 +297,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 }
                 prevPrev = prev;
                 prev = cur;
-                cur = nextIndex == j ? next : newEntry;
+                cur = nextIndex === j ? next : newEntry;
 
                 nextIndex = j + 1 < dataSet.getEntryCount() ? j + 1 : j;
                 next = dataSet.getEntryForIndex(nextIndex);
@@ -329,9 +329,9 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     generateLinearPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
-            const isDrawSteppedEnabled = dataSet.getMode() == Mode.STEPPED;
-            let entryCount = dataSet.getEntryCount();
-            let pointsPerEntryPair = isDrawSteppedEnabled ? 4 : 2;
+            const isDrawSteppedEnabled = dataSet.getMode() === Mode.STEPPED;
+            const entryCount = dataSet.getEntryCount();
+            const pointsPerEntryPair = isDrawSteppedEnabled ? 4 : 2;
             if (!this.mLineBuffer || this.mLineBuffer.length < Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2) {
                 this.mLineBuffer = Utils.createArrayBuffer(Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2);
             }
@@ -342,12 +342,12 @@ export class LineChartRenderer extends LineRadarRenderer {
             // const filled = outputPath;
             // outputPath.reset();
 
-            let firstIndex = Math.max(0, this.mXBounds.min);
-            let lastIndex = this.mXBounds.min + this.mXBounds.range;
+            const firstIndex = Math.max(0, this.mXBounds.min);
+            const lastIndex = this.mXBounds.min + this.mXBounds.range;
             const entry = dataSet.getEntryForIndex(firstIndex);
 
             // outputPath.moveTo(entry[xKey], entry[yKey] * phaseY);
-            var float32arr = this.mLineBuffer;
+            const float32arr = this.mLineBuffer;
             float32arr[0] = entry[xKey];
             float32arr[1] = entry[yKey] * phaseY;
             let index = 2;
@@ -386,7 +386,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     @profile
     protected drawCubicBezier(c: Canvas, dataSet: ILineDataSet) {
-        let result = false;
+        const result = false;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
@@ -413,7 +413,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     @profile
     protected drawHorizontalBezier(c: Canvas, dataSet: ILineDataSet) {
-        let result = false;
+        const result = false;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
@@ -440,7 +440,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     @profile
     protected drawLinear(c: Canvas, dataSet: ILineDataSet) {
-        let result = false;
+        const result = false;
         const drawFilled = dataSet.isDrawFilledEnabled();
         const drawLine = dataSet.getLineWidth() > 0;
         if (!drawFilled && !drawLine) {
@@ -470,8 +470,8 @@ export class LineChartRenderer extends LineRadarRenderer {
         } else {
             const points = res[0];
             trans.pointValuesToPixel(points);
-            let firstIndex = Math.max(0, this.mXBounds.min);
-            let lastIndex = this.mXBounds.min + this.mXBounds.range;
+            const firstIndex = Math.max(0, this.mXBounds.min);
+            const lastIndex = this.mXBounds.min + this.mXBounds.range;
             const colorsToBeDrawn = [];
             let lastDrawnIndex = 0,
                 nbItems;
@@ -481,7 +481,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 // if filtered we need to get the real index
                 if ((dataSet as any).isFiltered()) {
                     (dataSet as any).setIgnoreFiltered(true);
-                    let entry = dataSet.getEntryForIndex(colorIndex);
+                    const entry = dataSet.getEntryForIndex(colorIndex);
                     (dataSet as any).setIgnoreFiltered(false);
                     if (entry !== null) {
                         colorIndex = dataSet.getEntryIndexForXValue(entry.x, NaN, Rounding.DOWN);
@@ -511,7 +511,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     lastDrawnIndex += 1;
                 }
                 colorsToBeDrawn.push({
-                    color: color,
+                    color,
                     startIndex,
                     nbItems,
                 });
@@ -550,7 +550,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?) {
         const xKey = dataSet.xProperty;
-        let fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
+        const fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
 
         spline.lineTo(max, fillMin);
         spline.lineTo(min, fillMin);
@@ -593,15 +593,15 @@ export class LineChartRenderer extends LineRadarRenderer {
         const length = count;
         const dataSetCount = dataSet.getEntryCount();
         for (let j = 0; j < length; j += 2) {
-            let x = points[j];
-            let y = points[j + 1];
+            const x = points[j];
+            const y = points[j + 1];
 
             if (!this.mViewPortHandler.isInBoundsRight(x)) break;
 
             if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
 
             const index = j / 2 + this.mXBounds.min;
-            let entry = dataSet.getEntryForIndex(index);
+            const entry = dataSet.getEntryForIndex(index);
             if (!entry) continue;
 
             if (drawValues) {
@@ -616,7 +616,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             }
 
             if (drawIcons && entry.icon != null) {
-                let icon = entry.icon;
+                const icon = entry.icon;
 
                 Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
             }
@@ -660,7 +660,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     @profile
     protected drawCirclesForDataset(c: Canvas, dataSet: LineDataSet) {
         this.mCirclePaintInner.setColor(dataSet.getCircleHoleColor());
-        let phaseY = this.mAnimator.getPhaseY();
+        const phaseY = this.mAnimator.getPhaseY();
 
         const xKey = dataSet.xProperty;
         const yKey = dataSet.yProperty;
@@ -668,10 +668,10 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-        let circleRadius = dataSet.getCircleRadius();
-        let circleHoleRadius = dataSet.getCircleHoleRadius();
-        let drawCircleHole = dataSet.isDrawCircleHoleEnabled() && circleHoleRadius < circleRadius && circleHoleRadius > 0;
-        let drawTransparentCircleHole = drawCircleHole && dataSet.getCircleHoleColor() == ColorTemplate.COLOR_NONE;
+        const circleRadius = dataSet.getCircleRadius();
+        const circleHoleRadius = dataSet.getCircleHoleRadius();
+        const drawCircleHole = dataSet.isDrawCircleHoleEnabled() && circleHoleRadius < circleRadius && circleHoleRadius > 0;
+        const drawTransparentCircleHole = drawCircleHole && dataSet.getCircleHoleColor() === ColorTemplate.COLOR_NONE;
 
         let imageCache: DataSetImageCache;
 
@@ -682,17 +682,17 @@ export class LineChartRenderer extends LineRadarRenderer {
             this.mImageCaches.set(dataSet, imageCache);
         }
 
-        let changeRequired = imageCache.init(dataSet);
+        const changeRequired = imageCache.init(dataSet);
 
         // only fill the cache with new bitmaps if a change is required
         if (changeRequired) {
             imageCache.fill(dataSet, this.mRenderPaint, this.mCirclePaintInner, drawCircleHole, drawTransparentCircleHole);
         }
 
-        let boundsRangeCount = this.mXBounds.range + this.mXBounds.min;
+        const boundsRangeCount = this.mXBounds.range + this.mXBounds.min;
 
         for (let j = this.mXBounds.min; j <= boundsRangeCount; j++) {
-            let e = dataSet.getEntryForIndex(j);
+            const e = dataSet.getEntryForIndex(j);
 
             if (e == null) continue;
 
@@ -705,7 +705,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             if (!this.mViewPortHandler.isInBoundsLeft(this.mCirclesBuffer[0]) || !this.mViewPortHandler.isInBoundsY(this.mCirclesBuffer[1])) continue;
 
-            let circleBitmap = imageCache.getBitmap(j);
+            const circleBitmap = imageCache.getBitmap(j);
 
             if (circleBitmap != null) {
                 c.drawBitmap(circleBitmap, this.mCirclesBuffer[0] - circleRadius, this.mCirclesBuffer[1] - circleRadius, null);
@@ -724,27 +724,27 @@ export class LineChartRenderer extends LineRadarRenderer {
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
 
-            if (!dataSet.isDrawCirclesEnabled() || dataSet.getEntryCount() == 0) continue;
+            if (!dataSet.isDrawCirclesEnabled() || dataSet.getEntryCount() === 0) continue;
             this.drawCirclesForDataset(c, dataSet);
         }
     }
 
     public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?: boolean) {
-        let lineData = this.mChart.getLineData();
+        const lineData = this.mChart.getLineData();
 
-        for (let high of indices) {
-            let set = lineData.getDataSetByIndex(high.dataSetIndex);
+        for (const high of indices) {
+            const set = lineData.getDataSetByIndex(high.dataSetIndex);
 
             if (set == null || !set.isHighlightEnabled()) continue;
 
-            let e = lineData.getEntryForHighlight(high);
+            const e = lineData.getEntryForHighlight(high);
             // let e = set.getEntryForXValue(high.x high.y);
 
             if (!this.isInBoundsX(e, set)) continue;
 
             const xKey = set.xProperty;
             const yKey = set.yProperty;
-            let pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[xKey], e[yKey] * this.mAnimator.getPhaseY());
+            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[xKey], e[yKey] * this.mAnimator.getPhaseY());
 
             high.drawX = pix.x;
             high.drawY = pix.y;
@@ -785,7 +785,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             this.mBitmapCanvas = null;
         }
         if (this.mDrawBitmap != null) {
-            let drawBitmap = this.mDrawBitmap.get();
+            const drawBitmap = this.mDrawBitmap.get();
             if (drawBitmap != null) {
                 releaseImage(drawBitmap);
                 // drawBitmap.recycle();

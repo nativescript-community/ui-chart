@@ -3,7 +3,7 @@ export class GradientColor {
 
     private  startColor: number;
     private  endColor: number;
-    
+
     constructor( startColor,  endColor) {
         this.startColor = startColor;
         this.endColor = endColor;

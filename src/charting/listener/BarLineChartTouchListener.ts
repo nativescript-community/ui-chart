@@ -4,17 +4,17 @@ import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Utils } from '../utils/Utils';
 import { ChartGesture, ChartTouchListener } from './ChartTouchListener';
 import {
-    Manager,
-    GestureHandlerTouchEvent,
     GestureHandlerStateEvent,
+    GestureHandlerTouchEvent,
     GestureState,
     GestureStateEventData,
     GestureTouchEventData,
     HandlerType,
+    LongPressGestureHandler,
+    Manager,
     PanGestureHandler,
     PinchGestureHandler,
-    TapGestureHandler,
-    LongPressGestureHandler
+    TapGestureHandler
 } from 'nativescript-gesturehandler';
 
 /**
@@ -212,8 +212,8 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 break;
             case GestureState.END:
             case GestureState.CANCELLED:
-                if (this.mTouchMode == ChartTouchListener.DRAG) {
-                    this.mTouchMode === ChartTouchListener.NONE;
+                if (this.mTouchMode === ChartTouchListener.DRAG) {
+                    this.mTouchMode = ChartTouchListener.NONE;
                     this.stopDeceleration();
 
                     // this.mDecelerationLastTime = Date.now();
@@ -248,12 +248,12 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         if (this.mTouchMode === ChartTouchListener.DRAG) {
             // this.mChart.disableScroll();
 
-            let x = event.data.extraData.translationX;
-            let y = event.data.extraData.translationY;
+            const x = event.data.extraData.translationX;
+            const y = event.data.extraData.translationY;
 
             this.performDrag(event, x, y);
             this.mMatrix = chart.getViewPortHandler().refresh(this.mMatrix, chart, true);
-        } else if (this.mTouchMode == ChartTouchListener.NONE) {
+        } else if (this.mTouchMode === ChartTouchListener.NONE) {
             if (this.mChart.isDragEnabled()) {
                 const shouldPan = !chart.isFullyZoomedOut() || !chart.hasNoDragOffset();
 
@@ -357,8 +357,8 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
                 const canZoomMoreY = isZoomingOut ? h.canZoomOutMoreY() : h.canZoomInMoreY();
 
-                let scaleX = this.mChart.isScaleXEnabled() ? scale : 1;
-                let scaleY = this.mChart.isScaleYEnabled() ? scale : 1;
+                const scaleX = this.mChart.isScaleXEnabled() ? scale : 1;
+                const scaleY = this.mChart.isScaleYEnabled() ? scale : 1;
 
                 if (canZoomMoreY || canZoomMoreX) {
                     this.mMatrix.set(this.mSavedMatrix);
@@ -513,7 +513,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @return
      */
     private static getXDist(e: GestureStateEventData) {
-        let x = Math.abs(e.data.extraData.positions[0] - e.data.extraData.positions[2]);
+        const x = Math.abs(e.data.extraData.positions[0] - e.data.extraData.positions[2]);
         return x;
     }
 
@@ -525,7 +525,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @return
      */
     private static getYDist(e: GestureStateEventData) {
-        let y = Math.abs(e.data.extraData.positions[1] - e.data.extraData.positions[3]);
+        const y = Math.abs(e.data.extraData.positions[1] - e.data.extraData.positions[3]);
         return y;
     }
 
@@ -541,7 +541,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     public getTrans(x, y) {
         const vph = this.mChart.getViewPortHandler();
 
-        let xTrans = x - vph.offsetLeft();
+        const xTrans = x - vph.offsetLeft();
         let yTrans = 0;
 
         // check if axis is inverted

@@ -1,5 +1,5 @@
 import { Renderer } from './Renderer';
-import { Paint, Style, Align, Canvas, Cap, Join } from 'nativescript-canvas';
+import { Align, Canvas, Cap, Join, Paint, Style } from 'nativescript-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { Color } from '@nativescript/core/color';
@@ -105,7 +105,7 @@ export abstract class DataRenderer extends Renderer {
         {
             this.mValuePaint.setTypeface(set.getValueTypeface());
         }
-        
+
         if (set.getValueTextSize())
         {
             this.mValuePaint.setTextSize(set.getValueTextSize());
@@ -158,5 +158,5 @@ export abstract class DataRenderer extends Renderer {
      * @param indices the highlighted values
      * @param actualDraw whether to draw or not
      */
-    public abstract drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?:boolean);
+    public abstract drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?: boolean);
 }

@@ -1,8 +1,8 @@
 import { AxisRenderer } from './AxisRenderer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { YAxis, AxisDependency, YAxisLabelPosition } from '../components/YAxis';
+import { AxisDependency, YAxis, YAxisLabelPosition } from '../components/YAxis';
 import { Transformer } from '../utils/Transformer';
-import { Paint, Style, Canvas, Align, Path, RectF } from 'nativescript-canvas';
+import { Align, Canvas, Paint, Path, RectF, Style } from 'nativescript-canvas';
 import { Utils } from '../utils/Utils';
 import { LimitLabelPosition } from '../components/LimitLine';
 import { profile } from '@nativescript/core/profiling';
@@ -42,15 +42,15 @@ export class YAxisRenderer extends AxisRenderer {
         this.mAxisLabelPaint.setTextSize(this.mYAxis.getTextSize());
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
 
-        let xoffset = this.mYAxis.getXOffset();
-        let yoffset = Utils.calcTextHeight(this.mAxisLabelPaint, 'A') / 2.5 + this.mYAxis.getYOffset();
+        const xoffset = this.mYAxis.getXOffset();
+        const yoffset = Utils.calcTextHeight(this.mAxisLabelPaint, 'A') / 2.5 + this.mYAxis.getYOffset();
         const dependency = this.mYAxis.getAxisDependency();
         const labelPosition = this.mYAxis.getLabelPosition();
 
         let xPos = 0;
 
-        if (dependency == AxisDependency.LEFT) {
-            if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
+        if (dependency === AxisDependency.LEFT) {
+            if (labelPosition === YAxisLabelPosition.OUTSIDE_CHART) {
                 this.mAxisLabelPaint.setTextAlign(Align.RIGHT);
                 xPos = this.mViewPortHandler.offsetLeft() - xoffset;
             } else {
@@ -58,7 +58,7 @@ export class YAxisRenderer extends AxisRenderer {
                 xPos = this.mViewPortHandler.offsetLeft() + xoffset;
             }
         } else {
-            if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
+            if (labelPosition === YAxisLabelPosition.OUTSIDE_CHART) {
                 this.mAxisLabelPaint.setTextAlign(Align.LEFT);
                 xPos = this.mViewPortHandler.contentRight() + xoffset;
             } else {
@@ -68,7 +68,7 @@ export class YAxisRenderer extends AxisRenderer {
         }
 
         this.drawYLabels(c, xPos, positions, yoffset);
-        if (dependency == AxisDependency.LEFT) {
+        if (dependency === AxisDependency.LEFT) {
             this.drawMarkTicket(c, this.mViewPortHandler.contentLeft(), positions, -xoffset / 2);
         } else {
             this.drawMarkTicket(c, this.mViewPortHandler.contentRight(), positions, +xoffset / 2);
@@ -81,7 +81,7 @@ export class YAxisRenderer extends AxisRenderer {
         this.mAxisLinePaint.setColor(this.mYAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mYAxis.getAxisLineWidth());
 
-        if (this.mYAxis.getAxisDependency() == AxisDependency.LEFT) {
+        if (this.mYAxis.getAxisDependency() === AxisDependency.LEFT) {
             c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.mAxisLinePaint);
         } else {
             c.drawLine(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.mAxisLinePaint);
@@ -97,11 +97,11 @@ export class YAxisRenderer extends AxisRenderer {
     @profile
     protected drawYLabels(c: Canvas, fixedPosition, positions, offset) {
         const mYAxis = this.mYAxis;
-        let from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
-        let to = mYAxis.isDrawTopYLabelEntryEnabled() ? mYAxis.mEntryCount : mYAxis.mEntryCount - 1;
+        const from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
+        const to = mYAxis.isDrawTopYLabelEntryEnabled() ? mYAxis.mEntryCount : mYAxis.mEntryCount - 1;
         // draw
         for (let i = from; i < to; i++) {
-            let text = mYAxis.getFormattedLabel(i);
+            const text = mYAxis.getFormattedLabel(i);
 
             c.drawText(text, fixedPosition, positions[i * 2 + 1] + offset, this.mAxisLabelPaint);
         }
@@ -134,7 +134,7 @@ export class YAxisRenderer extends AxisRenderer {
         if (!this.mYAxis.isEnabled()) return;
 
         if (this.mYAxis.isDrawGridLinesEnabled()) {
-            let clipRestoreCount = c.save();
+            const clipRestoreCount = c.save();
             c.clipRect(this.getGridClippingRect());
 
             const positions = this.getTransformedPositions();
@@ -195,7 +195,7 @@ export class YAxisRenderer extends AxisRenderer {
      */
     protected getTransformedPositions() {
         const length = this.mYAxis.mEntryCount * 2;
-        if (this.mGetTransformedPositionsBuffer.length != length) {
+        if (this.mGetTransformedPositionsBuffer.length !== length) {
             this.mGetTransformedPositionsBuffer = Utils.createArrayBuffer(length);
         }
         const positions = this.mGetTransformedPositionsBuffer;
@@ -216,7 +216,7 @@ export class YAxisRenderer extends AxisRenderer {
      * Draws the zero line.
      */
     protected drawZeroLine(c: Canvas) {
-        let clipRestoreCount = c.save();
+        const clipRestoreCount = c.save();
         this.mZeroLineClippingRect.set(this.mViewPortHandler.getContentRect());
         this.mZeroLineClippingRect.inset(0, -this.mYAxis.getZeroLineWidth());
         c.clipRect(this.mZeroLineClippingRect);
@@ -263,7 +263,7 @@ export class YAxisRenderer extends AxisRenderer {
 
             if (!l.isEnabled()) continue;
             const lineWidth = l.getLineWidth();
-            let clipRestoreCount = c.save();
+            const clipRestoreCount = c.save();
             this.mLimitLineClippingRect.set(this.mViewPortHandler.getContentRect());
             this.mLimitLineClippingRect.inset(0, -lineWidth);
             c.clipRect(this.mLimitLineClippingRect);
@@ -284,7 +284,7 @@ export class YAxisRenderer extends AxisRenderer {
             }
             // c.drawLines(pts, this.mLimitLinePaint);
 
-            let label = l.getLabel();
+            const label = l.getLabel();
 
             // if drawing the limit-value label is enabled
             if (label != null && label !== '') {
@@ -296,18 +296,18 @@ export class YAxisRenderer extends AxisRenderer {
                 this.mLimitLinePaint.setTextSize(l.getTextSize());
 
                 const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
-                let xOffset = 4 + l.getXOffset();
-                let yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset();
+                const xOffset = 4 + l.getXOffset();
+                const yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset();
 
                 const position = l.getLabelPosition();
 
-                if (position == LimitLabelPosition.RIGHT_TOP) {
+                if (position === LimitLabelPosition.RIGHT_TOP) {
                     this.mLimitLinePaint.setTextAlign(Align.RIGHT);
                     c.drawText(label, this.mViewPortHandler.contentRight() - xOffset, pts[1] - yOffset + labelLineHeight, this.mLimitLinePaint);
-                } else if (position == LimitLabelPosition.RIGHT_BOTTOM) {
+                } else if (position === LimitLabelPosition.RIGHT_BOTTOM) {
                     this.mLimitLinePaint.setTextAlign(Align.RIGHT);
                     c.drawText(label, this.mViewPortHandler.contentRight() - xOffset, pts[1] + yOffset, this.mLimitLinePaint);
-                } else if (position == LimitLabelPosition.LEFT_TOP) {
+                } else if (position === LimitLabelPosition.LEFT_TOP) {
                     this.mLimitLinePaint.setTextAlign(Align.LEFT);
                     c.drawText(label, this.mViewPortHandler.contentLeft() + xOffset, pts[1] - yOffset + labelLineHeight, this.mLimitLinePaint);
                 } else {

@@ -41,9 +41,8 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
             .onComplete(() => this.onAnimationEnd(this.animator))
             .onStart(() => this.onAnimationStart(this.animator))
             .onUpdate((obj) => {
-                // this.log('onUpdate', obj.value);
                 this.phase = obj.value;
-                () => this.onAnimationUpdate(this.animator);
+                this.onAnimationUpdate(this.animator);
             });
     }
 

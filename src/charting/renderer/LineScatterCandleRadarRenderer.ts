@@ -2,7 +2,7 @@ import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubble
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ILineScatterCandleRadarDataSet } from '../interfaces/datasets/ILineScatterCandleRadarDataSet';
-import { Path, Canvas } from 'nativescript-canvas';
+import { Canvas, Path } from 'nativescript-canvas';
 import { profile } from '@nativescript/core/profiling';
 
 /**

@@ -1,7 +1,7 @@
 
-import {Renderer} from './Renderer'
+import {Renderer} from './Renderer';
 import { AxisBase } from '../components/AxisBase';
-import { Paint, Style, Canvas } from 'nativescript-canvas';
+import { Canvas, Paint, Style } from 'nativescript-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
@@ -145,13 +145,13 @@ export abstract class AxisRenderer extends Renderer {
      */
     protected computeAxisValues( min,  max) {
 
-        let yMin = min;
-        let yMax = max;
+        const yMin = min;
+        const yMax = max;
 
-        let labelCount = this.mAxis.getLabelCount();
+        const labelCount = this.mAxis.getLabelCount();
         const range = Math.abs(yMax - yMin);
 
-        if (labelCount == 0 || range <= 0 || !Number.isFinite(range)) {
+        if (labelCount === 0 || range <= 0 || !Number.isFinite(range)) {
             this.mAxis.mEntries = [];
             this.mAxis.mCenteredEntries = [];
             this.mAxis.mEntryCount = 0;
@@ -165,11 +165,11 @@ export abstract class AxisRenderer extends Renderer {
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
         if (this.mAxis.isGranularityEnabled())
-            interval = interval < this.mAxis.getGranularity() ? this.mAxis.getGranularity() : interval;
+        {interval = interval < this.mAxis.getGranularity() ? this.mAxis.getGranularity() : interval;}
 
         // Normalize interval
         const intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10,  Math.log10(interval)));
-        let intervalSigDigit =  (interval / intervalMagnitude);
+        const intervalSigDigit =  (interval / intervalMagnitude);
         if (intervalSigDigit > 5) {
             // Use one order of magnitude higher, to avoid intervals like 0.9 or
             // 90
@@ -201,17 +201,17 @@ export abstract class AxisRenderer extends Renderer {
             // no forced count
         } else {
 
-            let first = interval == 0.0 ? 0.0 : Math.ceil(yMin / interval) * interval;
+            let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
             if(this.mAxis.isCenterAxisLabelsEnabled()) {
                 first -= interval;
             }
 
-            const last = interval == 0.0 ? 0.0 : Utils.nextUp(Math.floor(yMax / interval) * interval);
+            const last = interval === 0 ? 0 : Utils.nextUp(Math.floor(yMax / interval) * interval);
 
             let f;
             let i;
 
-            if (interval != 0.0) {
+            if (interval !== 0) {
                 for (f = first; f <= last; f += interval) {
                     ++n;
                 }
@@ -226,8 +226,8 @@ export abstract class AxisRenderer extends Renderer {
 
             for (f = first, i = 0; i < n; f += interval, ++i) {
 
-                if (f == 0.0) // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
-                    f = 0.0;
+                if (f === 0.0) // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
+                {f = 0.0;}
 
                 this.mAxis.mEntries[i] =  f;
             }
@@ -246,7 +246,7 @@ export abstract class AxisRenderer extends Renderer {
                 this.mAxis.mCenteredEntries = [];
             }
 
-            let offset = interval / 2;
+            const offset = interval / 2;
 
             for (let i = 0; i < n; i++) {
                 this.mAxis.mCenteredEntries[i] = this.mAxis.mEntries[i] + offset;
@@ -259,26 +259,26 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @param c
      */
-    public abstract  renderAxisLabels( c:Canvas);
+    public abstract  renderAxisLabels( c: Canvas);
 
     /**
      * Draws the grid lines belonging to the axis.
      *
      * @param c
      */
-    public abstract  renderGridLines( c:Canvas);
+    public abstract  renderGridLines( c: Canvas);
 
     /**
      * Draws the line that goes alongside the axis.
      *
      * @param c
      */
-    public abstract  renderAxisLine( c:Canvas);
+    public abstract  renderAxisLine( c: Canvas);
 
     /**
      * Draws the LimitLines associated with this axis to the screen.
      *
      * @param c
      */
-    public abstract  renderLimitLines( c:Canvas);
+    public abstract  renderLimitLines( c: Canvas);
 }

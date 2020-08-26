@@ -1,4 +1,4 @@
-import { Matrix, Rect, RectF, CanvasView } from 'nativescript-canvas';
+import { CanvasView, Matrix, Rect, RectF } from 'nativescript-canvas';
 import { Utils } from './Utils';
 
 /**
@@ -79,10 +79,10 @@ export class ViewPortHandler {
      */
 
     public setChartDimens(width, height) {
-        let offsetLeft = this.offsetLeft();
-        let offsetTop = this.offsetTop();
-        let offsetRight = this.offsetRight();
-        let offsetBottom = this.offsetBottom();
+        const offsetLeft = this.offsetLeft();
+        const offsetTop = this.offsetTop();
+        const offsetRight = this.offsetRight();
+        const offsetBottom = this.offsetBottom();
 
         this.mChartHeight = Math.round(height);
         this.mChartWidth = Math.round(width);
@@ -324,8 +324,8 @@ export class ViewPortHandler {
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
-        let x = transformedPts[0] - this.offsetLeft();
-        let y = transformedPts[1] - this.offsetTop();
+        const x = transformedPts[0] - this.offsetLeft();
+        const y = transformedPts[1] - this.offsetTop();
         outputMatrix.postTranslate(-x, -y);
         return outputMatrix;
     }
@@ -347,8 +347,8 @@ export class ViewPortHandler {
         save.reset();
         save.set(this.mMatrixTouch);
 
-        let x = transformedPts[0] - this.offsetLeft();
-        let y = transformedPts[1] - this.offsetTop();
+        const x = transformedPts[0] - this.offsetLeft();
+        const y = transformedPts[1] - this.offsetTop();
 
         save.postTranslate(-x, -y);
 
@@ -387,11 +387,11 @@ export class ViewPortHandler {
         // TODO: native buffer to be optimized (or rewrite matrix!)
         matrix.getValues(this.matrixBuffer);
 
-        let curTransX = this.matrixBuffer[Matrix.MTRANS_X];
-        let curScaleX = this.matrixBuffer[Matrix.MSCALE_X];
+        const curTransX = this.matrixBuffer[Matrix.MTRANS_X];
+        const curScaleX = this.matrixBuffer[Matrix.MSCALE_X];
 
-        let curTransY = this.matrixBuffer[Matrix.MTRANS_Y];
-        let curScaleY = this.matrixBuffer[Matrix.MSCALE_Y];
+        const curTransY = this.matrixBuffer[Matrix.MTRANS_Y];
+        const curScaleY = this.matrixBuffer[Matrix.MSCALE_Y];
 
         // min scale-x is 1
         this.mScaleX = Math.min(Math.max(this.mMinScaleX, curScaleX), this.mMaxScaleX);
@@ -407,10 +407,10 @@ export class ViewPortHandler {
             height = content.height();
         }
 
-        let maxTransX = -width * (this.mScaleX - 1);
+        const maxTransX = -width * (this.mScaleX - 1);
         this.mTransX = Math.min(Math.max(curTransX, maxTransX - this.mTransOffsetX), this.mTransOffsetX);
 
-        let maxTransY = height * (this.mScaleY - 1);
+        const maxTransY = height * (this.mScaleY - 1);
         this.mTransY = Math.max(Math.min(curTransY, maxTransY + this.mTransOffsetY), -this.mTransOffsetY);
 
         this.matrixBuffer[Matrix.MTRANS_X] = this.mTransX;
@@ -441,7 +441,7 @@ export class ViewPortHandler {
      * @param xScale
      */
     public setMaximumScaleX(xScale) {
-        if (xScale == 0) xScale = Infinity;
+        if (xScale === 0) xScale = Infinity;
 
         this.mMaxScaleX = xScale;
 
@@ -457,7 +457,7 @@ export class ViewPortHandler {
     public setMinMaxScaleX(minScaleX, maxScaleX) {
         if (minScaleX < 1) minScaleX = 1;
 
-        if (maxScaleX == 0) maxScaleX = Infinity;
+        if (maxScaleX === 0) maxScaleX = Infinity;
 
         this.mMinScaleX = minScaleX;
         this.mMaxScaleX = maxScaleX;
@@ -484,7 +484,7 @@ export class ViewPortHandler {
      * @param yScale
      */
     public setMaximumScaleY(yScale) {
-        if (yScale == 0) yScale = Infinity;
+        if (yScale === 0) yScale = Infinity;
 
         this.mMaxScaleY = yScale;
 
@@ -494,7 +494,7 @@ export class ViewPortHandler {
     public setMinMaxScaleY(minScaleY, maxScaleY) {
         if (minScaleY < 1) minScaleY = 1;
 
-        if (maxScaleY == 0) maxScaleY = Infinity;
+        if (maxScaleY === 0) maxScaleY = Infinity;
 
         this.mMinScaleY = minScaleY;
         this.mMaxScaleY = maxScaleY;

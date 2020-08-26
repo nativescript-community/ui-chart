@@ -1,7 +1,7 @@
 import { LineScatterCandleRadarRenderer } from './LineScatterCandleRadarRenderer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { Canvas, Path, Style, Paint } from 'nativescript-canvas';
+import { Canvas, Paint, Path, Style } from 'nativescript-canvas';
 import { Utils } from '../utils/Utils';
 import { profile } from '@nativescript/core/profiling';
 import { Color } from '@nativescript/core/color';
@@ -26,7 +26,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
     @profile
     protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable, shader) {
         if (this.clipPathSupported()) {
-            let save = c.save();
+            const save = c.save();
             // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
             c.clipPath(filledPath);
 
@@ -66,8 +66,8 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
 
         // save
         const previous = this.mRenderPaint.getStyle();
-        let previousColor = this.mRenderPaint.getColor();
-        let previousShader = this.mRenderPaint.getShader();
+        const previousColor = this.mRenderPaint.getColor();
+        const previousShader = this.mRenderPaint.getShader();
 
         this.mRenderPaint.setStyle(Style.FILL);
 
@@ -80,7 +80,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
         }
 
         if (this.clipPathSupported()) {
-            let save = c.save();
+            const save = c.save();
             c.clipPath(filledPath);
             c.drawPaint(this.mRenderPaint);
             c.restoreToCount(save);

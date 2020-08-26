@@ -85,15 +85,15 @@ export class AnimatedZoomJob extends AnimatedViewPortJob {
     protected mOnAnimationUpdateMatrixBuffer = new Matrix();
 
     public onAnimationUpdate(animation) {
-        let scaleX = this.xOrigin + (this.xValue - this.xOrigin) * this.phase;
-        let scaleY = this.yOrigin + (this.yValue - this.yOrigin) * this.phase;
+        const scaleX = this.xOrigin + (this.xValue - this.xOrigin) * this.phase;
+        const scaleY = this.yOrigin + (this.yValue - this.yOrigin) * this.phase;
 
         const save = this.mOnAnimationUpdateMatrixBuffer;
         this.mViewPortHandler.setZoom(scaleX, scaleY, save);
         this.mViewPortHandler.refresh(save, this.view, false);
 
-        let valsInView = this.yAxis.mAxisRange / this.mViewPortHandler.getScaleY();
-        let xsInView = this.xAxisRange / this.mViewPortHandler.getScaleX();
+        const valsInView = this.yAxis.mAxisRange / this.mViewPortHandler.getScaleY();
+        const xsInView = this.xAxisRange / this.mViewPortHandler.getScaleX();
 
         this.pts[0] = this.zoomOriginX + (this.zoomCenterX - xsInView / 2 - this.zoomOriginX) * this.phase;
         this.pts[1] = this.zoomOriginY + (this.zoomCenterY + valsInView / 2 - this.zoomOriginY) * this.phase;

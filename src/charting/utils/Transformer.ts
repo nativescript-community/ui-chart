@@ -107,7 +107,7 @@ export class Transformer {
     //     return valuePoints;
     // }
 
-    protected valuePointsForGenerateTransformedValues:number[];
+    protected valuePointsForGenerateTransformedValues: number[];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -117,8 +117,8 @@ export class Transformer {
      * @return
      */
     public generateTransformedValues(dataSet: IDataSet<Entry>, phaseX, phaseY, from, to) {
-        let count = ((to - from) * phaseX + 1) * 2;
-    // let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
+        const count = ((to - from) * phaseX + 1) * 2;
+        // let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
 
         if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length <  count) {
             this.valuePointsForGenerateTransformedValues = Utils.createArrayBuffer(count);
@@ -192,9 +192,9 @@ export class Transformer {
      * @return
      */
     public generateTransformedValuesCandle(dataSet: CandleDataSet, phaseX, phaseY, from, to) {
-        let count = ((to - from) * phaseX + 1) * 2;
+        const count = ((to - from) * phaseX + 1) * 2;
 
-        if (this.valuePointsForGenerateTransformedValuesCandle.length != count) {
+        if (this.valuePointsForGenerateTransformedValuesCandle.length !== count) {
             this.valuePointsForGenerateTransformedValuesCandle = Utils.createArrayBuffer(count);
         }
         const valuePoints = this.valuePointsForGenerateTransformedValuesCandle;

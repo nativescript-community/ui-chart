@@ -142,8 +142,8 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
      * @return
      */
     protected static distance(eventX, startX, eventY, startY) {
-        let dx = eventX - startX;
-        let dy = eventY - startY;
+        const dx = eventX - startX;
+        const dy = eventY - startY;
         return Math.sqrt(dx * dx + dy * dy);
     }
 }

@@ -1,5 +1,5 @@
 import { ValueFormatter } from './ValueFormatter';
-const format = require('number-format.js')
+const format = require('number-format.js');
 
 /**
  * Created by philipp on 02/06/16.
@@ -31,7 +31,7 @@ export class DefaultAxisValueFormatter extends ValueFormatter {
 
         let b = '';
         for (let i = 0; i < digits; i++) {
-            if (i == 0) b += '.';
+            if (i === 0) b += '.';
             b += '0';
         }
 

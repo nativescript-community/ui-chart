@@ -1,4 +1,4 @@
-import { AxisBase } from "../components/AxisBase";
+import { AxisBase } from '../components/AxisBase';
 
 /**
  * Created by Philipp Jahoda on 20/09/15.
@@ -8,7 +8,7 @@ import { AxisBase } from "../components/AxisBase";
  *  Extend {@link ValueFormatter} instead
  */
 export interface IAxisValueFormatter {
-  /**
+    /**
    * Called when a value from an axis is to be formatted
    * before being drawn. For performance reasons, avoid excessive calculations
    * and memory allocations inside this method.
@@ -19,5 +19,5 @@ export interface IAxisValueFormatter {
    *
    *  Extend {@link ValueFormatter} and use {@link ValueFormatter#getAxisLabel(float, AxisBase)}
    */
-  getAxisLabel(value, axis: AxisBase): string;
+    getAxisLabel(value, axis: AxisBase): string;
 }

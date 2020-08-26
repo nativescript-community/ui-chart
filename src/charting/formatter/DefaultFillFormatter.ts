@@ -5,8 +5,8 @@ import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
 export class DefaultFillFormatter implements IFillFormatter {
     public getFillLinePosition(dataSet: ILineDataSet, dataProvider: LineDataProvider) {
         let fillMin = 0;
-        let chartMaxY = dataProvider.getYChartMax();
-        let chartMinY = dataProvider.getYChartMin();
+        const chartMaxY = dataProvider.getYChartMax();
+        const chartMinY = dataProvider.getYChartMin();
 
         const data = dataProvider.getLineData();
 
