@@ -1,6 +1,6 @@
 import { Entry } from './Entry';
 
-export interface BubbleEntry extends Entry {
+export class BubbleEntry extends Entry {
     /** size value */
     size: number;
 }

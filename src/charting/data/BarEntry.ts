@@ -5,12 +5,7 @@ import { Entry } from "./Entry";
  *
  * @author Philipp Jahoda
  */
-export class BarEntry implements Entry {
-    x: number;
-    y: number;
-    icon?: any;
-    data?: any;
-
+export class BarEntry extends Entry {
     /**
      * the values the stacked barchart holds
      */
@@ -41,10 +36,7 @@ export class BarEntry implements Entry {
      */
     constructor(x, y, data?, icon?)
     {
-        this.x = x;
-        this.y = y;
-        this.data = data;
-        this.icon = icon;
+        super(x, y, data, icon);
     }
 
    

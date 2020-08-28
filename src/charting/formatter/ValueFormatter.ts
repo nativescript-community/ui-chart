@@ -62,7 +62,7 @@ export abstract class ValueFormatter implements IAxisValueFormatter, IValueForma
      * @return formatted string label
      */
     public getBarLabel( barEntry: BarEntry) {
-        return this.getFormattedValue(barEntry.y);
+        return this.getFormattedValue(barEntry.getY());
     }
 
     /**

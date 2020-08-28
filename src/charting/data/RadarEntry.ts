@@ -1,3 +1,3 @@
 import { Entry } from './Entry';
 
-export interface RadarEntry extends Entry {}
+export class RadarEntry extends Entry {}

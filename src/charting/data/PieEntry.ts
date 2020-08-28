@@ -3,6 +3,6 @@ import { Entry } from './Entry';
 /**
  * @author Philipp Jahoda
  */
-export interface PieEntry extends Entry {
+export class PieEntry extends Entry {
     label;
 }

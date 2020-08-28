@@ -1,11 +1,6 @@
 import { Entry } from './Entry';
 
-export class CandleEntry implements Entry {
-    x: number;
-    y: number;
-    icon?: any;
-    data?: any;
-
+export class CandleEntry extends Entry {
     /** shadow-high value */
     private mShadowHigh = 0;
 
@@ -28,9 +23,7 @@ export class CandleEntry implements Entry {
      * @param close The close value
      */
     constructor(x, shadowH, shadowL, open, close) {
-        this.x = x;
-        this.y = (shadowH + shadowL) / 2;
-
+        super(x, (shadowH + shadowL) / 2);
         this.mShadowHigh = shadowH;
         this.mShadowLow = shadowL;
         this.mOpen = open;

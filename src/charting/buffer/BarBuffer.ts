@@ -45,8 +45,8 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                 continue;
             }
 
-            const x = e.x;
-            let y = e.y;
+            const x = e.getX();
+            let y = e.getY();
             const vals = e.getYVals();
 
             if (!this.mContainsStacks || vals == null) {

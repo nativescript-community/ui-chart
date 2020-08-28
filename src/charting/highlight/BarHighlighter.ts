@@ -67,8 +67,8 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider>
             //MPPointD.recycleInstance(pixels);
 
             return {
-                x: entry.x,
-                y: entry.y,
+                x: entry.getX(),
+                y: entry.getY(),
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex: high.dataSetIndex,

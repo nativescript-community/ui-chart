@@ -113,8 +113,8 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
             return new RectF(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
         }
 
-        let y = e.x;
-        let x = e.y;
+        let y = e.getX();
+        let x = e.getY();
 
         let barWidth = this.mData.getBarWidth();
 

@@ -409,7 +409,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     public getIndexInEntries(xIndex) {
         for (let i = 0; i < this.getEntryCount(); i++) {
-            if (xIndex == this.getEntryForIndex(i).x) return i;
+            if (xIndex == this.getEntryForIndex(i).getX()) return i;
         }
 
         return -1;

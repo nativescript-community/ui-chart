@@ -484,7 +484,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     const entry = dataSet.getEntryForIndex(colorIndex);
                     (dataSet as any).setIgnoreFiltered(false);
                     if (entry !== null) {
-                        colorIndex = dataSet.getEntryIndexForXValue(entry.x, NaN, Rounding.DOWN);
+                        colorIndex = dataSet.getEntryIndexForXValue(entry.getX(), NaN, Rounding.DOWN);
                     }
                 }
                 if (colorIndex < firstIndex) {
@@ -615,10 +615,10 @@ export class LineChartRenderer extends LineRadarRenderer {
                 );
             }
 
-            if (drawIcons && entry.icon != null) {
-                const icon = entry.icon;
+            if (drawIcons && entry.getIcon() != null) {
+                const icon = entry.getIcon();
 
-                Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+                Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y);
             }
         }
     }
