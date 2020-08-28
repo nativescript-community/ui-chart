@@ -1,5 +1,6 @@
 const Color = require("@nativescript/core/color").Color;
 const fs = require("@nativescript/core/file-system");
+const imageSourceModule = require("@nativescript/core/image-source");
 const bd = require("nativescript-chart/data/BarData");
 const bds = require("nativescript-chart/data/BarDataSet");
 const be = require("nativescript-chart/data/BarEntry");
@@ -40,11 +41,15 @@ exports.onBarChartLoaded = function(args)
     chart.getAxisRight().setEnabled(false);
     // chart.setHardwareAccelerationEnabled(true);
 
-    const data = new Array(20).fill(0).map((v, i) => (new be.BarEntry(i, Math.random() * 1)));
+    const data = new Array(5).fill(0).map(function(v, i)
+    {
+        return new be.BarEntry(i, Math.random() * 1, imageSourceModule.fromResource("icon"));
+    });
 
     console.log('setData', data.length, data[0]);
     const sets = [];
     const set = new bds.BarDataSet(data, 'value', 'index', 'value');
+    set.setDrawIcons(true);
     set.setColor(getRandomColor());
     set.setDrawValues(true);
     sets.push(set);

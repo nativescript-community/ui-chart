@@ -1,3 +1,4 @@
+import { ImageSource } from '@nativescript/core/image-source';
 import { isAndroid, screen } from '@nativescript/core/platform';
 import { Align, Canvas, FontMetrics, Paint, Rect, StaticLayout } from 'nativescript-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
@@ -440,25 +441,27 @@ export namespace Utils {
     // let mDrawableBoundsCache = new Rect(0,0,0,0);
 
     // export function drawImage(canvas: Canvas, drawable, x, y, width, height) {
-    //     // const drawOffsetx = x - (width / 2);
-    //     // const drawOffsety = y - (height / 2);
+    //     const drawOffsetx = x - (width / 2);
+    //     const drawOffsety = y - (height / 2);
 
-    //     // drawable.copyBounds(mDrawableBoundsCache);
-    //     // drawable.setBounds(
-    //     //         this.mDrawableBoundsCache.left,
-    //     //         this.mDrawableBoundsCache.top,
-    //     //         this.mDrawableBoundsCache.left + width,
-    //     //         this.mDrawableBoundsCache.top + width);
+    //     drawable.copyBounds(mDrawableBoundsCache);
+    //     drawable.setBounds(
+    //             this.mDrawableBoundsCache.left,
+    //             this.mDrawableBoundsCache.top,
+    //             this.mDrawableBoundsCache.left + width,
+    //             this.mDrawableBoundsCache.top + width);
 
-    //     // canvas.save();
-    //     // // translate to the correct position and draw
-    //     // canvas.translate(drawOffsetx, drawOffsety);
-    //     // drawable.draw(canvas);
-    //     // canvas.restore();
+    //     canvas.save();
+    //     // translate to the correct position and draw
+    //     canvas.translate(drawOffsetx, drawOffsety);
+    //     drawable.draw(canvas);
+    //     canvas.restore();
     // }
 
-    export function drawImage(canvas: Canvas, icon, x, y) {
-        canvas.drawBitmap(icon, x, y, null);
+    export function drawImage(canvas: Canvas, icon: ImageSource, x, y) {
+        const drawOffsetX = x - (icon.width / 2);
+        const drawOffsetY = y - (icon.height / 2);
+        canvas.drawBitmap(isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
     }
 
     const mDrawTextRectBuffer = new Rect(0, 0, 0, 0);
