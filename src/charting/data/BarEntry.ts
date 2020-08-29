@@ -1,3 +1,4 @@
+import { ImageSource } from '@nativescript/core/image-source';
 import { Entry } from "./Entry";
 
 /**
@@ -8,7 +9,7 @@ import { Entry } from "./Entry";
 export class BarEntry implements Entry {
     x: number;
     y: number;
-    icon?: any;
+    icon?: ImageSource;
     data?: any;
 
     /**
@@ -36,10 +37,10 @@ export class BarEntry implements Entry {
      *
      * @param x
      * @param y
-     * @param data - Spot for additional data this Entry represents.
      * @param icon - icon image
+     * @param data - Spot for additional data this Entry represents.
      */
-    constructor(x, y, icon?, data?)
+    constructor(x, y, icon?: ImageSource, data?)
     {
         this.x = x;
         this.y = y;
