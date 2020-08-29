@@ -617,8 +617,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             if (drawIcons && entry.icon != null) {
                 const icon = entry.icon;
-
-                Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+                Utils.drawImage(c, icon, (x + iconsOffset.x), (y + iconsOffset.y));
             }
         }
     }

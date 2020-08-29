@@ -1,3 +1,4 @@
+import { ImageSource } from '@nativescript/core/image-source';
 import { isAndroid, screen } from '@nativescript/core/platform';
 import { Align, Canvas, FontMetrics, Paint, Rect, StaticLayout } from 'nativescript-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
@@ -30,6 +31,23 @@ export namespace Utils {
     // const DOUBLE_EPSILON = Number.EPSILON;
 
     // const FLOAT_EPSILON = Number.EPSILON;
+
+    const mDrawTextRectBuffer = new Rect(0, 0, 0, 0);
+    const mCalcTextHeightRect = new Rect(0, 0, 0, 0);
+    const mFontMetrics = new FontMetrics();
+    const mCalcTextSizeRect = new Rect(0, 0, 0, 0);
+    
+    const mDefaultValueFormatter: ValueFormatter = generateDefaultValueFormatter();
+
+    /**
+     * Math.pow(...) is very expensive, so avoid calling it and create it
+     * yourself.
+     */
+    const POW_10 = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
+
+    const EPSILON = Math.pow(2, -52);
+    const MAX_VALUE = (2 - EPSILON) * Math.pow(2, 1023);
+    const MIN_VALUE = Math.pow(2, -1022);
 
     /**
      * initialize method, called inside the Chart.init() method.
@@ -91,7 +109,6 @@ export namespace Utils {
         return paint.measureText(demoText);
     }
 
-    const mCalcTextHeightRect = new Rect(0, 0, 0, 0);
     /**
      * calculates the approximate height of a text, depending on a demo text
      * avoid repeated calls (e.g. inside drawing methods)
@@ -107,9 +124,6 @@ export namespace Utils {
         return mCalcTextHeightRect.height();
     }
 
-    // let mFontMetrics = null;
-    const mFontMetrics = new FontMetrics();
-
     export function getLineHeight(paint: Paint, fontMetrics = mFontMetrics) {
         paint.getFontMetrics(fontMetrics);
         return fontMetrics.descent - fontMetrics.ascent;
@@ -121,17 +135,6 @@ export namespace Utils {
     }
 
     /**
-     * Returns a recyclable FSize instance.
-     * calculates the approximate size of a text, depending on a demo text
-     * avoid repeated calls (e.g. inside drawing methods)
-     *
-     * @param paint
-     * @param demoText
-     * @return A Recyclable FSize instance
-     */
-
-    let mCalcTextSizeRect = new Rect(0, 0, 0, 0);
-    /**
      * calculates the approximate size of a text, depending on a demo text
      * avoid repeated calls (e.g. inside drawing methods)
      *
@@ -140,22 +143,14 @@ export namespace Utils {
      * @param outputFSize An output variable, modified by the function.
      */
     export function calcTextSize(paint: Paint, demoText) {
-        const r = new Rect(0, 0, 0, 0);
+        const r = mCalcTextSizeRect;
+        r.set(0, 0, 0, 0);
         paint.getTextBounds(demoText, 0, demoText.length, r);
-        mCalcTextSizeRect = r;
         return {
             width: r.width(),
             height: r.height(),
         };
     }
-
-    /**
-     * Math.pow(...) is very expensive, so avoid calling it and create it
-     * yourself.
-     */
-    const POW_10 = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
-
-    const mDefaultValueFormatter: ValueFormatter = generateDefaultValueFormatter();
 
     export function generateDefaultValueFormatter() {
         return new DefaultValueFormatter(1);
@@ -330,9 +325,6 @@ export namespace Utils {
      * @param d
      * @return
      */
-    const EPSILON = Math.pow(2, -52);
-    const MAX_VALUE = (2 - EPSILON) * Math.pow(2, 1023);
-    const MIN_VALUE = Math.pow(2, -1022);
     export function nextUp(x) {
         if (x !== x) {
             return x;
@@ -439,27 +431,29 @@ export namespace Utils {
 
     // let mDrawableBoundsCache = new Rect(0,0,0,0);
 
-    export function drawImage(canvas: Canvas, drawable, x, y, width, height) {
-        // const drawOffsetx = x - (width / 2);
-        // const drawOffsety = y - (height / 2);
+    // export function drawImage(canvas: Canvas, drawable, x, y, width, height) {
+    //     const drawOffsetx = x - (width / 2);
+    //     const drawOffsety = y - (height / 2);
 
-        canvas.drawBitmap(drawable, x, y, null);
+    //     drawable.copyBounds(mDrawableBoundsCache);
+    //     drawable.setBounds(
+    //             this.mDrawableBoundsCache.left,
+    //             this.mDrawableBoundsCache.top,
+    //             this.mDrawableBoundsCache.left + width,
+    //             this.mDrawableBoundsCache.top + width);
 
-        // drawable.copyBounds(mDrawableBoundsCache);
-        // drawable.setBounds(
-        //         this.mDrawableBoundsCache.left,
-        //         this.mDrawableBoundsCache.top,
-        //         this.mDrawableBoundsCache.left + width,
-        //         this.mDrawableBoundsCache.top + width);
+    //     canvas.save();
+    //     // translate to the correct position and draw
+    //     canvas.translate(drawOffsetx, drawOffsety);
+    //     drawable.draw(canvas);
+    //     canvas.restore();
+    // }
 
-        // canvas.save();
-        // // translate to the correct position and draw
-        // canvas.translate(drawOffsetx, drawOffsety);
-        // drawable.draw(canvas);
-        // canvas.restore();
+    export function drawImage(canvas: Canvas, icon: ImageSource, x, y) {
+        const drawOffsetX = x - (icon.width / 2);
+        const drawOffsetY = y - (icon.height / 2);
+        canvas.drawBitmap(isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
     }
-
-    const mDrawTextRectBuffer = new Rect(0, 0, 0, 0);
 
     export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees, lineHeight, fontMetrics: FontMetrics) {
         let drawOffsetX = 0;

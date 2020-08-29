@@ -34,24 +34,23 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
      */
     private mStackLabels = ['Stack'];
 
-    constructor(yVals, label) {
-        super(yVals, label);
+    constructor(values, label) {
+        super(values, label);
 
         this.mHighLightColor = 'black';
-
-        this.calcStackSize(yVals);
-        this.calcEntryCountIncludingStacks(yVals);
+        this.calcStackSize(values);
+        this.calcEntryCountIncludingStacks(values);
     }
 
     /**
      * Calculates the total number of entries this DataSet represents, including
      * stacks. All values belonging to a stack are calculated separately.
      */
-    private calcEntryCountIncludingStacks(yVals) {
+    private calcEntryCountIncludingStacks(values) {
         this.mEntryCountStacks = 0;
 
-        for (let i = 0; i < yVals.length; i++) {
-            const vals = yVals[i].getYVals();
+        for (let i = 0; i < values.length; i++) {
+            const vals = values[i].getYVals();
 
             if (vals == null) this.mEntryCountStacks++;
             else this.mEntryCountStacks += vals.length;
@@ -62,9 +61,9 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
      * calculates the maximum stacksize that occurs in the Entries array of this
      * DataSet
      */
-    private calcStackSize(yVals) {
-        for (let i = 0; i < yVals.length; i++) {
-            const vals = yVals[i].getYVals();
+    private calcStackSize(values) {
+        for (let i = 0; i < values.length; i++) {
+            const vals = values[i].getYVals();
 
             if (vals != null && vals.length > this.mStackSize) this.mStackSize = vals.length;
         }

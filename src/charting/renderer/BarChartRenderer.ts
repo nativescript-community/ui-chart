@@ -227,9 +227,9 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer
                 const phaseY = this.mAnimator.getPhaseY();
                 const formatter = dataSet.getValueFormatter();
 
-                //let iconsOffset = MPPointF.getInstance(dataSet.getIconsOffset());
-                //iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-                //iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
+                const iconsOffset = dataSet.getIconsOffset();
+                iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
+                iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
 
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked())
@@ -257,18 +257,18 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer
                                 dataSet.getValueTextColor(j / 4));
                         }
 
-                        // if (entry.getIcon() !== null && dataSet.isDrawIconsEnabled())
-                        // {
-                        //     let icon = entry.getIcon();
+                        if (entry.icon != null && dataSet.isDrawIconsEnabled())
+                        {
+                            const icon = entry.icon;
 
-                        //     let px = x;
-                        //     let py = val >= 0 ? (buffer.buffer[j + 1] + posOffset) : (buffer.buffer[j + 3] + negOffset);
+                            let px = x;
+                            let py = val >= 0 ? (buffer.buffer[j + 1] + posOffset) : (buffer.buffer[j + 3] + negOffset);
 
-                        //     px += iconsOffset.x;
-                        //     py += iconsOffset.y;
+                            px += iconsOffset.x;
+                            py += iconsOffset.y;
 
-                        //     Utils.drawImage(c, icon, parseInt(px), parseInt(py), icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-                        // }
+                            Utils.drawImage(c, icon, px, py);
+                        }
                     }
                     // if we have stacks
                 }
@@ -308,18 +308,18 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer
                                 this.drawValue(c, formatter.getBarLabel(entry), x, buffer.buffer[bufferIndex + 1] + (entry.y >= 0 ? posOffset : negOffset), color);
                             }
 
-                            // if (entry.getIcon() !== null && dataSet.isDrawIconsEnabled())
-                            // {
-                            //     let icon = entry.getIcon();
+                            if (entry.icon != null && dataSet.isDrawIconsEnabled())
+                            {
+                                const icon = entry.icon;
 
-                            //     let px = x;
-                            //     let py = buffer.buffer[bufferIndex + 1] + (entry.getY() >= 0 ? posOffset : negOffset);
+                                let px = x;
+                                let py = buffer.buffer[bufferIndex + 1] + (entry.y >= 0 ? posOffset : negOffset);
 
-                            //     px += iconsOffset.x;
-                            //     py += iconsOffset.y;
+                                px += iconsOffset.x;
+                                py += iconsOffset.y;
 
-                            //     Utils.drawImage(c, icon, parseInt(px), parseInt(py), icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-                            // }
+                                Utils.drawImage(c, icon, px, py);
+                            }
                             // draw stack values
                         }
                         else
@@ -377,12 +377,11 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer
                                     this.drawValue(c, formatter.getBarStackedLabel(val, entry), x, y, color);
                                 }
 
-                                // if (entry.getIcon() !== null && dataSet.isDrawIconsEnabled())
-                                // {
-                                //     let icon = entry.getIcon();
-
-                                //     Utils.drawImage(c, icon, parseInt(x + iconsOffset.x), parseInt(y + iconsOffset.y), icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-                                // }
+                                if (entry.icon != null && dataSet.isDrawIconsEnabled())
+                                {
+                                    const icon = entry.icon;
+                                    Utils.drawImage(c, icon, (x + iconsOffset.x), (y + iconsOffset.y));
+                                }
                             }
                         }
 
@@ -390,8 +389,6 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer
                         index++;
                     }
                 }
-
-                //MPPointF.recycleInstance(iconsOffset);
             }
         }
     }
