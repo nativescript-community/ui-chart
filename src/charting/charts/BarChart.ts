@@ -57,7 +57,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         {
             this.mXAxis.calculate(this.mData.getXMin(), this.mData.getXMax());
         }
-
+        
         // calculate axis range (min / max) according to provided data
         this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
@@ -113,8 +113,11 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
             return new RectF(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
         }
 
-        let y = e.x;
-        let x = e.y;
+        const xKey = set.xProperty;
+        const yKey = set.yProperty;
+
+        let y = e[xKey];
+        let x = e[yKey];
 
         let barWidth = this.mData.getBarWidth();
 

@@ -41,13 +41,13 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
         for (let i = 0; i < size; i++) {
             const e = data.getEntryForIndex(i);
-            if (e === null) {
+            if (e == null) {
                 continue;
             }
 
-            const x = e.x;
-            let y = e.y;
-            const vals = e.getYVals();
+            const x = e[data.xProperty];
+            let y = e[data.yProperty];
+            const vals = e.yVals;
 
             if (!this.mContainsStacks || vals == null) {
                 const left = x - barWidthHalf;
@@ -72,7 +72,7 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                 this.addBar(left, top, right, bottom);
             } else {
                 let posY = 0;
-                let negY = -e.getNegativeSum();
+                let negY = -e.negativeSum;
                 let yStart = 0;
 
                 // fill the stack

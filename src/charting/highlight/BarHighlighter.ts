@@ -53,22 +53,24 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider>
         }
 
         // not stacked
-        if (entry.getYVals() == null)
+        if (entry.yVals == null)
         {
             return high;
         }
 
-        const ranges = entry.getRanges();
+        const ranges = entry.ranges;
         if (ranges.length > 0)
         {
+            const xProperty = set.xProperty;
+            const yProperty = set.yProperty;
             let stackIndex = this.getClosestStackIndex(ranges, yVal);
             let pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(high.x, ranges[stackIndex][1]);
 
             //MPPointD.recycleInstance(pixels);
 
             return {
-                x: entry.x,
-                y: entry.y,
+                x: entry[xProperty],
+                y: entry[yProperty],
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex: high.dataSetIndex,
