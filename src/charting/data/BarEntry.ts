@@ -39,77 +39,14 @@ export class BarEntry implements Entry {
      * @param data - Spot for additional data this Entry represents.
      * @param icon - icon image
      */
-    constructor(x, y, data?, icon?)
+    constructor(x, y, icon?, data?)
     {
         this.x = x;
         this.y = y;
-        this.data = data;
         this.icon = icon;
+        this.data = data;
     }
-
-   
-    // /**
-    //  * Constructor for stacked bar entries. One data object for whole stack
-    //  *
-    //  * @param x
-    //  * @param vals - the stack values, use at least 2
-    //  */
-    // public BarEntry(x, float[] vals) {
-    //     super(x, calcSum(vals));
-
-    //     this.mYVals = vals;
-    //     calcPosNegSum();
-    //     calcRanges();
-    // }
-
-    // /**
-    //  * Constructor for stacked bar entries. One data object for whole stack
-    //  *
-    //  * @param x
-    //  * @param vals - the stack values, use at least 2
-    //  * @param data - Spot for additional data this Entry represents.
-    //  */
-    // public BarEntry(x, float[] vals, Object data) {
-    //     super(x, calcSum(vals), data);
-
-    //     this.mYVals = vals;
-    //     calcPosNegSum();
-    //     calcRanges();
-    // }
-
-    // /**
-    //  * Constructor for stacked bar entries. One data object for whole stack
-    //  *
-    //  * @param x
-    //  * @param vals - the stack values, use at least 2
-    //  * @param icon - icon image
-    //  */
-    // public BarEntry(x, float[] vals, Drawable icon) {
-    //     super(x, calcSum(vals), icon);
-
-    //     this.mYVals = vals;
-    //     calcPosNegSum();
-    //     calcRanges();
-    // }
-
-    // /**
-    //  * Constructor for stacked bar entries. One data object for whole stack
-    //  *
-    //  * @param x
-    //  * @param vals - the stack values, use at least 2
-    //  * @param icon - icon image
-    //  * @param data - Spot for additional data this Entry represents.
-    //  */
-    // public BarEntry(x, float[] vals, Drawable icon, Object data) {
-    //     super(x, calcSum(vals), icon, data);
-
-    //     this.mYVals = vals;
-    //     calcPosNegSum();
-    //     calcRanges();
-    // }
-
-
-
+    
     /**
      * Returns the stacked values this BarEntry represents, or null, if only a single value is represented (then, use
      * getY()).
@@ -240,7 +177,7 @@ export class BarEntry implements Entry {
         if (values == null || values.length == 0)
             return;
 
-            this.mRanges = [];
+        this.mRanges = [];
 
         let negRemain = -this.getNegativeSum();
         let posRemain = 0;

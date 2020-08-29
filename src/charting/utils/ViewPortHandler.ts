@@ -22,6 +22,18 @@ export class ViewPortHandler {
     protected mChartHeight = 0;
 
     /**
+     * buffer for storing the 9 matrix values of a 3x3 matrix
+     */
+    protected matrixBuffer = Utils.createNativeArray(9);
+
+    /**
+     * buffer for storing the 9 matrix values of a 3x3 matrix regarding fit screen
+     */
+    protected valsBufferForFitScreen = Utils.createNativeArray(9);
+
+    protected mCenterViewPortMatrixBuffer = new Matrix();
+
+    /**
      * minimum scale value on the y-axis
      */
     private mMinScaleY = 1;
@@ -280,8 +292,6 @@ export class ViewPortHandler {
         return save;
     }
 
-    protected valsBufferForFitScreen = [];
-
     /**
      * Resets all zooming and dragging and makes the chart fit exactly it's
      * bounds.  Output Matrix is available for those who wish to cache the object.
@@ -330,8 +340,6 @@ export class ViewPortHandler {
         return outputMatrix;
     }
 
-    protected mCenterViewPortMatrixBuffer = new Matrix();
-
     /**
      * Centers the viewport around the specified position (x-index and y-value)
      * in the chart. Centering the viewport outside the bounds of the chart is
@@ -354,11 +362,6 @@ export class ViewPortHandler {
 
         this.refresh(save, view, true);
     }
-
-    /**
-     * buffer for storing the 9 matrix values of a 3x3 matrix
-     */
-    protected matrixBuffer = Utils.createNativeArray(9);
 
     /**
      * call this method to refresh the graph with a given matrix
