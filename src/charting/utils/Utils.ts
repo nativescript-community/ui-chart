@@ -36,7 +36,7 @@ export namespace Utils {
     const mCalcTextHeightRect = new Rect(0, 0, 0, 0);
     const mFontMetrics = new FontMetrics();
     const mCalcTextSizeRect = new Rect(0, 0, 0, 0);
-    
+
     const mDefaultValueFormatter: ValueFormatter = generateDefaultValueFormatter();
 
     /**
@@ -739,5 +739,68 @@ export namespace Utils {
                 else view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
             }
         }
+    }
+
+    /**
+     * Calculates the sum across all values of the given array.
+     *
+     * @param values
+     * @return
+     */
+    export function calcSum(values: Array<number>) {
+        let sum = 0;
+
+        if (values == null) {
+            return sum;
+        }
+
+        for (let f of values) {
+            sum += f;
+        }
+
+        return sum;
+    }
+
+    /**
+     * Calculates the sum of positive numbers and negative numbers separately,
+     * across all values of the given array.
+     *
+     * @param values
+     * @return
+     */
+    export function calcPosNegSum(values: Array<number>) {
+        const sums = {pos: 0, neg: 0};
+        if (values == null) {
+            return sums;
+        }
+
+        let sumNeg = 0;
+        let sumPos = 0;
+
+        for (let f of values) {
+            if (f <= 0) {
+                sums.neg += Math.abs(f);
+            }
+            else {
+                sums.pos += f;
+            }
+        }
+
+        return sums;
+    }
+
+    export function calcSumToIndex(index: number, values: Array<number>, desc: boolean) {
+        if (values == null)
+            return 0;
+
+        let remainder = 0;
+        let lastIndex = values.length - 1;
+
+        while (lastIndex > index && lastIndex >= 0) {
+            remainder += values[index];
+            lastIndex--;
+        }
+
+        return remainder;
     }
 }

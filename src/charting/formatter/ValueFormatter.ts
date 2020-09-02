@@ -1,5 +1,6 @@
 import { IAxisValueFormatter } from './IAxisValueFormatter';
 import { IValueFormatter } from './IValueFormatter';
+import { BarDataSet } from '../data/BarDataSet';
 import { BarEntry } from '../data/BarEntry';
 import { Entry } from '../data/Entry';
 import { AxisBase } from '../components/AxisBase';
@@ -61,8 +62,8 @@ export abstract class ValueFormatter implements IAxisValueFormatter, IValueForma
      * @param barEntry bar being labeled
      * @return formatted string label
      */
-    public getBarLabel( barEntry: BarEntry) {
-        return this.getFormattedValue(barEntry.y);
+    public getBarLabel( barEntry: BarEntry, set: BarDataSet) {
+        return this.getFormattedValue(barEntry[set.yProperty]);
     }
 
     /**

@@ -59,7 +59,12 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
         if (this.mValues == null) this.mValues = [];
 
-        this.calcMinMax();
+        if (this.mValues.length > 0) {
+            for (let e of this.mValues) {
+                this.initEntryData(e);
+                this.calcMinMaxForEntry(e);
+            }
+        }
     }
 
     calcMinMax() {
@@ -73,6 +78,10 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         for (let e of this.mValues) {
             this.calcMinMaxForEntry(e);
         }
+    }
+
+    protected initEntryData(e: T)
+    {
     }
 
     public calcMinMaxYRange(fromX, toX) {

@@ -43,7 +43,7 @@ exports.onBarChartLoaded = function(args)
 
     const data = new Array(5).fill(0).map(function(v, i)
     {
-        return new be.BarEntry(i, Math.random() * 1, imageSourceModule.fromResource("icon"));
+        return {index: i, value: Math.random() * 1, icon: imageSourceModule.fromResource("icon")};
     });
 
     console.log('setData', data.length, data[0]);
