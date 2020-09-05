@@ -226,11 +226,12 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             break;
                         }
 
-                        const entry = dataSet.getEntryForIndex(j / 4);
-                        const val = entry[yKey];
                         if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[j + (isInverted ? 3 : 1)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
                             continue;
                         }
+
+                        const entry = dataSet.getEntryForIndex(j / 4);
+                        const val = entry[yKey];
 
                         if (dataSet.isDrawValuesEnabled()) {
                             this.drawValue(c, formatter.getBarLabel(entry, dataSet), x, isInverted ? (buffer.buffer[j + 3] - negOffset) : (buffer.buffer[j + 1] + posOffset),
