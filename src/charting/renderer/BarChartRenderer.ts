@@ -8,7 +8,7 @@ import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Canvas, Paint, RectF, Style } from 'nativescript-canvas';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { profile } from '@nativescript/core';
 
 export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     protected mChart: BarChart;
@@ -50,7 +50,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     public initBuffers() {
         const barData = this.mChart.getBarData();
-        this.mBarBuffers = [] as BarBuffer[];
+        this.mBarBuffers = [];
 
         for (let i = 0; i < barData.getDataSetCount(); i++)
         {

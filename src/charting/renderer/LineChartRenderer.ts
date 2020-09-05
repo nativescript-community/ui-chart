@@ -1,19 +1,16 @@
-import { LineRadarRenderer } from './LineRadarRenderer';
-import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
-import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, releaseImage } from 'nativescript-canvas';
-import { ImageSource } from '@nativescript/core/image-source/image-source';
+import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, releaseImage } from '@nativescript-community/ui-canvas';
+import { Rounding } from '@nativescript-community/ui-chart/data/DataSet';
+import { ImageSource, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
 import { LineDataSet, Mode } from '../data/LineDataSet';
-import { FloatArray, Utils } from '../utils/Utils';
-import { ColorTemplate } from '../utils/ColorTemplate';
 import { Highlight } from '../highlight/Highlight';
-import { XBounds } from './BarLineScatterCandleBubbleRenderer';
+import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
+import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
+import { ColorTemplate } from '../utils/ColorTemplate';
 import { Transformer } from '../utils/Transformer';
-import { profile } from '@nativescript/core/profiling';
-import { isAndroid } from '@nativescript/core/platform';
-import { Rounding } from 'nativescript-chart/data/DataSet';
+import { Utils } from '../utils/Utils';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { LineRadarRenderer } from './LineRadarRenderer';
 
 // fix drawing "too" thin paths on iOS
 
@@ -129,7 +126,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     constructor(chart: LineDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
-        if (isAndroid) {
+        if (global.isAndroid) {
             this.mBitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
         }
 

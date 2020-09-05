@@ -1,4 +1,4 @@
-import { Matrix, Path, Rect } from 'nativescript-canvas';
+import { Matrix, Path, Rect } from '@nativescript-community/ui-canvas';
 import { ViewPortHandler } from './ViewPortHandler';
 import { Utils } from './Utils';
 import { profile } from '@nativescript/core/profiling';

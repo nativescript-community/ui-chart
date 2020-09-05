@@ -32,7 +32,7 @@ export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> im
         return this.mData;
     }
 
-    protected _onDetachedFromWindow() {
+    _onDetachedFromWindow() {
         // releases the bitmap in the renderer to avoid oom error
         if (this.mRenderer != null && this.mRenderer instanceof LineChartRenderer) {
             this.mRenderer.releaseBitmap();

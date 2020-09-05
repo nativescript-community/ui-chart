@@ -1,6 +1,6 @@
 {
-    "name": "nativescript-chart",
-    "version": "0.0.26",
+    "name": "@nativescript-community/ui-chart",
+    "version": "1.0.0",
     "description": "Nativescript plugin for Charts",
     "scripts": {
         "tsc": "tsc -skipLibCheck -d",
@@ -28,35 +28,36 @@
         "email": "martin@akylas.fr"
     },
     "bugs": {
-        "url": "https://github.com/Akylas/nativescript-chart/issues"
+        "url": "https://github.com/nativescript-community/ui-chart/issues"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/Akylas/nativescript-chart",
+    "homepage": "https://github.com/nativescript-community/ui-chart",
     "readmeFilename": "README.md",
     "devDependencies": {
-        "@angular/core": "^8.2.14",
+        "@angular/core": "^10.1.0",
         "@commitlint/cli": "^9.1.2",
         "@commitlint/config-conventional": "^9.1.2",
-        "@nativescript/core": "6.5.15",
+        "@nativescript/core": "7.0.0",
+        "@nativescript/types-android": "7.0.2",
+        "@nativescript/types-ios": "7.0.1",
+        "@nativescript-community/ui-canvas": "4.0.4",
+        "@nativescript-community/gesturehandler": "^0.1.17",
+        "@nativescript-community/tween": "0.0.11",
         "@tweenjs/tween.js": "18.6.0",
         "@types/node": "^14.6.0",
-        "@typescript-eslint/eslint-plugin": "3.10.1",
-        "@typescript-eslint/parser": "3.10.1",
+        "@typescript-eslint/eslint-plugin": "4.0.1",
+        "@typescript-eslint/parser": "4.0.1",
         "@types/tween.js": "^18.5.1",
         "cpy-cli": "^3.1.1",
         "downsample": "^1.3.0",
-        "eslint": "7.7.0",
+        "eslint": "7.8.1",
         "husky": "^4.2.5",
         "lerna": "^3.22.1",
-        "nativescript-canvas": "3.0.10",
-        "nativescript-gesturehandler": "^0.1.16",
-        "nativescript-tween": "0.0.10",
         "npm-watch": "^0.7.0",
         "number-format.js": "^2.0.9",
         "prompt": "^1.0.0",
         "rimraf": "^3.0.2",
-        "tns-platform-declarations": "^6.5.15",
-        "typescript": "~4.0.2"
+        "typescript": "~3.9.7"
     },
     "bootstrapper": "nativescript-plugin-seed",
     "commitlint": {

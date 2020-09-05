@@ -1,4 +1,4 @@
-import { CanvasView, Matrix, Rect, RectF } from 'nativescript-canvas';
+import { CanvasView, Matrix, Rect, RectF } from '@nativescript-community/ui-canvas';
 import { Utils } from './Utils';
 
 /**

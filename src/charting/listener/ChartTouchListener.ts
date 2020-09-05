@@ -1,6 +1,6 @@
 import { Chart } from '../charts/Chart';
 import { Highlight } from '../highlight/Highlight';
-import { BarLineChartBase } from 'nativescript-chart/charts/BarLineChartBase';
+import { BarLineChartBase } from '@nativescript-community/ui-chart/charts/BarLineChartBase';
 
 export enum ChartGesture {
     NONE,

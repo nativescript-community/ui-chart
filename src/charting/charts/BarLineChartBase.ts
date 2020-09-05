@@ -1,30 +1,27 @@
-import { IBarLineScatterCandleBubbleDataSet } from '../interfaces/datasets/IBarLineScatterCandleBubbleDataSet';
-import { Entry } from '../data/Entry';
-import { BarLineScatterCandleBubbleData } from '../data/BarLineScatterCandleBubbleData';
-import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
-import { CanvasView, Paint, Canvas, Style, Matrix, RectF } from 'nativescript-canvas';
-import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
-import { Utils } from '../utils/Utils';
-import { Color } from '@nativescript/core/color';
-import { Chart } from './Chart';
-import { Highlight } from '../highlight/Highlight';
-import { AxisDependency, YAxis } from '../components/YAxis';
-import { BarLineScatterCandleBubbleDataProvider } from '../interfaces/dataprovider/BarLineScatterCandleBubbleDataProvider';
-
+import { Canvas, Matrix, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
+import { EventData, Observable } from '@nativescript/core';
 import { profile } from '@nativescript/core/profiling';
-import { Transformer } from '../utils/Transformer';
-import { LegendHorizontalAlignment, LegendVerticalAlignment, LegendOrientation } from '../components/Legend';
+import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
+import { GestureTypes } from '@nativescript/core/ui/gestures';
+import { LegendHorizontalAlignment, LegendOrientation, LegendVerticalAlignment } from '../components/Legend';
 import { XAxisPosition } from '../components/XAxis';
-import { YAxisRenderer } from '../renderer/YAxisRenderer';
-import { XAxisRenderer } from '../renderer/XAxisRenderer';
+import { AxisDependency, YAxis } from '../components/YAxis';
+import { BarLineScatterCandleBubbleData } from '../data/BarLineScatterCandleBubbleData';
+import { Entry } from '../data/Entry';
 import { ChartHighlighter } from '../highlight/ChartHighlighter';
-import { MoveViewJob } from '../jobs/MoveViewJob';
+import { BarLineScatterCandleBubbleDataProvider } from '../interfaces/dataprovider/BarLineScatterCandleBubbleDataProvider';
+import { IBarLineScatterCandleBubbleDataSet } from '../interfaces/datasets/IBarLineScatterCandleBubbleDataSet';
 import { AnimatedMoveViewJob } from '../jobs/AnimatedMoveViewJob';
 import { AnimatedZoomJob } from '../jobs/AnimatedZoomJob';
+import { MoveViewJob } from '../jobs/MoveViewJob';
 import { ZoomJob } from '../jobs/ZoomJob';
 import { BarLineChartTouchListener } from '../listener/BarLineChartTouchListener';
-import { getEventOrGestureName, EventData, Observable } from '@nativescript/core/ui/page';
-import { GestureTypes, fromString as gestureFromString } from '@nativescript/core/ui/gestures';
+import { XAxisRenderer } from '../renderer/XAxisRenderer';
+import { YAxisRenderer } from '../renderer/YAxisRenderer';
+import { Transformer } from '../utils/Transformer';
+import { Utils } from '../utils/Utils';
+import { Chart } from './Chart';
+
 
 const LOG_TAG = 'BarLineChartBase';
 
@@ -171,7 +168,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     private drawCycles = 0;
 
     @profile
-    protected onDraw(canvas: Canvas) {
+    public onDraw(canvas: Canvas) {
         super.onDraw(canvas);
 
         if (this.mData === null) return;
@@ -328,8 +325,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * Performs auto scaling of the axis by recalculating the minimum and maximum y-values based on the entries currently in view.
      */
     protected autoScale() {
-        let fromX = this.getLowestVisibleX();
-        let toX = this.getHighestVisibleX();
+        const fromX = this.getLowestVisibleX();
+        const toX = this.getHighestVisibleX();
 
         this.mData.calcMinMaxYRange(fromX, toX);
 
@@ -434,14 +431,14 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             }
 
             if (this.mXAxis.isEnabled() && this.mXAxis.isDrawLabelsEnabled()) {
-                let xLabelHeight = this.mXAxis.mLabelRotatedHeight + this.mXAxis.getYOffset();
+                const xLabelHeight = this.mXAxis.mLabelRotatedHeight + this.mXAxis.getYOffset();
 
                 // offsets for x-labels
-                if (this.mXAxis.getPosition() == XAxisPosition.BOTTOM) {
+                if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
                     offsetBottom += xLabelHeight;
-                } else if (this.mXAxis.getPosition() == XAxisPosition.TOP) {
+                } else if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
                     offsetTop += xLabelHeight;
-                } else if (this.mXAxis.getPosition() == XAxisPosition.BOTH_SIDED) {
+                } else if (this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
                     offsetBottom += xLabelHeight;
                     offsetTop += xLabelHeight;
                 }
@@ -452,7 +449,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             offsetBottom += this.getExtraBottomOffset();
             offsetLeft += this.getExtraLeftOffset();
 
-            let minOffset = this.mMinOffset;
+            const minOffset = this.mMinOffset;
 
             this.mViewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
 
@@ -488,7 +485,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @return
      */
     public getTransformer(which: AxisDependency) {
-        if (which == AxisDependency.LEFT) return this.mLeftAxisTransformer;
+        if (which === AxisDependency.LEFT) return this.mLeftAxisTransformer;
         else return this.mRightAxisTransformer;
     }
 
@@ -691,7 +688,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param maxXRange The maximum visible range of x-values.
      */
     public setVisibleXRangeMaximum(maxXRange) {
-        let xScale = this.mXAxis.mAxisRange / maxXRange;
+        const xScale = this.mXAxis.mAxisRange / maxXRange;
         this.mViewPortHandler.setMinimumScaleX(xScale);
     }
 
@@ -704,7 +701,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param minXRange The minimum visible range of x-values.
      */
     public setVisibleXRangeMinimum(minXRange) {
-        let xScale = this.mXAxis.mAxisRange / minXRange;
+        const xScale = this.mXAxis.mAxisRange / minXRange;
         this.mViewPortHandler.setMaximumScaleX(xScale);
     }
 
@@ -717,8 +714,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param maxXRange
      */
     public setVisibleXRange(minXRange, maxXRange) {
-        let minScale = this.mXAxis.mAxisRange / minXRange;
-        let maxScale = this.mXAxis.mAxisRange / maxXRange;
+        const minScale = this.mXAxis.mAxisRange / minXRange;
+        const maxScale = this.mXAxis.mAxisRange / maxXRange;
         this.mViewPortHandler.setMinMaxScaleX(minScale, maxScale);
     }
 
@@ -730,7 +727,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis      the axis for which this limit should apply
      */
     public setVisibleYRangeMaximum(maxYRange, axis) {
-        let yScale = this.getAxisRange(axis) / maxYRange;
+        const yScale = this.getAxisRange(axis) / maxYRange;
         this.mViewPortHandler.setMinimumScaleY(yScale);
     }
 
@@ -741,7 +738,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis      the axis for which this limit should apply
      */
     public setVisibleYRangeMinimum(minYRange, axis) {
-        let yScale = this.getAxisRange(axis) / minYRange;
+        const yScale = this.getAxisRange(axis) / minYRange;
         this.mViewPortHandler.setMaximumScaleY(yScale);
     }
 
@@ -753,8 +750,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis
      */
     public setVisibleYRange(minYRange, maxYRange, axis) {
-        let minScale = this.getAxisRange(axis) / minYRange;
-        let maxScale = this.getAxisRange(axis) / maxYRange;
+        const minScale = this.getAxisRange(axis) / minYRange;
+        const maxScale = this.getAxisRange(axis) / maxYRange;
         this.mViewPortHandler.setMinMaxScaleY(minScale, maxScale);
     }
 
@@ -779,7 +776,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis   - which axis should be used as a reference for the y-axis
      */
     public moveViewTo(xValue, yValue, axis) {
-        let yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
+        const yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
 
         const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this);
 
@@ -799,7 +796,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public moveViewToAnimated(xValue, yValue, axis, duration) {
         const bounds = this.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), axis);
 
-        let yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
+        const yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
 
         const job = AnimatedMoveViewJob.getInstance(this.mViewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
 
@@ -816,7 +813,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis   - which axis should be used as a reference for the y-axis
      */
     public centerViewToY(yValue, axis) {
-        let valsInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
+        const valsInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
 
         const job = MoveViewJob.getInstance(this.mViewPortHandler, 0, yValue + valsInView / 2, this.getTransformer(axis), this);
 
@@ -833,8 +830,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis   - which axis should be used as a reference for the y axis
      */
     public centerViewTo(xValue, yValue, axis) {
-        let yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
-        let xInView = this.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
+        const yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
+        const xInView = this.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
 
         const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this);
 
@@ -853,8 +850,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public centerViewToAnimated(xValue, yValue, axis, duration) {
         const bounds = this.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), axis);
 
-        let yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
-        let xInView = this.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
+        const yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
+        const xInView = this.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
 
         const job = AnimatedMoveViewJob.getInstance(this.mViewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
 
@@ -914,7 +911,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @return
      */
     protected getAxisRange(axis) {
-        if (axis == AxisDependency.LEFT) return this.mAxisLeft.mAxisRange;
+        if (axis === AxisDependency.LEFT) return this.mAxisLeft.mAxisRange;
         else return this.mAxisRight.mAxisRange;
     }
 
@@ -1318,7 +1315,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     public getLowestVisibleX() {
         this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.posForGetLowestVisibleX);
-        let result = Math.max(this.mXAxis.mAxisMinimum, this.posForGetLowestVisibleX.x);
+        const result = Math.max(this.mXAxis.mAxisMinimum, this.posForGetLowestVisibleX.x);
         return result;
     }
 
@@ -1337,7 +1334,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public getHighestVisibleX() {
         this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX);
         // console.log('getHighestVisibleX', this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX, this.mXAxis.mAxisMaximum);
-        let result = Math.min(this.mXAxis.mAxisMaximum, this.posForGetHighestVisibleX.x);
+        const result = Math.min(this.mXAxis.mAxisMaximum, this.posForGetHighestVisibleX.x);
         return result;
     }
 
@@ -1403,7 +1400,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @return
      */
     public getAxis(axis) {
-        if (axis == AxisDependency.LEFT) return this.mAxisLeft;
+        if (axis === AxisDependency.LEFT) return this.mAxisLeft;
         else return this.mAxisRight;
     }
 
@@ -1595,10 +1592,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         }
         if (typeof arg === 'string') {
             arg = getEventOrGestureName(arg);
-            let events = arg.split(',');
+            const events = arg.split(',');
             if (events.length > 0) {
                 for (let i = 0; i < events.length; i++) {
-                    let evt = events[i].trim();
+                    const evt = events[i].trim();
                     if (arg === 'tap') {
                         this.getOrCreateBarTouchListener().setTap(true);
                     } else if (arg === 'doubleTap') {
@@ -1622,10 +1619,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         }
         if (typeof arg === 'string') {
             arg = getEventOrGestureName(arg);
-            let events = arg.split(',');
+            const events = arg.split(',');
             if (events.length > 0) {
                 for (let i = 0; i < events.length; i++) {
-                    let evt = events[i].trim();
+                    const evt = events[i].trim();
                     if (arg === 'tap' && !this.isHighlightPerTapEnabled()) {
                         this.getOrCreateBarTouchListener().setTap(false);
                     } else if (arg === 'doubleTap' && !this.isDoubleTapToZoomEnabled()) {

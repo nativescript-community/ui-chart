@@ -1,7 +1,7 @@
 
 import {Renderer} from './Renderer';
 import { AxisBase } from '../components/AxisBase';
-import { Canvas, Paint, Style } from 'nativescript-canvas';
+import { Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';

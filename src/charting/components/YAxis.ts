@@ -1,6 +1,6 @@
 import { AxisBase } from "./AxisBase";
-import { Color } from "@nativescript/core/color/color";
-import { Paint } from "nativescript-canvas";
+import { Color } from "@nativescript/core";
+import { Paint } from "@nativescript-community/ui-canvas";
 import { Utils } from '../utils/Utils';
 
     /**

@@ -1,7 +1,7 @@
 import { CandleEntry } from './CandleEntry';
 import { ICandleDataSet } from '../interfaces/datasets/ICandleDataSet';
 import { LineScatterCandleRadarDataSet } from './LineScatterCandleRadarDataSet';
-import { Style } from 'nativescript-canvas';
+import { Style } from '@nativescript-community/ui-canvas';
 import { ColorTemplate } from '../utils/ColorTemplate';
 import { Utils } from '../utils/Utils';
 
