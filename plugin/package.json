@@ -31,7 +31,7 @@
         "downsample": "^1.3.0",
         "@nativescript-community/ui-canvas": "^4.0.4",
         "@nativescript-community/gesturehandler": "^0.1.17",
-        "nativescript-tween": "^0.0.10",
+        "@nativescript-community/tween": "0.0.11",
         "number-format.js": "^2.0.9"
     }
 }

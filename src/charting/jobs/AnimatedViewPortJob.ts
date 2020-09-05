@@ -1,4 +1,4 @@
-import TWEEN from 'nativescript-tween';
+import TWEEN from '@nativescript-community/tween';
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { Transformer } from '../utils/Transformer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';

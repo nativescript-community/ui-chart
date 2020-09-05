@@ -1,4 +1,4 @@
-import TWEEN from 'nativescript-tween';
+import TWEEN from '@nativescript-community/tween';
 const Easing = TWEEN.Easing;
 type EasingFunction = (k: number) => number;
 export { Easing };
