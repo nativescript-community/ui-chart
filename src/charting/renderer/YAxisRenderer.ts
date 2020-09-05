@@ -12,6 +12,16 @@ export class YAxisRenderer extends AxisRenderer {
 
     protected mZeroLinePaint: Paint;
 
+    protected mGridClippingRect = new RectF(0, 0, 0, 0);
+    protected mGetTransformedPositionsBuffer = Utils.createArrayBuffer(2);
+
+    protected mDrawZeroLinePath = new Path();
+    protected mZeroLineClippingRect = new RectF(0, 0, 0, 0);
+
+    protected mRenderLimitLines = new Path();
+    protected mRenderLimitLinesBuffer;
+    protected mLimitLineClippingRect = new RectF(0, 0, 0, 0);
+
     constructor(viewPortHandler: ViewPortHandler, yAxis: YAxis, trans: Transformer) {
         super(viewPortHandler, trans, yAxis);
 
@@ -27,6 +37,8 @@ export class YAxisRenderer extends AxisRenderer {
             this.mZeroLinePaint.setStrokeWidth(1);
             this.mZeroLinePaint.setStyle(Style.STROKE);
         }
+
+        this.mRenderLimitLinesBuffer = Utils.createNativeArray(2);
     }
 
     /**
@@ -162,8 +174,6 @@ export class YAxisRenderer extends AxisRenderer {
         }
     }
 
-    protected mGridClippingRect = new RectF(0, 0, 0, 0);
-
     public getGridClippingRect() {
         this.mGridClippingRect.set(this.mViewPortHandler.getContentRect());
         this.mGridClippingRect.inset(0, -this.mAxis.getGridLineWidth());
@@ -186,7 +196,6 @@ export class YAxisRenderer extends AxisRenderer {
     //     return p;
     // }
 
-    protected mGetTransformedPositionsBuffer = Utils.createArrayBuffer(2);
     /**
      * Transforms the values contained in the axis entries to screen pixels and returns them in form of a let array
      * of x- and y-coordinates.
@@ -208,9 +217,6 @@ export class YAxisRenderer extends AxisRenderer {
         this.mTrans.pointValuesToPixel(result);
         return Utils.nativeArrayToArray(result);
     }
-
-    protected mDrawZeroLinePath = new Path();
-    protected mZeroLineClippingRect = new RectF(0, 0, 0, 0);
 
     /**
      * Draws the zero line.
@@ -239,9 +245,6 @@ export class YAxisRenderer extends AxisRenderer {
         c.restoreToCount(clipRestoreCount);
     }
 
-    protected mRenderLimitLines = new Path();
-    protected mRenderLimitLinesBuffer = Utils.createNativeArray(2);
-    protected mLimitLineClippingRect = new RectF(0, 0, 0, 0);
     /**
      * Draws the LimitLines associated with this axis to the screen.
      *

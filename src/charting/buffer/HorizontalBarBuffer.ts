@@ -25,11 +25,11 @@ export class HorizontalBarBuffer extends BarBuffer {
                 const top = x + barWidthHalf;
                 let left, right;
                 if (this.mInverted) {
-                    left = y >= 0 ? y : 0;
-                    right = y <= 0 ? y : 0;
+                    left = y;
+                    right = y <= this.mYAxisMin ? y : this.mYAxisMin;
                 } else {
-                    right = y >= 0 ? y : 0;
-                    left = y <= 0 ? y : 0;
+                    right = y;
+                    left = y <= this.mYAxisMin ? y : this.mYAxisMin;
                 }
 
                 // multiply the height of the rect with the phase
@@ -38,7 +38,6 @@ export class HorizontalBarBuffer extends BarBuffer {
                 } else {
                     left *= this.phaseY;
                 }
-
                 this.addBar(left, top, right, bottom);
             } else {
                 let posY = 0;
@@ -64,10 +63,10 @@ export class HorizontalBarBuffer extends BarBuffer {
                     let left, right;
                     if (this.mInverted) {
                         left = y >= yStart ? y : yStart;
-                        right = y <= yStart ? y : yStart;
+                        right = y <= this.mYAxisMin ? y : this.mYAxisMin;
                     } else {
                         right = y >= yStart ? y : yStart;
-                        left = y <= yStart ? y : yStart;
+                        left = y <= this.mYAxisMin ? y : this.mYAxisMin;
                     }
 
                     // multiply the height of the rect with the phase

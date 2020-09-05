@@ -1,6 +1,6 @@
 {
     "name": "nativescript-chart",
-    "version": "1.0.0",
+    "version": "0.0.26",
     "description": "Nativescript plugin for Charts",
     "scripts": {
         "tsc": "tsc -skipLibCheck -d",

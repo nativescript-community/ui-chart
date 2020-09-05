@@ -2,7 +2,7 @@ import { AxisRenderer } from './AxisRenderer';
 import { XAxis, XAxisPosition } from '../components/XAxis';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, FontMetrics, Paint, Path, RectF, Style } from 'nativescript-canvas';
+import { Align, Canvas, Path, RectF, Style } from 'nativescript-canvas';
 import { Utils } from '../utils/Utils';
 import { MPPointF } from '../utils/MPPointF';
 import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
@@ -67,7 +67,7 @@ export class XAxisRenderer extends AxisRenderer {
         const labelHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q');
         // const labelHeight = Utils.getLineHeight(this.mAxisLabelPaint);
 
-        const labelRotatedSize = Utils.getSizeOfRotatedRectangleSizeByDegrees(labelWidth, labelHeight, this.mXAxis.getLabelRotationAngle());
+        const labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(labelWidth, labelHeight, this.mXAxis.getLabelRotationAngle());
 
         this.mXAxis.mLabelWidth = Math.round(labelWidth);
         this.mXAxis.mLabelHeight = Math.round(labelHeight);
@@ -146,42 +146,36 @@ export class XAxisRenderer extends AxisRenderer {
      *
      * @param pos
      */
-
-    mFontMetricsBuffer = new FontMetrics();
     @profile
     protected drawLabels(c: Canvas, pos, anchor: MPPointF) {
-        const mViewPortHandler = this.mViewPortHandler;
-        const mXAxis = this.mXAxis;
-        const labelRotationAngleDegrees = mXAxis.getLabelRotationAngle();
-        const centeringEnabled = mXAxis.isCenterAxisLabelsEnabled();
-        const length = mXAxis.mEntryCount * 2;
+        const labelRotationAngleDegrees = this.mXAxis.getLabelRotationAngle();
+        const centeringEnabled = this.mXAxis.isCenterAxisLabelsEnabled();
+        const length = this.mXAxis.mEntryCount * 2;
         const positions = Utils.createNativeArray(length);
 
         for (let i = 0; i < length; i += 2) {
             // only fill x values
             if (centeringEnabled) {
-                positions[i] = mXAxis.mCenteredEntries[i / 2];
+                positions[i] = this.mXAxis.mCenteredEntries[i / 2];
             } else {
-                positions[i] = mXAxis.mEntries[i / 2];
+                positions[i] = this.mXAxis.mEntries[i / 2];
             }
             if (i + 1 < length) {
                 positions[i + 1] = 0;
             }
         }
         this.mTrans.pointValuesToPixel(positions);
-        const chartWidth = mViewPortHandler.getChartWidth();
-        const offsetRight = mViewPortHandler.offsetRight();
-        const paint = this.mAxisLabelPaint;
-        const lineHeight = paint.getFontMetrics(this.mFontMetricsBuffer);
+        const chartWidth = this.mViewPortHandler.getChartWidth();
+        const offsetRight = this.mViewPortHandler.offsetRight();
         for (let i = 0; i < positions.length; i += 2) {
             let x = positions[i];
 
-            if (mViewPortHandler.isInBoundsX(x)) {
-                const label = mXAxis.getValueFormatter().getAxisLabel(mXAxis.mEntries[i / 2], mXAxis);
-                if (mXAxis.isAvoidFirstLastClippingEnabled()) {
+            if (this.mViewPortHandler.isInBoundsX(x)) {
+                const label = this.mXAxis.getValueFormatter().getAxisLabel(this.mXAxis.mEntries[i / 2], this.mXAxis);
+                if (this.mXAxis.isAvoidFirstLastClippingEnabled()) {
                     // avoid clipping of the last
-                    if (i / 2 === mXAxis.mEntryCount - 1 && mXAxis.mEntryCount > 1) {
-                        const width = Utils.calcTextWidth(paint, label);
+                    if (i / 2 === this.mXAxis.mEntryCount - 1 && this.mXAxis.mEntryCount > 1) {
+                        const width = Utils.calcTextWidth(this.mAxisLabelPaint, label);
 
                         if (width > offsetRight * 2 && x + width > chartWidth) {
                             x -= width / 2;
@@ -189,18 +183,18 @@ export class XAxisRenderer extends AxisRenderer {
 
                         // avoid clipping of the first
                     } else if (i === 0) {
-                        const width = Utils.calcTextWidth(paint, label);
+                        const width = Utils.calcTextWidth(this.mAxisLabelPaint, label);
                         x += width / 2;
                     }
                 }
 
-                this.drawLabel(c, label, x, pos, paint, anchor, labelRotationAngleDegrees, lineHeight, this.mFontMetricsBuffer);
+                this.drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees);
             }
         }
     }
 
-    protected drawLabel(c: Canvas, formattedLabel, x, y, paint: Paint, anchor: MPPointF, angleDegrees, lineHeight, fontMetrics: FontMetrics) {
-        Utils.drawXAxisValue(c, formattedLabel, x, y, paint, anchor, angleDegrees, lineHeight, fontMetrics);
+    protected drawLabel(c: Canvas, formattedLabel, x, y, anchor: MPPointF, angleDegrees) {
+        Utils.drawXAxisValue(c, formattedLabel, x, y, this.mAxisLabelPaint, anchor, angleDegrees);
     }
 
     /**

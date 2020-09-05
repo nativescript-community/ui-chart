@@ -121,6 +121,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected mXAxisRenderer: XAxisRenderer;
 
+    protected mOffsetsBuffer: RectF = new RectF(0, 0, 0, 0);
+
     // /** the approximator object used for data filtering */
     // private Approximator this.mApproximator;
 
@@ -403,8 +405,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             }
         }
     }
-
-    private mOffsetsBuffer = new RectF(0, 0, 0, 0);
 
     public calculateOffsets(force = true) {
         if (this.mOffsetsCalculated && !force) {

@@ -10,12 +10,16 @@ import { Highlight } from '../highlight/Highlight';
 import { BarChartRenderer } from '../renderer/BarChartRenderer';
 import { RectF } from 'nativescript-canvas';
 
+const LOG_TAG = 'BarChart';
+
 export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider
 {
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */
     protected mHighlightFullBarEnabled = false;
+
+    protected mFitBars = false;
 
     /**
      * if set to true, all values are drawn above their bars, instead of below their top
@@ -26,8 +30,6 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * if set to true, a grey area is drawn behind each bar that indicates the maximum value
      */
     private mDrawBarShadow = false;
-
-    private mFitBars = false;
 
     constructor()
     {
@@ -77,7 +79,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
     {
         if (this.mData == null)
         {
-            console.error("Can't select by touch. No data set.");
+            console.error(LOG_TAG, "Can't select by touch. No data set.");
             return null;
         }
         
@@ -108,8 +110,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
     public getBarBounds(e: BarEntry): RectF
     {
         let set = this.mData.getDataSetForEntry(e);
-        if (set === null)
-        {
+        if (set === null) {
             return new RectF(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
         }
 
