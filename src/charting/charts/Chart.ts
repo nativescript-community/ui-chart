@@ -2,7 +2,7 @@ import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
 import { ChartData } from '../data/ChartData';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
-import { CanvasView, Paint, Canvas, Align } from 'nativescript-canvas';
+import { Align, Canvas, CanvasView, Paint } from '@nativescript-community/ui-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { Utils } from '../utils/Utils';
 import { Color } from '@nativescript/core/color';
@@ -19,7 +19,6 @@ import { profile } from '@nativescript/core/profiling';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
-import { isAndroid, isIOS } from '@nativescript/core/platform';
 import { layout } from '@nativescript/core/utils/utils';
 
 const LOG_TAG = 'NSChart';
@@ -155,7 +154,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     initNativeView() {
         super.initNativeView();
-        if (isIOS) {
+        if (global.isIOS) {
             this.nativeViewProtected.opaque = false;
         }
         this.mChartTouchListener && this.mChartTouchListener.init();
@@ -302,8 +301,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         // calculate how many digits are needed
         this.setupDefaultFormatter(data.getYMin(), data.getYMax());
 
-        for (let set of this.mData.getDataSets()) {
-            if (set.needsFormatter() || set.getValueFormatter() == this.mDefaultValueFormatter) set.setValueFormatter(this.mDefaultValueFormatter);
+        for (const set of this.mData.getDataSets()) {
+            if (set.needsFormatter() || set.getValueFormatter() === this.mDefaultValueFormatter) set.setValueFormatter(this.mDefaultValueFormatter);
         }
 
         // let the chart know there is new data
@@ -383,7 +382,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             reference = Math.abs(max - min);
         }
 
-        let digits = Utils.getDecimals(reference);
+        const digits = Utils.getDecimals(reference);
 
         // setup the formatter with a new number of digits
         this.mDefaultValueFormatter.setup(digits);
@@ -394,7 +393,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     protected mOffsetsCalculated = false;
 
-    protected onDraw(canvas: Canvas) {
+    onDraw(canvas: Canvas) {
         // super.onDraw(canvas);
 
         if (this.mData === null) {
@@ -501,7 +500,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     public setHighlightPerTapEnabled(enabled) {
         this.mHighLightPerTapEnabled = enabled;
-        
     }
 
     /**
@@ -702,7 +700,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             const set = this.mData.getDataSetByIndex(highlight.dataSetIndex);
 
             const e = highlight.entry || this.mData.getEntryForHighlight(highlight);
-            let entryIndex = set.getEntryIndex(e as any);
+            const entryIndex = set.getEntryIndex(e as any);
 
             // make sure entry not null
             if (e == null || entryIndex > set.getEntryCount() * this.mAnimator.getPhaseX()) continue;
@@ -1566,26 +1564,24 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             this.calculateOffsets(); // needs chart size
         }
 
-        for (let r of this.mJobs) {
+        for (const r of this.mJobs) {
             setTimeout(() => {
                 r.run();
             }, 0);
         }
 
         this.mJobs = [];
-
     }
     public onLayout(left: number, top: number, right: number, bottom: number) {
         super.onLayout(left, top, right, bottom);
-       
-        if (isIOS) {
+
+        if (global.isIOS) {
             this.onSetWidthHeight(layout.toDeviceIndependentPixels(right - left), layout.toDeviceIndependentPixels(bottom - top));
         }
-
     }
     public onSizeChanged(w: number, h: number, oldw: number, oldh: number): void {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (isAndroid) {
+        if (global.isAndroid) {
             this.onSetWidthHeight(w, h);
         }
     }

@@ -5,8 +5,8 @@ import { Color } from '@nativescript/core/color';
 import { Utils } from '../utils/Utils';
 import { DefaultFillFormatter } from '../formatter/DefaultFillFormatter';
 import { IFillFormatter } from '../formatter/IFillFormatter';
-import { DashPathEffect, parseDashEffect } from 'nativescript-canvas';
-import { ColorTemplate } from 'nativescript-chart/utils/ColorTemplate';
+import { DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
+import { ColorTemplate } from '@nativescript-community/ui-chart/utils/ColorTemplate';
 import { createLTTB } from 'downsample';
 
 export enum Mode {

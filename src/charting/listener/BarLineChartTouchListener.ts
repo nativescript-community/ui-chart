@@ -1,4 +1,4 @@
-import { Matrix } from 'nativescript-canvas';
+import { Matrix } from '@nativescript-community/ui-canvas';
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Utils } from '../utils/Utils';
@@ -15,7 +15,7 @@ import {
     PanGestureHandler,
     PinchGestureHandler,
     TapGestureHandler
-} from 'nativescript-gesturehandler';
+} from '@nativescript-community/gesturehandler';
 
 /**
  * TouchListener for Bar-, Line-, Scatter- and CandleStickChart with handles all

@@ -1,5 +1,5 @@
 {
-    "name": "nativescript-chart",
+    "name": "@nativescript-community/ui-chart",
     "version": "0.0.26",
     "sideEffects": false,
     "description": "Nativescript Chart plugin.",
@@ -20,17 +20,17 @@
         "email": "martin@akylas.fr"
     },
     "bugs": {
-        "url": "https://github.com/Akylas/nativescript-chart/issues"
+        "url": "https://github.com/nativescript-community/ui-chart/issues"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/Akylas/nativescript-chart",
+    "homepage": "https://github.com/nativescript-community/ui-chart",
     "readmeFilename": "README.md",
     "main": "index.js",
     "typings": "index.d.ts",
     "dependencies": {
         "downsample": "^1.3.0",
-        "nativescript-canvas": "^3.0.10",
-        "nativescript-gesturehandler": "^0.1.16",
+        "@nativescript-community/ui-canvas": "^4.0.4",
+        "@nativescript-community/gesturehandler": "^0.1.17",
         "nativescript-tween": "^0.0.10",
         "number-format.js": "^2.0.9"
     }

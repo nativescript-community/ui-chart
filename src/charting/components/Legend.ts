@@ -1,7 +1,7 @@
 import { ComponentBase } from './ComponentBase';
 import { LegendEntry } from './LegendEntry';
 import { Utils } from '../utils/Utils';
-import { Paint, DashPathEffect } from 'nativescript-canvas';
+import { Paint, DashPathEffect } from '@nativescript-community/ui-canvas';
 import { ColorTemplate } from '../utils/ColorTemplate';
 
 export enum LegendForm {

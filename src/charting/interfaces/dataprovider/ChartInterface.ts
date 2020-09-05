@@ -1,7 +1,7 @@
 import { MPPointF } from '../../utils/MPPointF';
 import { ValueFormatter } from '../../formatter/ValueFormatter';
 import { ChartData } from '../../data/ChartData';
-import { Rect } from 'nativescript-canvas';
+import { Rect } from '@nativescript-community/ui-canvas';
 
 /**
  * Interface that provides everything there is to know about the dimensions,

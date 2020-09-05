@@ -3,219 +3,219 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.0.26](https://github.com/Akylas/nativescript-chart/compare/v0.0.25...v0.0.26) (2020-08-26)
+## [0.0.26](https://github.com/nativescript-community/ui-chart/compare/v0.0.25...v0.0.26) (2020-08-26)
 
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.25](https://github.com/Akylas/nativescript-chart/compare/v0.0.24...v0.0.25) (2020-06-19)
-
-**Note:** Version bump only for package nativescript-chart
+**Note:** Version bump only for package @nativescript-community/ui-chart
 
 
 
 
 
-## [0.0.24](https://github.com/Akylas/nativescript-chart/compare/v0.0.23...v0.0.24) (2020-06-18)
+## [0.0.25](https://github.com/nativescript-community/ui-chart/compare/v0.0.24...v0.0.25) (2020-06-19)
 
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.23](https://github.com/Akylas/nativescript-chart/compare/v0.0.22...v0.0.23) (2020-06-17)
-
-**Note:** Version bump only for package nativescript-chart
+**Note:** Version bump only for package @nativescript-community/ui-chart
 
 
 
 
 
-## [0.0.22](https://github.com/Akylas/nativescript-chart/compare/v0.0.21...v0.0.22) (2020-06-16)
+## [0.0.24](https://github.com/nativescript-community/ui-chart/compare/v0.0.23...v0.0.24) (2020-06-18)
 
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.21](https://github.com/Akylas/nativescript-chart/compare/v0.0.20...v0.0.21) (2020-06-15)
-
-
-### Bug Fixes
-
-* support latest Canvas plugin. working on multiple colors per dataset ([95a33a5](https://github.com/Akylas/nativescript-chart/commit/95a33a56e8936b574c0eea3f89c8897a2a52b78b))
+**Note:** Version bump only for package @nativescript-community/ui-chart
 
 
 
 
 
-## [0.0.20](https://github.com/Akylas/nativescript-chart/compare/v0.0.19...v0.0.20) (2020-05-21)
+## [0.0.23](https://github.com/nativescript-community/ui-chart/compare/v0.0.22...v0.0.23) (2020-06-17)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.22](https://github.com/nativescript-community/ui-chart/compare/v0.0.21...v0.0.22) (2020-06-16)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.21](https://github.com/nativescript-community/ui-chart/compare/v0.0.20...v0.0.21) (2020-06-15)
 
 
 ### Bug Fixes
 
-* sideEffects for tree shacking ([ec1aa9a](https://github.com/Akylas/nativescript-chart/commit/ec1aa9a808ebfcd0e2a1027d74fb5fff9d5dc018))
+* support latest Canvas plugin. working on multiple colors per dataset ([95a33a5](https://github.com/nativescript-community/ui-chart/commit/95a33a56e8936b574c0eea3f89c8897a2a52b78b))
 
 
 
 
 
-## [0.0.19](https://github.com/Akylas/nativescript-chart/compare/v0.0.18...v0.0.19) (2020-05-21)
-
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.18](https://github.com/Akylas/nativescript-chart/compare/v0.0.17...v0.0.18) (2020-05-21)
-
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.17](https://github.com/Akylas/nativescript-chart/compare/v0.0.16...v0.0.17) (2020-05-20)
-
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.16](https://github.com/Akylas/nativescript-chart/compare/v0.0.15...v0.0.16) (2020-05-02)
-
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.15](https://github.com/Akylas/nativescript-chart/compare/v0.0.14...v0.0.15) (2020-05-02)
-
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.14](https://github.com/Akylas/nativescript-chart/compare/v0.0.13...v0.0.14) (2020-02-07)
-
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.13](https://github.com/Akylas/nativescript-chart/compare/v0.0.12...v0.0.13) (2020-01-20)
-
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.12](https://github.com/Akylas/nativescript-chart/compare/v0.0.11...v0.0.12) (2020-01-17)
-
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.11](https://github.com/Akylas/nativescript-chart/compare/v0.0.10...v0.0.11) (2020-01-17)
+## [0.0.20](https://github.com/nativescript-community/ui-chart/compare/v0.0.19...v0.0.20) (2020-05-21)
 
 
 ### Bug Fixes
 
-* correctly enable gestures for pinch ([6214f05](https://github.com/Akylas/nativescript-chart/commit/6214f05c45fa0ae6921eac84a3d4e3db85f19f7d))
+* sideEffects for tree shacking ([ec1aa9a](https://github.com/nativescript-community/ui-chart/commit/ec1aa9a808ebfcd0e2a1027d74fb5fff9d5dc018))
 
 
 
 
 
-## [0.0.10](https://github.com/Akylas/nativescript-chart/compare/v0.0.9...v0.0.10) (2020-01-16)
+## [0.0.19](https://github.com/nativescript-community/ui-chart/compare/v0.0.18...v0.0.19) (2020-05-21)
 
-**Note:** Version bump only for package nativescript-chart
-
-
-
-
-
-## [0.0.9](https://github.com/Akylas/nativescript-chart/compare/v0.0.8...v0.0.9) (2020-01-16)
-
-**Note:** Version bump only for package nativescript-chart
+**Note:** Version bump only for package @nativescript-community/ui-chart
 
 
 
 
 
-## [0.0.8](https://github.com/Akylas/nativescript-chart/compare/v0.0.7...v0.0.8) (2020-01-14)
+## [0.0.18](https://github.com/nativescript-community/ui-chart/compare/v0.0.17...v0.0.18) (2020-05-21)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.17](https://github.com/nativescript-community/ui-chart/compare/v0.0.16...v0.0.17) (2020-05-20)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.16](https://github.com/nativescript-community/ui-chart/compare/v0.0.15...v0.0.16) (2020-05-02)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.15](https://github.com/nativescript-community/ui-chart/compare/v0.0.14...v0.0.15) (2020-05-02)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.14](https://github.com/nativescript-community/ui-chart/compare/v0.0.13...v0.0.14) (2020-02-07)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.13](https://github.com/nativescript-community/ui-chart/compare/v0.0.12...v0.0.13) (2020-01-20)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.12](https://github.com/nativescript-community/ui-chart/compare/v0.0.11...v0.0.12) (2020-01-17)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.11](https://github.com/nativescript-community/ui-chart/compare/v0.0.10...v0.0.11) (2020-01-17)
 
 
 ### Bug Fixes
 
-* more fixes ([052a6f7](https://github.com/Akylas/nativescript-chart/commit/052a6f74867977a9a21e80a94ddb413cde4fc5b2))
+* correctly enable gestures for pinch ([6214f05](https://github.com/nativescript-community/ui-chart/commit/6214f05c45fa0ae6921eac84a3d4e3db85f19f7d))
 
 
 
 
 
-## [0.0.7](https://github.com/Akylas/nativescript-chart/compare/v0.0.6...v0.0.7) (2020-01-14)
+## [0.0.10](https://github.com/nativescript-community/ui-chart/compare/v0.0.9...v0.0.10) (2020-01-16)
 
-
-### Bug Fixes
-
-* bunch of fixes. Changed default values ([c749909](https://github.com/Akylas/nativescript-chart/commit/c749909203f370eb57d883f154104f9e91691388))
+**Note:** Version bump only for package @nativescript-community/ui-chart
 
 
 
 
 
-## [0.0.6](https://github.com/Akylas/nativescript-chart/compare/v0.0.5...v0.0.6) (2020-01-14)
+## [0.0.9](https://github.com/nativescript-community/ui-chart/compare/v0.0.8...v0.0.9) (2020-01-16)
 
-**Note:** Version bump only for package nativescript-chart
-
-
+**Note:** Version bump only for package @nativescript-community/ui-chart
 
 
 
-## [0.0.5](https://github.com/Akylas/nativescript-chart/compare/v0.0.4...v0.0.5) (2020-01-14)
+
+
+## [0.0.8](https://github.com/nativescript-community/ui-chart/compare/v0.0.7...v0.0.8) (2020-01-14)
 
 
 ### Bug Fixes
 
-* removed logs ([534a1a3](https://github.com/Akylas/nativescript-chart/commit/534a1a31566e13c9a91677d21e697208ea85ab1e))
+* more fixes ([052a6f7](https://github.com/nativescript-community/ui-chart/commit/052a6f74867977a9a21e80a94ddb413cde4fc5b2))
 
 
 
 
 
-## [0.0.4](https://github.com/Akylas/nativescript-chart/compare/v0.0.3...v0.0.4) (2020-01-14)
-
-**Note:** Version bump only for package nativescript-chart
+## [0.0.7](https://github.com/nativescript-community/ui-chart/compare/v0.0.6...v0.0.7) (2020-01-14)
 
 
+### Bug Fixes
 
-
-
-## [0.0.3](https://github.com/Akylas/nativescript-chart/compare/v0.0.2...v0.0.3) (2020-01-13)
-
-**Note:** Version bump only for package nativescript-chart
+* bunch of fixes. Changed default values ([c749909](https://github.com/nativescript-community/ui-chart/commit/c749909203f370eb57d883f154104f9e91691388))
 
 
 
 
 
-## [0.0.2](https://github.com/Akylas/nativescript-chart/compare/v0.0.1...v0.0.2) (2020-01-11)
+## [0.0.6](https://github.com/nativescript-community/ui-chart/compare/v0.0.5...v0.0.6) (2020-01-14)
 
-**Note:** Version bump only for package nativescript-chart
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.5](https://github.com/nativescript-community/ui-chart/compare/v0.0.4...v0.0.5) (2020-01-14)
+
+
+### Bug Fixes
+
+* removed logs ([534a1a3](https://github.com/nativescript-community/ui-chart/commit/534a1a31566e13c9a91677d21e697208ea85ab1e))
+
+
+
+
+
+## [0.0.4](https://github.com/nativescript-community/ui-chart/compare/v0.0.3...v0.0.4) (2020-01-14)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.3](https://github.com/nativescript-community/ui-chart/compare/v0.0.2...v0.0.3) (2020-01-13)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
+## [0.0.2](https://github.com/nativescript-community/ui-chart/compare/v0.0.1...v0.0.2) (2020-01-11)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
 
 
 
@@ -223,4 +223,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 0.0.1 (2020-01-11)
 
-**Note:** Version bump only for package nativescript-chart
+**Note:** Version bump only for package @nativescript-community/ui-chart

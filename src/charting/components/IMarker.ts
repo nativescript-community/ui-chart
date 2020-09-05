@@ -1,7 +1,7 @@
 import { Highlight } from '../highlight/Highlight';
 import { Entry } from '../data/Entry';
 import { MPPointF } from '../utils/MPPointF';
-import { Canvas } from 'nativescript-canvas';
+import { Canvas } from '@nativescript-community/ui-canvas';
 
 export interface IMarker {
     /**

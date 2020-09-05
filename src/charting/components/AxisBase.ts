@@ -1,9 +1,9 @@
 import { ComponentBase } from './ComponentBase';
 import { LimitLine } from './LimitLine';
-import { DashPathEffect, parseDashEffect } from 'nativescript-canvas';
+import { DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
 import { ValueFormatter } from '../formatter/ValueFormatter';
 import { DefaultAxisValueFormatter } from '../formatter/DefaultAxisValueFormatter';
-import { IAxisValueFormatter } from 'nativescript-chart/formatter/IAxisValueFormatter';
+import { IAxisValueFormatter } from '@nativescript-community/ui-chart/formatter/IAxisValueFormatter';
 
 /**
  * Base-class of all axes (previously called labels).
@@ -505,7 +505,7 @@ export abstract class AxisBase extends ComponentBase {
      */
     public getValueFormatter() {
         if (this.mAxisValueFormatter == null || (this.mAxisValueFormatter instanceof DefaultAxisValueFormatter && this.mAxisValueFormatter.getDecimalDigits() != this.mDecimals))
-            this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);
+        {this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);}
 
         return this.mAxisValueFormatter;
     }

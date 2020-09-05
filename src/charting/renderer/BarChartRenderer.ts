@@ -1,14 +1,14 @@
-import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubbleRenderer';
-import { BarBuffer } from '../buffer/BarBuffer';
-import { BarDataProvider } from '../interfaces/dataprovider/BarDataProvider';
-import { Canvas, Paint, RectF, Style } from 'nativescript-canvas';
+import { Canvas, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
+import { profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
-import { Utils } from '../utils/Utils';
+import { BarBuffer } from '../buffer/BarBuffer';
 import { Highlight } from '../highlight/Highlight';
+import { BarDataProvider } from '../interfaces/dataprovider/BarDataProvider';
+import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 import { Transformer } from '../utils/Transformer';
-import { profile } from '@nativescript/core/profiling/profiling';
+import { Utils } from '../utils/Utils';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubbleRenderer';
 
 export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer
 {
@@ -54,7 +54,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer
     public initBuffers()
     {
         const barData = this.mChart.getBarData();
-        this.mBarBuffers = [] as BarBuffer[];
+        this.mBarBuffers = [];
 
         for (let i = 0; i < barData.getDataSetCount(); i++)
         {
@@ -247,13 +247,13 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer
                             break;
                         }
 
+                        const entry = dataSet.getEntryForIndex(j / 4);
                         const val = entry[yKey];
                         if (!this.mViewPortHandler.isInBoundsY(val >= 0 ? buffer.buffer[j + 1] : buffer.buffer[j + 3]) || !this.mViewPortHandler.isInBoundsLeft(x))
                         {
                             continue;
                         }
 
-                        const entry = dataSet.getEntryForIndex(j / 4);
 
                         if (dataSet.isDrawValuesEnabled())
                         {

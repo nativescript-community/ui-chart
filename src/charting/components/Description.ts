@@ -1,5 +1,5 @@
 import { ComponentBase } from './ComponentBase';
-import { Align } from 'nativescript-canvas';
+import { Align } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 
 /**

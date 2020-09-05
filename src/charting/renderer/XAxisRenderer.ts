@@ -2,7 +2,7 @@ import { AxisRenderer } from './AxisRenderer';
 import { XAxis, XAxisPosition } from '../components/XAxis';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, FontMetrics, Paint, Path, RectF, Style } from 'nativescript-canvas';
+import { Align, Canvas, FontMetrics, Paint, Path, RectF, Style } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 import { MPPointF } from '../utils/MPPointF';
 import { LimitLabelPosition, LimitLine } from '../components/LimitLine';

@@ -5,10 +5,10 @@ import { GradientColor } from '../../model/GradientColor';
 import { ValueFormatter } from '../../formatter/ValueFormatter';
 import { MPPointF } from '../../utils/MPPointF';
 import { LegendForm } from '../../components/Legend';
-import { DashPathEffect } from 'nativescript-canvas';
+import { DashPathEffect } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color';
 import { Font } from '@nativescript/core/ui/styling/font';
-import { IValueFormatter } from 'nativescript-chart/formatter/IValueFormatter';
+import { IValueFormatter } from '@nativescript-community/ui-chart/formatter/IValueFormatter';
 
 /**
  * Created by Philipp Jahoda on 21/10/15.
@@ -256,7 +256,7 @@ export interface IDataSet<T extends Entry> {
      *
      * @return
      */
-    getColors(): Array<string | Color>;
+    getColors(): (string | Color)[];
 
     /**
      * Returns the first color (index 0) of the colors-array this DataSet

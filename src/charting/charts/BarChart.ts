@@ -8,10 +8,9 @@ import { BarDataSet } from '../data/BarDataSet';
 import { BarHighlighter } from '../highlight/BarHighlighter';
 import { Highlight } from '../highlight/Highlight';
 import { BarChartRenderer } from '../renderer/BarChartRenderer';
-import { RectF } from 'nativescript-canvas';
+import { RectF } from '@nativescript-community/ui-canvas';
 
-export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider
-{
+export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider {
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */
@@ -29,14 +28,12 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
 
     private mFitBars = false;
 
-    constructor()
-    {
+    constructor() {
         super();
         this.init();
     }
 
-    protected init()
-    {
+    protected init() {
         super.init();
 
         this.mRenderer = new BarChartRenderer(this, this.mAnimator, this.mViewPortHandler);
@@ -47,17 +44,13 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         this.getXAxis().setSpaceMax(0.5);
     }
 
-    protected calcMinMax()
-    {
-        if (this.mFitBars)
-        {
+    protected calcMinMax() {
+        if (this.mFitBars) {
             this.mXAxis.calculate(this.mData.getXMin() - this.mData.getBarWidth() / 2, this.mData.getXMax() + this.mData.getBarWidth() / 2);
-        }
-        else
-        {
+        } else {
             this.mXAxis.calculate(this.mData.getXMin(), this.mData.getXMax());
         }
-        
+
         // calculate axis range (min / max) according to provided data
         this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
@@ -72,18 +65,15 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param y
      * @return
      */
-    
-    public getHighlightByTouchPoint(x: number, y: number): Highlight
-    {
-        if (this.mData == null)
-        {
+
+    public getHighlightByTouchPoint(x: number, y: number): Highlight {
+        if (this.mData == null) {
             console.error("Can't select by touch. No data set.");
             return null;
         }
-        
-        let h = this.getHighlighter().getHighlight(x, y);
-        if (h === null || !this.isHighlightFullBarEnabled())
-        {
+
+        const h = this.getHighlighter().getHighlight(x, y);
+        if (h === null || !this.isHighlightFullBarEnabled()) {
             return h;
         }
 
@@ -94,7 +84,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
             xPx: h.xPx,
             yPx: h.yPx,
             dataSetIndex: h.dataSetIndex,
-            axis: h.axis
+            axis: h.axis,
         };
     }
 
@@ -105,28 +95,26 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param e
      * @return
      */
-    public getBarBounds(e: BarEntry): RectF
-    {
-        let set = this.mData.getDataSetForEntry(e);
-        if (set === null)
-        {
+    public getBarBounds(e: BarEntry): RectF {
+        const set = this.mData.getDataSetForEntry(e);
+        if (set === null) {
             return new RectF(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
         }
 
         const xKey = set.xProperty;
         const yKey = set.yProperty;
 
-        let y = e[xKey];
-        let x = e[yKey];
+        const y = e[xKey];
+        const x = e[yKey];
 
-        let barWidth = this.mData.getBarWidth();
+        const barWidth = this.mData.getBarWidth();
 
-        let left = x - barWidth / 2;
-        let right = x + barWidth / 2;
-        let top = y >= 0 ? y : 0;
-        let bottom = y <= 0 ? y : 0;
+        const left = x - barWidth / 2;
+        const right = x + barWidth / 2;
+        const top = y >= 0 ? y : 0;
+        const bottom = y <= 0 ? y : 0;
 
-        let outputRect = new RectF(left, top, right, bottom);
+        const outputRect = new RectF(left, top, right, bottom);
         this.getTransformer(set.getAxisDependency()).rectValueToPixel(outputRect);
         return outputRect;
     }
@@ -136,8 +124,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      *
      * @param enabled
      */
-    public setDrawValueAboveBar(enabled: boolean)
-    {
+    public setDrawValueAboveBar(enabled: boolean) {
         this.mDrawValueAboveBar = enabled;
     }
 
@@ -146,8 +133,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      *
      * @return
      */
-    public isDrawValueAboveBarEnabled()
-    {
+    public isDrawValueAboveBarEnabled() {
         return this.mDrawValueAboveBar;
     }
 
@@ -157,8 +143,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      *
      * @param enabled
      */
-    public setDrawBarShadow(enabled: boolean)
-    {
+    public setDrawBarShadow(enabled: boolean) {
         this.mDrawBarShadow = enabled;
     }
 
@@ -167,8 +152,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      *
      * @return
      */
-    public isDrawBarShadowEnabled()
-    {
+    public isDrawBarShadowEnabled() {
         return this.mDrawBarShadow;
     }
 
@@ -180,17 +164,15 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      *
      * @param enabled
      */
-    public setHighlightFullBarEnabled(enabled: boolean)
-    {
+    public setHighlightFullBarEnabled(enabled: boolean) {
         this.mHighlightFullBarEnabled = enabled;
     }
 
     /**
      * @return true the highlight operation is be full-bar oriented, false if single-value
      */
-    
-    public isHighlightFullBarEnabled()
-    {
+
+    public isHighlightFullBarEnabled() {
         return this.mHighlightFullBarEnabled;
     }
 
@@ -203,13 +185,11 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param stackIndex   the index inside the stack - only relevant for stacked entries
      * @param callListener
      */
-    public highlightValue(x: number, dataSetIndex: number, stackIndex: number, callListener = false)
-    {
-        this.highlight({x: x, y: 0, dataSetIndex: dataSetIndex, stackIndex: stackIndex}, callListener);
+    public highlightValue(x: number, dataSetIndex: number, stackIndex: number, callListener = false) {
+        this.highlight({ x, y: 0, dataSetIndex, stackIndex }, callListener);
     }
-    
-    public getBarData(): BarData
-    {
+
+    public getBarData(): BarData {
         return this.mData;
     }
 
@@ -220,8 +200,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      *
      * @param enabled
      */
-    public setFitBars(enabled: boolean)
-    {
+    public setFitBars(enabled: boolean) {
         this.mFitBars = enabled;
     }
 
@@ -235,14 +214,10 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param groupSpace the space between groups of bars in values (not pixels) e.g. 0.8f for bar width 1
      * @param barSpace   the space between individual bars in values (not pixels) e.g. 0.1 for bar width 1
      */
-    public groupBars(fromX, groupSpace, barSpace)
-    {
-        if (this.getBarData() === null)
-        {
-            throw new Error("You need to set data for the chart before grouping bars.");
-        }
-        else
-        {
+    public groupBars(fromX, groupSpace, barSpace) {
+        if (this.getBarData() === null) {
+            throw new Error('You need to set data for the chart before grouping bars.');
+        } else {
             this.getBarData().groupBars(fromX, groupSpace, barSpace);
             this.notifyDataSetChanged();
         }

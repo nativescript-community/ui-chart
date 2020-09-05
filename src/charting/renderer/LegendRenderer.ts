@@ -1,5 +1,5 @@
 import { Renderer } from './Renderer';
-import { Align, Canvas, FontMetrics, Paint, Path, Style } from 'nativescript-canvas';
+import { Align, Canvas, FontMetrics, Paint, Path, Style } from '@nativescript-community/ui-canvas';
 import { Legend, LegendDirection, LegendForm, LegendHorizontalAlignment, LegendOrientation, LegendVerticalAlignment } from '../components/Legend';
 import { BarDataSet } from '../data/BarDataSet';
 import { ViewPortHandler } from '../utils/ViewPortHandler';

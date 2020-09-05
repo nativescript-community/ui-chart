@@ -2,7 +2,7 @@ import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from './Entry';
 import { AxisDependency } from '../components/YAxis';
 import { Highlight } from '../highlight/Highlight';
-import { IValueFormatter } from 'nativescript-chart/formatter/IValueFormatter';
+import { IValueFormatter } from '@nativescript-community/ui-chart/formatter/IValueFormatter';
 
 export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
@@ -99,7 +99,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param toX   the x-value to which the calculation should be performed
      */
     public calcMinMaxYRange(fromX, toX) {
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             set.calcMinMaxYRange(fromX, toX);
         }
 
@@ -120,7 +120,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
         const visibleDatasets = this.getVisibleDataSets();
 
-        for (let set of visibleDatasets) {
+        for (const set of visibleDatasets) {
             if (set.isVisible()) {
                 this.calcMinMaxForDataSet(set);
             }
@@ -138,7 +138,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             this.mLeftAxisMax = firstLeft.getYMax();
             this.mLeftAxisMin = firstLeft.getYMin();
 
-            for (let dataSet of visibleDatasets) {
+            for (const dataSet of visibleDatasets) {
                 if (dataSet.getAxisDependency() == AxisDependency.LEFT) {
                     if (dataSet.getYMin() < this.mLeftAxisMin) this.mLeftAxisMin = dataSet.getYMin();
 
@@ -154,7 +154,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             this.mRightAxisMax = firstRight.getYMax();
             this.mRightAxisMin = firstRight.getYMin();
 
-            for (let dataSet of visibleDatasets) {
+            for (const dataSet of visibleDatasets) {
                 if (dataSet.getAxisDependency() == AxisDependency.RIGHT) {
                     if (dataSet.getYMin() < this.mRightAxisMin) this.mRightAxisMin = dataSet.getYMin();
 
@@ -538,7 +538,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         for (let i = 0; i < this.mDataSets.length; i++) {
             const clrs = this.mDataSets[i].getColors();
 
-            for (let clr of clrs) {
+            for (const clr of clrs) {
                 colors[cnt] = clr;
                 cnt++;
             }
@@ -564,7 +564,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @return
      */
     protected getFirstLeft(sets) {
-        for (let dataSet of sets) {
+        for (const dataSet of sets) {
             if (dataSet.getAxisDependency() == AxisDependency.LEFT) return dataSet;
         }
         return null;
@@ -577,7 +577,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @return
      */
     public getFirstRight(sets) {
-        for (let dataSet of sets) {
+        for (const dataSet of sets) {
             if (dataSet.getAxisDependency() == AxisDependency.RIGHT) return dataSet;
         }
         return null;
@@ -591,7 +591,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     public setValueFormatter(f: IValueFormatter) {
         if (f == null) return;
         else {
-            for (let set of this.mDataSets) {
+            for (const set of this.mDataSets) {
                 set.setValueFormatter(f);
             }
         }
@@ -604,7 +604,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param color
      */
     public setValueTextColor(color) {
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             set.setValueTextColor(color);
         }
     }
@@ -616,7 +616,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param colors
      */
     public setValueTextColors(colors) {
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             set.setValueTextColors(colors);
         }
     }
@@ -628,7 +628,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param tf
      */
     public setValueTypeface(tf) {
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             set.setValueTypeface(tf);
         }
     }
@@ -640,7 +640,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param size
      */
     public setValueTextSize(size) {
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             set.setValueTextSize(size);
         }
     }
@@ -652,7 +652,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param enabled
      */
     public setDrawValues(enabled) {
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             set.setDrawValues(enabled);
         }
     }
@@ -663,7 +663,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * be highlighted programmatically or by touch gesture.
      */
     public setHighlightEnabled(enabled) {
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             set.setHighlightEnabled(enabled);
         }
     }
@@ -675,7 +675,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @return
      */
     public isHighlightEnabled() {
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             if (!set.isHighlightEnabled()) return false;
         }
         return true;
@@ -711,7 +711,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     public getEntryCount() {
         let count = 0;
 
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             count += set.getEntryCount();
         }
 
@@ -728,7 +728,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
         let max = this.mDataSets[0];
 
-        for (let set of this.mDataSets) {
+        for (const set of this.mDataSets) {
             if (set.getEntryCount() > max.getEntryCount()) max = set;
         }
 

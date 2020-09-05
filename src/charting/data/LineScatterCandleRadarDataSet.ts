@@ -2,7 +2,7 @@ import { Entry } from './Entry';
 import { ILineScatterCandleRadarDataSet } from '../interfaces/datasets/ILineScatterCandleRadarDataSet';
 import { BarLineScatterCandleBubbleDataSet } from './BarLineScatterCandleBubbleDataSet';
 import { Utils } from '../utils/Utils';
-import { DashPathEffect, parseDashEffect } from 'nativescript-canvas';
+import { DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
 
 /**
  * Created by Philipp Jahoda on 11/07/15.

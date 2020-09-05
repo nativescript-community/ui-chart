@@ -2,8 +2,8 @@ import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubble
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ILineScatterCandleRadarDataSet } from '../interfaces/datasets/ILineScatterCandleRadarDataSet';
-import { Canvas, Path } from 'nativescript-canvas';
-import { profile } from '@nativescript/core/profiling';
+import { Canvas, Path } from '@nativescript-community/ui-canvas';
+import { profile } from '@nativescript/core';
 
 /**
  * Created by Philipp Jahoda on 11/07/15.

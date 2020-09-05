@@ -1,10 +1,9 @@
-import { LineScatterCandleRadarRenderer } from './LineScatterCandleRadarRenderer';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { Canvas, Paint, Path, Style } from '@nativescript-community/ui-canvas';
+import { Color, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { Canvas, Paint, Path, Style } from 'nativescript-canvas';
 import { Utils } from '../utils/Utils';
-import { profile } from '@nativescript/core/profiling';
-import { Color } from '@nativescript/core/color';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { LineScatterCandleRadarRenderer } from './LineScatterCandleRadarRenderer';
 
 // export const SCALE_FACTOR = 1;
 

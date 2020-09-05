@@ -1,12 +1,12 @@
-import { ImageSource } from '@nativescript/core/image-source';
-import { isAndroid, screen } from '@nativescript/core/platform';
-import { Align, Canvas, FontMetrics, Paint, Rect, StaticLayout } from 'nativescript-canvas';
+import { ImageSource } from '@nativescript/core';
+import { Screen } from '@nativescript/core/platform';
+import { Align, Canvas, FontMetrics, Paint, Rect, StaticLayout } from '@nativescript-community/ui-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { ValueFormatter } from '../formatter/ValueFormatter';
 
 export type FloatArray = Float32Array | Float64Array;
 export let FloatConstructor: typeof Float32Array | typeof Float64Array;
-if (isAndroid) {
+if (global.isAndroid) {
     FloatConstructor = Float32Array;
 } else {
     FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
@@ -22,7 +22,7 @@ if (isAndroid) {
  */
 export namespace Utils {
     // const mainScreen = screen.mainScreen;
-    export const density = screen.mainScreen.scale;
+    export const density = Screen.mainScreen.scale;
     //    const mMetrics;
     // const mMinimumFlingVelocity = 50;
     // const mMaximumFlingVelocity = 8000;
@@ -452,7 +452,7 @@ export namespace Utils {
     export function drawImage(canvas: Canvas, icon: ImageSource, x, y) {
         const drawOffsetX = x - (icon.width / 2);
         const drawOffsetY = y - (icon.height / 2);
-        canvas.drawBitmap(isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
+        canvas.drawBitmap(global.isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
     }
 
     export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees, lineHeight, fontMetrics: FontMetrics) {
@@ -671,7 +671,7 @@ export namespace Utils {
 
     // export const createArrayBuffer = profile('createArrayBuffer', function(length: number, force = false): number[] {
     export function createArrayBuffer(length: number, force = false): number[] {
-        if (isAndroid) {
+        if (global.isAndroid) {
             const bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
             const result = (ArrayBuffer as any).from(bb);
             // result.bb = bb;
@@ -685,7 +685,7 @@ export namespace Utils {
     }
     // export const pointsFromBuffer = profile('pointsFromBuffer', function(float32Array) {
     export function pointsFromBuffer(float32Array) {
-        if (isAndroid) {
+        if (global.isAndroid) {
             const buffer = float32Array.buffer;
             const length = float32Array.length;
             const testArray = Array.create('float', length);
@@ -697,7 +697,7 @@ export namespace Utils {
     }
     // export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
     export function nativeArrayToArray(array) {
-        if (isAndroid) {
+        if (global.isAndroid) {
             const result = [];
             for (let index = 0; index < array.length; index++) {
                 result[index] = array[index];
@@ -708,7 +708,7 @@ export namespace Utils {
         return array;
     }
     export function createNativeArray(length) {
-        if (isAndroid) {
+        if (global.isAndroid) {
             return Array.create('float', length);
         }
         return [];
@@ -726,14 +726,14 @@ export namespace Utils {
     }
 
     export function clipPathSupported() {
-        if (isAndroid) {
+        if (global.isAndroid) {
             return android.os.Build.VERSION.SDK_INT >= 18;
         }
         return false;
     }
     export function setHardwareAccelerationEnabled(view: android.view.View, enabled) {
         // console.log('setHardwareAccelerationEnabled', view, enabled);
-        if (isAndroid) {
+        if (global.isAndroid) {
             if (view) {
                 if (enabled) view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
                 else view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);

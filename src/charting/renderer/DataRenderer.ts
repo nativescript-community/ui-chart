@@ -1,5 +1,5 @@
 import { Renderer } from './Renderer';
-import { Align, Canvas, Cap, Join, Paint, Style } from 'nativescript-canvas';
+import { Align, Canvas, Cap, Join, Paint, Style } from '@nativescript-community/ui-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { Color } from '@nativescript/core/color';
