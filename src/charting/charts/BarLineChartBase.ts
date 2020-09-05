@@ -1,6 +1,5 @@
 import { Canvas, Matrix, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
-import { EventData, Observable } from '@nativescript/core';
-import { profile } from '@nativescript/core/profiling';
+import { EventData, Observable, profile } from '@nativescript/core';
 import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
 import { GestureTypes } from '@nativescript/core/ui/gestures';
 import { LegendHorizontalAlignment, LegendOrientation, LegendVerticalAlignment } from '../components/Legend';

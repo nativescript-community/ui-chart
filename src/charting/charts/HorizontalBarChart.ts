@@ -14,7 +14,7 @@ import { XAxisRendererHorizontalBarChart } from '../renderer/XAxisRendererHorizo
 import { HorizontalViewPortHandler } from '../utils/HorizontalViewPortHandler';
 import { TransformerHorizontalBarChart } from '../utils/TransformerHorizontalBarChart';
 import { Utils } from '../utils/Utils';
-import { RectF } from 'nativescript-canvas';
+import { RectF } from '@nativescript-community/ui-canvas';
 
 const LOG_TAG = 'HorizontalBarChart';
 

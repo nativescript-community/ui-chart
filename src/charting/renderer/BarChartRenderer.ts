@@ -7,7 +7,7 @@ import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { Canvas, Paint, RectF, Style } from 'nativescript-canvas';
+import { Canvas, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
 import { profile } from '@nativescript/core';
 
 export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {

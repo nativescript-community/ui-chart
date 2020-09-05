@@ -8,7 +8,7 @@ import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { Align, Canvas, RectF } from 'nativescript-canvas';
+import { Align, Canvas, RectF } from '@nativescript-community/ui-canvas';
 
 export class HorizontalBarChartRenderer extends BarChartRenderer {
     constructor(chart: BarChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {

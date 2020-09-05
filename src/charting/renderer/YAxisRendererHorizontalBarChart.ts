@@ -2,10 +2,10 @@ import { YAxisRenderer } from './YAxisRenderer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { AxisDependency, YAxis, YAxisLabelPosition } from '../components/YAxis';
 import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, Path, RectF, Style } from 'nativescript-canvas';
+import { Align, Canvas, Path, RectF, Style } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 import { LimitLabelPosition } from '../components/LimitLine';
-import { profile } from '@nativescript/core/profiling';
+import { profile } from '@nativescript/core';
 
 export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
     protected mDrawZeroLinePathBuffer: Path = new Path();

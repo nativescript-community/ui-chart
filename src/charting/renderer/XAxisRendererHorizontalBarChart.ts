@@ -3,11 +3,11 @@ import { BarChart } from '../charts/BarChart';
 import { XAxis, XAxisPosition } from '../components/XAxis';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, Path, RectF, Style } from 'nativescript-canvas';
+import { Align, Canvas, Path, RectF, Style } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 import { MPPointF } from '../utils/MPPointF';
 import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
-import { profile } from '@nativescript/core/profiling';
+import { profile } from '@nativescript/core';
 
 export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     protected mChart: BarChart;
