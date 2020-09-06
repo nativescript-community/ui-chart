@@ -1,6 +1,5 @@
 import { ChartHighlighter } from './ChartHighlighter';
 import { Highlight } from './Highlight';
-import { AxisDependency } from '../components/YAxis';
 import { BarData } from '../data/BarData';
 import { BarDataProvider } from '../interfaces/dataprovider/BarDataProvider';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';

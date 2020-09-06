@@ -10,11 +10,15 @@ import { Highlight } from '../highlight/Highlight';
 import { BarChartRenderer } from '../renderer/BarChartRenderer';
 import { RectF } from '@nativescript-community/ui-canvas';
 
+const LOG_TAG = 'BarChart';
+
 export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider {
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */
     protected mHighlightFullBarEnabled = false;
+
+    protected mFitBars = false;
 
     /**
      * if set to true, all values are drawn above their bars, instead of below their top
@@ -25,8 +29,6 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * if set to true, a grey area is drawn behind each bar that indicates the maximum value
      */
     private mDrawBarShadow = false;
-
-    private mFitBars = false;
 
     constructor() {
         super();
@@ -65,10 +67,9 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param y
      * @return
      */
-
     public getHighlightByTouchPoint(x: number, y: number): Highlight {
         if (this.mData == null) {
-            console.error("Can't select by touch. No data set.");
+            console.error(LOG_TAG, "Can't select by touch. No data set.");
             return null;
         }
 

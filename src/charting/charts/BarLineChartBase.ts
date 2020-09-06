@@ -1,6 +1,5 @@
 import { Canvas, Matrix, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
-import { EventData, Observable } from '@nativescript/core';
-import { profile } from '@nativescript/core/profiling';
+import { EventData, Observable, profile } from '@nativescript/core';
 import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
 import { GestureTypes } from '@nativescript/core/ui/gestures';
 import { LegendHorizontalAlignment, LegendOrientation, LegendVerticalAlignment } from '../components/Legend';
@@ -117,6 +116,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     protected mRightAxisTransformer: Transformer;
 
     protected mXAxisRenderer: XAxisRenderer;
+
+    protected mOffsetsBuffer: RectF = new RectF(0, 0, 0, 0);
 
     // /** the approximator object used for data filtering */
     // private Approximator this.mApproximator;
@@ -400,8 +401,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             }
         }
     }
-
-    private mOffsetsBuffer = new RectF(0, 0, 0, 0);
 
     public calculateOffsets(force = true) {
         if (this.mOffsetsCalculated && !force) {
