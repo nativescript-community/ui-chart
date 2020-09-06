@@ -39,11 +39,12 @@ exports.onBarChartLoaded = function(args)
     chart.setScaleEnabled(true);
     chart.setDragEnabled(true);
     chart.getAxisRight().setEnabled(false);
+    //chart.getAxisLeft().setInverted(true);
     // chart.setHardwareAccelerationEnabled(true);
 
     const data = new Array(5).fill(0).map(function(v, i)
     {
-        return {index: i, value: Math.random() * 1, icon: imageSourceModule.fromResource("icon")};
+        return {index: i, value: Math.random() * 1};
     });
 
     console.log('setData', data.length, data[0]);
@@ -97,6 +98,12 @@ exports.redraw = function(args)
     if (bc)
     {
         bc.invalidate();
+    }
+
+    const hbc = page.getViewById("horizontal-bar-chart");
+    if (hbc)
+    {
+        hbc.invalidate();
     }
 
     const lc = page.getViewById("line-chart");

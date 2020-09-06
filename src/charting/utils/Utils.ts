@@ -34,7 +34,7 @@ export namespace Utils {
 
     const mDrawTextRectBuffer = new Rect(0, 0, 0, 0);
     const mCalcTextHeightRect = new Rect(0, 0, 0, 0);
-    const mFontMetrics = new FontMetrics();
+    const mFontMetricsBuffer = new FontMetrics();
     const mCalcTextSizeRect = new Rect(0, 0, 0, 0);
 
     const mDefaultValueFormatter: ValueFormatter = generateDefaultValueFormatter();
@@ -124,12 +124,12 @@ export namespace Utils {
         return mCalcTextHeightRect.height();
     }
 
-    export function getLineHeight(paint: Paint, fontMetrics = mFontMetrics) {
+    export function getLineHeight(paint: Paint, fontMetrics = mFontMetricsBuffer) {
         paint.getFontMetrics(fontMetrics);
         return fontMetrics.descent - fontMetrics.ascent;
     }
 
-    export function getLineSpacing(paint: Paint, fontMetrics = mFontMetrics) {
+    export function getLineSpacing(paint: Paint, fontMetrics = mFontMetricsBuffer) {
         paint.getFontMetrics(fontMetrics);
         return fontMetrics.ascent - fontMetrics.top + fontMetrics.bottom;
     }
@@ -455,23 +455,26 @@ export namespace Utils {
         canvas.drawBitmap(global.isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
     }
 
-    export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees, lineHeight, fontMetrics: FontMetrics) {
+    export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees) {
         let drawOffsetX = 0;
         let drawOffsetY = 0;
 
+        const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
+        paint.getTextBounds(text, 0, text.length, mDrawTextRectBuffer);
+
         // Android sometimes has pre-padding
-        // drawOffsetX -= mDrawTextRectBuffer.left;
+        //drawOffsetX -= mDrawTextRectBuffer.left;
 
         // Android does not snap the bounds to line boundaries,
-        //  and draws from bottom to top.
+        // and draws from bottom to top.
         // And we want to normalize it.
-        drawOffsetY += -fontMetrics.ascent;
+        drawOffsetY += -mFontMetricsBuffer.ascent;
 
         // To have a consistent point of reference, we always draw left-aligned
+        const originalTextAlign = paint.getTextAlign();
+        paint.setTextAlign(Align.LEFT);
 
         if (angleDegrees !== 0) {
-            const originalTextAlign = paint.getTextAlign();
-            paint.setTextAlign(Align.LEFT);
             // Move the text drawing rect in a way that it always rotates around its center
             drawOffsetX -= mDrawTextRectBuffer.width() * 0.5;
             drawOffsetY -= lineHeight * 0.5;
@@ -481,12 +484,10 @@ export namespace Utils {
 
             // Move the "outer" rect relative to the anchor, assuming its centered
             if (anchor.x !== 0.5 || anchor.y !== 0.5) {
-                paint.getTextBounds(text, 0, text.length, mDrawTextRectBuffer);
-                const rotatedSize = getSizeOfRotatedRectangleSizeByDegrees(mDrawTextRectBuffer.width(), lineHeight, angleDegrees);
+                const rotatedSize = getSizeOfRotatedRectangleByDegrees(mDrawTextRectBuffer.width(), lineHeight, angleDegrees);
 
                 translateX -= rotatedSize.width * (anchor.x - 0.5);
                 translateY -= rotatedSize.height * (anchor.y - 0.5);
-                // FSize.recycleInstance(rotatedSize);
             }
 
             c.save();
@@ -496,10 +497,10 @@ export namespace Utils {
             c.drawText(text, drawOffsetX, drawOffsetY, paint);
 
             c.restore();
-            paint.setTextAlign(originalTextAlign);
-        } else {
+        }
+        else {
             if (anchor.x !== 0 || anchor.y !== 0) {
-                // drawOffsetX -= mDrawTextRectBuffer.width() * anchor.x;
+                //drawOffsetX -= mDrawTextRectBuffer.width() * anchor.x;
                 drawOffsetY -= lineHeight * anchor.y;
             }
 
@@ -508,6 +509,7 @@ export namespace Utils {
 
             c.drawText(text, drawOffsetX, drawOffsetY, paint);
         }
+        paint.setTextAlign(originalTextAlign);
     }
 
     export function drawMultilineText(c: Canvas, textLayout, x, y, textpaint: Paint, anchor, angleDegrees, lineHeight) {
@@ -539,7 +541,7 @@ export namespace Utils {
 
             // Move the "outer" rect relative to the anchor, assuming its centered
             if (anchor.x !== 0.5 || anchor.y !== 0.5) {
-                const rotatedSize = getSizeOfRotatedRectangleSizeByDegrees(drawWidth, drawHeight, angleDegrees);
+                const rotatedSize = getSizeOfRotatedRectangleByDegrees(drawWidth, drawHeight, angleDegrees);
 
                 translateX -= rotatedSize.width * (anchor.x - 0.5);
                 translateY -= rotatedSize.height * (anchor.y - 0.5);
@@ -584,39 +586,14 @@ export namespace Utils {
      * Returns a recyclable FSize instance.
      * Represents size of a rotated rectangle by degrees.
      *
-     * @param rectangleSize
-     * @param degrees
-     * @return A Recyclable FSize instance
-     */
-    export function getSizeOfRotatedRectangleByDegrees(rectangleSize, degrees) {
-        const radians = degrees * DEG2RAD;
-        return getSizeOfRotatedRectangleSizeByRadians(rectangleSize.width, rectangleSize.height, radians);
-    }
-
-    /**
-     * Returns a recyclable FSize instance.
-     * Represents size of a rotated rectangle by radians.
-     *
-     * @param rectangleSize
-     * @param radians
-     * @return A Recyclable FSize instance
-     */
-    export function getSizeOfRotatedRectangleByRadians(rectangleSize, radians) {
-        return getSizeOfRotatedRectangleSizeByRadians(rectangleSize.width, rectangleSize.height, radians);
-    }
-
-    /**
-     * Returns a recyclable FSize instance.
-     * Represents size of a rotated rectangle by degrees.
-     *
      * @param rectangleWidth
      * @param rectangleHeight
      * @param degrees
      * @return A Recyclable FSize instance
      */
-    export function getSizeOfRotatedRectangleSizeByDegrees(rectangleWidth, rectangleHeight, degrees) {
+    export function getSizeOfRotatedRectangleByDegrees(rectangleWidth, rectangleHeight, degrees) {
         const radians = degrees * DEG2RAD;
-        return getSizeOfRotatedRectangleSizeByRadians(rectangleWidth, rectangleHeight, radians);
+        return getSizeOfRotatedRectangleByRadians(rectangleWidth, rectangleHeight, radians);
     }
 
     /**
@@ -628,7 +605,7 @@ export namespace Utils {
      * @param radians
      * @return A Recyclable FSize instance
      */
-    export function getSizeOfRotatedRectangleSizeByRadians(rectangleWidth, rectangleHeight, radians) {
+    export function getSizeOfRotatedRectangleByRadians(rectangleWidth, rectangleHeight, radians) {
         return {
             width: Math.abs(rectangleWidth * Math.cos(radians)) + Math.abs(rectangleHeight * Math.sin(radians)),
             height: Math.abs(rectangleWidth * Math.sin(radians)) + Math.abs(rectangleHeight * Math.cos(radians)),
@@ -711,7 +688,8 @@ export namespace Utils {
         if (global.isAndroid) {
             return Array.create('float', length);
         }
-        return [];
+        // At least, set length to use it for iterations
+        return new Array(length);
     }
     export function arrayoNativeArray(array: number[]) {
         if (!Array.isArray(array)) {

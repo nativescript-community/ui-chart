@@ -4,11 +4,13 @@
         <Button text="Redraw" tap="redraw" />
     </ActionBar>
     <ScrollView>
-        <StackLayout height="800">
+        <StackLayout>
             <Label text="Line Chart" fontSize="20"/>
             <chart:LineChart id="line-chart" backgroundColor="lightgray" width="300" height="350" loaded="onLineChartLoaded"/>
             <Label text="Bar Chart" fontSize="20"/>
             <chart:BarChart id="bar-chart" backgroundColor="lightgray" width="300" height="350" loaded="onBarChartLoaded"/>
+            <Label text="Horizontal Bar Chart" fontSize="20"/>
+            <chart:HorizontalBarChart id="horizontal-bar-chart" backgroundColor="lightgray" width="300" height="350" loaded="onBarChartLoaded"/>
         </StackLayout>
     </ScrollView>
 </Page>

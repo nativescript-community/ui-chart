@@ -10,6 +10,8 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
     /** width of the bar on the x-axis, in values (not pixels) */
     protected mBarWidth = 1;
 
+    protected mYAxisMin = 0;
+
     constructor(size: number, dataSetCount: number, containsStacks: boolean) {
         super(size);
         this.mDataSetCount = dataSetCount;
@@ -26,6 +28,10 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
     public setInverted(inverted: boolean) {
         this.mInverted = inverted;
+    }
+
+    public setYAxisMin(min: number) {
+        this.mYAxisMin = min;
     }
 
     protected addBar(left, top, right, bottom) {
@@ -49,17 +55,17 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
             let y = e[data.yProperty];
             const vals = e.yVals;
 
-            if (!this.mContainsStacks || vals == null) {
+            if (!this.mContainsStacks || vals == null || vals.length == 0) {
                 const left = x - barWidthHalf;
                 const right = x + barWidthHalf;
                 let bottom, top;
 
                 if (this.mInverted) {
-                    bottom = y >= 0 ? y : 0;
-                    top = y <= 0 ? y : 0;
+                    bottom = y;
+                    top = y <= this.mYAxisMin ? y : this.mYAxisMin;
                 } else {
-                    top = y >= 0 ? y : 0;
-                    bottom = y <= 0 ? y : 0;
+                    top = y;
+                    bottom = y <= this.mYAxisMin ? y : this.mYAxisMin;
                 }
 
                 // multiply the height of the rect with the phase
@@ -99,10 +105,10 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
                     if (this.mInverted) {
                         bottom = y >= yStart ? y : yStart;
-                        top = y <= yStart ? y : yStart;
+                        top = y <= this.mYAxisMin ? y : this.mYAxisMin;
                     } else {
                         top = y >= yStart ? y : yStart;
-                        bottom = y <= yStart ? y : yStart;
+                        bottom = y <= this.mYAxisMin ? y : this.mYAxisMin;
                     }
 
                     // multiply the height of the rect with the phase
