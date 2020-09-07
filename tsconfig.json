@@ -22,8 +22,8 @@
         "baseUrl": ".",
         "outDir": "./plugin",
         "paths": {
-            "tns-core-modules": ["./node_modules/@nativescript/core"],
-            "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
+            "@nativescript/core": ["./node_modules/@nativescript/core"],
+            "@nativescript/core/*": ["./node_modules/@nativescript/core/*"],
             "@nativescript-community/ui-chart": ["src/charting"],
             "@nativescript-community/ui-chart/*": ["src/charting/*"],
             "*": ["node_modules/*"]

@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.0.27](https://github.com/Akylas/nativescript-chart/compare/v0.0.26...v0.0.27) (2020-09-05)
+## [0.0.27](https://github.com/nativescript-community/nativescript-chart/compare/v0.0.26...v0.0.27) (2020-09-05)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
 
