@@ -40,6 +40,7 @@
         "@nativescript/core": "7.0.0",
         "@nativescript/types-android": "7.0.2",
         "@nativescript/types-ios": "7.0.1",
+        "@nativescript/webpack": "3.0.2",
         "@nativescript-community/ui-canvas": "4.0.4",
         "@nativescript-community/gesturehandler": "^0.1.18",
         "@nativescript-community/tween": "0.0.11",

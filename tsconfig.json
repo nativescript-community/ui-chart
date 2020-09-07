@@ -29,7 +29,7 @@
             "*": ["node_modules/*"]
         },
         "plugins": [
-          { "transform": "./node_modules/@nativescript/webpack/transformers/ns-transform-native-classes", "type": "raw" }
+          { "transform": "@nativescript/webpack/transformers/ns-transform-native-classes", "type": "raw" }
         ]
     },
     "include": ["src/**/*", "./references.d.ts"],
