@@ -1,26 +1,21 @@
 {
-    "name": "chartdemo",
-    "version": "1.0.0",
-    "description": "A native application built with NativeScript-Core JS",
-    "author": "Martin Guillon <martin.guillon@akylas.fr>",
-    "license": "MIT",
-    "nativescript": {
-        "id": "com.akylas.nativescript.chartdemo",
-        "tns-ios": {
-            "version": "6.5.2"
-        },
-        "tns-android": {
-            "version": "6.5.3"
-        }
-    },
-    "dependencies": {
-        "@nativescript/theme": "~2.3.3",
-        "@nativescript/core": "~6.5.15",
-        "nativescript-chart": "../plugin",
-        "nativescript-perms": "^2.0.11",
-        "nativescript-ui-chart": "7.1.1"
-    },
-    "devDependencies": {
-        "nativescript-dev-webpack": "~1.5.1"
-    }
+  "name": "chartdemo",
+  "main": "app.js",
+  "version": "7.0.1",
+  "author": "Martin Guillon <martin.guillon@akylas.fr>",
+  "description": "A native application built with NativeScript-Core JS",
+  "license": "MIT",
+  "dependencies": {
+    "@nativescript/core": "~7.0.0",
+    "@nativescript/theme": "~2.3.0",
+    "@nativescript-community/ui-chart": "../plugin",
+    "nativescript-perms": "^2.0.11",
+    "nativescript-ui-chart": "8.0.2"
+  },
+  "devDependencies": {
+    "@nativescript/android": "7.0.0",
+    "@nativescript/ios": "7.0.0",
+    "@nativescript/types": "~7.0.0",
+    "@nativescript/webpack": "~3.0.0"
+  }
 }

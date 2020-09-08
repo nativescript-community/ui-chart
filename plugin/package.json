@@ -3,12 +3,6 @@
     "version": "0.0.30",
     "sideEffects": false,
     "description": "Nativescript Chart plugin.",
-    "nativescript": {
-        "platforms": {
-            "android": "6.2.1",
-            "ios": "6.2.1"
-        }
-    },
     "keywords": [
         "NativeScript",
         "JavaScript",

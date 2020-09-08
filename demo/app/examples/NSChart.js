@@ -1,11 +1,11 @@
 const Color = require("@nativescript/core/color").Color;
 const fs = require("@nativescript/core/file-system");
 const imageSourceModule = require("@nativescript/core/image-source");
-const bd = require("nativescript-chart/data/BarData");
-const bds = require("nativescript-chart/data/BarDataSet");
-const be = require("nativescript-chart/data/BarEntry");
-const ld = require("nativescript-chart/data/LineData");
-const lds = require("nativescript-chart/data/LineDataSet");
+const bd = require("@nativescript-community/ui-chart/data/BarData");
+const bds = require("@nativescript-community/ui-chart/data/BarDataSet");
+const be = require("@nativescript-community/ui-chart/data/BarEntry");
+const ld = require("@nativescript-community/ui-chart/data/LineData");
+const lds = require("@nativescript-community/ui-chart/data/LineDataSet");
 
 function getRandomInt(min, max)
 {

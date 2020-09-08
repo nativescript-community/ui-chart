@@ -3,14 +3,14 @@ import App from './App.vue';
 import './styles.scss';
 import RadChart from 'nativescript-ui-chart/vue';
 
-import { install } from 'nativescript-gesturehandler';
+import { install } from '@nativescript-community/gesturehandler';
 install();
 
 Vue.use(RadChart);
 
 // setShowDebug(true);
 
-Vue.registerElement('LineChart', () => require('nativescript-chart/charts/LineChart').LineChart);
+Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts/LineChart').LineChart);
 
 declare let com;
 // import { MPLineChart } from 'nativescript-mpchart-fork-adrianoop/chart/line-chart/nativescript-line-chart';
