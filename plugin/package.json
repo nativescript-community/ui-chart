@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-chart",
-    "version": "0.0.28",
+    "version": "0.0.30",
     "sideEffects": false,
     "description": "Nativescript Chart plugin.",
     "keywords": [
