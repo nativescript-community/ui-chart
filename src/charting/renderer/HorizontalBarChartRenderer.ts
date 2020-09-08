@@ -80,6 +80,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         buffer.setInverted(this.mChart.isInverted(dataSet.getAxisDependency()));
         buffer.setBarWidth(this.mChart.getBarData().getBarWidth());
         buffer.setYAxisMin(this.mChart.getAxis(dataSet.getAxisDependency()).getAxisMinimum());
+        buffer.setYAxisMax(this.mChart.getAxis(dataSet.getAxisDependency()).getAxisMaximum());
 
         buffer.feed(dataSet);
 
@@ -161,7 +162,10 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             break;
                         }
 
-                        if (!this.mViewPortHandler.isInBoundsX(buffer.buffer[isInverted ? (j + 2) : j])) {
+                        const entry = dataSet.getEntryForIndex(j / 4);
+                        const val = entry[yKey];
+
+                        if (!this.mViewPortHandler.isInBoundsX(buffer.buffer[j + (val >= 0 ? 0 : 2)])) {
                             continue;
                         }
 
@@ -169,8 +173,6 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             continue;
                         }
 
-                        const entry = dataSet.getEntryForIndex(j / 4);
-                        const val = entry[yKey];
                         const formattedValue = formatter.getBarLabel(entry, dataSet);
 
                         // calculate the correct offset depending on the draw position of the value
@@ -184,13 +186,15 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                         }
 
                         if (dataSet.isDrawValuesEnabled()) {
-                            this.drawValue(c, formattedValue, isInverted ? (buffer.buffer[j] - negOffset) : (buffer.buffer[j + 2] + posOffset), y + halfTextHeight, dataSet.getValueTextColor(j / 2));
+                            this.drawValue(c, formattedValue, 
+                                val >= 0 ? (buffer.buffer[j + 2] + posOffset) : (buffer.buffer[j + 0] + negOffset), 
+                                y + halfTextHeight, dataSet.getValueTextColor(j / 2));
                         }
 
                         if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                             const icon = entry.icon;
 
-                            let px = isInverted ? (buffer.buffer[j] - negOffset) : (buffer.buffer[j + 2] + posOffset);
+                            let px = val >= 0 ? (buffer.buffer[j + 2] + posOffset) : (buffer.buffer[j + 0] + negOffset);
                             let py = y;
 
                             px += iconsOffset.x;
@@ -221,7 +225,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                                 break;
                             }
 
-                            if (!this.mViewPortHandler.isInBoundsX(buffer.buffer[isInverted ? (bufferIndex + 2) : bufferIndex])) {
+                            if (!this.mViewPortHandler.isInBoundsX(buffer.buffer[bufferIndex + (entry[yKey] >= 0 ? 0 : 2)])) {
                                 continue;
                             }
 
@@ -242,13 +246,15 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             }
 
                             if (dataSet.isDrawValuesEnabled()) {
-                                this.drawValue(c, formattedValue, isInverted ? (buffer.buffer[bufferIndex] - negOffset) : (buffer.buffer[bufferIndex + 2] + posOffset), buffer.buffer[bufferIndex + 1] + halfTextHeight, color);
+                                this.drawValue(c, formattedValue, 
+                                    entry[yKey] >= 0 ? (buffer.buffer[bufferIndex + 2] + posOffset) : (buffer.buffer[bufferIndex + 0] + negOffset), 
+                                    buffer.buffer[bufferIndex + 1] + halfTextHeight, color);
                             }
 
                             if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                                 const icon = entry.icon;
 
-                                let px = isInverted ? (buffer.buffer[bufferIndex] - negOffset) : (buffer.buffer[bufferIndex + 2] + posOffset);
+                                let px = entry[yKey] >= 0 ? (buffer.buffer[bufferIndex + 2] + posOffset) : (buffer.buffer[bufferIndex + 0] + negOffset);
                                 let py = buffer.buffer[bufferIndex + 1];
 
                                 px += iconsOffset.x;

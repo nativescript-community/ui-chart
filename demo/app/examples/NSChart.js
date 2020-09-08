@@ -39,7 +39,6 @@ exports.onBarChartLoaded = function(args)
     chart.setScaleEnabled(true);
     chart.setDragEnabled(true);
     chart.getAxisRight().setEnabled(false);
-    //chart.getAxisLeft().setInverted(true);
     // chart.setHardwareAccelerationEnabled(true);
 
     const data = new Array(5).fill(0).map(function(v, i)

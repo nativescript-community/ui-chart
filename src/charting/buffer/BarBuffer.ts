@@ -11,6 +11,7 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
     protected mBarWidth = 1;
 
     protected mYAxisMin = 0;
+    protected mYAxisMax = 0;
 
     constructor(size: number, dataSetCount: number, containsStacks: boolean) {
         super(size);
@@ -32,6 +33,10 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
     public setYAxisMin(min: number) {
         this.mYAxisMin = min;
+    }
+
+    public setYAxisMax(max: number) {
+        this.mYAxisMax = max;
     }
 
     protected addBar(left, top, right, bottom) {
@@ -61,11 +66,11 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                 let bottom, top;
 
                 if (this.mInverted) {
-                    bottom = y;
-                    top = y <= this.mYAxisMin ? y : this.mYAxisMin;
+                    bottom = y >= 0 ? y : (this.mYAxisMax <= 0 ? this.mYAxisMax : 0);
+                    top = y <= 0 ? y : (this.mYAxisMin >= 0 ? this.mYAxisMin : 0);
                 } else {
-                    top = y;
-                    bottom = y <= this.mYAxisMin ? y : this.mYAxisMin;
+                    top = y >= 0 ? y : (this.mYAxisMax <= 0 ? this.mYAxisMax : 0);
+                    bottom = y <= 0 ? y : (this.mYAxisMin >= 0 ? this.mYAxisMin : 0);
                 }
 
                 // multiply the height of the rect with the phase
@@ -105,10 +110,10 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
                     if (this.mInverted) {
                         bottom = y >= yStart ? y : yStart;
-                        top = y <= this.mYAxisMin ? y : this.mYAxisMin;
+                        top = y <= yStart ? y : yStart;
                     } else {
                         top = y >= yStart ? y : yStart;
-                        bottom = y <= this.mYAxisMin ? y : this.mYAxisMin;
+                        bottom = y <= yStart ? y : yStart;
                     }
 
                     // multiply the height of the rect with the phase
