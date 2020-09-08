@@ -161,7 +161,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             break;
                         }
 
-                        if (!this.mViewPortHandler.isInBoundsX(buffer.buffer[isInverted ? j : (j + 2)])) {
+                        if (!this.mViewPortHandler.isInBoundsX(buffer.buffer[isInverted ? (j + 2) : j])) {
                             continue;
                         }
 
@@ -221,7 +221,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                                 break;
                             }
 
-                            if (!this.mViewPortHandler.isInBoundsX(buffer.buffer[isInverted ? bufferIndex : (bufferIndex + 2)])) {
+                            if (!this.mViewPortHandler.isInBoundsX(buffer.buffer[isInverted ? (bufferIndex + 2) : bufferIndex])) {
                                 continue;
                             }
 
