@@ -4,43 +4,21 @@
             <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onNavigationButtonTap"></NavigationButton>
         </ActionBar>
         <StackLayout @loaded="onLoaded">
-            <RadCartesianChart>
-                <Palette v-tkCartesianPalette v-for="key of properties" :key="key + 'p'" :seriesName="key">
-                    <PaletteEntry v-tkCartesianPaletteEntry strokeWidth="3" :fillColor="chartColor(key)" :strokeColor="chartColor(key)" />
-                </Palette>
-                <LinearAxis
-                    v-tkCartesianHorizontalAxis
-                    allowZoom="true"
-                    :minimum="locs[0].relativeTimestamp"
-                    :maximum="locs[locs.length - 1].relativeTimestamp"
-                    labelLayoutMode="Inner"
-                    labelFitMode="None"
-                    labelFormat="%.1f"
-                    ticksColor="transparent"
-                    labelTextColor="transparent"
-                />
-                <LinearAxis v-tkCartesianVerticalAxis allowZoom="true" labelFitMode="None" labelFormat="%.1f" ticksColor="transparent" labelTextColor="black" />
-                <RadCartesianChartGrid v-tkCartesianGrid horizontalLinesVisible="false" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
-                </RadCartesianChartGrid>
-                <LineSeries v-tkCartesianSeries v-for="key of properties" :legendTitle="key" :seriesName="key" :key="key" :items="locs" categoryProperty="relativeTimestamp" :valueProperty="key" />
-                <RadLegendView titleColor="black" v-tkCartesianLegend position="Bottom" width="100%" :enableSelection="true"></RadLegendView>
+            <RadCartesianChart width="300" height="400">
+                <LineSeries v-tkCartesianSeries seriesName="Line" :items="randomData" legendTitle="value" categoryProperty="index" valueProperty="value"/>
+                <CategoricalAxis v-tkCartesianHorizontalAxis allowPan="true" allowZoom="true" />
+                <LinearAxis v-tkCartesianVerticalAxis allowPan="true" allowZoom="true" />
+                <RadLegendView v-tkCartesianLegend position="Bottom" width="150"/>
             </RadCartesianChart>
+            
         </StackLayout>
     </Page>
 </template>
 
 <script lang="ts">
-import * as frameModule from '@nativescript/core/ui/frame';
+import { Color, Frame } from '@nativescript/core';
 import Vue from 'vue';
-import { LineChart } from '@nativescript-community/ui-chart/charts/LineChart';
-import { LimitLine, LimitLabelPosition } from '@nativescript-community/ui-chart/components/LimitLine';
-import { LegendForm } from '@nativescript-community/ui-chart/components/Legend';
 import { knownFolders, path } from '@nativescript/core/file-system';
-import { profile } from '@nativescript/core/profiling/profiling';
-import { LineDataSet } from '@nativescript-community/ui-chart/data/LineDataSet';
-import { LineData } from '@nativescript-community/ui-chart/data/LineData';
-import { Color } from '@nativescript/core/color/color';
-import { ColorTemplate } from '@nativescript-community/ui-chart/utils/ColorTemplate';
 
 export const title = 'NS UI Chart';
 
@@ -62,26 +40,32 @@ export default Vue.extend({
             title: title,
             isBusy: true,
             colors: [],
-            properties: ['speed', 'bearing', 'altitude', 'computedSpeed', 'mslAltitude', 'pressure']
+            //properties: ['speed', 'bearing', 'altitude', 'computedSpeed', 'mslAltitude', 'pressure']
         };
     },
     computed: {
-        chartColor() {
-            return (index: number) => {
-                console.log('chartColor', index);
-                if (!this.colors[index]) {
-                    this.colors[index] = getRandomColor();
-                }
-                return this.colors[index];
-            };
-        },
-        locs() {
-            return JSON.parse(
-                knownFolders
-                    .currentApp()
-                    .getFile('assets/migration_test.json')
-                    .readTextSync()
-            )[0].locs;
+        //chartColor() {
+        //    return (index: number) => {
+        //        console.log('chartColor', index);
+        //        if (!this.colors[index]) {
+        //            this.colors[index] = getRandomColor();
+        //        }
+        //        return this.colors[index];
+        //    };
+        //},
+        //locs() {
+        //    return JSON.parse(
+        //        knownFolders
+        //            .currentApp()
+        //            .getFile('assets/migration_test.json')
+        //            .readTextSync()
+        //    )[0].locs;
+        //},
+        randomData() {
+            return new Array(1000).fill(0).map((v, i)=>({
+                index:i,
+                value: Math.random() * 1
+            }))
         }
     },
     created() {
@@ -93,7 +77,7 @@ export default Vue.extend({
             console.log('onLoaded', this.startTime);
         },
         onNavigationButtonTap() {
-            frameModule.topmost().goBack();
+            Frame.topmost().goBack();
         }
     },
     mounted() {}

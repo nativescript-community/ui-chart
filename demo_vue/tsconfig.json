@@ -1,31 +1,27 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
+        "module": "esnext",
+        "target": "es2017",
         "moduleResolution": "node",
-        "incremental": true,
-        "tsBuildInfoFile": ".tsbuildinfo",
-        "removeComments": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "sourceMap": true,
-        "importHelpers": true,
         "noEmitHelpers": true,
         "noEmitOnError": true,
-        "preserveSymlinks": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "noImplicitUseStrict": true,
-        "lib": ["es6", "dom", "es2015.iterable"],
-        "types": ["vue"],
+        "skipLibCheck": true,
+        "lib": [
+            "es2017",
+            "dom",
+            "es6"
+        ],
         "baseUrl": ".",
         "paths": {
-            "~/*": ["app/*"],
-            "tns-core-modules": ["./node_modules/@nativescript/core"],
-            "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
-            "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
+            "~/*": [
+                "app/*"
+            ]
         }
     },
-    "include": ["app/**/*", "references.d.ts", "vue-shims.d.ts"],
-    "exclude": ["node_modules", "platforms", "**/angular"]
+    "exclude": [
+        "node_modules",
+        "platforms"
+    ]
 }
