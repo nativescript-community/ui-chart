@@ -8,8 +8,8 @@ module.exports = (env, params = {}) => {
     const config = webpackConfig(env, params);
     if (development) {
         const srcPath = resolve(projectRoot, '..', 'src', 'charting');
-        config.resolve.alias['nativescript-chart'] = srcPath;
-        config.plugins.push(new webpack.ContextReplacementPlugin(/nativescript-chart/, srcPath));
+        config.resolve.alias['@nativescript-community/ui-chart'] = srcPath;
+        config.plugins.push(new webpack.ContextReplacementPlugin(new RegExp('@nativescript-community/ui-chart'), srcPath));
     }
     return config;
 };

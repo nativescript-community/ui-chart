@@ -124,6 +124,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         buffer.setInverted(this.mChart.isInverted(dataSet.getAxisDependency()));
         buffer.setBarWidth(this.mChart.getBarData().getBarWidth());
         buffer.setYAxisMin(this.mChart.getAxis(dataSet.getAxisDependency()).getAxisMinimum());
+        buffer.setYAxisMax(this.mChart.getAxis(dataSet.getAxisDependency()).getAxisMaximum());
 
         buffer.feed(dataSet);
 
@@ -226,23 +227,23 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             break;
                         }
 
-                        if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[j + (isInverted ? 3 : 1)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
-                            continue;
-                        }
-
                         const entry = dataSet.getEntryForIndex(j / 4);
                         const val = entry[yKey];
 
+                        if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[j + (val >= 0 ? 1 : 3)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
+                            continue;
+                        }
+
                         if (dataSet.isDrawValuesEnabled()) {
-                            this.drawValue(c, formatter.getBarLabel(entry, dataSet), x, isInverted ? (buffer.buffer[j + 3] - negOffset) : (buffer.buffer[j + 1] + posOffset),
-                                dataSet.getValueTextColor(j / 4));
+                            this.drawValue(c, formatter.getBarLabel(entry, dataSet), x, val >= 0 ? 
+                                (buffer.buffer[j + 1] + posOffset) : (buffer.buffer[j + 3] + negOffset), dataSet.getValueTextColor(j / 4));
                         }
 
                         if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                             const icon = entry.icon;
 
                             let px = x;
-                            let py = isInverted ? (buffer.buffer[j + 3] - negOffset) : (buffer.buffer[j + 1] + posOffset);
+                            let py = val >= 0 ? (buffer.buffer[j + 1] + posOffset) : (buffer.buffer[j + 3] + negOffset);
 
                             px += iconsOffset.x;
                             py += iconsOffset.y;
@@ -274,19 +275,20 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                                 break;
                             }
 
-                            if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[bufferIndex + (isInverted ? 3 : 1)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
+                            if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[bufferIndex + (entry[yKey] >= 0 ? 1 : 3)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
                                 continue;
                             }
 
                             if (dataSet.isDrawValuesEnabled()) {
-                                this.drawValue(c, formatter.getBarLabel(entry, dataSet), x, isInverted ? (buffer.buffer[bufferIndex + 3] - negOffset) : (buffer.buffer[bufferIndex + 1] + posOffset), color);
+                                this.drawValue(c, formatter.getBarLabel(entry, dataSet), x, entry[yKey] >= 0 ? 
+                                (buffer.buffer[bufferIndex + 1] + posOffset) : (buffer.buffer[bufferIndex + 3] + negOffset), color);
                             }
 
                             if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                                 const icon = entry.icon;
 
                                 let px = x;
-                                let py = isInverted ? (buffer.buffer[bufferIndex + 3] - negOffset) : (buffer.buffer[bufferIndex + 1] + posOffset);
+                                let py = entry[yKey] >= 0 ? (buffer.buffer[bufferIndex + 1] + posOffset) : (buffer.buffer[bufferIndex + 3] + negOffset);
 
                                 px += iconsOffset.x;
                                 py += iconsOffset.y;

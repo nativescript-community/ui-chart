@@ -15,17 +15,15 @@
 </template>
 
 <script lang="ts">
-import * as frameModule from '@nativescript/core/ui/frame';
+import { Color, Frame } from '@nativescript/core';
 import Vue from 'vue';
-import { LineChart } from 'nativescript-chart/charts/LineChart';
-import { LimitLine, LimitLabelPosition } from 'nativescript-chart/components/LimitLine';
-import { LegendForm } from 'nativescript-chart/components/Legend';
+import { LineChart } from '@nativescript-community/ui-chart/charts/LineChart';
+import { LimitLine, LimitLabelPosition } from '@nativescript-community/ui-chart/components/LimitLine';
+import { LegendForm } from '@nativescript-community/ui-chart/components/Legend';
 import { knownFolders, path } from '@nativescript/core/file-system';
-import { profile } from '@nativescript/core/profiling/profiling';
-import { LineDataSet, Mode } from 'nativescript-chart/data/LineDataSet';
-import { LineData } from 'nativescript-chart/data/LineData';
-import { Color } from '@nativescript/core/color/color';
-import { ColorTemplate } from 'nativescript-chart/utils/ColorTemplate';
+import { LineDataSet, Mode } from '@nativescript-community/ui-chart/data/LineDataSet';
+import { LineData } from '@nativescript-community/ui-chart/data/LineData';
+import { ColorTemplate } from '@nativescript-community/ui-chart/utils/ColorTemplate';
 
 export const title = 'NS Chart';
 function getRandomInt(min, max) {
@@ -78,7 +76,7 @@ export default Vue.extend({
             chart.invalidate();
         },
         onNavigationButtonTap() {
-            frameModule.topmost().goBack();
+            Frame.topmost().goBack();
         },
         loadData() {
             return JSON.parse(

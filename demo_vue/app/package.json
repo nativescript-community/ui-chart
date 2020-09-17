@@ -1,9 +1,0 @@
-{
-  "android": {
-    "markingMode": "none",
-    "v8Flags": "--expose_gc"
-  },
-  "main": "main",
-  "profiling": "none",
-  "version": "1.0.0"
-}

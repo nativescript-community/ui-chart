@@ -1,39 +1,32 @@
 {
     "name": "chartdemovue",
-    "version": "1.0.0",
+    "main": "main",
+    "displayName": "chartdemovue",
+    "version": "7.0.1",
     "description": "A native application built with NativeScript-Vue",
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
     "license": "MIT",
-    "nativescript": {
-        "id": "com.akylas.nativescript.chartdemovue",
-        "tns-android": {
-            "version": "6.5.3"
-        }
-    },
     "dependencies": {
-        "@tweenjs/tween.js": "18.6.0",
-        "@nativescript/core": "~6.5.15",
-        "nativescript-canvas": "3.0.10",
-        "nativescript-chart": "../plugin",
-        "nativescript-gesturehandler": "^0.1.16",
+        "@nativescript-community/ui-chart": "../plugin",
+        "@nativescript/core": "~7.0.0",
+        "@nativescript/theme": "~2.3.0",
         "nativescript-perms": "^2.0.11",
-        "nativescript-tween": "^0.0.10",
-        "nativescript-ui-chart": "7.1.1",
-        "nativescript-vue": "^2.7.1"
+        "nativescript-ui-chart": "8.0.2",
+        "nativescript-vue": "~2.8.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.11.4",
-        "babel-loader": "8.1.0",
-        "nativescript-dev-webpack": "1.5.1",
-        "nativescript-vue-template-compiler": "2.7.1",
-        "node-sass": "^4.14.1",
-        "semver": "7.3.2",
-        "tns-platform-declarations": "^6.5.15",
+        "@babel/core": "~7.1.0",
+        "@babel/preset-env": "~7.1.0",
+        "@nativescript/android": "7.0.0",
+        "@nativescript/ios": "7.0.0",
+        "@nativescript/types": "~7.0.0",
+        "@nativescript/webpack": "~3.0.0",
+        "babel-loader": "~8.0.0",
+        "nativescript-vue-template-compiler": "~2.8.0",
+        "node-sass": "^4.7.1",
         "typescript": "^4.0.2",
         "vue": "^2.6.12",
-        "vue-loader": "^15.9.3",
-        "vue-property-decorator": "^8.5.1",
-        "webpack": "^4.44.1",
-        "webpack-cli": "^3.3.12"
+        "vue-class-component": "^7.2.5",
+        "vue-loader": "~15.9.3"
     }
 }

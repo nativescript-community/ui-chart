@@ -1,4 +1,4 @@
-const observableModule = require("tns-core-modules/data/observable");
+const observableModule = require("@nativescript/core/data/observable");
 const Color = require("@nativescript/core/color").Color;
 const fs = require("@nativescript/core/file-system");
 

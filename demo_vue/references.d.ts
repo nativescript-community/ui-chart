@@ -1,6 +1,1 @@
-/// <reference path="./node_modules/tns-platform-declarations/ios.d.ts" />
-/// <reference path="./node_modules/tns-platform-declarations/android-26.d.ts" />
-
-declare module '*.scss';
-
-declare const TNS_ENV;
+/// <reference path="./node_modules/@nativescript/types/index.d.ts" />

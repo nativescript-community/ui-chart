@@ -1,4 +1,4 @@
-const observableModule = require("tns-core-modules/data/observable");
+const observableModule = require("@nativescript/core/data/observable");
 
 exports.onLoaded = function(args)
 {

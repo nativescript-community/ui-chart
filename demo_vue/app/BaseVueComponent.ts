@@ -1,6 +1,6 @@
 import Vue from 'nativescript-vue';
 import { Page } from '@nativescript/core/ui/page';
-import { isAndroid, isIOS } from '@nativescript/core/platform/platform';
+import { isAndroid, isIOS } from '@nativescript/core/platform';
 // import { CartoMap } from 'nativescript-carto/ui/ui';
 
 export default class BaseVueComponent extends Vue {
