@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.31](https://github.com/Akylas/nativescript-chart/compare/v0.0.30...v0.0.31) (2020-09-18)
+
+
+### Bug Fixes
+
+* HorizontalBarChart X bounds check was incorrect. ([b26e2c7](https://github.com/Akylas/nativescript-chart/commit/b26e2c70f26f8a7e5ed49a7bf6e1462495905997))
+
+
+### Features
+
+* Proper visualization of negative Y values for bar charts. ([82389a2](https://github.com/Akylas/nativescript-chart/commit/82389a2628da04e9c278c623a6f7002ee4283509))
+
+
+
+
+
 ## [0.0.30](https://github.com/nativescript-community/nativescript-chart/compare/v0.0.29...v0.0.30) (2020-09-07)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart

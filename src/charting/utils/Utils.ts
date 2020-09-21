@@ -449,8 +449,8 @@ export namespace Utils {
     // }
 
     export function drawImage(canvas: Canvas, icon: ImageSource, x, y) {
-        const drawOffsetX = x - (icon.width / 2);
-        const drawOffsetY = y - (icon.height / 2);
+        const drawOffsetX = x - icon.width / 2;
+        const drawOffsetY = y - icon.height / 2;
         canvas.drawBitmap(global.isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
     }
 
@@ -496,8 +496,7 @@ export namespace Utils {
             c.drawText(text, drawOffsetX, drawOffsetY, paint);
 
             c.restore();
-        }
-        else {
+        } else {
             if (anchor.x !== 0 || anchor.y !== 0) {
                 //drawOffsetX -= mDrawTextRectBuffer.width() * anchor.x;
                 drawOffsetY -= lineHeight * anchor.y;
@@ -724,14 +723,14 @@ export namespace Utils {
      * @param values
      * @return
      */
-    export function calcSum(values: Array<number>) {
+    export function calcSum(values: number[]) {
         let sum = 0;
 
         if (values == null) {
             return sum;
         }
 
-        for (let f of values) {
+        for (const f of values) {
             sum += f;
         }
 
@@ -745,20 +744,19 @@ export namespace Utils {
      * @param values
      * @return
      */
-    export function calcPosNegSum(values: Array<number>) {
-        const sums = {pos: 0, neg: 0};
+    export function calcPosNegSum(values: number[]) {
+        const sums = { pos: 0, neg: 0 };
         if (values == null) {
             return sums;
         }
 
-        let sumNeg = 0;
-        let sumPos = 0;
+        const sumNeg = 0;
+        const sumPos = 0;
 
-        for (let f of values) {
+        for (const f of values) {
             if (f <= 0) {
                 sums.neg += Math.abs(f);
-            }
-            else {
+            } else {
                 sums.pos += f;
             }
         }
@@ -766,9 +764,8 @@ export namespace Utils {
         return sums;
     }
 
-    export function calcSumToIndex(index: number, values: Array<number>, desc: boolean) {
-        if (values == null)
-            return 0;
+    export function calcSumToIndex(index: number, values: number[], desc: boolean) {
+        if (values == null) return 0;
 
         let remainder = 0;
         let lastIndex = values.length - 1;
