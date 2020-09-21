@@ -29,6 +29,7 @@ export namespace Utils {
     // const DOUBLE_EPSILON = Number.EPSILON;
 
     export const DEG2RAD = Math.PI / 180.0;
+    export const RAD2DEG = 180.0 / Math.PI;
     export const NUMBER_EPSILON = Number.EPSILON;
 
     const mDrawTextRectBuffer = new Rect(0, 0, 0, 0);

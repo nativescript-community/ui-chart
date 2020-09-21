@@ -170,10 +170,10 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
         // calculate the text position
         let x =  (r
                 * Math.cos(((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
-                * this.mAnimator.getPhaseY()) * (Math.PI / 180)) + center.x);
+                * this.mAnimator.getPhaseY()) * Utils.DEG2RAD) + center.x);
         let y =  (r
                 * Math.sin(((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
-                * this.mAnimator.getPhaseY()) * (Math.PI / 180)) + center.y);
+                * this.mAnimator.getPhaseY()) * Utils.DEG2RAD) + center.y);
 
         return [x, y];
     }

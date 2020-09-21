@@ -884,8 +884,8 @@ export class PieChartRenderer extends DataRenderer {
             // draw only if the value is greater than zero
             if ((Math.abs(e[yKey]) > Utils.NUMBER_EPSILON)) {
 
-                let x =  ((r - circleRadius) * Math.cos(((angle + sliceAngle) * phaseY) * (Math.PI / 180)) + center.x);
-                let y =  ((r - circleRadius) * Math.sin(((angle + sliceAngle) * phaseY) * (Math.PI / 180)) + center.y);
+                let x =  ((r - circleRadius) * Math.cos(((angle + sliceAngle) * phaseY) * Utils.DEG2RAD) + center.x);
+                let y =  ((r - circleRadius) * Math.sin(((angle + sliceAngle) * phaseY) * Utils.DEG2RAD) + center.y);
 
                 this.mRenderPaint.setColor(dataSet.getColor(j));
                 this.mBitmapCanvas.drawCircle(x, y, circleRadius, this.mRenderPaint);

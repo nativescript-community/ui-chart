@@ -229,7 +229,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
         const length = Math.sqrt(tx * tx + ty * ty);
         const radians = Math.acos(ty / length);
 
-        let angle =  radians * (180 / Math.PI);
+        let angle =  radians * Utils.RAD2DEG;
 
         if (x > c.x) {
             angle = 360 - angle;
@@ -257,8 +257,8 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      */
     public getPosition(center: MPPointF, dist: number, angle: number, outputPoint: MPPointF = {x: 0, y: 0}): MPPointF {
 
-        outputPoint.x =  (center.x + dist * Math.cos(angle * (Math.PI / 180)));
-        outputPoint.y =  (center.y + dist * Math.sin(angle * (Math.PI / 180)));
+        outputPoint.x =  (center.x + dist * Math.cos(angle * Utils.DEG2RAD));
+        outputPoint.y =  (center.y + dist * Math.sin(angle * Utils.DEG2RAD));
         return outputPoint;
     }
 
