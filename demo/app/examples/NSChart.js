@@ -107,10 +107,21 @@ exports.onPieChartLoaded = function(args)
         return {label: i + "", value: Math.random() * 100};
     });
 
+    // Generate pie colors
+    const colors = [];
+    while (colors.length < data.length)
+    {
+        const c = getRandomColor();
+        if (!colors.includes(c))
+        {
+            colors.push(c);
+        }
+    }
+
     console.log('setData', data.length, data[0]);
     const sets = [];
     const set = new pds.PieDataSet(data, 'value', 'value');
-    set.setColors([getRandomColor(), getRandomColor()]);
+    set.setColors(colors);
     set.setDrawValues(true);
     sets.push(set);
 
