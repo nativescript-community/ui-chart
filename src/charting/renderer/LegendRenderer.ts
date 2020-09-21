@@ -98,8 +98,14 @@ export class LegendRenderer extends Renderer {
                     const pds = dataSet;
 
                     for (let j = 0; j < clrs.length && j < entryCount; j++) {
+                        const label = pds.getEntryForIndex(j).label;
+                        if (label == null)
+                        {
+                            continue;
+                        }
+
                         this.computedEntries.push(
-                            new LegendEntry(pds.getEntryForIndex(j).label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j])
+                            new LegendEntry(label.toString(), dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j])
                         );
                     }
 

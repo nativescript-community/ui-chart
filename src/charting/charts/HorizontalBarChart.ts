@@ -188,7 +188,7 @@ export class HorizontalBarChart extends BarChart
             }
             return null;
         }
-        return this.getHighlighter().getHighlight(y, x); // switch x and y
+        return this.getHighlighter().getHighlight(x, y);
     }
 
     

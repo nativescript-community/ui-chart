@@ -173,7 +173,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             continue;
                         }
 
-                        const formattedValue = formatter.getBarLabel(entry, dataSet);
+                        const formattedValue = formatter.getBarLabel(val);
 
                         // calculate the correct offset depending on the draw position of the value
                         const valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
@@ -233,7 +233,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                                 continue;
                             }
 
-                            const formattedValue = formatter.getBarLabel(entry, dataSet);
+                            const formattedValue = formatter.getBarLabel(entry[yKey]);
 
                             // calculate the correct offset depending on the draw position of the value
                             let valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);

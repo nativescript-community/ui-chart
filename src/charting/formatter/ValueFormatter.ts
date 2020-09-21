@@ -1,9 +1,10 @@
 import { IAxisValueFormatter } from './IAxisValueFormatter';
 import { IValueFormatter } from './IValueFormatter';
+import { AxisBase } from '../components/AxisBase';
 import { BarDataSet } from '../data/BarDataSet';
 import { BarEntry } from '../data/BarEntry';
 import { Entry } from '../data/Entry';
-import { AxisBase } from '../components/AxisBase';
+import { PieEntry } from '../data/PieEntry';
 
 /**
  * Class to format all values before they are drawn as labels.
@@ -52,18 +53,18 @@ export abstract class ValueFormatter implements IAxisValueFormatter, IValueForma
      * @param axis  axis being labeled
      * @return formatted string label
      */
-    public  getAxisLabel( value: number,  axis: AxisBase) {
+    public getAxisLabel( value: number,  axis: AxisBase) {
         return this.getFormattedValue(value);
     }
 
     /**
      * Used to draw bar labels, calls {@link #getFormattedValue} by default.
      *
-     * @param barEntry bar being labeled
+     * @param value current value to be formatted
      * @return formatted string label
      */
-    public getBarLabel( barEntry: BarEntry, set: BarDataSet) {
-        return this.getFormattedValue(barEntry[set.yProperty]);
+    public getBarLabel(value) {
+        return this.getFormattedValue(value);
     }
 
     /**
@@ -94,9 +95,9 @@ export abstract class ValueFormatter implements IAxisValueFormatter, IValueForma
      * @param pieEntry slice being labeled, contains original, non-percentage Y value
      * @return formatted string label
      */
-    // public  getPieLabel( value,  pieEntry: PieEntry) {
-    //     return this.getFormattedValue(value);
-    // }
+    public  getPieLabel(value, pieEntry: PieEntry) {
+        return this.getFormattedValue(value);
+    }
 
     /**
      * Used to draw radar value labels, calls {@link #getFormattedValue} by default.

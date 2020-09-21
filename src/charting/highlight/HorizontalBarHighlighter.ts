@@ -18,7 +18,6 @@ export class HorizontalBarHighlighter extends BarHighlighter
         {
             return null;
         }
-
         
         const barData = this.mChart.getBarData();
         const set = barData.getDataSetByIndex(high.dataSetIndex);
