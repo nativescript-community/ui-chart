@@ -1,3 +1,4 @@
+import { Color } from '@nativescript/core/color';
 import { DataSet } from './DataSet';
 import { PieEntry } from './PieEntry';
 import { IPieDataSet } from '../interfaces/datasets/IPieDataSet';
@@ -22,12 +23,16 @@ export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     private mXValuePosition = ValuePosition.INSIDE_SLICE;
     private mYValuePosition = ValuePosition.INSIDE_SLICE;
     private mUsingSliceColorAsValueLineColor = false;
-    private mValueLineColor = 0xff000000;
+    private mValueLineColor = new Color(0xff000000);
     private mValueLineWidth = 1.0;
     private mValueLinePart1OffsetPercentage = 75;
     private mValueLinePart1Length = 0.3;
     private mValueLinePart2Length = 0.4;
     private mValueLineVariableLength = true;
+
+    constructor(yVals, label, yProperty?) {
+        super(yVals, label, null, yProperty);
+    }
 
     protected calcMinMaxForEntry(e: PieEntry) {
         if (e == null) return;
@@ -119,11 +124,11 @@ export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
      * When valuePosition is OutsideSlice, indicates line color
      */
 
-    public getValueLineColor() {
+    public getValueLineColor(): Color {
         return this.mValueLineColor;
     }
 
-    public setValueLineColor(valueLineColor) {
+    public setValueLineColor(valueLineColor: Color) {
         this.mValueLineColor = valueLineColor;
     }
 

@@ -39,6 +39,11 @@ export class ColorTemplate {
         return 'rgb(51, 181, 229)';
     }
 
+    public static getColorInstance(c: Color | number | string)
+    {
+        return c instanceof Color ? c : new Color(c as any);
+    }
+
     /**
      * Sets the alpha component of the given color.
      *

@@ -393,7 +393,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     protected mOffsetsCalculated = false;
 
-    onDraw(canvas: Canvas) {
+    public onDraw(canvas: Canvas) {
         // super.onDraw(canvas);
 
         if (this.mData === null) {

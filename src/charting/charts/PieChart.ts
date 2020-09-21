@@ -1,118 +1,103 @@
+import { PieRadarChartBase } from './PieRadarChartBase';
+import { XAxis } from '../components/XAxis';
+import { Entry } from '../data/Entry';
+import { PieData } from '../data/PieData';
+import { PieDataSet } from '../data/PieDataSet';
+import { PieHighlighter } from '../highlight/PieHighlighter';
+import { Highlight } from '../highlight/Highlight';
+import { PieChartRenderer } from '../renderer/PieChartRenderer';
+import { MPPointF } from '../utils/MPPointF';
+import { Utils } from '../utils/Utils';
+import { Font } from '@nativescript/core/ui/styling/font';
+import { Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
 
-package com.github.mikephil.charting.charts;
-
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.util.AttributeSet;
-
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.highlight.PieHighlighter;
-import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
-import com.github.mikephil.charting.renderer.PieChartRenderer;
-import com.github.mikephil.charting.utils.MPPointF;
-import com.github.mikephil.charting.utils.Utils;
-
-import java.util.List;
+const LOG_TAG = 'PieChart';
 
 /**
  * View that represents a pie chart. Draws cake like slices.
  *
  * @author Philipp Jahoda
  */
-public class PieChart extends PieRadarChartBase<PieData> {
-
+export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
     /**
      * rect object that represents the bounds of the piechart, needed for
      * drawing the circle
      */
-    private RectF this.mCircleBox = new RectF();
+    private mCircleBox: RectF = new RectF(0, 0, 0, 0);
 
     /**
      * flag indicating if entry labels should be drawn or not
      */
-    private boolean this.mDrawEntryLabels = true;
+    private mDrawEntryLabels: boolean = true;
 
     /**
      * array that holds the width of each pie-slice in degrees
      */
-    private float[] this.mDrawAngles = new float[1];
+    private mDrawAngles: Array<number> = [];
 
     /**
      * array that holds the absolute angle in degrees of each slice
      */
-    private float[] this.mAbsoluteAngles = new float[1];
+    private mAbsoluteAngles: Array<number> = [];
 
     /**
      * if true, the white hole inside the chart will be drawn
      */
-    private boolean this.mDrawHole = true;
+    private mDrawHole: boolean = true;
 
     /**
      * if true, the hole will see-through to the inner tips of the slices
      */
-    private boolean this.mDrawSlicesUnderHole = false;
+    private mDrawSlicesUnderHole: boolean = false;
 
     /**
      * if true, the values inside the piechart are drawn as percent values
      */
-    private boolean this.mUsePercentValues = false;
+    private mUsePercentValues: boolean = false;
 
     /**
      * if true, the slices of the piechart are rounded
      */
-    private boolean this.mDrawRoundedSlices = false;
+    private mDrawRoundedSlices: boolean = false;
 
     /**
      * variable for the text that is drawn in the center of the pie-chart
      */
-    private CharSequence this.mCenterText = "";
+    private mCenterText = "";
 
-    private MPPointF this.mCenterTextOffset = MPPointF.getInstance(0, 0);
+    private mCenterTextOffset: MPPointF = {x: 0, y: 0};
 
     /**
      * indicates the size of the hole in the center of the piechart, default:
      * radius / 2
      */
-    private let mHoleRadiusPercent = 50;
+    private mHoleRadiusPercent: number = 50;
 
     /**
      * the radius of the transparent circle next to the chart-hole in the center
      */
-    protected let mTransparentCircleRadiusPercent = 55f;
+    protected mTransparentCircleRadiusPercent: number = 55;
 
     /**
      * if enabled, centertext is drawn
      */
-    private boolean this.mDrawCenterText = true;
+    private mDrawCenterText: boolean = true;
 
-    private let mCenterTextRadiusPercent = 100;
+    private mCenterTextRadiusPercent: number = 100;
 
-    protected let mMaxAngle = 360;
+    protected mMaxAngle: number = 360;
 
     /**
      * Minimum angle to draw slices, this only works if there is enough room for all slices to have
      * the minimum angle, default 0.
      */
-    private let mMinAngleForSlices = 0;
+    private mMinAngleForSlices: number = 0;
 
-    public PieChart(Context context) {
-        super(context);
+    constructor() {
+        super();
+        this.init();
     }
 
-    public PieChart(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public PieChart(Context context, AttributeSet attrs, let defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    
     protected init() {
         super.init();
 
@@ -122,16 +107,16 @@ public class PieChart extends PieRadarChartBase<PieData> {
         this.mHighlighter = new PieHighlighter(this);
     }
 
-    
-    protected onDraw(c: Canvasanvas) {
+    public onDraw(canvas: Canvas) {
         super.onDraw(canvas);
 
-        if (mData == null)
+        if (this.mData == null) {
             return;
+        }
 
         this.mRenderer.drawData(canvas);
 
-        if (valuesToHighlight())
+        if (this.valuesToHighlight())
             this.mRenderer.drawHighlighted(canvas, this.mIndicesToHighlight);
 
         this.mRenderer.drawExtras(canvas);
@@ -140,114 +125,96 @@ public class PieChart extends PieRadarChartBase<PieData> {
 
         this.mLegendRenderer.renderLegend(canvas);
 
-        drawDescription(canvas);
-
-        drawMarkers(canvas);
+        this.drawDescription(canvas);
+        this.drawMarkers(canvas);
     }
 
-    
     public calculateOffsets() {
         super.calculateOffsets();
 
         // prevent nullpointer when no data set
-        if (mData == null)
+        if (this.mData == null) {
             return;
+        }
 
-        let diameter = getDiameter();
-        let radius = diameter / 2f;
+        const diameter = this.getDiameter();
+        const radius = diameter / 2;
+        const c = this.getCenterOffsets();
+        const shift = this.mData.getDataSet().getSelectionShift();
 
-        MPPointF c = getCenterOffsets();
-
-        let shift = this.mData.getDataSet().getSelectionShift();
-
-        // create the circle box that will contain the pie-chart (the bounds of
-        // the pie-chart)
-        this.mCircleBox.set(c.x - radius + shift,
-                c.y - radius + shift,
-                c.x + radius - shift,
-                c.y + radius - shift);
-
-        MPPointF.recycleInstance(c);
+        // create the circle box that will contain the pie-chart (the bounds of the pie-chart)
+        this.mCircleBox.set(c.x - radius + shift, c.y - radius + shift, c.x + radius - shift, c.y + radius - shift);
     }
 
-    
     protected calcMinMax() {
-        calcAngles();
+        this.calcAngles();
     }
 
-    
-    protected float[] getMarkerPosition(Highlight highlight) {
+    protected getMarkerPosition(highlight: Highlight): Array<number> {
+        const center = this.getCenterCircleBox();
+        let r = this.getRadius();
+        let off = r / 10 * 3.6;
 
-        MPPointF center = getCenterCircleBox();
-        let r = getRadius();
-
-        let off = r / 10 * 3.6f;
-
-        if (isDrawHoleEnabled()) {
-            off = (r - (r / 100 * getHoleRadius())) / 2f;
+        if (this.isDrawHoleEnabled()) {
+            off = (r - (r / 100 * this.getHoleRadius())) / 2;
         }
 
         r -= off; // offset to keep things inside the chart
 
-        let rotationAngle = getRotationAngle();
-
-        let entryIndex =  highlight.getX();
+        const rotationAngle = this.getRotationAngle();
+        const entryIndex =  highlight.x;
 
         // offset needed to center the drawn text in the slice
         let offset = this.mDrawAngles[entryIndex] / 2;
 
         // calculate the text position
         let x =  (r
-                * Math.cos(Math.toRadians((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
-                * this.mAnimator.getPhaseY())) + center.x);
+                * Math.cos(((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
+                * this.mAnimator.getPhaseY()) * (Math.PI / 180)) + center.x);
         let y =  (r
-                * Math.sin(Math.toRadians((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
-                * this.mAnimator.getPhaseY())) + center.y);
+                * Math.sin(((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
+                * this.mAnimator.getPhaseY()) * (Math.PI / 180)) + center.y);
 
-        MPPointF.recycleInstance(center);
-        return new float[]{x, y};
+        return [x, y];
     }
 
     /**
      * calculates the needed angles for the chart slices
      */
-    private void calcAngles() {
+    private calcAngles() {
+        const entryCount = this.mData.getEntryCount();
 
-        let entryCount = this.mData.getEntryCount();
-
-        if (mDrawAngles.length != entryCount) {
-            this.mDrawAngles = new float[entryCount];
+        if (this.mDrawAngles.length != entryCount) {
+            this.mDrawAngles = [];
         } else {
             for (let i = 0; i < entryCount; i++) {
                 this.mDrawAngles[i] = 0;
             }
         }
-        if (mAbsoluteAngles.length != entryCount) {
-            this.mAbsoluteAngles = new float[entryCount];
+        if (this.mAbsoluteAngles.length != entryCount) {
+            this.mAbsoluteAngles = [];
         } else {
             for (let i = 0; i < entryCount; i++) {
                 this.mAbsoluteAngles[i] = 0;
             }
         }
 
-        let yValueSum = this.mData.getYValueSum();
+        const yValueSum = this.mData.getYValueSum();
+        const dataSets = this.mData.getDataSets();
 
-        List<IPieDataSet> dataSets = this.mData.getDataSets();
-
-        boolean hasMinAngle = this.mMinAngleForSlices != 0 && entryCount * this.mMinAngleForSlices <= this.mMaxAngle;
-        float[] minAngles = new float[entryCount];
+        const hasMinAngle = this.mMinAngleForSlices != 0 && entryCount * this.mMinAngleForSlices <= this.mMaxAngle;
+        const minAngles = [];
 
         let cnt = 0;
         let offset = 0;
         let diff = 0;
 
         for (let i = 0; i < this.mData.getDataSetCount(); i++) {
-
-            IPieDataSet set = dataSets.get(i);
+            const set = dataSets[i];
+            const yKey = set.yProperty;
 
             for (let j = 0; j < set.getEntryCount(); j++) {
-
-                let drawAngle = calcAngle(Math.abs(set.getEntryForIndex(j).getY()), yValueSum);
+                const drawAngle = this.calcAngle(Math.abs(set.getEntryForIndex(j)[yKey]), yValueSum);
 
                 if (hasMinAngle) {
                     let temp = drawAngle - this.mMinAngleForSlices;
@@ -294,39 +261,30 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * @param index
      * @return
      */
-    public needsHighlight(let index) {
-
+    public needsHighlight(index: number) {
         // no highlight
-        if (!valuesToHighlight())
+        if (!this.valuesToHighlight()) {
             return false;
+        }
 
-        for (let i = 0; i < this.mIndicesToHighlight.length; i++)
-
+        for (let i = 0; i < this.mIndicesToHighlight.length; i++) {
             // check if the xvalue for the given dataset needs highlight
-            if ( this.mIndicesToHighlight[i].getX() == index)
+            if (this.mIndicesToHighlight[i].x == index) {
                 return true;
+            }
+        }
 
         return false;
     }
 
     /**
-     * calculates the needed angle for a given value
-     *
-     * @param value
-     * @return
-     */
-    private let calcAngle(let value) {
-        return calcAngle(value, this.mData.getYValueSum());
-    }
-
-    /**
-     * calculates the needed angle for a given value
+     * Calculates the needed angle for a given value
      *
      * @param value
      * @param yValueSum
      * @return
      */
-    private let calcAngle(let value, let yValueSum) {
+    private calcAngle(value: number, yValueSum: number) {
         return value / yValueSum * this.mMaxAngle;
     }
 
@@ -335,19 +293,19 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @return
      */
-    public XAxis getXAxis() {
-        throw new RuntimeException("PieChart has no XAxis");
+    public getXAxis(): XAxis {
+        throw new Error("PieChart has no XAxis");
     }
 
-    
-    public getIndexForAngle(let angle) {
+    public getIndexForAngle(angle: number) {
 
         // take the current angle of the chart into consideration
-        let a = Utils.getNormalizedAngle(angle - getRotationAngle());
+        const a = Utils.getNormalizedAngle(angle - this.getRotationAngle());
 
         for (let i = 0; i < this.mAbsoluteAngles.length; i++) {
-            if (mAbsoluteAngles[i] > a)
+            if (this.mAbsoluteAngles[i] > a) {
                 return i;
+            }
         }
 
         return -1; // return -1 if no index found
@@ -359,13 +317,14 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * @param xIndex
      * @return
      */
-    public getDataSetIndexForIndex(let xIndex) {
+    public getDataSetIndexForIndex(xIndex: number) {
 
-        List<IPieDataSet> dataSets = this.mData.getDataSets();
+        const dataSets = this.mData.getDataSets();
 
         for (let i = 0; i < dataSets.length; i++) {
-            if (dataSets.get(i).getEntryForXValue(xIndex, NaN) != null)
+            if (dataSets[i].getEntryForXValue(xIndex, NaN) != null) {
                 return i;
+            }
         }
 
         return -1;
@@ -378,7 +337,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @return
      */
-    public float[] getDrawAngles() {
+    public getDrawAngles(): Array<number> {
         return this.mDrawAngles;
     }
 
@@ -388,7 +347,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @return
      */
-    public float[] getAbsoluteAngles() {
+    public getAbsoluteAngles(): Array<number> {
         return this.mAbsoluteAngles;
     }
 
@@ -398,14 +357,14 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param color
      */
-    public setHoleColor(let color) {
-        ((PieChartRenderer) this.mRenderer).getPaintHole().setColor(color);
+    public setHoleColor(color) {
+        (this.mRenderer as PieChartRenderer).getPaintHole().setColor(color);
     }
 
     /**
      * Enable or disable the visibility of the inner tips of the slices behind the hole
      */
-    public setDrawSlicesUnderHole( enable) {
+    public setDrawSlicesUnderHole(enable) {
         this.mDrawSlicesUnderHole = enable;
     }
 
@@ -424,7 +383,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param enabled
      */
-    public setDrawHoleEnabled( enabled) {
+    public setDrawHoleEnabled(enabled) {
         this.mDrawHole = enabled;
     }
 
@@ -443,11 +402,13 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param text
      */
-    public setCenterText(CharSequence text) {
-        if (text == null)
+    public setCenterText(text) {
+        if (text == null) {
             this.mCenterText = "";
-        else
+        }
+        else {
             this.mCenterText = text;
+        }
     }
 
     /**
@@ -455,7 +416,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @return
      */
-    public CharSequence getCenterText() {
+    public getCenterText() {
         return this.mCenterText;
     }
 
@@ -465,7 +426,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param enabled
      */
-    public setDrawCenterText( enabled) {
+    public setDrawCenterText(enabled) {
         this.mDrawCenterText = enabled;
     }
 
@@ -478,49 +439,48 @@ public class PieChart extends PieRadarChartBase<PieData> {
         return this.mDrawCenterText;
     }
 
-    
-    protected let getRequiredLegendOffset() {
-        return this.mLegendRenderer.getLabelPaint().getTextSize() * 2.f;
+    protected getRequiredLegendOffset() {
+        return this.mLegendRenderer.getLabelPaint().getTextSize() * 2;
     }
 
-    
-    protected let getRequiredBaseOffset() {
+    protected getRequiredBaseOffset() {
         return 0;
     }
 
-    
     public getRadius() {
-        if (mCircleBox == null)
+        if (this.mCircleBox == null) {
             return 0;
-        else
-            return Math.min(mCircleBox.width() / 2f, this.mCircleBox.height() / 2f);
+        }
+        else {
+            return Math.min(this.mCircleBox.width() / 2, this.mCircleBox.height() / 2);
+        }
     }
 
     /**
-     * returns the circlebox, the boundingbox of the pie-chart slices
+     * Returns the circlebox, the boundingbox of the pie-chart slices
      *
      * @return
      */
-    public RectF getCircleBox() {
+    public getCircleBox(): RectF {
         return this.mCircleBox;
     }
 
     /**
-     * returns the center of the circlebox
+     * Returns the center of the circlebox
      *
      * @return
      */
-    public MPPointF getCenterCircleBox() {
-        return MPPointF.getInstance(mCircleBox.centerX(), this.mCircleBox.centerY());
+    public getCenterCircleBox(): MPPointF {
+        return {x: this.mCircleBox.centerX(), y: this.mCircleBox.centerY()};
     }
 
     /**
-     * sets the typeface for the center-text paint
+     * Sets the typeface for the center-text paint
      *
      * @param t
      */
-    public setCenterTextTypeface(Typeface t) {
-        ((PieChartRenderer) this.mRenderer).getPaintCenterText().setTypeface(t);
+    public setCenterTextTypeface(t: Font) {
+        (this.mRenderer as PieChartRenderer).getPaintCenterText().setTypeface(t);
     }
 
     /**
@@ -528,9 +488,8 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param sizeDp
      */
-    public setCenterTextSize(let sizeDp) {
-        ((PieChartRenderer) this.mRenderer).getPaintCenterText().setTextSize(
-                Utils.convertDpToPixel(sizeDp));
+    public setCenterTextSize(sizeDp) {
+        (this.mRenderer as PieChartRenderer).getPaintCenterText().setTextSize(Utils.convertDpToPixel(sizeDp));
     }
 
     /**
@@ -538,8 +497,8 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param sizePixels
      */
-    public setCenterTextSizePixels(let sizePixels) {
-        ((PieChartRenderer) this.mRenderer).getPaintCenterText().setTextSize(sizePixels);
+    public setCenterTextSizePixels(sizePixels) {
+        (this.mRenderer as PieChartRenderer).getPaintCenterText().setTextSize(sizePixels);
     }
 
     /**
@@ -548,7 +507,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * @param x
      * @param y
      */
-    public setCenterTextOffset(let x, let y) {
+    public setCenterTextOffset(x: number, y: number) {
         this.mCenterTextOffset.x = Utils.convertDpToPixel(x);
         this.mCenterTextOffset.y = Utils.convertDpToPixel(y);
     }
@@ -558,8 +517,8 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @return
      */
-    public MPPointF getCenterTextOffset() {
-        return MPPointF.getInstance(mCenterTextOffset.x, this.mCenterTextOffset.y);
+    public getCenterTextOffset(): MPPointF {
+        return {x: this.mCenterTextOffset.x, y: this.mCenterTextOffset.y};
     }
 
     /**
@@ -567,8 +526,8 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param color
      */
-    public setCenterTextColor(let color) {
-        ((PieChartRenderer) this.mRenderer).getPaintCenterText().setColor(color);
+    public setCenterTextColor(color) {
+        (this.mRenderer as PieChartRenderer).getPaintCenterText().setColor(color);
     }
 
     /**
@@ -577,7 +536,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param percent
      */
-    public setHoleRadius(const percent) {
+    public setHoleRadius(percent) {
         this.mHoleRadiusPercent = percent;
     }
 
@@ -595,10 +554,9 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param color
      */
-    public setTransparentCircleColor(let color) {
-
-        Paint p = ((PieChartRenderer) this.mRenderer).getPaintTransparentCircle();
-        let alpha = p.getAlpha();
+    public setTransparentCircleColor(color) {
+        const p: Paint = (this.mRenderer as PieChartRenderer).getPaintTransparentCircle();
+        const alpha = p.getAlpha();
         p.setColor(color);
         p.setAlpha(alpha);
     }
@@ -611,7 +569,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param percent
      */
-    public setTransparentCircleRadius(const percent) {
+    public setTransparentCircleRadius(percent) {
         this.mTransparentCircleRadiusPercent = percent;
     }
 
@@ -626,8 +584,8 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param alpha 0-255
      */
-    public setTransparentCircleAlpha(let alpha) {
-        ((PieChartRenderer) this.mRenderer).getPaintTransparentCircle().setAlpha(alpha);
+    public setTransparentCircleAlpha(alpha) {
+        (this.mRenderer as PieChartRenderer).getPaintTransparentCircle().setAlpha(alpha);
     }
 
     /**
@@ -637,7 +595,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * @param enabled
      */
     
-    public setDrawSliceText( enabled) {
+    public setDrawSliceText(enabled) {
         this.mDrawEntryLabels = enabled;
     }
 
@@ -646,7 +604,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param enabled
      */
-    public setDrawEntryLabels( enabled) {
+    public setDrawEntryLabels(enabled) {
         this.mDrawEntryLabels = enabled;
     }
 
@@ -664,17 +622,17 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param color
      */
-    public setEntryLabelColor(let color) {
-        ((PieChartRenderer) this.mRenderer).getPaintEntryLabels().setColor(color);
+    public setEntryLabelColor(color) {
+        (this.mRenderer as PieChartRenderer).getPaintEntryLabels().setColor(color);
     }
 
     /**
-     * Sets a custom Typeface for the drawing of the entry labels.
+     * Sets a custom font for the drawing of the entry labels.
      *
      * @param tf
      */
-    public setEntryLabelTypeface(Typeface tf) {
-        ((PieChartRenderer) this.mRenderer).getPaintEntryLabels().setTypeface(tf);
+    public setEntryLabelTypeface(tf) {
+        (this.mRenderer as PieChartRenderer).getPaintEntryLabels().setTypeface(tf);
     }
 
     /**
@@ -682,8 +640,8 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param size
      */
-    public setEntryLabelTextSize(let size) {
-        ((PieChartRenderer) this.mRenderer).getPaintEntryLabels().setTextSize(size);
+    public setEntryLabelTextSize(size) {
+        (this.mRenderer as PieChartRenderer).getPaintEntryLabels().setTextSize(size);
     }
 
     /**
@@ -692,7 +650,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param enabled draw curved ends of slices
      */
-    public setDrawRoundedSlices( enabled) {
+    public setDrawRoundedSlices(enabled) {
         this.mDrawRoundedSlices = enabled;
     }
 
@@ -713,7 +671,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param enabled
      */
-    public setUsePercentValues( enabled) {
+    public setUsePercentValues(enabled) {
         this.mUsePercentValues = enabled;
     }
 
@@ -731,7 +689,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * hole
      * default 1.f (100%)
      */
-    public setCenterTextRadiusPercent(let percent) {
+    public setCenterTextRadiusPercent(percent) {
         this.mCenterTextRadiusPercent = percent;
     }
 
@@ -754,13 +712,15 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param maxangle min 90, max 360
      */
-    public setMaxAngle(let maxangle) {
+    public setMaxAngle(maxangle) {
 
-        if (maxangle > 360)
+        if (maxangle > 360) {
             maxangle = 360;
+        }
 
-        if (maxangle < 90)
+        if (maxangle < 90) {
             maxangle = 90;
+        }
 
         this.mMaxAngle = maxangle;
     }
@@ -781,22 +741,24 @@ public class PieChart extends PieRadarChartBase<PieData> {
      *
      * @param minAngle minimum 0, maximum is half of {@link #setMaxAngle}
      */
-    public setMinAngleForSlices(let minAngle) {
+    public setMinAngleForSlices(minAngle) {
 
-        if (minAngle > (mMaxAngle / 2f))
-            minAngle = this.mMaxAngle / 2f;
-        else if (minAngle < 0)
+        if (minAngle > (this.mMaxAngle / 2)) {
+            minAngle = this.mMaxAngle / 2;
+        }
+        else if (minAngle < 0) {
             minAngle = 0;
+        }
 
         this.mMinAngleForSlices = minAngle;
     }
 
     
-    protected onDetachedFromWindow() {
+    public _onDetachedFromWindow() {
         // releases the bitmap in the renderer to avoid oom error
-        if (mRenderer != null && this.mRenderer instanceof PieChartRenderer) {
-            ((PieChartRenderer) this.mRenderer).releaseBitmap();
+        if (this.mRenderer != null && this.mRenderer instanceof PieChartRenderer) {
+            this.mRenderer.releaseBitmap();
         }
-        super.onDetachedFromWindow();
+        //super.onDetachedFromWindow();
     }
 }

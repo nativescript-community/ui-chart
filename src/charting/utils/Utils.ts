@@ -26,11 +26,10 @@ export namespace Utils {
     //    const mMetrics;
     // const mMinimumFlingVelocity = 50;
     // const mMaximumFlingVelocity = 8000;
-    const DEG2RAD = Math.PI / 180.0;
-
     // const DOUBLE_EPSILON = Number.EPSILON;
 
-    // const FLOAT_EPSILON = Number.EPSILON;
+    export const DEG2RAD = Math.PI / 180.0;
+    export const NUMBER_EPSILON = Number.EPSILON;
 
     const mDrawTextRectBuffer = new Rect(0, 0, 0, 0);
     const mCalcTextHeightRect = new Rect(0, 0, 0, 0);
