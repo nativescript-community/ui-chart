@@ -42,7 +42,7 @@
         "@nativescript/types-android": "7.0.3",
         "@nativescript/types-ios": "7.0.3",
         "@nativescript/webpack": "3.0.4",
-        "@nativescript-community/ui-canvas": "4.0.10",
+        "@nativescript-community/ui-canvas": "4.0.12",
         "@nativescript-community/gesturehandler": "^0.1.22",
         "@nativescript-community/tween": "0.0.11",
         "@tweenjs/tween.js": "18.6.0",
