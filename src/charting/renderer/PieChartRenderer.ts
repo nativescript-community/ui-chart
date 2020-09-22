@@ -185,7 +185,7 @@ export class PieChartRenderer extends DataRenderer {
     }
 
     protected drawDataSet(c: Canvas, dataSet: IPieDataSet) {
-        const result = true;
+        const result = false;
         let angle = 0;
 
         const yKey = dataSet.yProperty;
