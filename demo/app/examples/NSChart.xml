@@ -5,14 +5,14 @@
     </ActionBar>
     <ScrollView>
         <StackLayout>
+            <Label text="Pie Chart" fontSize="20"/>
+            <chart:PieChart id="pie-chart" backgroundColor="lightgray" width="300" height="350" loaded="onPieChartLoaded"/>
             <Label text="Line Chart" fontSize="20"/>
             <chart:LineChart id="line-chart" backgroundColor="lightgray" width="300" height="350" loaded="onLineChartLoaded"/>
             <Label text="Bar Chart" fontSize="20"/>
             <chart:BarChart id="bar-chart" backgroundColor="lightgray" width="300" height="350" loaded="onBarChartLoaded"/>
             <Label text="Horizontal Bar Chart" fontSize="20"/>
             <chart:HorizontalBarChart id="horizontal-bar-chart" backgroundColor="lightgray" width="300" height="350" loaded="onBarChartLoaded"/>
-            <Label text="Pie Chart" fontSize="20"/>
-            <chart:PieChart id="pie-chart" backgroundColor="lightgray" width="300" height="350" loaded="onPieChartLoaded"/>
         </StackLayout>
     </ScrollView>
 </Page>

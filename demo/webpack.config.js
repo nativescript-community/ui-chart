@@ -4,15 +4,17 @@ const fs = require('fs');
 const webpack = require("webpack");
 const nsWebpack = require("@nativescript/webpack");
 const nativescriptTarget = require("@nativescript/webpack/nativescript-target");
+const { getNoEmitOnErrorFromTSConfig } = require("@nativescript/webpack/utils/tsconfig-utils");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const { NativeScriptWorkerPlugin } = require("nativescript-worker-loader/NativeScriptWorkerPlugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const hashSalt = Date.now().toString();
 
 module.exports = env => {
-    // Add your custom Activities, Services and other android app components here.
+    // Add your custom Activities, Services and other Android app components here.
     const appComponents = env.appComponents || [];
     appComponents.push(...[
         "@nativescript/core/ui/frame",
@@ -59,6 +61,7 @@ module.exports = env => {
     const useLibs = compileSnapshot;
     const isAnySourceMapEnabled = !!sourceMap || !!hiddenSourceMap;
     const externals = nsWebpack.getConvertedExternals(env.externals);
+
     let appFullPath = resolve(projectRoot, appPath);
     if (!fs.existsSync(appFullPath)) {
       // some apps use 'app' directory
@@ -79,9 +82,11 @@ module.exports = env => {
     const copyIgnore = { ignore: [`${relative(appPath, appResourcesFullPath)}/**`] };
 
     const entryModule = nsWebpack.getEntryModule(appFullPath, platform);
-    const entryPath = `.${sep}${entryModule}.js`;
+    const entryPath = `.${sep}${entryModule}.ts`;
     const entries = env.entries || {};
     entries.bundle = entryPath;
+
+    const tsConfigPath = resolve(projectRoot, "tsconfig.json");
 
     const areCoreModulesExternal = Array.isArray(env.externals) && env.externals.some(e => e.indexOf("@nativescript") > -1);
     if (platform === "ios" && !areCoreModulesExternal && !testing) {
@@ -96,6 +101,7 @@ module.exports = env => {
         itemsToClean.push(`${join(projectRoot, "platforms", "android", "app", "build", "configurations", "nativescript-android-snapshot")}`);
     }
 
+    const noEmitOnErrorFromTSConfig = getNoEmitOnErrorFromTSConfig(tsConfigPath);
 
     nsWebpack.processAppComponents(appComponents, platform);
     const config = {
@@ -121,7 +127,7 @@ module.exports = env => {
             hashSalt
         },
         resolve: {
-            extensions: [".js", ".scss", ".css"],
+            extensions: [".ts", ".js", ".scss", ".css"],
             // Resolve {N} system modules from @nativescript/core
             modules: [
                 resolve(__dirname, `node_modules/${coreModulesPackageName}`),
@@ -148,7 +154,7 @@ module.exports = env => {
         devtool: hiddenSourceMap ? "hidden-source-map" : (sourceMap ? "inline-source-map" : "none"),
         optimization: {
             runtimeChunk: "single",
-            noEmitOnErrors: true,
+            noEmitOnErrors: noEmitOnErrorFromTSConfig,
             splitChunks: {
                 cacheGroups: {
                     vendor: {
@@ -210,7 +216,7 @@ module.exports = env => {
                 },
 
                 {
-                    test: /\.(js|css|scss|html|xml)$/,
+                    test: /\.(ts|css|scss|html|xml)$/,
                     use: "@nativescript/webpack/hmr/hot-loader"
                 },
 
@@ -227,6 +233,29 @@ module.exports = env => {
                         "@nativescript/webpack/helpers/css2json-loader",
                         "sass-loader"
                     ]
+                },
+
+                {
+                    test: /\.ts$/,
+                    use: {
+                        loader: "ts-loader",
+                        options: {
+                            configFile: tsConfigPath,
+                            // https://github.com/TypeStrong/ts-loader/blob/ea2fcf925ec158d0a536d1e766adfec6567f5fb4/README.md#faster-builds
+                            // https://github.com/TypeStrong/ts-loader/blob/ea2fcf925ec158d0a536d1e766adfec6567f5fb4/README.md#hot-module-replacement
+                            transpileOnly: true,
+                            allowTsInNodeModules: true,
+                            compilerOptions: {
+                                sourceMap: isAnySourceMapEnabled,
+                                declaration: false
+                            },
+                            getCustomTransformers: (program) => ({
+                                before: [
+                                    require("@nativescript/webpack/transformers/ns-transform-native-classes").default
+                                ]
+                            })
+                        },
+                    }
                 },
             ]
         },
@@ -253,7 +282,6 @@ module.exports = env => {
               ],
             }),
             new nsWebpack.GenerateNativeScriptEntryPointsPlugin("bundle"),
-
             // For instructions on how to set up workers with webpack
             // check out https://github.com/nativescript/worker-loader
             new NativeScriptWorkerPlugin(),
@@ -262,7 +290,20 @@ module.exports = env => {
                 platforms,
             }),
             // Does IPC communication with the {N} CLI to notify events when running in watch mode.
-            new nsWebpack.WatchStateLoggerPlugin()
+            new nsWebpack.WatchStateLoggerPlugin(),
+            // https://github.com/TypeStrong/ts-loader/blob/ea2fcf925ec158d0a536d1e766adfec6567f5fb4/README.md#faster-builds
+            // https://github.com/TypeStrong/ts-loader/blob/ea2fcf925ec158d0a536d1e766adfec6567f5fb4/README.md#hot-module-replacement
+            new ForkTsCheckerWebpackPlugin({
+              async: false,
+              typescript: {
+                configFile: tsConfigPath,
+                memoryLimit: 4096,
+                diagnosticOptions: {
+                  syntactic: true,
+                  semantic: true
+                }
+              }
+            })
         ],
     };
 

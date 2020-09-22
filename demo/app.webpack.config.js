@@ -7,8 +7,11 @@ module.exports = (env, params = {}) => {
     const projectRoot = __dirname;
     const config = webpackConfig(env, params);
     if (development) {
+        config.resolve.alias['@nativescript/core'] = '@akylas/nativescript';
         const srcPath = resolve(projectRoot, '..', 'src', 'charting');
         config.resolve.alias['@nativescript-community/ui-chart'] = srcPath;
+        config.resolve.alias['@nativescript-community/ui-chart$'] = srcPath;
+        console.log('development', srcPath, config.resolve.alias);
         config.plugins.push(new webpack.ContextReplacementPlugin(new RegExp('@nativescript-community/ui-chart'), srcPath));
     }
     return config;
