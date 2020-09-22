@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.32](https://github.com/Akylas/nativescript-chart/compare/v0.0.31...v0.0.32) (2020-09-22)
+
+
+### Bug Fixes
+
+* **ios:** dont use bitmap canvas ([d279a97](https://github.com/Akylas/nativescript-chart/commit/d279a97d363f88c05dc1e7b3fa4ec5559000085f))
+
+
+### Features
+
+* **demo:** Generate random colors for Pie Chart. ([af02e06](https://github.com/Akylas/nativescript-chart/commit/af02e0698090a93b50dbf88f855f02d1240d988f))
+* Primary implementation for Pie Chart. ([fd7602a](https://github.com/Akylas/nativescript-chart/commit/fd7602a97457d7d9948ec7629853301ad8e490bb))
+
+
+
+
+
 ## [0.0.31](https://github.com/Akylas/nativescript-chart/compare/v0.0.30...v0.0.31) (2020-09-18)
 
 
