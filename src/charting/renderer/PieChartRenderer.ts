@@ -576,7 +576,9 @@ export class PieChartRenderer extends DataRenderer {
     
     public drawExtras(c: Canvas) {
         this.drawHole(c);
-        c.drawBitmap(this.mDrawBitmap.get(), 0, 0, null);
+        if (this.mDrawBitmap.get()) {
+            c.drawBitmap(this.mDrawBitmap.get(), 0, 0, null);
+        }
         this.drawCenterText(c);
     }
 
@@ -592,7 +594,7 @@ export class PieChartRenderer extends DataRenderer {
 
             if (ColorTemplate.getColorInstance(this.mHolePaint.getColor()).a > 0) {
                 // draw the hole-circle
-                this.mBitmapCanvas.drawCircle(center.x, center.y, holeRadius, this.mHolePaint);
+                c.drawCircle(center.x, center.y, holeRadius, this.mHolePaint);
             }
 
             // only draw the circle if it can be seen (not covered by the hole)
@@ -608,7 +610,7 @@ export class PieChartRenderer extends DataRenderer {
                 this.mHoleCirclePath.reset();
                 this.mHoleCirclePath.addCircle(center.x, center.y, secondHoleRadius, Direction.CW);
                 this.mHoleCirclePath.addCircle(center.x, center.y, holeRadius, Direction.CCW);
-                this.mBitmapCanvas.drawPath(this.mHoleCirclePath, this.mTransparentCirclePaint);
+                c.drawPath(this.mHoleCirclePath, this.mTransparentCirclePaint);
 
                 // reset alpha
                 this.mTransparentCirclePaint.setAlpha(alpha);
