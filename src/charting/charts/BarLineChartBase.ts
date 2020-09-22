@@ -149,7 +149,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mBorderPaint = new Paint();
         this.mBorderPaint.setStyle(Style.STROKE);
         this.mBorderPaint.setColor('black');
-        this.mBorderPaint.setStrokeWidth(Utils.convertDpToPixel(1));
+        this.mBorderPaint.setStrokeWidth((1));
     }
 
     getOrCreateBarTouchListener() {
@@ -1196,7 +1196,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param width
      */
     public setBorderWidth(width) {
-        this.mBorderPaint.setStrokeWidth(Utils.convertDpToPixel(width));
+        this.mBorderPaint.setStrokeWidth((width));
     }
 
     /**

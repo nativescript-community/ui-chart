@@ -85,8 +85,8 @@ public class RadarChart extends PieRadarChartBase<RadarData> {
 
         this.mYAxis = new YAxis(AxisDependency.LEFT);
 
-        this.mWebLineWidth = Utils.convertDpToPixel(1.5f);
-        this.mInnerWebLineWidth = Utils.convertDpToPixel(0.75f);
+        this.mWebLineWidth = (1.5f);
+        this.mInnerWebLineWidth = (0.75f);
 
         this.mRenderer = new RadarChartRenderer(this, this.mAnimator, this.mViewPortHandler);
         this.mYAxisRenderer = new YAxisRendererRadarChart(mViewPortHandler, this.mYAxis, this);
@@ -218,7 +218,7 @@ public class RadarChart extends PieRadarChartBase<RadarData> {
      * @param width
      */
     public setWebLineWidth(let width) {
-        this.mWebLineWidth = Utils.convertDpToPixel(width);
+        this.mWebLineWidth = (width);
     }
 
     public getWebLineWidth() {
@@ -232,7 +232,7 @@ public class RadarChart extends PieRadarChartBase<RadarData> {
      * @param width
      */
     public setWebLineWidthInner(let width) {
-        this.mInnerWebLineWidth = Utils.convertDpToPixel(width);
+        this.mInnerWebLineWidth = (width);
     }
 
     public getWebLineWidthInner() {
@@ -327,7 +327,7 @@ public class RadarChart extends PieRadarChartBase<RadarData> {
     protected let getRequiredBaseOffset() {
         return this.mXAxis.isEnabled() && this.mXAxis.isDrawLabelsEnabled() ?
                 this.mXAxis.mLabelRotatedWidth :
-                Utils.convertDpToPixel(10);
+                (10);
     }
 
     

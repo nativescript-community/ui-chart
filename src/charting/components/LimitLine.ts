@@ -108,7 +108,7 @@ export class LimitLine extends ComponentBase {
      * @param phase offset, in degrees (normally, use 0)
      */
     public enableDashedLine(lineLength, spaceLength, phase) {
-        this.mDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`);
+        this.mDashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
     }
 
     /**

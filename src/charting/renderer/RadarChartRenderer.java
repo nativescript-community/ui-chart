@@ -162,7 +162,7 @@ public class RadarChartRenderer extends LineRadarRenderer {
         MPPointF pOut = MPPointF.getInstance(0,0);
         MPPointF pIcon = MPPointF.getInstance(0,0);
 
-        let yoffset = Utils.convertDpToPixel(5f);
+        let yoffset = (5f);
 
         for (let i = 0; i < this.mChart.getData().getDataSetCount(); i++) {
 
@@ -177,8 +177,8 @@ public class RadarChartRenderer extends LineRadarRenderer {
             ValueFormatter formatter = dataSet.getValueFormatter();
 
             MPPointF iconsOffset = MPPointF.getInstance(dataSet.getIconsOffset());
-            iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-            iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
+            iconsOffset.x = (iconsOffset.x);
+            iconsOffset.y = (iconsOffset.y);
 
             for (let j = 0; j < dataSet.getEntryCount(); j++) {
 
@@ -371,8 +371,8 @@ public class RadarChartRenderer extends LineRadarRenderer {
                                     let strokeWidth) {
         c.save();
 
-        outerRadius = Utils.convertDpToPixel(outerRadius);
-        innerRadius = Utils.convertDpToPixel(innerRadius);
+        outerRadius = (outerRadius);
+        innerRadius = (innerRadius);
 
         if (fillColor != ColorTemplate.COLOR_NONE) {
             Path p = this.mDrawHighlightCirclePathBuffer;
@@ -389,7 +389,7 @@ public class RadarChartRenderer extends LineRadarRenderer {
         if (strokeColor != ColorTemplate.COLOR_NONE) {
             this.mHighlightCirclePaint.setColor(strokeColor);
             this.mHighlightCirclePaint.setStyle(Paint.Style.STROKE);
-            this.mHighlightCirclePaint.setStrokeWidth(Utils.convertDpToPixel(strokeWidth));
+            this.mHighlightCirclePaint.setStrokeWidth((strokeWidth));
             c.drawCircle(point.x, point.y, outerRadius, this.mHighlightCirclePaint);
         }
 

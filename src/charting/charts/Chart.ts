@@ -154,9 +154,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     initNativeView() {
         super.initNativeView();
-        if (global.isIOS) {
-            this.nativeViewProtected.opaque = false;
-        }
         this.mChartTouchListener && this.mChartTouchListener.init();
     }
     disposeNativeView() {
@@ -174,7 +171,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         // initialize the utils
         // Utils.init(this._context);
-        this.mMaxHighlightDistance = Utils.convertDpToPixel(500);
+        this.mMaxHighlightDistance = (500);
 
         // this.mDescription = new Description();
         this.mLegend = new Legend();
@@ -470,7 +467,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param distDp
      */
     public setMaxHighlightDistance(distDp) {
-        this.mMaxHighlightDistance = Utils.convertDpToPixel(distDp);
+        this.mMaxHighlightDistance = (distDp);
     }
 
     /**
@@ -1522,7 +1519,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     // protected onMeasure(widthMeasureSpec, heightMeasureSpec) {
     //     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    //     let size =  Utils.convertDpToPixel(50);
+    //     let size =  (50);
     //     setMeasuredDimension(
     //             Math.max(getSuggestedMinimumWidth(),
     //                     resolveSize(size,

@@ -20,7 +20,7 @@ public class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry
 
     
     public setHighlightCircleWidth(let width) {
-        this.mHighlightCircleWidth = Utils.convertDpToPixel(width);
+        this.mHighlightCircleWidth = (width);
     }
 
     

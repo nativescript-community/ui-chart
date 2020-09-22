@@ -122,8 +122,8 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     constructor(yVals, label, xProperty?, yProperty?) {
         super(yVals, label, xProperty, yProperty);
 
-        // this.mCircleRadius = Utils.convertDpToPixel(4f);
-        // this.mLineWidth = Utils.convertDpToPixel(1);
+        // this.mCircleRadius = (4f);
+        // this.mLineWidth = (1);
 
         // if (this.mCircleColors == null) {
         //     this.mCircleColors = [];
@@ -180,7 +180,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      */
     public setCircleRadius(radius) {
         if (radius >= 1) {
-            this.mCircleRadius = Utils.convertDpToPixel(radius);
+            this.mCircleRadius = (radius);
         } else {
             console.error('LineDataSet', 'Circle radius cannot be < 1');
         }
@@ -198,7 +198,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      */
     public setCircleHoleRadius(holeRadius) {
         if (holeRadius >= 0.5) {
-            this.mCircleHoleRadius = Utils.convertDpToPixel(holeRadius);
+            this.mCircleHoleRadius = (holeRadius);
         } else {
             console.error('LineDataSet', 'Circle radius cannot be < 0.5');
         }

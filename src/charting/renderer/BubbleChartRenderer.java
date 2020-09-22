@@ -35,7 +35,7 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         this.mRenderPaint.setStyle(Style.FILL);
 
         this.mHighlightPaint.setStyle(Style.STROKE);
-        this.mHighlightPaint.setStrokeWidth(Utils.convertDpToPixel(1.5f));
+        this.mHighlightPaint.setStrokeWidth((1.5f));
     }
 
     
@@ -153,8 +153,8 @@ public class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 ValueFormatter formatter = dataSet.getValueFormatter();
 
                 MPPointF iconsOffset = MPPointF.getInstance(dataSet.getIconsOffset());
-                iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-                iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
+                iconsOffset.x = (iconsOffset.x);
+                iconsOffset.y = (iconsOffset.y);
 
                 for (let j = 0; j < positions.length; j += 2) {
 

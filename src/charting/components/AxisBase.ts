@@ -504,7 +504,7 @@ export abstract class AxisBase extends ComponentBase {
      * @return
      */
     public getValueFormatter() {
-        if (this.mAxisValueFormatter == null || (this.mAxisValueFormatter instanceof DefaultAxisValueFormatter && this.mAxisValueFormatter.getDecimalDigits() != this.mDecimals))
+        if (this.mAxisValueFormatter == null || (this.mAxisValueFormatter instanceof DefaultAxisValueFormatter && this.mAxisValueFormatter.getDecimalDigits() !== this.mDecimals))
         {this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);}
 
         return this.mAxisValueFormatter;
@@ -719,7 +719,7 @@ export abstract class AxisBase extends ComponentBase {
         const range = Math.abs(max - min);
 
         // in case all values are equal
-        if (range == 0) {
+        if (range === 0) {
             max = max + 1;
             min = min - 1;
         }

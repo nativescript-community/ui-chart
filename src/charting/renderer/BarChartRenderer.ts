@@ -52,8 +52,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const barData = this.mChart.getBarData();
         this.mBarBuffers = [];
 
-        for (let i = 0; i < barData.getDataSetCount(); i++)
-        {
+        for (let i = 0; i < barData.getDataSetCount(); i++) {
             const set = barData.getDataSetByIndex(i);
             this.mBarBuffers.push(new BarBuffer(set.getEntryCount() * 4 * (set.isStacked() ? set.getStackSize() : 1), barData.getDataSetCount(), set.isStacked()));
         }
@@ -63,11 +62,9 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     public drawData(c: Canvas) {
         const barData = this.mChart.getBarData();
 
-        for (let i = 0; i < barData.getDataSetCount(); i++)
-        {
+        for (let i = 0; i < barData.getDataSetCount(); i++) {
             const set = barData.getDataSetByIndex(i);
-            if (set.isVisible())
-            {
+            if (set.isVisible()) {
                 this.drawDataSet(c, set, i);
             }
         }
@@ -78,7 +75,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         this.mBarBorderPaint.setColor(dataSet.getBarBorderColor());
-        this.mBarBorderPaint.setStrokeWidth(Utils.convertDpToPixel(dataSet.getBarBorderWidth()));
+        this.mBarBorderPaint.setStrokeWidth((dataSet.getBarBorderWidth()));
 
         const drawBorder = dataSet.getBarBorderWidth() > 0;
 
@@ -104,11 +101,13 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                 trans.rectValueToPixel(this.mBarShadowRectBuffer);
 
-                if (!this.mViewPortHandler.isInBoundsLeft(this.mBarShadowRectBuffer.right))
-                {continue;}
+                if (!this.mViewPortHandler.isInBoundsLeft(this.mBarShadowRectBuffer.right)) {
+                    continue;
+                }
 
-                if (!this.mViewPortHandler.isInBoundsRight(this.mBarShadowRectBuffer.left))
-                {break;}
+                if (!this.mViewPortHandler.isInBoundsRight(this.mBarShadowRectBuffer.left)) {
+                    break;
+                }
 
                 this.mBarShadowRectBuffer.top = this.mViewPortHandler.contentTop();
                 this.mBarShadowRectBuffer.bottom = this.mViewPortHandler.contentBottom();
@@ -137,8 +136,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             this.mRenderPaint.setColor(dataSet.getColor());
         }
 
-        for (let j = 0; j < buffer.size(); j += 4)
-        {
+        for (let j = 0; j < buffer.size(); j += 4) {
             if (!this.mViewPortHandler.isInBoundsLeft(buffer.buffer[j + 2])) {
                 continue;
             }
@@ -178,7 +176,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         if (this.isDrawingValuesAllowed(this.mChart)) {
             const dataSets = this.mChart.getBarData().getDataSets();
 
-            const valueOffsetPlus = Utils.convertDpToPixel(4.5);
+            const valueOffsetPlus = (4.5);
             let posOffset = 0;
             let negOffset = 0;
             const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
@@ -200,8 +198,8 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 // calculate the correct offset depending on the draw position of
                 // the value
                 const valueTextHeight = Utils.calcTextHeight(this.mValuePaint, '8');
-                posOffset = (drawValueAboveBar ? -valueOffsetPlus : valueTextHeight + valueOffsetPlus);
-                negOffset = (drawValueAboveBar ? valueTextHeight + valueOffsetPlus : -valueOffsetPlus);
+                posOffset = drawValueAboveBar ? -valueOffsetPlus : valueTextHeight + valueOffsetPlus;
+                negOffset = drawValueAboveBar ? valueTextHeight + valueOffsetPlus : -valueOffsetPlus;
 
                 if (isInverted) {
                     posOffset = -posOffset - valueTextHeight;
@@ -215,8 +213,8 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 const formatter = dataSet.getValueFormatter();
 
                 const iconsOffset = dataSet.getIconsOffset();
-                iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-                iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
+                iconsOffset.x = (iconsOffset.x);
+                iconsOffset.y = (iconsOffset.y);
 
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {
@@ -235,15 +233,14 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         }
 
                         if (dataSet.isDrawValuesEnabled()) {
-                            this.drawValue(c, formatter.getBarLabel(val), x, val >= 0 ? 
-                                (buffer.buffer[j + 1] + posOffset) : (buffer.buffer[j + 3] + negOffset), dataSet.getValueTextColor(j / 4));
+                            this.drawValue(c, formatter.getBarLabel(val), x, val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset, dataSet.getValueTextColor(j / 4));
                         }
 
                         if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                             const icon = entry.icon;
 
                             let px = x;
-                            let py = val >= 0 ? (buffer.buffer[j + 1] + posOffset) : (buffer.buffer[j + 3] + negOffset);
+                            let py = val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset;
 
                             px += iconsOffset.x;
                             py += iconsOffset.y;
@@ -252,8 +249,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         }
                     }
                     // if we have stacks
-                }
-                else {
+                } else {
                     const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
                     let bufferIndex = 0;
@@ -280,15 +276,20 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             }
 
                             if (dataSet.isDrawValuesEnabled()) {
-                                this.drawValue(c, formatter.getBarLabel(entry[yKey]), x, entry[yKey] >= 0 ? 
-                                (buffer.buffer[bufferIndex + 1] + posOffset) : (buffer.buffer[bufferIndex + 3] + negOffset), color);
+                                this.drawValue(
+                                    c,
+                                    formatter.getBarLabel(entry[yKey]),
+                                    x,
+                                    entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 1] + posOffset : buffer.buffer[bufferIndex + 3] + negOffset,
+                                    color
+                                );
                             }
 
                             if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                                 const icon = entry.icon;
 
                                 let px = x;
-                                let py = entry[yKey] >= 0 ? (buffer.buffer[bufferIndex + 1] + posOffset) : (buffer.buffer[bufferIndex + 3] + negOffset);
+                                let py = entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 1] + posOffset : buffer.buffer[bufferIndex + 3] + negOffset;
 
                                 px += iconsOffset.x;
                                 py += iconsOffset.y;
@@ -296,8 +297,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                                 Utils.drawImage(c, icon, px, py);
                             }
                             // draw stack values
-                        }
-                        else {
+                        } else {
                             const transformed = Utils.createNativeArray(vals.length * 2);
 
                             let posY = 0;
@@ -310,12 +310,10 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                                 if (value === 0 && (posY === 0 || negY === 0)) {
                                     // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
                                     y = value;
-                                }
-                                else if (value >= 0) {
+                                } else if (value >= 0) {
                                     posY += value;
                                     y = posY;
-                                }
-                                else {
+                                } else {
                                     y = negY;
                                     negY -= value;
                                 }
@@ -344,7 +342,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                                 if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                                     const icon = entry.icon;
-                                    Utils.drawImage(c, icon, (x + iconsOffset.x), (y + iconsOffset.y));
+                                    Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y);
                                 }
                             }
                         }
@@ -387,26 +385,21 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             this.mHighlightPaint.setColor(set.getHighLightColor());
             this.mHighlightPaint.setAlpha(set.getHighLightAlpha());
 
-            const isStack = (high.stackIndex >= 0 && e.isStacked) ? true : false;
+            const isStack = high.stackIndex >= 0 && e.isStacked ? true : false;
 
             let y1;
             let y2;
 
             if (isStack) {
-                if( this.mChart.isHighlightFullBarEnabled())
-                {
+                if (this.mChart.isHighlightFullBarEnabled()) {
                     y1 = e.positiveSum;
                     y2 = -e.negativeSum;
-
-                }
-                else
-                {
+                } else {
                     const range = e.ranges[high.stackIndex];
                     y1 = range[0];
                     y2 = range[1];
                 }
-            }
-            else {
+            } else {
                 y1 = e[yKey];
                 y2 = 0;
             }
@@ -429,6 +422,5 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         high.drawY = bar.top;
     }
 
-    public drawExtras(c: Canvas) {
-    }
+    public drawExtras(c: Canvas) {}
 }

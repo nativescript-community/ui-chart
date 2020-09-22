@@ -277,13 +277,13 @@ public class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 float[] positions = trans.generateTransformedValuesCandle(
                         dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
 
-                let yOffset = Utils.convertDpToPixel(5f);
+                let yOffset = (5f);
 
                 ValueFormatter formatter = dataSet.getValueFormatter();
 
                 MPPointF iconsOffset = MPPointF.getInstance(dataSet.getIconsOffset());
-                iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-                iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
+                iconsOffset.x = (iconsOffset.x);
+                iconsOffset.y = (iconsOffset.y);
 
                 for (let j = 0; j < positions.length; j += 2) {
 

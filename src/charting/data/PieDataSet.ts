@@ -50,7 +50,7 @@ export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
         if (spaceDp > 20) spaceDp = 20;
         if (spaceDp < 0) spaceDp = 0;
 
-        this.mSliceSpace = Utils.convertDpToPixel(spaceDp);
+        this.mSliceSpace = (spaceDp);
     }
 
     public getSliceSpace() {
@@ -85,7 +85,7 @@ export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
      * @param shift
      */
     public setSelectionShift(shift) {
-        this.mShift = Utils.convertDpToPixel(shift);
+        this.mShift = (shift);
     }
 
     public getSelectionShift() {

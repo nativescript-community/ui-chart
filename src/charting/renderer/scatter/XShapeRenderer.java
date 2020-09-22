@@ -22,7 +22,7 @@ public class XShapeRenderer implements IShapeRenderer
         const shapeHalf = dataSet.getScatterShapeSize() / 2f;
 
         renderPaint.setStyle(Paint.Style.STROKE);
-        renderPaint.setStrokeWidth(Utils.convertDpToPixel(1));
+        renderPaint.setStrokeWidth((1));
 
         c.drawLine(
                 posX - shapeHalf,

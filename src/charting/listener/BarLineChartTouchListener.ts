@@ -81,9 +81,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         super(chart);
         this.mMatrix = touchMatrix;
 
-        this.mDragTriggerDist = Utils.convertDpToPixel(dragTriggerDistance);
+        this.mDragTriggerDist = (dragTriggerDistance);
 
-        this.mMinScalePointerDistance = Utils.convertDpToPixel(3.5);
+        this.mMinScalePointerDistance = (3.5);
     }
 
     panGestureHandler: PanGestureHandler;
@@ -586,7 +586,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @param dragTriggerDistance
      */
     public setDragTriggerDist(dragTriggerDistance) {
-        this.mDragTriggerDist = Utils.convertDpToPixel(dragTriggerDistance);
+        this.mDragTriggerDist = (dragTriggerDistance);
     }
 
     onDoubleTapGesture(event: GestureStateEventData) {

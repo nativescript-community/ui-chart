@@ -116,13 +116,13 @@ public class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                         .generateTransformedValuesScatter(dataSet,
                                 this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
 
-                let shapeSize = Utils.convertDpToPixel(dataSet.getScatterShapeSize());
+                let shapeSize = (dataSet.getScatterShapeSize());
 
                 ValueFormatter formatter = dataSet.getValueFormatter();
 
                 MPPointF iconsOffset = MPPointF.getInstance(dataSet.getIconsOffset());
-                iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-                iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
+                iconsOffset.x = (iconsOffset.x);
+                iconsOffset.y = (iconsOffset.y);
 
                 for (let j = 0; j < positions.length; j += 2) {
 

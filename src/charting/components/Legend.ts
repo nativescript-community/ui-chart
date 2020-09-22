@@ -1,7 +1,7 @@
 import { ComponentBase } from './ComponentBase';
 import { LegendEntry } from './LegendEntry';
 import { Utils } from '../utils/Utils';
-import { Paint, DashPathEffect } from '@nativescript-community/ui-canvas';
+import { DashPathEffect, Paint } from '@nativescript-community/ui-canvas';
 import { ColorTemplate } from '../utils/ColorTemplate';
 
 export enum LegendForm {
@@ -33,29 +33,29 @@ export enum LegendForm {
     /**
      * Draw a horizontal line
      */
-    LINE
+    LINE,
 }
 
 export enum LegendHorizontalAlignment {
     LEFT,
     CENTER,
-    RIGHT
+    RIGHT,
 }
 
 export enum LegendVerticalAlignment {
     TOP,
     CENTER,
-    BOTTOM
+    BOTTOM,
 }
 
 export enum LegendOrientation {
     HORIZONTAL,
-    VERTICAL
+    VERTICAL,
 }
 
 export enum LegendDirection {
     LEFT_TO_RIGHT,
-    RIGHT_TO_LEFT
+    RIGHT_TO_LEFT,
 }
 /**
  * Class representing the legend of the chart. The legend will contain one entry
@@ -177,10 +177,10 @@ export class Legend extends ComponentBase {
     public getMaximumEntryWidth(p: Paint) {
         let max = 0;
         let maxFormSize = 0;
-        let formToTextSpace = Utils.convertDpToPixel(this.mFormToTextSpace);
+        const formToTextSpace = this.mFormToTextSpace;
 
-        for (let entry of this.mEntries) {
-            const formSize = Utils.convertDpToPixel(isNaN(entry.formSize) ? this.mFormSize : entry.formSize);
+        for (const entry of this.mEntries) {
+            const formSize = isNaN(entry.formSize) ? this.mFormSize : entry.formSize;
             if (formSize > maxFormSize) maxFormSize = formSize;
 
             const label = entry.label;
@@ -203,11 +203,11 @@ export class Legend extends ComponentBase {
     public getMaximumEntryHeight(p: Paint) {
         let max = 0;
 
-        for (let entry of this.mEntries) {
-            let label = entry.label;
+        for (const entry of this.mEntries) {
+            const label = entry.label;
             if (label == null) continue;
 
-            let length = Utils.calcTextHeight(p, label);
+            const length = Utils.calcTextHeight(p, label);
 
             if (length > max) max = length;
         }
@@ -237,8 +237,8 @@ export class Legend extends ComponentBase {
             // entry.formColor = colors[i];
             // entry.label = labels[i];
 
-            if (entry.formColor == ColorTemplate.COLOR_SKIP || entry.formColor == null) entry.form = LegendForm.NONE;
-            else if (entry.formColor == ColorTemplate.COLOR_NONE) entry.form = LegendForm.EMPTY;
+            if (entry.formColor === ColorTemplate.COLOR_SKIP || entry.formColor == null) entry.form = LegendForm.NONE;
+            else if (entry.formColor === ColorTemplate.COLOR_NONE) entry.form = LegendForm.EMPTY;
 
             entries.push(entry);
         }
@@ -604,11 +604,11 @@ export class Legend extends ComponentBase {
      * @param labelpaint
      */
     public calculateDimensions(labelpaint: Paint, viewPortHandler) {
-        const defaultFormSize = Utils.convertDpToPixel(this.mFormSize);
-        const stackSpace = Utils.convertDpToPixel(this.mStackSpace);
-        const formToTextSpace = Utils.convertDpToPixel(this.mFormToTextSpace);
-        const xEntrySpace = Utils.convertDpToPixel(this.mXEntrySpace);
-        const yEntrySpace = Utils.convertDpToPixel(this.mYEntrySpace);
+        const defaultFormSize = this.mFormSize;
+        const stackSpace = this.mStackSpace;
+        const formToTextSpace = this.mFormToTextSpace;
+        const xEntrySpace = this.mXEntrySpace;
+        const yEntrySpace = this.mYEntrySpace;
         const wordWrapEnabled = this.mWordWrapEnabled;
         const entries = this.mEntries;
         const entryCount = entries.length;
@@ -626,8 +626,8 @@ export class Legend extends ComponentBase {
 
                 for (let i = 0; i < entryCount; i++) {
                     const e = entries[i];
-                    const drawingForm = e.form != LegendForm.NONE;
-                    const formSize = isNaN(e.formSize) ? defaultFormSize : Utils.convertDpToPixel(e.formSize);
+                    const drawingForm = e.form !== LegendForm.NONE;
+                    const formSize = isNaN(e.formSize) ? defaultFormSize : e.formSize;
                     const label = e.label;
 
                     if (!wasStacked) width = 0;
@@ -682,13 +682,13 @@ export class Legend extends ComponentBase {
 
                 for (let i = 0; i < entryCount; i++) {
                     const e = entries[i];
-                    const drawingForm = e.form != LegendForm.NONE;
-                    const formSize = isNaN(e.formSize) ? defaultFormSize : Utils.convertDpToPixel(e.formSize);
+                    const drawingForm = e.form !== LegendForm.NONE;
+                    const formSize = isNaN(e.formSize) ? defaultFormSize : e.formSize;
                     const label = e.label;
 
                     this.mCalculatedLabelBreakPoints.push(false);
 
-                    if (stackedStartIndex == -1) {
+                    if (stackedStartIndex === -1) {
                         // we are not stacking, so required width is for this label
                         // only
                         requiredWidth = 0;
@@ -706,19 +706,19 @@ export class Legend extends ComponentBase {
                         this.mCalculatedLabelSizes.push({ x: 0, y: 0 });
                         requiredWidth += drawingForm ? formSize : 0;
 
-                        if (stackedStartIndex == -1) {
+                        if (stackedStartIndex === -1) {
                             // mark this index as we might want to break here later
                             stackedStartIndex = i;
                         }
                     }
 
-                    if (label != null || i == entryCount - 1) {
-                        const requiredSpacing = currentLineWidth == 0 ? 0 : xEntrySpace;
+                    if (label != null || i === entryCount - 1) {
+                        const requiredSpacing = currentLineWidth === 0 ? 0 : xEntrySpace;
 
                         if (
                             !wordWrapEnabled || // No word wrapping, it must fit.
                             // The line is empty, it must fit
-                            currentLineWidth == 0 ||
+                            currentLineWidth === 0 ||
                             // It simply fits
                             contentWidth - currentLineWidth >= requiredSpacing + requiredWidth
                         ) {
@@ -736,7 +736,7 @@ export class Legend extends ComponentBase {
                             currentLineWidth = requiredWidth;
                         }
 
-                        if (i == entryCount - 1) {
+                        if (i === entryCount - 1) {
                             // Add last line size to array
                             this.mCalculatedLineSizes.push({ x: currentLineWidth, y: labelLineHeight });
                             maxLineWidth = Math.max(maxLineWidth, currentLineWidth);
@@ -747,7 +747,7 @@ export class Legend extends ComponentBase {
                 }
 
                 this.mNeededWidth = maxLineWidth;
-                this.mNeededHeight = labelLineHeight * this.mCalculatedLineSizes.length + labelLineSpacing * (this.mCalculatedLineSizes.length == 0 ? 0 : this.mCalculatedLineSizes.length - 1);
+                this.mNeededHeight = labelLineHeight * this.mCalculatedLineSizes.length + labelLineSpacing * (this.mCalculatedLineSizes.length === 0 ? 0 : this.mCalculatedLineSizes.length - 1);
 
                 break;
             }

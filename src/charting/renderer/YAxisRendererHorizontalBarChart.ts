@@ -62,7 +62,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
         this.mAxisLabelPaint.setTextAlign(Align.CENTER);
 
-        let baseYOffset = Utils.convertDpToPixel(2.5);
+        let baseYOffset = (2.5);
         let textHeight = Utils.calcTextHeight(this.mAxisLabelPaint, "Q");
 
         const dependency = this.mYAxis.getAxisDependency();
@@ -250,7 +250,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
                 this.mLimitLinePaint.setTextSize(l.getTextSize());
 
                 let xOffset = l.getLineWidth() + l.getXOffset();
-                let yOffset = Utils.convertDpToPixel(2) + l.getYOffset();
+                let yOffset = (2) + l.getYOffset();
 
                 const position = l.getLabelPosition();
 

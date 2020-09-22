@@ -402,7 +402,7 @@ export class LegendRenderer extends Renderer {
 
             case LegendForm.LINE:
                 {
-                    const formLineWidth = Utils.convertDpToPixel(isNaN(entry.formLineWidth) ? legend.getFormLineWidth() : entry.formLineWidth);
+                    const formLineWidth = (isNaN(entry.formLineWidth) ? legend.getFormLineWidth() : entry.formLineWidth);
                     const formLineDashEffect = entry.formLineDashEffect == null ? legend.getFormLineDashEffect() : entry.formLineDashEffect;
                     this.mLegendFormPaint.setStyle(Style.STROKE);
                     this.mLegendFormPaint.setStrokeWidth(formLineWidth);

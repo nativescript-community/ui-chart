@@ -22,7 +22,7 @@ export class PieChartRenderer extends DataRenderer {
     protected mTransparentCirclePaint: Paint;
     protected mValueLinePaint: Paint;
 
-     /**
+    /**
      * Bitmap for drawing the center hole
      */
     protected mDrawBitmap: WeakRef<ImageSource>;
@@ -47,7 +47,7 @@ export class PieChartRenderer extends DataRenderer {
     private mCenterTextLayout: StaticLayout;
     private mCenterTextLastValue;
     private mCenterTextLastBounds: RectF = new RectF(0, 0, 0, 0);
-    private mRectBuffer: Array<RectF> = [new RectF(0, 0, 0, 0), new RectF(0, 0, 0, 0), new RectF(0, 0, 0, 0)];
+    private mRectBuffer: RectF[] = [new RectF(0, 0, 0, 0), new RectF(0, 0, 0, 0), new RectF(0, 0, 0, 0)];
 
     private mPathBuffer: Path = new Path();
     private mInnerRectBuffer: RectF = new RectF(0, 0, 0, 0);
@@ -60,28 +60,28 @@ export class PieChartRenderer extends DataRenderer {
 
         this.mHolePaint = new Paint();
         this.mHolePaint.setAntiAlias(true);
-        this.mHolePaint.setColor("white");
+        this.mHolePaint.setColor('white');
         this.mHolePaint.setStyle(Style.FILL);
 
         this.mTransparentCirclePaint = new Paint();
         this.mTransparentCirclePaint.setAntiAlias(true);
-        this.mTransparentCirclePaint.setColor("white");
+        this.mTransparentCirclePaint.setColor('white');
         this.mTransparentCirclePaint.setStyle(Style.FILL);
         this.mTransparentCirclePaint.setAlpha(105);
 
         this.mCenterTextPaint = new Paint();
-        this.mCenterTextPaint.setColor("black");
-        this.mCenterTextPaint.setTextSize(Utils.convertDpToPixel(12));
+        this.mCenterTextPaint.setColor('black');
+        this.mCenterTextPaint.setTextSize(12);
 
-        this.mValuePaint.setTextSize(Utils.convertDpToPixel(13));
-        this.mValuePaint.setColor("white");
+        this.mValuePaint.setTextSize(13);
+        this.mValuePaint.setColor('white');
         this.mValuePaint.setTextAlign(Align.CENTER);
 
         this.mEntryLabelsPaint = new Paint();
         this.mEntryLabelsPaint.setAntiAlias(true);
-        this.mEntryLabelsPaint.setColor("white");
+        this.mEntryLabelsPaint.setColor('white');
         this.mEntryLabelsPaint.setTextAlign(Align.CENTER);
-        this.mEntryLabelsPaint.setTextSize(Utils.convertDpToPixel(13));
+        this.mEntryLabelsPaint.setTextSize(13);
 
         this.mValueLinePaint = new Paint();
         this.mValueLinePaint.setAntiAlias(true);
@@ -103,7 +103,7 @@ export class PieChartRenderer extends DataRenderer {
     public getPaintEntryLabels(): Paint {
         return this.mEntryLabelsPaint;
     }
-    
+
     public initBuffers() {
         // TODO Auto-generated method stub
     }
@@ -141,12 +141,12 @@ export class PieChartRenderer extends DataRenderer {
         const angleMiddle = startAngle + sweepAngle / 2;
 
         // Other polet of the arc
-        const arcEndPointX = center.x + radius *  Math.cos((startAngle + sweepAngle) * Utils.DEG2RAD);
-        const arcEndPointY = center.y + radius *  Math.sin((startAngle + sweepAngle) * Utils.DEG2RAD);
+        const arcEndPointX = center.x + radius * Math.cos((startAngle + sweepAngle) * Utils.DEG2RAD);
+        const arcEndPointY = center.y + radius * Math.sin((startAngle + sweepAngle) * Utils.DEG2RAD);
 
         // Middle polet on the arc
-        const arcMidPointX = center.x + radius *  Math.cos(angleMiddle * Utils.DEG2RAD);
-        const arcMidPointY = center.y + radius *  Math.sin(angleMiddle * Utils.DEG2RAD);
+        const arcMidPointX = center.x + radius * Math.cos(angleMiddle * Utils.DEG2RAD);
+        const arcMidPointY = center.y + radius * Math.sin(angleMiddle * Utils.DEG2RAD);
 
         // This is the base of the contained triangle
         const basePointsDistance = Math.sqrt(Math.pow(arcEndPointX - arcStartPointX, 2) + Math.pow(arcEndPointY - arcStartPointY, 2));
@@ -154,7 +154,7 @@ export class PieChartRenderer extends DataRenderer {
         // After reducing space from both sides of the "slice",
         //   the angle of the contained triangle should stay the same.
         // So let's find out the height of that triangle.
-        const containedTriangleHeight =  (basePointsDistance / 2.0 * Math.tan((180.0 - angle) / 2.0 * Utils.DEG2RAD));
+        const containedTriangleHeight = (basePointsDistance / 2.0) * Math.tan(((180.0 - angle) / 2.0) * Utils.DEG2RAD);
 
         // Now we subtract that from the radius
         let spacedRadius = radius - containedTriangleHeight;
@@ -177,7 +177,7 @@ export class PieChartRenderer extends DataRenderer {
         }
 
         const spaceSizeRatio = dataSet.getSliceSpace() / this.mViewPortHandler.getSmallestContentExtension();
-        const minValueRatio = dataSet.getYMin() / this.mChart.getData().getYValueSum() * 2;
+        const minValueRatio = (dataSet.getYMin() / this.mChart.getData().getYValueSum()) * 2;
 
         const sliceSpace = spaceSizeRatio > minValueRatio ? 0 : dataSet.getSliceSpace();
 
@@ -185,7 +185,7 @@ export class PieChartRenderer extends DataRenderer {
     }
 
     protected drawDataSet(c: Canvas, dataSet: IPieDataSet) {
-        let result = false;
+        const result = true;
         let angle = 0;
 
         const yKey = dataSet.yProperty;
@@ -202,26 +202,27 @@ export class PieChartRenderer extends DataRenderer {
         const radius = this.mChart.getRadius();
         const drawInnerArc = this.mChart.isDrawHoleEnabled() && !this.mChart.isDrawSlicesUnderHoleEnabled();
         const userInnerRadius = drawInnerArc ? radius * (this.mChart.getHoleRadius() / 100) : 0;
-        const roundedRadius = (radius - (radius * this.mChart.getHoleRadius() / 100)) / 2;
+        const roundedRadius = (radius - (radius * this.mChart.getHoleRadius()) / 100) / 2;
         const roundedCircleBox = new RectF(0, 0, 0, 0);
         const drawRoundedSlices = drawInnerArc && this.mChart.isDrawRoundedSlicesEnabled();
 
         let visibleAngleCount = 0;
         for (let j = 0; j < entryCount; j++) {
             // draw only if the value is greater than zero
-            if ((Math.abs(dataSet.getEntryForIndex(j)[yKey]) > Utils.NUMBER_EPSILON)) {
+            if (Math.abs(dataSet.getEntryForIndex(j)[yKey]) > Utils.NUMBER_EPSILON) {
                 visibleAngleCount++;
             }
         }
 
         const sliceSpace = visibleAngleCount <= 1 ? 0 : this.getSliceSpace(dataSet);
 
+        // console.log('drawAngles', drawAngles);
         for (let j = 0; j < entryCount; j++) {
-
             const sliceAngle = drawAngles[j];
             let innerRadius = userInnerRadius;
 
             const e = dataSet.getEntryForIndex(j);
+            // console.log('draw slice', e);
 
             // draw only if the value is greater than zero
             if (!(Math.abs(e[yKey]) > Utils.NUMBER_EPSILON)) {
@@ -239,7 +240,7 @@ export class PieChartRenderer extends DataRenderer {
 
             this.mRenderPaint.setColor(dataSet.getColor(j));
 
-            const sliceSpaceAngleOuter = visibleAngleCount == 1 ? 0 : sliceSpace / (Utils.DEG2RAD * radius);
+            const sliceSpaceAngleOuter = visibleAngleCount === 1 ? 0 : sliceSpace / (Utils.DEG2RAD * radius);
             const startAngleOuter = rotationAngle + (angle + sliceSpaceAngleOuter / 2) * phaseY;
             let sweepAngleOuter = (sliceAngle - sliceSpaceAngleOuter) * phaseY;
             if (sweepAngleOuter < 0) {
@@ -249,13 +250,13 @@ export class PieChartRenderer extends DataRenderer {
             this.mPathBuffer.reset();
 
             if (drawRoundedSlices) {
-                const x = center.x + (radius - roundedRadius) *  Math.cos(startAngleOuter * Utils.DEG2RAD);
-                const y = center.y + (radius - roundedRadius) *  Math.sin(startAngleOuter * Utils.DEG2RAD);
+                const x = center.x + (radius - roundedRadius) * Math.cos(startAngleOuter * Utils.DEG2RAD);
+                const y = center.y + (radius - roundedRadius) * Math.sin(startAngleOuter * Utils.DEG2RAD);
                 roundedCircleBox.set(x - roundedRadius, y - roundedRadius, x + roundedRadius, y + roundedRadius);
             }
 
-            const arcStartPointX = center.x + radius *  Math.cos(startAngleOuter * Utils.DEG2RAD);
-            const arcStartPointY = center.y + radius *  Math.sin(startAngleOuter * Utils.DEG2RAD);
+            const arcStartPointX = center.x + radius * Math.cos(startAngleOuter * Utils.DEG2RAD);
+            const arcStartPointY = center.y + radius * Math.sin(startAngleOuter * Utils.DEG2RAD);
 
             if (sweepAngleOuter >= 360 && sweepAngleOuter % 360 <= Utils.NUMBER_EPSILON) {
                 // Android is doing "mod 360"
@@ -273,8 +274,7 @@ export class PieChartRenderer extends DataRenderer {
 
             if (drawInnerArc && (innerRadius > 0 || accountForSliceSpacing)) {
                 if (accountForSliceSpacing) {
-                    let minSpacedRadius = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY, 
-                        arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter);
+                    let minSpacedRadius = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY, arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter);
 
                     if (minSpacedRadius < 0) {
                         minSpacedRadius = -minSpacedRadius;
@@ -283,7 +283,7 @@ export class PieChartRenderer extends DataRenderer {
                     innerRadius = Math.max(innerRadius, minSpacedRadius);
                 }
 
-                const sliceSpaceAngleInner = visibleAngleCount == 1 || innerRadius == 0 ? 0 : sliceSpace / (Utils.DEG2RAD * innerRadius);
+                const sliceSpaceAngleInner = visibleAngleCount === 1 || innerRadius === 0 ? 0 : sliceSpace / (Utils.DEG2RAD * innerRadius);
                 const startAngleInner = rotationAngle + (angle + sliceSpaceAngleInner / 2) * phaseY;
                 let sweepAngleInner = (sliceAngle - sliceSpaceAngleInner) * phaseY;
                 if (sweepAngleInner < 0) {
@@ -296,29 +296,27 @@ export class PieChartRenderer extends DataRenderer {
                     this.mPathBuffer.addCircle(center.x, center.y, innerRadius, Direction.CCW);
                 } else {
                     if (drawRoundedSlices) {
-                        const x = center.x + (radius - roundedRadius) *  Math.cos(endAngleInner * Utils.DEG2RAD);
-                        const y = center.y + (radius - roundedRadius) *  Math.sin(endAngleInner * Utils.DEG2RAD);
+                        const x = center.x + (radius - roundedRadius) * Math.cos(endAngleInner * Utils.DEG2RAD);
+                        const y = center.y + (radius - roundedRadius) * Math.sin(endAngleInner * Utils.DEG2RAD);
                         roundedCircleBox.set(x - roundedRadius, y - roundedRadius, x + roundedRadius, y + roundedRadius);
                         this.mPathBuffer.arcTo(roundedCircleBox, endAngleInner, 180);
                     } else {
-                        this.mPathBuffer.lineTo(center.x + innerRadius *  Math.cos(endAngleInner * Utils.DEG2RAD), center.y + innerRadius *  Math.sin(endAngleInner * Utils.DEG2RAD));
+                        this.mPathBuffer.lineTo(center.x + innerRadius * Math.cos(endAngleInner * Utils.DEG2RAD), center.y + innerRadius * Math.sin(endAngleInner * Utils.DEG2RAD));
                     }
 
                     this.mPathBuffer.arcTo(this.mInnerRectBuffer, endAngleInner, -sweepAngleInner);
                 }
             } else {
-
                 if (sweepAngleOuter % 360 > Utils.NUMBER_EPSILON) {
                     if (accountForSliceSpacing) {
                         const angleMiddle = startAngleOuter + sweepAngleOuter / 2;
 
-                        const sliceSpaceOffset = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY, 
-                            arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter);
+                        const sliceSpaceOffset = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY, arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter);
 
-                        const arcEndPointX = center.x + sliceSpaceOffset *  Math.cos(angleMiddle * Utils.DEG2RAD);
-                        const arcEndPointY = center.y + sliceSpaceOffset *  Math.sin(angleMiddle * Utils.DEG2RAD);
+                        const arcEndPointX = center.x + sliceSpaceOffset * Math.cos(angleMiddle * Utils.DEG2RAD);
+                        const arcEndPointY = center.y + sliceSpaceOffset * Math.sin(angleMiddle * Utils.DEG2RAD);
 
-                        this.mPathBuffer.lineTo( arcEndPointX, arcEndPointY);
+                        this.mPathBuffer.lineTo(arcEndPointX, arcEndPointY);
                     } else {
                         this.mPathBuffer.lineTo(center.x, center.y);
                     }
@@ -327,7 +325,7 @@ export class PieChartRenderer extends DataRenderer {
 
             this.mPathBuffer.close();
 
-            this.mBitmapCanvas.drawPath(this.mPathBuffer, this.mRenderPaint);
+            c.drawPath(this.mPathBuffer, this.mRenderPaint);
 
             angle += sliceAngle * phaseX;
         }
@@ -347,16 +345,16 @@ export class PieChartRenderer extends DataRenderer {
         const phaseX = this.mAnimator.getPhaseX();
         const phaseY = this.mAnimator.getPhaseY();
 
-        const roundedRadius = (radius - (radius * this.mChart.getHoleRadius() / 100)) / 2;
+        const roundedRadius = (radius - (radius * this.mChart.getHoleRadius()) / 100) / 2;
         const holeRadiusPercent = this.mChart.getHoleRadius() / 100;
-        let labelRadiusOffset = radius / 10 * 3.6;
+        let labelRadiusOffset = (radius / 10) * 3.6;
 
         if (this.mChart.isDrawHoleEnabled()) {
-            labelRadiusOffset = (radius - (radius * holeRadiusPercent)) / 2;
+            labelRadiusOffset = (radius - radius * holeRadiusPercent) / 2;
 
             if (!this.mChart.isDrawSlicesUnderHoleEnabled() && this.mChart.isDrawRoundedSlicesEnabled()) {
                 // Add curved circle slice and spacing to rotation angle, so that it sits nicely inside
-                rotationAngle += roundedRadius * 360 / (Math.PI * 2 * radius);
+                rotationAngle += (roundedRadius * 360) / (Math.PI * 2 * radius);
             }
         }
 
@@ -374,10 +372,9 @@ export class PieChartRenderer extends DataRenderer {
 
         c.save();
 
-        const offset = Utils.convertDpToPixel(5);
+        const offset = 5;
 
         for (let i = 0; i < dataSets.length; i++) {
-
             const dataSet = dataSets[i];
             const drawValues = dataSet.isDrawValuesEnabled();
 
@@ -392,29 +389,27 @@ export class PieChartRenderer extends DataRenderer {
             // Apply the text-styling defined by the DataSet
             this.applyValueTextStyle(dataSet);
 
-            const lineHeight = Utils.calcTextHeight(this.mValuePaint, "Q") + Utils.convertDpToPixel(4);
+            const lineHeight = Utils.calcTextHeight(this.mValuePaint, 'Q') + 4;
 
             const formatter = dataSet.getValueFormatter();
 
             const entryCount = dataSet.getEntryCount();
 
             this.mValueLinePaint.setColor(dataSet.getValueLineColor());
-            this.mValueLinePaint.setStrokeWidth(Utils.convertDpToPixel(dataSet.getValueLineWidth()));
+            this.mValueLinePaint.setStrokeWidth(dataSet.getValueLineWidth());
 
             const sliceSpace = this.getSliceSpace(dataSet);
 
             const iconsOffset = dataSet.getIconsOffset();
-            iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);
-            iconsOffset.y = Utils.convertDpToPixel(iconsOffset.y);
+            iconsOffset.x = iconsOffset.x;
+            iconsOffset.y = iconsOffset.y;
 
             for (let j = 0; j < entryCount; j++) {
-
                 const entry = dataSet.getEntryForIndex(j);
 
-                if (xIndex == 0) {
+                if (xIndex === 0) {
                     angle = 0;
-                }
-                else {
+                } else {
                     angle = absoluteAngles[xIndex - 1] * phaseX;
                 }
 
@@ -428,17 +423,17 @@ export class PieChartRenderer extends DataRenderer {
 
                 const transformedAngle = rotationAngle + angle * phaseY;
 
-                let value = this.mChart.isUsePercentValuesEnabled() ? entry[yKey] / yValueSum * 100 : entry[yKey];
-                let formattedValue = formatter.getPieLabel(value, entry);
-                let entryLabel = entry.label;
+                const value = this.mChart.isUsePercentValuesEnabled() ? (entry[yKey] / yValueSum) * 100 : entry[yKey];
+                const formattedValue = formatter.getPieLabel(value, entry);
+                const entryLabel = entry.label;
 
-                const sliceXBase =  Math.cos(transformedAngle * Utils.DEG2RAD);
-                const sliceYBase =  Math.sin(transformedAngle * Utils.DEG2RAD);
+                const sliceXBase = Math.cos(transformedAngle * Utils.DEG2RAD);
+                const sliceYBase = Math.sin(transformedAngle * Utils.DEG2RAD);
 
-                const drawXOutside = drawEntryLabels && xValuePosition == ValuePosition.OUTSIDE_SLICE;
-                const drawYOutside = drawValues && yValuePosition == ValuePosition.OUTSIDE_SLICE;
-                const drawXInside = drawEntryLabels && xValuePosition == ValuePosition.INSIDE_SLICE;
-                const drawYInside = drawValues && yValuePosition == ValuePosition.INSIDE_SLICE;
+                const drawXOutside = drawEntryLabels && xValuePosition === ValuePosition.OUTSIDE_SLICE;
+                const drawYOutside = drawValues && yValuePosition === ValuePosition.OUTSIDE_SLICE;
+                const drawXInside = drawEntryLabels && xValuePosition === ValuePosition.INSIDE_SLICE;
+                const drawYInside = drawValues && yValuePosition === ValuePosition.INSIDE_SLICE;
 
                 if (drawXOutside || drawYOutside) {
                     const valueLineLength1 = dataSet.getValueLinePart1Length();
@@ -451,14 +446,12 @@ export class PieChartRenderer extends DataRenderer {
                     let line1Radius;
 
                     if (this.mChart.isDrawHoleEnabled()) {
-                        line1Radius = (radius - (radius * holeRadiusPercent)) * valueLinePart1OffsetPercentage + (radius * holeRadiusPercent);
-                    }
-                    else {
+                        line1Radius = (radius - radius * holeRadiusPercent) * valueLinePart1OffsetPercentage + radius * holeRadiusPercent;
+                    } else {
                         line1Radius = radius * valueLinePart1OffsetPercentage;
                     }
 
-                    const polyline2Width = dataSet.isValueLineVariableLength() ? labelRadius * valueLineLength2 * 
-                        Math.abs(Math.sin(transformedAngle * Utils.DEG2RAD)) : labelRadius * valueLineLength2;
+                    const polyline2Width = dataSet.isValueLineVariableLength() ? labelRadius * valueLineLength2 * Math.abs(Math.sin(transformedAngle * Utils.DEG2RAD)) : labelRadius * valueLineLength2;
 
                     const pt0x = line1Radius * sliceXBase + center.x;
                     const pt0y = line1Radius * sliceYBase + center.y;
@@ -472,7 +465,7 @@ export class PieChartRenderer extends DataRenderer {
 
                         this.mValuePaint.setTextAlign(Align.RIGHT);
 
-                        if(drawXOutside) {
+                        if (drawXOutside) {
                             this.mEntryLabelsPaint.setTextAlign(Align.RIGHT);
                         }
 
@@ -483,7 +476,7 @@ export class PieChartRenderer extends DataRenderer {
                         pt2y = pt1y;
                         this.mValuePaint.setTextAlign(Align.LEFT);
 
-                        if(drawXOutside) {
+                        if (drawXOutside) {
                             this.mEntryLabelsPaint.setTextAlign(Align.LEFT);
                         }
 
@@ -491,7 +484,7 @@ export class PieChartRenderer extends DataRenderer {
                         labelPty = pt2y;
                     }
 
-                    if (dataSet.getValueLineColor() != ColorTemplate.COLOR_NONE) {
+                    if (dataSet.getValueLineColor() !== ColorTemplate.COLOR_NONE) {
                         if (dataSet.isUsingSliceColorAsValueLineColor()) {
                             this.mValueLinePaint.setColor(dataSet.getColor(j));
                         }
@@ -507,7 +500,6 @@ export class PieChartRenderer extends DataRenderer {
                         if (j < data.getEntryCount() && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight);
                         }
-
                     } else if (drawXOutside) {
                         if (j < data.getEntryCount() && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight / 2);
@@ -531,7 +523,6 @@ export class PieChartRenderer extends DataRenderer {
                         if (j < data.getEntryCount() && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight);
                         }
-
                     } else if (drawXInside) {
                         if (j < data.getEntryCount() && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight / 2);
@@ -544,7 +535,7 @@ export class PieChartRenderer extends DataRenderer {
                 if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                     const icon = entry.icon;
 
-                    let x = (labelRadius + iconsOffset.y) * sliceXBase + center.x;
+                    const x = (labelRadius + iconsOffset.y) * sliceXBase + center.x;
                     let y = (labelRadius + iconsOffset.y) * sliceYBase + center.y;
                     y += iconsOffset.x;
 
@@ -573,7 +564,7 @@ export class PieChartRenderer extends DataRenderer {
     protected drawEntryLabel(c: Canvas, label, x, y) {
         c.drawText(label.toString(), x, y, this.mEntryLabelsPaint);
     }
-    
+
     public drawExtras(c: Canvas) {
         this.drawHole(c);
         if (this.mDrawBitmap.get()) {
@@ -588,8 +579,8 @@ export class PieChartRenderer extends DataRenderer {
      */
     protected drawHole(c: Canvas) {
         if (this.mChart.isDrawHoleEnabled() && this.mBitmapCanvas != null) {
-            let radius = this.mChart.getRadius();
-            let holeRadius = radius * (this.mChart.getHoleRadius() / 100);
+            const radius = this.mChart.getRadius();
+            const holeRadius = radius * (this.mChart.getHoleRadius() / 100);
             const center = this.mChart.getCenterCircleBox();
 
             if (ColorTemplate.getColorInstance(this.mHolePaint.getColor()).a > 0) {
@@ -598,13 +589,11 @@ export class PieChartRenderer extends DataRenderer {
             }
 
             // only draw the circle if it can be seen (not covered by the hole)
-            if (ColorTemplate.getColorInstance(this.mTransparentCirclePaint.getColor()).a > 0 &&
-                    this.mChart.getTransparentCircleRadius() > this.mChart.getHoleRadius()) {
+            if (ColorTemplate.getColorInstance(this.mTransparentCirclePaint.getColor()).a > 0 && this.mChart.getTransparentCircleRadius() > this.mChart.getHoleRadius()) {
+                const alpha = this.mTransparentCirclePaint.getAlpha();
+                const secondHoleRadius = radius * (this.mChart.getTransparentCircleRadius() / 100);
 
-                let alpha = this.mTransparentCirclePaint.getAlpha();
-                let secondHoleRadius = radius * (this.mChart.getTransparentCircleRadius() / 100);
-
-                this.mTransparentCirclePaint.setAlpha((alpha * this.mAnimator.getPhaseX() * this.mAnimator.getPhaseY()));
+                this.mTransparentCirclePaint.setAlpha(alpha * this.mAnimator.getPhaseX() * this.mAnimator.getPhaseY());
 
                 // draw the transparent-circle
                 this.mHoleCirclePath.reset();
@@ -623,20 +612,17 @@ export class PieChartRenderer extends DataRenderer {
      * sense when center-hole is enabled.
      */
     protected drawCenterText(c: Canvas) {
-
         const centerText = this.mChart.getCenterText();
 
         if (this.mChart.isDrawCenterTextEnabled() && centerText != null) {
-
             const center = this.mChart.getCenterCircleBox();
             const offset = this.mChart.getCenterTextOffset();
 
-            let x = center.x + offset.x;
-            let y = center.y + offset.y;
+            const x = center.x + offset.x;
+            const y = center.y + offset.y;
 
-            let innerRadius = this.mChart.isDrawHoleEnabled() && !this.mChart.isDrawSlicesUnderHoleEnabled()
-                    ? this.mChart.getRadius() * (this.mChart.getHoleRadius() / 100)
-                    : this.mChart.getRadius();
+            const innerRadius =
+                this.mChart.isDrawHoleEnabled() && !this.mChart.isDrawSlicesUnderHoleEnabled() ? this.mChart.getRadius() * (this.mChart.getHoleRadius() / 100) : this.mChart.getRadius();
 
             const holeRect = this.mRectBuffer[0];
             holeRect.left = x - innerRadius;
@@ -646,25 +632,24 @@ export class PieChartRenderer extends DataRenderer {
             const boundingRect = this.mRectBuffer[1];
             boundingRect.set(holeRect);
 
-            let radiusPercent = this.mChart.getCenterTextRadiusPercent() / 100;
+            const radiusPercent = this.mChart.getCenterTextRadiusPercent() / 100;
             if (radiusPercent > 0.0) {
                 boundingRect.inset((boundingRect.width() - boundingRect.width() * radiusPercent) / 2, (boundingRect.height() - boundingRect.height() * radiusPercent) / 2);
             }
 
-            if (centerText != this.mCenterTextLastValue || boundingRect != this.mCenterTextLastBounds) {
-
+            if (centerText !== this.mCenterTextLastValue || boundingRect !== this.mCenterTextLastBounds) {
                 // Next time we won't recalculate StaticLayout...
                 this.mCenterTextLastBounds.set(boundingRect);
                 this.mCenterTextLastValue = centerText;
 
-                let width = this.mCenterTextLastBounds.width();
+                const width = this.mCenterTextLastBounds.width();
 
                 // If width is 0, it will crash. Always have a minimum of 1
                 this.mCenterTextLayout = new StaticLayout(centerText, this.mCenterTextPaint, Math.max(Math.ceil(width), 1), LayoutAlignment.ALIGN_CENTER, 1, 0, false);
             }
 
             //let layoutWidth = Utils.getStaticLayoutMaxWidth(mCenterTextLayout);
-            let layoutHeight = this.mCenterTextLayout.getHeight();
+            const layoutHeight = this.mCenterTextLayout.getHeight();
 
             c.save();
 
@@ -678,13 +663,13 @@ export class PieChartRenderer extends DataRenderer {
             }
 
             c.translate(boundingRect.left, boundingRect.top + (boundingRect.height() - layoutHeight) / 2);
-            this.mCenterTextLayout.draw(c);
+            this.mCenterTextLayout.draw(c as any);
 
             c.restore();
         }
     }
 
-    public drawHighlighted(c: Canvas, indices: Array<Highlight>) {
+    public drawHighlighted(c: Canvas, indices: Highlight[]) {
         /* Skip entirely if using rounded circle slices, because it doesn't make sense to highlight
          * in this way.
          * TODO: add support for changing slice color with highlighting rather than only shifting the slice
@@ -698,7 +683,7 @@ export class PieChartRenderer extends DataRenderer {
         const phaseY = this.mAnimator.getPhaseY();
 
         let angle;
-        let rotationAngle = this.mChart.getRotationAngle();
+        const rotationAngle = this.mChart.getRotationAngle();
 
         const drawAngles = this.mChart.getDrawAngles();
         const absoluteAngles = this.mChart.getAbsoluteAngles();
@@ -707,12 +692,11 @@ export class PieChartRenderer extends DataRenderer {
         const userInnerRadius = drawInnerArc ? radius * (this.mChart.getHoleRadius() / 100) : 0;
 
         const highlightedCircleBox = this.mDrawHighlightedRectF;
-        highlightedCircleBox.set(0,0,0,0);
+        highlightedCircleBox.set(0, 0, 0, 0);
 
         for (let i = 0; i < indices.length; i++) {
-
             // get the index to highlight
-            let index =  indices[i].x;
+            const index = indices[i].x;
 
             if (index >= drawAngles.length) {
                 continue;
@@ -730,21 +714,20 @@ export class PieChartRenderer extends DataRenderer {
             let visibleAngleCount = 0;
             for (let j = 0; j < entryCount; j++) {
                 // draw only if the value is greater than zero
-                if ((Math.abs(set.getEntryForIndex(j)[yKey]) > Utils.NUMBER_EPSILON)) {
+                if (Math.abs(set.getEntryForIndex(j)[yKey]) > Utils.NUMBER_EPSILON) {
                     visibleAngleCount++;
                 }
             }
 
-            if (index == 0) {
+            if (index === 0) {
                 angle = 0;
-            }
-            else {
+            } else {
                 angle = absoluteAngles[index - 1] * phaseX;
             }
 
             const sliceSpace = visibleAngleCount <= 1 ? 0 : set.getSliceSpace();
 
-            let sliceAngle = drawAngles[index];
+            const sliceAngle = drawAngles[index];
             let innerRadius = userInnerRadius;
 
             const shift = set.getSelectionShift();
@@ -756,8 +739,8 @@ export class PieChartRenderer extends DataRenderer {
 
             this.mRenderPaint.setColor(set.getColor(index));
 
-            const sliceSpaceAngleOuter = visibleAngleCount == 1 ? 0 : sliceSpace / (Utils.DEG2RAD * radius);
-            const sliceSpaceAngleShifted = visibleAngleCount == 1 ? 0 : sliceSpace / (Utils.DEG2RAD * highlightedRadius);
+            const sliceSpaceAngleOuter = visibleAngleCount === 1 ? 0 : sliceSpace / (Utils.DEG2RAD * radius);
+            const sliceSpaceAngleShifted = visibleAngleCount === 1 ? 0 : sliceSpace / (Utils.DEG2RAD * highlightedRadius);
 
             const startAngleOuter = rotationAngle + (angle + sliceSpaceAngleOuter / 2) * phaseY;
             let sweepAngleOuter = (sliceAngle - sliceSpaceAngleOuter) * phaseY;
@@ -777,9 +760,7 @@ export class PieChartRenderer extends DataRenderer {
                 // Android is doing "mod 360"
                 this.mPathBuffer.addCircle(center.x, center.y, highlightedRadius, Direction.CW);
             } else {
-                this.mPathBuffer.moveTo(
-                        center.x + highlightedRadius *  Math.cos(startAngleShifted * Utils.DEG2RAD),
-                        center.y + highlightedRadius *  Math.sin(startAngleShifted * Utils.DEG2RAD));
+                this.mPathBuffer.moveTo(center.x + highlightedRadius * Math.cos(startAngleShifted * Utils.DEG2RAD), center.y + highlightedRadius * Math.sin(startAngleShifted * Utils.DEG2RAD));
 
                 this.mPathBuffer.arcTo(highlightedCircleBox, startAngleShifted, sweepAngleShifted);
             }
@@ -787,29 +768,29 @@ export class PieChartRenderer extends DataRenderer {
             let sliceSpaceRadius = 0;
             if (accountForSliceSpacing) {
                 sliceSpaceRadius = this.calculateMinimumRadiusForSpacedSlice(
-                                center, radius,
-                                sliceAngle * phaseY,
-                                center.x + radius *  Math.cos(startAngleOuter * Utils.DEG2RAD),
-                                center.y + radius *  Math.sin(startAngleOuter * Utils.DEG2RAD),
-                                startAngleOuter,
-                                sweepAngleOuter);
+                    center,
+                    radius,
+                    sliceAngle * phaseY,
+                    center.x + radius * Math.cos(startAngleOuter * Utils.DEG2RAD),
+                    center.y + radius * Math.sin(startAngleOuter * Utils.DEG2RAD),
+                    startAngleOuter,
+                    sweepAngleOuter
+                );
             }
 
             // Android API < 21 does not receive floats in addArc, but a RectF
             this.mInnerRectBuffer.set(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius);
 
             if (drawInnerArc && (innerRadius > 0 || accountForSliceSpacing)) {
-
                 if (accountForSliceSpacing) {
                     let minSpacedRadius = sliceSpaceRadius;
 
-                    if (minSpacedRadius < 0)
-                        minSpacedRadius = -minSpacedRadius;
+                    if (minSpacedRadius < 0) minSpacedRadius = -minSpacedRadius;
 
                     innerRadius = Math.max(innerRadius, minSpacedRadius);
                 }
 
-                const sliceSpaceAngleInner = visibleAngleCount == 1 || innerRadius == 0 ? 0 : sliceSpace / (Utils.DEG2RAD * innerRadius);
+                const sliceSpaceAngleInner = visibleAngleCount === 1 || innerRadius === 0 ? 0 : sliceSpace / (Utils.DEG2RAD * innerRadius);
                 const startAngleInner = rotationAngle + (angle + sliceSpaceAngleInner / 2) * phaseY;
                 let sweepAngleInner = (sliceAngle - sliceSpaceAngleInner) * phaseY;
                 if (sweepAngleInner < 0) {
@@ -821,19 +802,16 @@ export class PieChartRenderer extends DataRenderer {
                     // Android is doing "mod 360"
                     this.mPathBuffer.addCircle(center.x, center.y, innerRadius, Direction.CCW);
                 } else {
-
-                    this.mPathBuffer.lineTo(center.x + innerRadius *  Math.cos(endAngleInner * Utils.DEG2RAD), center.y + innerRadius *  Math.sin(endAngleInner * Utils.DEG2RAD));
+                    this.mPathBuffer.lineTo(center.x + innerRadius * Math.cos(endAngleInner * Utils.DEG2RAD), center.y + innerRadius * Math.sin(endAngleInner * Utils.DEG2RAD));
                     this.mPathBuffer.arcTo(this.mInnerRectBuffer, endAngleInner, -sweepAngleInner);
                 }
             } else {
-
                 if (sweepAngleOuter % 360 > Utils.NUMBER_EPSILON) {
-
                     if (accountForSliceSpacing) {
                         const angleMiddle = startAngleOuter + sweepAngleOuter / 2;
 
-                        const arcEndPointX = center.x + sliceSpaceRadius *  Math.cos(angleMiddle * Utils.DEG2RAD);
-                        const arcEndPointY = center.y + sliceSpaceRadius *  Math.sin(angleMiddle * Utils.DEG2RAD);
+                        const arcEndPointX = center.x + sliceSpaceRadius * Math.cos(angleMiddle * Utils.DEG2RAD);
+                        const arcEndPointY = center.y + sliceSpaceRadius * Math.sin(angleMiddle * Utils.DEG2RAD);
 
                         this.mPathBuffer.lineTo(arcEndPointX, arcEndPointY);
                     } else {
@@ -853,7 +831,6 @@ export class PieChartRenderer extends DataRenderer {
      * @param c
      */
     protected drawRoundedSlices(c: Canvas) {
-
         if (!this.mChart.isDrawRoundedSlicesEnabled()) {
             return;
         }
@@ -869,25 +846,23 @@ export class PieChartRenderer extends DataRenderer {
         const phaseY = this.mAnimator.getPhaseY();
 
         const center = this.mChart.getCenterCircleBox();
-        let r = this.mChart.getRadius();
+        const r = this.mChart.getRadius();
 
         // calculate the radius of the "slice-circle"
-        let circleRadius = (r - (r * this.mChart.getHoleRadius() / 100)) / 2;
+        const circleRadius = (r - (r * this.mChart.getHoleRadius()) / 100) / 2;
 
         const drawAngles = this.mChart.getDrawAngles();
         let angle = this.mChart.getRotationAngle();
 
         for (let j = 0; j < dataSet.getEntryCount(); j++) {
-
-            let sliceAngle = drawAngles[j];
+            const sliceAngle = drawAngles[j];
 
             const e = dataSet.getEntryForIndex(j);
 
             // draw only if the value is greater than zero
-            if ((Math.abs(e[yKey]) > Utils.NUMBER_EPSILON)) {
-
-                let x =  ((r - circleRadius) * Math.cos(((angle + sliceAngle) * phaseY) * Utils.DEG2RAD) + center.x);
-                let y =  ((r - circleRadius) * Math.sin(((angle + sliceAngle) * phaseY) * Utils.DEG2RAD) + center.y);
+            if (Math.abs(e[yKey]) > Utils.NUMBER_EPSILON) {
+                const x = (r - circleRadius) * Math.cos((angle + sliceAngle) * phaseY * Utils.DEG2RAD) + center.x;
+                const y = (r - circleRadius) * Math.sin((angle + sliceAngle) * phaseY * Utils.DEG2RAD) + center.y;
 
                 this.mRenderPaint.setColor(dataSet.getColor(j));
                 this.mBitmapCanvas.drawCircle(x, y, circleRadius, this.mRenderPaint);

@@ -24,7 +24,7 @@ public class TriangleShapeRenderer implements IShapeRenderer
 
         const shapeSize = dataSet.getScatterShapeSize();
         const shapeHalf = shapeSize / 2f;
-        const shapeHoleSizeHalf = Utils.convertDpToPixel(dataSet.getScatterShapeHoleRadius());
+        const shapeHoleSizeHalf = (dataSet.getScatterShapeHoleRadius());
         const shapeHoleSize = shapeHoleSizeHalf * 2.f;
         const shapeStrokeSize = (shapeSize - shapeHoleSize) / 2.f;
 

@@ -530,7 +530,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
      */
     public setCenterTextSize(let sizeDp) {
         ((PieChartRenderer) this.mRenderer).getPaintCenterText().setTextSize(
-                Utils.convertDpToPixel(sizeDp));
+                (sizeDp));
     }
 
     /**
@@ -549,8 +549,8 @@ public class PieChart extends PieRadarChartBase<PieData> {
      * @param y
      */
     public setCenterTextOffset(let x, let y) {
-        this.mCenterTextOffset.x = Utils.convertDpToPixel(x);
-        this.mCenterTextOffset.y = Utils.convertDpToPixel(y);
+        this.mCenterTextOffset.x = (x);
+        this.mCenterTextOffset.y = (y);
     }
 
     /**

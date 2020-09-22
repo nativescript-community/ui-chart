@@ -76,7 +76,7 @@ public class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
 
                     if (mTouchMode == NONE
                             && distance(x, this.mTouchStartPoint.x, y, this.mTouchStartPoint.y)
-                            > Utils.convertDpToPixel(8f)) {
+                            > (8f)) {
                         this.mLastGesture = ChartGesture.ROTATE;
                         this.mTouchMode = ROTATE;
                         this.mChart.disableScroll();

@@ -113,7 +113,7 @@ export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
      * @param width
      */
     public setShadowWidth(width) {
-        this.mShadowWidth = Utils.convertDpToPixel(width);
+        this.mShadowWidth = (width);
     }
 
     public getShadowWidth() {
