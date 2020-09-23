@@ -39,8 +39,7 @@ export class ColorTemplate {
         return 'rgb(51, 181, 229)';
     }
 
-    public static getColorInstance(c: Color | number | string)
-    {
+    public static getColorInstance(c: Color | number | string) {
         return c instanceof Color ? c : new Color(c as any);
     }
 
@@ -52,8 +51,7 @@ export class ColorTemplate {
      * @return
      */
     public static colorWithAlpha(color: Color, alpha) {
-        color.a = alpha;
-        return color;
+        return new Color(alpha, color.r, color.g, color.b);
     }
 
     /**

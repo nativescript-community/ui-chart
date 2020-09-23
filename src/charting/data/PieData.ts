@@ -40,14 +40,13 @@ export class PieData extends ChartData<PieEntry, PieDataSet> {
      * @param index
      * @return
      */
-    
+
     public getDataSetByIndex(index): PieDataSet {
-        return index == 0 ? this.getDataSet() : null;
+        return index === 0 ? this.getDataSet() : null;
     }
 
     public getDataSetByLabel(label, ignoreCase): PieDataSet {
-        return ignoreCase ? label.equalsIgnoreCase(this.mDataSets[0].getLabel()) ? this.mDataSets[0]
-                : null : label.equals(this.mDataSets[0].getLabel()) ? this.mDataSets[0] : null;
+        return ignoreCase ? (label.equalsIgnoreCase(this.mDataSets[0].getLabel()) ? this.mDataSets[0] : null) : label.equals(this.mDataSets[0].getLabel()) ? this.mDataSets[0] : null;
     }
 
     public getEntryForHighlight(highlight: Highlight): Entry {

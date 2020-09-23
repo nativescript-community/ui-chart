@@ -38,25 +38,25 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
      * @param barSpace   the space between individual bars in values (not pixels) e.g. 0.1 for bar width 1
      */
     public groupBars(fromX, groupSpace, barSpace) {
-        let setCount = this.mDataSets.length;
+        const setCount = this.mDataSets.length;
         if (setCount <= 1) {
             throw new Error('BarData needs to hold at least 2 BarDataSets to allow grouping.');
         }
 
-        let max = this.getMaxEntryCountSet();
-        let maxEntryCount = max.getEntryCount();
+        const max = this.getMaxEntryCountSet();
+        const maxEntryCount = max.getEntryCount();
 
-        let groupSpaceWidthHalf = groupSpace / 2;
-        let barSpaceHalf = barSpace / 2;
-        let barWidthHalf = this.mBarWidth / 2;
+        const groupSpaceWidthHalf = groupSpace / 2;
+        const barSpaceHalf = barSpace / 2;
+        const barWidthHalf = this.mBarWidth / 2;
 
-        let interval = this.getGroupWidth(groupSpace, barSpace);
+        const interval = this.getGroupWidth(groupSpace, barSpace);
 
         for (let i = 0; i < maxEntryCount; i++) {
-            let start = fromX;
+            const start = fromX;
             fromX += groupSpaceWidthHalf;
 
-            for (let set of this.mDataSets) {
+            for (const set of this.mDataSets) {
                 fromX += barSpaceHalf;
                 fromX += barWidthHalf;
 
@@ -74,9 +74,9 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
             }
 
             fromX += groupSpaceWidthHalf;
-            let end = fromX;
-            let innerInterval = end - start;
-            let diff = interval - innerInterval;
+            const end = fromX;
+            const innerInterval = end - start;
+            const diff = interval - innerInterval;
 
             // correct rounding errors
             if (diff > 0 || diff < 0) {

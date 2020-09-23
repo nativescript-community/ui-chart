@@ -9,7 +9,7 @@ import { BaseDataSet } from './BaseDataSet';
 export enum Rounding {
     UP,
     DOWN,
-    CLOSEST
+    CLOSEST,
 }
 /**
  * The DataSet class represents one group or type of entries (Entry) in the
@@ -60,7 +60,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         if (this.mValues == null) this.mValues = [];
 
         if (this.mValues.length > 0) {
-            for (let e of this.mValues) {
+            for (const e of this.mValues) {
                 this.initEntryData(e);
                 this.calcMinMaxForEntry(e);
             }
@@ -75,14 +75,12 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         this.mXMax = -Infinity;
         this.mXMin = Infinity;
 
-        for (let e of this.mValues) {
+        for (const e of this.mValues) {
             this.calcMinMaxForEntry(e);
         }
     }
 
-    protected initEntryData(e: T)
-    {
-    }
+    protected initEntryData(e: T) {}
 
     public calcMinMaxYRange(fromX, toX) {
         if (this.mValues == null || this.mValues.length === 0) return;
@@ -90,8 +88,8 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         this.mYMax = -Infinity;
         this.mYMin = Infinity;
 
-        let indexFrom = this.getEntryIndexForXValue(fromX, NaN, Rounding.DOWN);
-        let indexTo = this.getEntryIndexForXValue(toX, NaN, Rounding.UP);
+        const indexFrom = this.getEntryIndexForXValue(fromX, NaN, Rounding.DOWN);
+        const indexTo = this.getEntryIndexForXValue(toX, NaN, Rounding.UP);
 
         for (let i = indexFrom; i <= indexTo; i++) {
             // only recalculate y
@@ -120,7 +118,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
             this.mXMax = -Infinity;
             this.mXMin = Infinity;
 
-            for (let e of this.mValues) {
+            for (const e of this.mValues) {
                 this.calcMinMaxForEntry(e);
             }
         } else {
@@ -140,7 +138,6 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
     protected getInternalValues() {
         return this.mValues;
-
     }
 
     public getEntryCount() {
@@ -240,7 +237,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     public getEntryForXValue(xValue, closestToY, rounding = Rounding.CLOSEST): T {
-        let index = this.getEntryIndexForXValue(xValue, closestToY, rounding);
+        const index = this.getEntryIndexForXValue(xValue, closestToY, rounding);
         if (index > -1) return this.getInternalValues()[index];
         return null;
     }
@@ -248,7 +245,6 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     public getEntryForIndex(index) {
         return this.getInternalValues()[index];
     }
-
 
     public getEntryIndexForXValue(xValue, closestToY, rounding) {
         const values = this.getInternalValues();
@@ -260,7 +256,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         const xProperty = this.xProperty;
         const yProperty = this.yProperty;
         while (low < high) {
-            let m = Math.floor((low + high) / 2);
+            const m = Math.floor((low + high) / 2);
             const d1 = values[m][xProperty] - xValue,
                 d2 = values[m + 1][xProperty] - xValue,
                 ad1 = Math.abs(d1),
@@ -289,14 +285,14 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
             closest = high;
         }
 
-        if (closest != -1) {
+        if (closest !== -1) {
             const closestXValue = values[closest][xProperty];
-            if (rounding == Rounding.UP) {
+            if (rounding === Rounding.UP) {
                 // If rounding up, and found x-value is lower than specified x, and we can go upper...
                 if (closestXValue < xValue && closest < values.length - 1) {
                     ++closest;
                 }
-            } else if (rounding == Rounding.DOWN) {
+            } else if (rounding === Rounding.DOWN) {
                 // If rounding down, and found x-value is upper than specified x, and we can go lower...
                 if (closestXValue > xValue && closest > 0) {
                     --closest;
@@ -305,7 +301,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
             // Search by closest to y-value
             if (!isNaN(closestToY)) {
-                while (closest > 0 && values[closest - 1][xProperty] == closestXValue) closest -= 1;
+                while (closest > 0 && values[closest - 1][xProperty] === closestXValue) closest -= 1;
 
                 let closestYValue = values[closest][yProperty];
                 let closestYIndex = closest;
@@ -316,7 +312,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
                     const value = values[closest];
 
-                    if (value[xProperty] != closestXValue) break;
+                    if (value[xProperty] !== closestXValue) break;
 
                     if (Math.abs(value[yProperty] - closestToY) < Math.abs(closestYValue - closestToY)) {
                         closestYValue = closestToY;

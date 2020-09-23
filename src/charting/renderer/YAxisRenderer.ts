@@ -30,6 +30,7 @@ export class YAxisRenderer extends AxisRenderer {
         if (this.mViewPortHandler != null) {
             this.mAxisLabelPaint.setColor('black');
             this.mAxisLabelPaint.setTextSize(10);
+            this.mAxisLabelPaint.setAntiAlias(true);
 
             this.mZeroLinePaint = new Paint();
             this.mZeroLinePaint.setAntiAlias(true);

@@ -168,10 +168,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     @profile
     public onDraw(canvas: Canvas) {
+        const startTime = Date.now();
         super.onDraw(canvas);
 
         if (this.mData === null) return;
-        const startTime = Date.now();
 
         // execute all drawing commands
         this.drawGridBackground(canvas);
@@ -263,7 +263,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             this.totalTime += drawtime;
             this.drawCycles += 1;
             const average = this.totalTime / this.drawCycles;
-            console.log(LOG_TAG, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
+            console.log(this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
         }
     }
 

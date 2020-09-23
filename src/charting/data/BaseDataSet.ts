@@ -14,7 +14,6 @@ import { Rounding } from './DataSet';
  * provided by the IDataSet interface.
  */
 export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
-
     abstract getYMin(): number;
     abstract getYMax(): number;
     abstract getXMin(): number;
@@ -31,7 +30,6 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     abstract getEntryForXValue(xValue: number, closestToY: number, rounding?: Rounding): T;
     abstract calcMinMax();
 
-    
     /**
      * property to access the "x" value of an entry for this set
      *
@@ -46,7 +44,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * List representing all colors that are used for this DataSet
      */
-    protected mColors: Array<string | Color> = null;
+    protected mColors: (string | Color)[] = null;
 
     private mColorDefault = '#8CEAFF';
 
@@ -57,7 +55,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * List representing all colors that are used for drawing the actual values for this DataSet
      */
-    protected mValueColors: Array<string | Color> = null;
+    protected mValueColors: (string | Color)[] = null;
 
     /**
      * label that describes the DataSet or the data the DataSet represents
@@ -149,9 +147,8 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * ###### ###### COLOR GETTING RELATED METHODS ##### ######
      */
 
-    public getColors(): Array<string | Color> {
-        if (this.mColors.length == 0)
-        {
+    public getColors(): (string | Color)[] {
+        if (this.mColors.length === 0) {
             return [this.mColorDefault];
         }
         return this.mColors;
@@ -162,8 +159,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getColor(index = 0) {
-        if (this.mColors.length <= index || this.mColors.length == 0)
-        {
+        if (this.mColors.length <= index || this.mColors.length === 0) {
             return this.mColorDefault;
         }
         return this.mColors[index % this.mColors.length];
@@ -218,7 +214,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      *
      * @param gradientColors
      */
-    public setGradientColors(gradientColors:  GradientColor[]) {
+    public setGradientColors(gradientColors: GradientColor[]) {
         this.mGradientColors = gradientColors;
     }
 
@@ -231,7 +227,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     public setColor(color: string | Color, alpha?: number) {
         this.resetColors();
         if (alpha !== undefined) {
-            const actColor = color instanceof Color ? color: new Color(color)
+            const actColor = color instanceof Color ? color : new Color(color);
             color = new Color(actColor.r, actColor.g, actColor.b, alpha);
         }
         this.mColors.push(color);
@@ -248,7 +244,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         if (alpha === undefined) {
             this.mColors = colors;
         } else {
-            this.mColors = colors.map(c => new Color(c.r, c.g, c.b, alpha));
+            this.mColors = colors.map((c) => new Color(c.r, c.g, c.b, alpha));
         }
     }
 
@@ -409,7 +405,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     public getIndexInEntries(xIndex) {
         for (let i = 0; i < this.getEntryCount(); i++) {
-            if (xIndex == this.getEntryForIndex(i).x) return i;
+            if (xIndex === this.getEntryForIndex(i).x) return i;
         }
 
         return -1;

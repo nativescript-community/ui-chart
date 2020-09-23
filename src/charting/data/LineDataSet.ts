@@ -180,7 +180,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      */
     public setCircleRadius(radius) {
         if (radius >= 1) {
-            this.mCircleRadius = (radius);
+            this.mCircleRadius = radius;
         } else {
             console.error('LineDataSet', 'Circle radius cannot be < 1');
         }
@@ -198,7 +198,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      */
     public setCircleHoleRadius(holeRadius) {
         if (holeRadius >= 0.5) {
-            this.mCircleHoleRadius = (holeRadius);
+            this.mCircleHoleRadius = holeRadius;
         } else {
             console.error('LineDataSet', 'Circle radius cannot be < 0.5');
         }

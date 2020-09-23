@@ -1,4 +1,5 @@
-import { Entry } from '../../data/Entry';
+import { Entry } from '@nativescript-community/ui-chart/data/Entry';
+import { RadarEntry } from '@nativescript-community/ui-chart/data/RadarEntry';
 import { ILineScatterCandleRadarDataSet } from './ILineScatterCandleRadarDataSet';
 
 /**

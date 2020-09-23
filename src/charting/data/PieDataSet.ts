@@ -6,7 +6,7 @@ import { Utils } from '../utils/Utils';
 
 export enum ValuePosition {
     INSIDE_SLICE,
-    OUTSIDE_SLICE
+    OUTSIDE_SLICE,
 }
 export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     /**
@@ -50,7 +50,7 @@ export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
         if (spaceDp > 20) spaceDp = 20;
         if (spaceDp < 0) spaceDp = 0;
 
-        this.mSliceSpace = (spaceDp);
+        this.mSliceSpace = spaceDp;
     }
 
     public getSliceSpace() {
@@ -85,7 +85,7 @@ export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
      * @param shift
      */
     public setSelectionShift(shift) {
-        this.mShift = (shift);
+        this.mShift = shift;
     }
 
     public getSelectionShift() {
