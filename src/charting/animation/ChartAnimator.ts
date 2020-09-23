@@ -41,7 +41,7 @@ export class ChartAnimator {
         // return animatorX;
     }
 
-    private yAnimator(duration, easing: EasingFunction, listener?: () => void) {
+    private yAnimator(duration, easing: EasingFunction = Easing.Linear.None, listener?: () => void) {
         return new TWEEN.Tween({ value: 0 })
             .to({ value: 1 }, duration)
             .easing(easing)
@@ -92,10 +92,9 @@ export class ChartAnimator {
      * @param durationMillis animation duration
      * @param easing EasingFunction
      */
-    public animateY(durationMillis, easing /* :EasingFunction */) {
-        // ObjectAnimator animatorY = yAnimator(durationMillis, easing);
-        // animatorY.addUpdateListener(mListener);
-        // animatorY.start();
+    public animateY(durationMillis, easing: EasingFunction) {
+        const animatorY = this.yAnimator(durationMillis, easing, this.mListener);
+        animatorY.start(0);
     }
 
     /**

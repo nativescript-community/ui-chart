@@ -370,7 +370,12 @@ export namespace Utils {
      * @return
      */
 
-    export function getPosition(center, dist, angle, outputPoint) {
+    export function getPosition(center, dist, angle, outputPoint?) {
+        if (outputPoint) {
+            outputPoint.x = center.x + dist * Math.cos(toRadians(angle));
+            outputPoint.y = center.y + dist * Math.sin(toRadians(angle));
+            return outputPoint;
+        }
         return {
             x: center.x + dist * Math.cos(toRadians(angle)),
             y: center.y + dist * Math.sin(toRadians(angle)),

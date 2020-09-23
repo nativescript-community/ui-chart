@@ -5,6 +5,7 @@ import { BarDataSet } from '../data/BarDataSet';
 import { BarEntry } from '../data/BarEntry';
 import { Entry } from '../data/Entry';
 import { PieEntry } from '../data/PieEntry';
+import { RadarEntry } from '../data/RadarEntry';
 
 /**
  * Class to format all values before they are drawn as labels.
@@ -105,9 +106,9 @@ export abstract class ValueFormatter implements IAxisValueFormatter, IValueForma
      * @param radarEntry entry being labeled
      * @return formatted string label
      */
-    // public  getRadarLabel( radarEntry: RadarEntry) {
-    //     return this.getFormattedValue(radarEntry.getY());
-    // }
+    public  getRadarLabel( value, radarEntry: RadarEntry) {
+        return this.getFormattedValue(value);
+    }
 
     /**
      * Used to draw bubble size labels, calls {@link #getFormattedValue} by default.

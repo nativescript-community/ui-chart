@@ -17,6 +17,7 @@ export class XAxisRenderer extends AxisRenderer {
         this.mXAxis = xAxis;
 
         this.mAxisLabelPaint.setColor('black');
+        this.mAxisLabelPaint.setAntiAlias(true);
         this.mAxisLabelPaint.setTextAlign(Align.CENTER);
         this.mAxisLabelPaint.setTextSize(10);
     }

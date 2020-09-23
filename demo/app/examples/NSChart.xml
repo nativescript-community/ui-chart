@@ -5,6 +5,8 @@
     </ActionBar>
     <ScrollView>
         <StackLayout>
+            <Label text="Radar Chart" fontSize="20"/>
+            <chart:RadarChart id="pie-chart" backgroundColor="lightgray" width="300" height="350" loaded="onRadarChartLoaded"/>
             <Label text="Pie Chart" fontSize="20"/>
             <chart:PieChart id="pie-chart" backgroundColor="lightgray" width="300" height="350" loaded="onPieChartLoaded"/>
             <Label text="Line Chart" fontSize="20"/>

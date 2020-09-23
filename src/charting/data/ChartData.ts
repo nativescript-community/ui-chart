@@ -139,7 +139,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             this.mLeftAxisMin = firstLeft.getYMin();
 
             for (const dataSet of visibleDatasets) {
-                if (dataSet.getAxisDependency() == AxisDependency.LEFT) {
+                if (dataSet.getAxisDependency() === AxisDependency.LEFT) {
                     if (dataSet.getYMin() < this.mLeftAxisMin) this.mLeftAxisMin = dataSet.getYMin();
 
                     if (dataSet.getYMax() > this.mLeftAxisMax) this.mLeftAxisMax = dataSet.getYMax();
@@ -155,7 +155,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             this.mRightAxisMin = firstRight.getYMin();
 
             for (const dataSet of visibleDatasets) {
-                if (dataSet.getAxisDependency() == AxisDependency.RIGHT) {
+                if (dataSet.getAxisDependency() === AxisDependency.RIGHT) {
                     if (dataSet.getYMin() < this.mRightAxisMin) this.mRightAxisMin = dataSet.getYMin();
 
                     if (dataSet.getYMax() > this.mRightAxisMax) this.mRightAxisMax = dataSet.getYMax();
@@ -186,7 +186,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         if (axis === undefined) {
             return this.mYMin;
         }
-        if (axis == AxisDependency.LEFT) {
+        if (axis === AxisDependency.LEFT) {
             if (!Number.isFinite(this.mLeftAxisMin)) {
                 if (!Number.isFinite(this.mRightAxisMin)) {
                     return 0;
@@ -213,7 +213,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         if (axis === undefined) {
             return this.mYMax;
         }
-        if (axis == AxisDependency.LEFT) {
+        if (axis === AxisDependency.LEFT) {
             if (!Number.isFinite(this.mLeftAxisMax)) {
                 if (!Number.isFinite(this.mRightAxisMax)) {
                     return 0;
@@ -257,7 +257,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         return this.mDataSets;
     }
     public getVisibleDataSets() {
-        return this.mDataSets.filter(s => s.isVisible());
+        return this.mDataSets.filter((s) => s.isVisible());
     }
 
     /**
@@ -420,7 +420,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         if (this.mXMax < e[xProperty]) this.mXMax = e[xProperty];
         if (this.mXMin > e[xProperty]) this.mXMin = e[xProperty];
 
-        if (axis == AxisDependency.LEFT) {
+        if (axis === AxisDependency.LEFT) {
             if (this.mLeftAxisMax < e[yProperty]) this.mLeftAxisMax = e[yProperty];
             if (this.mLeftAxisMin > e[yProperty]) this.mLeftAxisMin = e[yProperty];
         } else {
@@ -441,7 +441,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         if (this.mXMax < d.getXMax()) this.mXMax = d.getXMax();
         if (this.mXMin > d.getXMin()) this.mXMin = d.getXMin();
 
-        if (d.getAxisDependency() == AxisDependency.LEFT) {
+        if (d.getAxisDependency() === AxisDependency.LEFT) {
             if (this.mLeftAxisMax < d.getYMax()) this.mLeftAxisMax = d.getYMax();
             if (this.mLeftAxisMin > d.getYMin()) this.mLeftAxisMin = d.getYMin();
         } else {
@@ -565,7 +565,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     protected getFirstLeft(sets) {
         for (const dataSet of sets) {
-            if (dataSet.getAxisDependency() == AxisDependency.LEFT) return dataSet;
+            if (dataSet.getAxisDependency() === AxisDependency.LEFT) return dataSet;
         }
         return null;
     }
@@ -578,7 +578,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     public getFirstRight(sets) {
         for (const dataSet of sets) {
-            if (dataSet.getAxisDependency() == AxisDependency.RIGHT) return dataSet;
+            if (dataSet.getAxisDependency() === AxisDependency.RIGHT) return dataSet;
         }
         return null;
     }

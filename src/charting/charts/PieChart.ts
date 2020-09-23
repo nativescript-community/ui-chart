@@ -106,8 +106,11 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
 
         this.mHighlighter = new PieHighlighter(this);
     }
-
+    // for performance tracking
+    private totalTime = 0;
+    private drawCycles = 0;
     public onDraw(canvas: Canvas) {
+        const startTime = Date.now();
         super.onDraw(canvas);
 
         if (this.mData == null) {
@@ -128,6 +131,14 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
 
         this.drawDescription(canvas);
         this.drawMarkers(canvas);
+        this.notify({ eventName: 'drawn', object: this });
+        if (this.mLogEnabled) {
+            const drawtime = Date.now() - startTime;
+            this.totalTime += drawtime;
+            this.drawCycles += 1;
+            const average = this.totalTime / this.drawCycles;
+            console.log(this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
+        }
     }
 
     public calculateOffsets() {
@@ -482,7 +493,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param sizeDp
      */
     public setCenterTextSize(sizeDp) {
-        (this.mRenderer as PieChartRenderer).getPaintCenterText().setTextSize((sizeDp));
+        (this.mRenderer as PieChartRenderer).getPaintCenterText().setTextSize(sizeDp);
     }
 
     /**
@@ -501,8 +512,8 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param y
      */
     public setCenterTextOffset(x: number, y: number) {
-        this.mCenterTextOffset.x = (x);
-        this.mCenterTextOffset.y = (y);
+        this.mCenterTextOffset.x = x;
+        this.mCenterTextOffset.y = y;
     }
 
     /**

@@ -1,6 +1,3 @@
+import { BaseEntry } from './BaseEntry';
 
-import { BaseEntry } from "./BaseEntry";
-
-export interface Entry extends BaseEntry  {
-
-}
+export interface Entry extends BaseEntry {}

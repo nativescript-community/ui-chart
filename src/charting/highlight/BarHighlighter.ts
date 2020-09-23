@@ -4,27 +4,22 @@ import { BarData } from '../data/BarData';
 import { BarDataProvider } from '../interfaces/dataprovider/BarDataProvider';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 
-export class BarHighlighter extends ChartHighlighter<BarDataProvider>
-{
-    constructor(chart: BarDataProvider)
-    {
+export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
+    constructor(chart: BarDataProvider) {
         super(chart);
     }
-    
-    public getHighlight(x: number, y: number): Highlight
-    {
+
+    public getHighlight(x: number, y: number): Highlight {
         const high = super.getHighlight(x, y);
-        if(high === null)
-        {
+        if (high === null) {
             return null;
         }
 
         const pos = this.getValsForTouch(x, y);
         const barData = this.mChart.getBarData();
 
-        let set = barData.getDataSetByIndex(high.dataSetIndex);
-        if (set.isStacked())
-        {
+        const set = barData.getDataSetByIndex(high.dataSetIndex);
+        if (set.isStacked()) {
             return this.getStackedHighlight(high, set, pos.x, pos.y);
         }
 
@@ -43,27 +38,23 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider>
      * @param yVal
      * @return
      */
-    public getStackedHighlight(high: Highlight, set: IBarDataSet, xVal, yVal): Highlight
-    {
+    public getStackedHighlight(high: Highlight, set: IBarDataSet, xVal, yVal): Highlight {
         const entry = set.getEntryForXValue(xVal, yVal);
-        if (entry == null)
-        {
+        if (entry == null) {
             return null;
         }
 
         // not stacked
-        if (entry.yVals == null)
-        {
+        if (entry.yVals == null) {
             return high;
         }
 
         const ranges = entry.ranges;
-        if (ranges.length > 0)
-        {
+        if (ranges.length > 0) {
             const xProperty = set.xProperty;
             const yProperty = set.yProperty;
-            let stackIndex = this.getClosestStackIndex(ranges, yVal);
-            let pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(high.x, ranges[stackIndex][1]);
+            const stackIndex = this.getClosestStackIndex(ranges, yVal);
+            const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(high.x, ranges[stackIndex][1]);
 
             //MPPointD.recycleInstance(pixels);
 
@@ -73,8 +64,8 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider>
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex: high.dataSetIndex,
-                stackIndex: stackIndex,
-                axis: high.axis
+                stackIndex,
+                axis: high.axis,
             };
         }
 
@@ -90,33 +81,26 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider>
      * @param value
      * @return
      */
-    protected getClosestStackIndex(ranges: Array<any>, value): number
-    {
-        if (ranges === null || ranges.length == 0)
-        {
+    protected getClosestStackIndex(ranges: any[], value): number {
+        if (ranges === null || ranges.length === 0) {
             return 0;
         }
 
-        for (let i = 0; i < ranges.length; i++)
-        {
-            if (ranges[i].includes(value))
-            {
+        for (let i = 0; i < ranges.length; i++) {
+            if (ranges[i].includes(value)) {
                 return i;
             }
         }
 
-        let length = Math.max(ranges.length - 1, 0);
-        return (value > ranges[length][1]) ? length : 0;
+        const length = Math.max(ranges.length - 1, 0);
+        return value > ranges[length][1] ? length : 0;
     }
 
-    protected getDistance(x1, y1, x2, y2): number
-    {
+    protected getDistance(x1, y1, x2, y2): number {
         return Math.abs(x1 - x2);
     }
 
-    
-    protected getData(): BarData
-    {
+    protected getData(): BarData {
         return this.mChart.getBarData();
     }
 }

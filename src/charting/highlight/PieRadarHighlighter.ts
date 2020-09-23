@@ -3,25 +3,22 @@ import { IHighlighter } from './IHighlighter';
 import { PieChart } from '../charts/PieChart';
 import { PieRadarChartBase } from '../charts/PieRadarChartBase';
 import { Entry } from '../data/Entry';
-import { PieData } from '../data/PieData';
-import { PieDataSet } from '../data/PieDataSet';
+import { DataSet } from '../data/DataSet';
+import { ChartData } from '../data/ChartData';
 
-export abstract class PieRadarHighlighter<T extends PieRadarChartBase<Entry, PieDataSet, PieData>> implements IHighlighter
-{
+export abstract class PieRadarHighlighter<E extends Entry, D extends DataSet<E>, T extends PieRadarChartBase<E, DataSet<E>, ChartData<E, D>>> implements IHighlighter {
     protected mChart: T;
 
     /**
      * buffer for storing previously highlighted values
      */
-    protected mHighlightBuffer: Array<Highlight> = [];
+    protected mHighlightBuffer: Highlight[] = [];
 
-    constructor(chart: T)
-    {
+    constructor(chart: T) {
         this.mChart = chart;
     }
-    
-    public getHighlight(x: number, y: number): Highlight {
 
+    public getHighlight(x: number, y: number): Highlight {
         const touchDistanceToCenter = this.mChart.distanceToCenter(x, y);
 
         // Check if a slice was touched

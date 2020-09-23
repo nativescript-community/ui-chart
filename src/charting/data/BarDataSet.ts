@@ -41,11 +41,10 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         this.mHighLightColor = 'black';
     }
 
-    private calcEntryRanges(e) {
+    private calcEntryRanges(e: BarEntry) {
         const values = e.yVals;
 
-        if (values == null || values.length == 0)
-            return;
+        if (values == null || values.length === 0) return;
 
         e.ranges = [];
 
@@ -53,8 +52,7 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         let posRemain = 0;
 
         for (let i = 0; i < values.length; i++) {
-
-            let value = values[i];
+            const value = values[i];
 
             if (value < 0) {
                 e.ranges.push([negRemain, negRemain - value]);
@@ -66,8 +64,7 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         }
     }
 
-    protected initEntryData(e: BarEntry)
-    {
+    protected initEntryData(e: BarEntry) {
         super.initEntryData(e);
 
         const vals = e.yVals;
@@ -80,10 +77,9 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         e.positiveSum = sums.pos;
         e.negativeSum = sums.neg;
 
-        if (vals == null || vals.length == 0) {
+        if (!vals || vals.length === 0) {
             this.mEntryCountStacks++;
-        }
-        else {
+        } else {
             // Get stack-based y value
             e[this.yProperty] = Utils.calcSum(vals);
             e.isStacked = true;

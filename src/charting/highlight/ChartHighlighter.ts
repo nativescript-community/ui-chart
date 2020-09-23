@@ -23,7 +23,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
     public getHighlight(x, y) {
         const pos = this.getValsForTouch(x, y);
-        let xVal = pos.x;
+        const xVal = pos.x;
         // MPPointD.recycleInstance(pos);
 
         const high = this.getHighlightForX(xVal, x, y);
@@ -58,8 +58,8 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
             return null;
         }
 
-        let leftAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.LEFT);
-        let rightAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.RIGHT);
+        const leftAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.LEFT);
+        const rightAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.RIGHT);
 
         const axis = leftAxisMinDist < rightAxisMinDist ? AxisDependency.LEFT : AxisDependency.RIGHT;
 
@@ -83,8 +83,8 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         for (let i = 0; i < closestValues.length; i++) {
             const high = closestValues[i];
 
-            if (high.axis == axis) {
-                let tempDistance = Math.abs(this.getHighlightPos(high) - pos);
+            if (high.axis === axis) {
+                const tempDistance = Math.abs(this.getHighlightPos(high) - pos);
                 if (tempDistance < distance) {
                     distance = tempDistance;
                 }
@@ -139,7 +139,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
         //noinspection unchecked
         let entries = set.getEntriesForXValue(xVal);
-        if (entries.length == 0) {
+        if (entries.length === 0) {
             // Try to find closest x-value and take all entries for that x-value
             const closest = set.getEntryForXValue(xVal, NaN, rounding);
             if (closest !== null) {
@@ -148,19 +148,19 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
             }
         }
 
-        if (entries.length == 0) return highlights;
+        if (entries.length === 0) return highlights;
 
-        for (let e of entries) {
+        for (const e of entries) {
             const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[xProperty], e[yProperty]);
 
             highlights.push({
-                entry:e,
+                entry: e,
                 x: e[xProperty],
                 y: e[yProperty],
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex,
-                axis: set.getAxisDependency()
+                axis: set.getAxisDependency(),
             });
         }
 
@@ -184,10 +184,10 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         let distance = minSelectionDistance;
 
         for (let i = 0; i < closestValues.length; i++) {
-            let high = closestValues[i];
+            const high = closestValues[i];
 
-            if (axis == null || high.axis == axis) {
-                let cDistance = this.getDistance(x, y, high.xPx, high.yPx);
+            if (axis == null || high.axis === axis) {
+                const cDistance = this.getDistance(x, y, high.xPx, high.yPx);
 
                 if (cDistance < distance) {
                     closest = high;
