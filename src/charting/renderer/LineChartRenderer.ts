@@ -282,11 +282,10 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (cur == null) return [];
 
             const float32arr = this.mLineBuffer;
-            float32arr[0] = cur[xKey];
-            float32arr[1] = cur[yKey] * phaseY;
+            let index = 0;
+            float32arr[index++] = cur[xKey];
+            float32arr[index++] = cur[yKey] * phaseY;
             // let the spline start
-            // outputPath.moveTo(cur[xKey], cur[yKey] * phaseY);
-            let index = 2;
             for (let j = firstIndex + 1; j <= lastIndex; j++) {
                 const newEntry = dataSet.getEntryForIndex(j);
                 if (newEntry[yKey] === undefined || newEntry[yKey] === null) {
