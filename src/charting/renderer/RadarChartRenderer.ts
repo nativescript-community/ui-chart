@@ -85,8 +85,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const minVal = this.mChart.getYChartMin();
         const angle = this.mChart.getRotationAngle();
 
-
-
         const entryCount = dataSet.getEntryCount();
         if (!this.mLineBuffer || this.mLineBuffer.length < Math.max(entryCount * 2, 2) * 2) {
             this.mLineBuffer = Utils.createArrayBuffer(Math.max(entryCount * 2, 2) * 2);
@@ -94,7 +92,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const float32arr = this.mLineBuffer;
         let index = 0;
         for (let j = 0; j < dataSet.getEntryCount(); j++) {
-            this.mRenderPaint.setColor(dataSet.getColor(j));
+            this.mRenderPaint.setColor(dataSet.getColor());
 
             const e = dataSet.getEntryForIndex(j);
             const yProperty = dataSet.yProperty;
@@ -104,20 +102,22 @@ export class RadarChartRenderer extends LineRadarRenderer {
             if (isNaN(pOut.x)) continue;
 
             if (!hasMovedToPoint) {
-                float32arr[index++] =pOut.x;
+                float32arr[index++] = pOut.x;
                 float32arr[index++] = pOut.y;
                 hasMovedToPoint = true;
             }
 
-            float32arr[index++] =pOut.x;
+            float32arr[index++] = pOut.x;
             float32arr[index++] = pOut.y;
         }
 
         if (dataSet.getEntryCount() > mostEntries) {
             // if this is not the largest set, draw a line to the center before closing
-            float32arr[index++] =center.x;
+            float32arr[index++] = center.x;
             float32arr[index++] = center.y;
         }
+        float32arr[index++] = float32arr[0];
+        float32arr[index++] = float32arr[1];
         const points = Utils.pointsFromBuffer(float32arr);
         surface.setLines(points, 0, index);
 
@@ -223,40 +223,48 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const center = this.mChart.getCenterOffsets();
 
         // draw the web lines that come from the center
-        this.mWebPaint.setStrokeWidth(this.mChart.getWebLineWidth());
-        this.mWebPaint.setColor(this.mChart.getWebColor());
-        this.mWebPaint.setAlpha(this.mChart.getWebAlpha());
+        const lineWidth = this.mChart.getWebLineWidth();
+        if (lineWidth > 0) {
+            this.mWebPaint.setStrokeWidth(this.mChart.getWebLineWidth());
+            this.mWebPaint.setColor(this.mChart.getWebColor());
+            this.mWebPaint.setAlpha(this.mChart.getWebAlpha());
 
-        const xIncrements = 1 + this.mChart.getSkipWebLineCount();
-        const maxEntryCount = this.mChart.getData().getMaxEntryCountSet().getEntryCount();
+            const xIncrements = 1 + this.mChart.getSkipWebLineCount();
+            const maxEntryCount = this.mChart.getData().getMaxEntryCountSet().getEntryCount();
 
-        const p: MPPointF = { x: 0, y: 0 };
-        for (let i = 0; i < maxEntryCount; i += xIncrements) {
-            Utils.getPosition(center, this.mChart.getYRange() * factor, sliceangle * i + rotationangle, p);
+            const p: MPPointF = { x: 0, y: 0 };
+            for (let i = 0; i < maxEntryCount; i += xIncrements) {
+                Utils.getPosition(center, this.mChart.getYRange() * factor, sliceangle * i + rotationangle, p);
 
-            c.drawLine(center.x, center.y, p.x, p.y, this.mWebPaint);
+                c.drawLine(center.x, center.y, p.x, p.y, this.mWebPaint);
+            }
         }
+
         // MPPointF.recycleInstance(p);
 
         // draw the inner-web
-        this.mWebPaint.setStrokeWidth(this.mChart.getWebLineWidthInner());
-        this.mWebPaint.setColor(this.mChart.getWebColorInner());
-        this.mWebPaint.setAlpha(this.mChart.getWebAlpha());
+        const innerWidth = this.mChart.getWebLineWidthInner();
+        if (innerWidth > 0) {
+            this.mWebPaint.setStrokeWidth(this.mChart.getWebLineWidthInner());
+            this.mWebPaint.setColor(this.mChart.getWebColorInner());
+            this.mWebPaint.setAlpha(this.mChart.getWebAlpha());
 
-        const labelCount = this.mChart.getYAxis().mEntryCount;
+            const labelCount = this.mChart.getYAxis().mEntryCount;
 
-        const p1out: MPPointF = { x: 0, y: 0 };
-        const p2out: MPPointF = { x: 0, y: 0 };
-        for (let j = 0; j < labelCount; j++) {
-            for (let i = 0; i < this.mChart.getData().getEntryCount(); i++) {
-                const r = (this.mChart.getYAxis().mEntries[j] - this.mChart.getYChartMin()) * factor;
+            const p1out: MPPointF = { x: 0, y: 0 };
+            const p2out: MPPointF = { x: 0, y: 0 };
+            for (let j = 0; j < labelCount; j++) {
+                for (let i = 0; i < this.mChart.getData().getEntryCount(); i++) {
+                    const r = (this.mChart.getYAxis().mEntries[j] - this.mChart.getYChartMin()) * factor;
 
-                Utils.getPosition(center, r, sliceangle * i + rotationangle, p1out);
-                Utils.getPosition(center, r, sliceangle * (i + 1) + rotationangle, p2out);
+                    Utils.getPosition(center, r, sliceangle * i + rotationangle, p1out);
+                    Utils.getPosition(center, r, sliceangle * (i + 1) + rotationangle, p2out);
 
-                c.drawLine(p1out.x, p1out.y, p2out.x, p2out.y, this.mWebPaint);
+                    c.drawLine(p1out.x, p1out.y, p2out.x, p2out.y, this.mWebPaint);
+                }
             }
         }
+
         // MPPointF.recycleInstance(p1out);
         // MPPointF.recycleInstance(p2out);
     }
