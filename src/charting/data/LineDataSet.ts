@@ -96,9 +96,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
                         y: this.yProperty,
                     } as any);
                 }
-                // const startTime = Date.now();
                 this.mFilteredValues = this.mFilterFunction(this.mValues, filterCount);
-                // console.log('filtered data', filterCount, Date.now() - startTime, 'ms');
             }
         } else if (this.mFilteredValues) {
             this.mFilteredValues = null;

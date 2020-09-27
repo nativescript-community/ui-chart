@@ -312,10 +312,8 @@ export class LineChartRenderer extends LineRadarRenderer {
                 float32arr[index++] = (cur[yKey] - curDy) * phaseY;
                 float32arr[index++] = cur[xKey];
                 float32arr[index++] = cur[yKey] * phaseY;
-                // outputPath.cubicTo(prev[xKey] + prevDx, (prev[yKey] + prevDy) * phaseY, cur[xKey] - curDx, (cur[yKey] - curDy) * phaseY, cur[xKey], cur[yKey] * phaseY);
             }
             const points = Utils.pointsFromBuffer(float32arr);
-            // console.log('generateCubicPath', index, points.length);
             outputPath.setCubicLines(points, 0, index);
             return [points, index];
         } else {
@@ -360,20 +358,15 @@ export class LineChartRenderer extends LineRadarRenderer {
                 if (isDrawSteppedEnabled) {
                     float32arr[index++] = currentEntry[xKey];
                     float32arr[index++] = previousEntry[yKey] * phaseY;
-                    // outputPath.lineTo(currentEntry[xKey], previousEntry[yKey] * phaseY);
                 }
 
                 float32arr[index++] = currentEntry[xKey];
                 float32arr[index++] = currentEntry[yKey] * phaseY;
-                // outputPath.lineTo(currentEntry[xKey], currentEntry[yKey] * phaseY);
 
                 previousEntry = currentEntry;
             }
             const points = Utils.pointsFromBuffer(float32arr);
-            // console.log('generateLinearPath', index, points.length);
-            // if (isAndroid) {
             outputPath.setLines(points, 0, index);
-            // }
             return [points, index];
         } else {
             outputPath.reset();
@@ -397,7 +390,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             this.fillPath.addPath(this.linePath);
 
             this.drawFill(c, dataSet, this.fillPath, trans, dataSet.getEntryForIndex(this.mXBounds.min)[xKey], dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range)[xKey]);
-            // result = true;
+            // result = true; // this would be to draw on a bitmap cache
         }
 
         if (dataSet.getLineWidth() > 0) {
@@ -424,7 +417,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             this.fillPath.addPath(this.linePath);
 
             this.drawFill(c, dataSet, this.fillPath, trans, dataSet.getEntryForIndex(this.mXBounds.min)[xKey], dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range)[xKey]);
-            // result = true;
+            // result = true; // this would be to draw on a bitmap cache
         }
 
         if (dataSet.getLineWidth() > 0) {
@@ -546,7 +539,6 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?) {
-        const xKey = dataSet.xProperty;
         const fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
 
         spline.lineTo(max, fillMin);
@@ -602,7 +594,6 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (!entry) continue;
 
             if (drawValues) {
-                // console.log('drawValue', entry[yKey], entry, index, dataSetCount);
                 this.drawValue(
                     c,
                     formatter.getFormattedValue(entry[yKey]),

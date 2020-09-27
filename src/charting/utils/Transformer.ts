@@ -47,7 +47,6 @@ export class Transformer {
         if (!Number.isFinite(scaleY) || isNaN(scaleY)) {
             scaleY = 0;
         }
-
         // setup all matrices
         this.mMatrixValueToPx.reset();
         this.mMatrixValueToPx.postTranslate(-xChartMin, -yChartMin);
@@ -120,7 +119,7 @@ export class Transformer {
         const count = ((to - from) * phaseX + 1) * 2;
         // let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
 
-        if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length <  count) {
+        if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length < count) {
             this.valuePointsForGenerateTransformedValues = Utils.createArrayBuffer(count);
         }
         // let valuePoints = this.valuePointsForGenerateTransformedValues;
@@ -143,7 +142,7 @@ export class Transformer {
 
         this.getValueToPixelMatrix().mapPoints(points);
 
-        return {points, count};
+        return { points, count };
     }
 
     // protected valuePointsForGenerateTransformedValuesLine = [];
@@ -352,20 +351,6 @@ export class Transformer {
      * @param pixels
      */
     public pixelsToValue(pixels: number[]) {
-        // const nArray = Utils.arrayoNativeArray(pixels);
-        // const tmp = this.mPixelToValueMatrixBuffer;
-        // tmp.reset();
-        // // invert all matrixes to convert back to the original value
-        // this.mMatrixOffset.invert(tmp);
-        // tmp.mapPoints(pixels);
-
-        // this.mViewPortHandler.getMatrixTouch().invert(tmp);
-        // tmp.mapPoints(pixels);
-
-        // this.mMatrixValueToPx.invert(tmp);
-        // tmp.mapPoints(pixels);
-
-
         const tmp = this.getPixelToValueMatrix();
         tmp.mapPoints(pixels);
     }
@@ -374,7 +359,6 @@ export class Transformer {
      * buffer for performance
      */
     ptsBuffer = Utils.createNativeArray(2);
-    // ptsBuffer = new Float32Array(Utils.createArrayBuffer(2));
 
     /**
      * Returns a recyclable MPPointD instance.

@@ -87,7 +87,6 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
         this.mYMax = -Infinity;
         this.mYMin = Infinity;
-
         const indexFrom = this.getEntryIndexForXValue(fromX, NaN, Rounding.DOWN);
         const indexTo = this.getEntryIndexForXValue(toX, NaN, Rounding.UP);
 
