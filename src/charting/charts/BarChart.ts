@@ -30,11 +30,6 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      */
     private mDrawBarShadow = false;
 
-    constructor() {
-        super();
-        this.init();
-    }
-
     protected init() {
         super.init();
 

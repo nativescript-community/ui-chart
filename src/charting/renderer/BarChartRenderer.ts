@@ -75,7 +75,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         this.mBarBorderPaint.setColor(dataSet.getBarBorderColor());
-        this.mBarBorderPaint.setStrokeWidth((dataSet.getBarBorderWidth()));
+        this.mBarBorderPaint.setStrokeWidth(dataSet.getBarBorderWidth());
 
         const drawBorder = dataSet.getBarBorderWidth() > 0;
 
@@ -176,7 +176,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         if (this.isDrawingValuesAllowed(this.mChart)) {
             const dataSets = this.mChart.getBarData().getDataSets();
 
-            const valueOffsetPlus = (4.5);
+            const valueOffsetPlus = 4.5;
             let posOffset = 0;
             let negOffset = 0;
             const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
@@ -213,8 +213,6 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 const formatter = dataSet.getValueFormatter();
 
                 const iconsOffset = dataSet.getIconsOffset();
-                iconsOffset.x = (iconsOffset.x);
-                iconsOffset.y = (iconsOffset.y);
 
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {

@@ -1,14 +1,15 @@
+import { Color } from '@nativescript/core/color';
+import { Font } from '@nativescript/core/ui/styling/font';
+import { DashPathEffect } from '@nativescript-community/ui-canvas';
 import { Entry } from '../../data/Entry';
 import { Rounding } from '../../data/DataSet';
 import { AxisDependency } from '../../components/YAxis';
 import { GradientColor } from '../../model/GradientColor';
+import { IValueFormatter } from '../../formatter/IValueFormatter';
 import { ValueFormatter } from '../../formatter/ValueFormatter';
 import { MPPointF } from '../../utils/MPPointF';
 import { LegendForm } from '../../components/Legend';
-import { DashPathEffect } from '@nativescript-community/ui-canvas';
-import { Color } from '@nativescript/core/color';
-import { Font } from '@nativescript/core/ui/styling/font';
-import { IValueFormatter } from '@nativescript-community/ui-chart/formatter/IValueFormatter';
+
 
 /**
  * Created by Philipp Jahoda on 21/10/15.

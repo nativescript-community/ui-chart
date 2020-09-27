@@ -19,7 +19,7 @@
     "license": "Apache-2.0",
     "homepage": "https://github.com/nativescript-community/ui-chart",
     "readmeFilename": "README.md",
-    "main": "index.js",
+    "main": "charts/index.js",
     "typings": "index.d.ts",
     "dependencies": {
         "@nativescript-community/gesturehandler": "^0.1.22",

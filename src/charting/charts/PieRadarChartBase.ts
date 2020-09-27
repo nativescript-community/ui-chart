@@ -1,3 +1,6 @@
+import { EventData, Observable } from '@nativescript/core';
+import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
+import { GestureTypes } from '@nativescript/core/ui/gestures';
 import { BarLineChartBase } from './BarLineChartBase';
 import { Chart } from '../charts/Chart';
 import { PieChart } from '../charts/PieChart';
@@ -5,6 +8,7 @@ import { LegendHorizontalAlignment, LegendOrientation, LegendVerticalAlignment }
 import { ChartData } from '../data/ChartData';
 import { Entry } from '../data/Entry';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
+import { PieRadarChartTouchListener } from '../listener/PieRadarChartTouchListener';
 import { MPPointF } from '../utils/MPPointF';
 import { Utils } from '../utils/Utils';
 
@@ -16,6 +20,8 @@ const LOG_TAG = 'PieRadarChartBase';
  * @author Philipp Jahoda
  */
 export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, T extends ChartData<U, D>> extends Chart<U, D, T> {
+    protected mChartTouchListener: PieRadarChartTouchListener;
+
     /**
      * holds the normalized version of the current rotation angle of the chart
      */
@@ -36,15 +42,20 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      */
     protected mMinOffset: number = 0;
 
-    constructor() {
-        super();
-        this.init();
-    }
-
     protected init() {
         super.init();
 
         //this.mChartTouchListener = new PieRadarChartTouchListener(this);
+    }
+
+    getOrCreateTouchListener() {
+        if (!this.mChartTouchListener) {
+            this.mChartTouchListener = new PieRadarChartTouchListener(this);
+            if (!!this.nativeViewProtected) {
+                this.mChartTouchListener.init();
+            }
+        }
+        return this.mChartTouchListener;
     }
 
     protected calcMinMax() {
@@ -54,20 +65,6 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
     public getMaxVisibleCount() {
         return this.mData.getEntryCount();
     }
-
-    // public onTouchEvent(MotionEvent event) {
-    //     // use the pie- and radarchart listener own listener
-    //     if (mTouchEnabled && this.mChartTouchListener != null)
-    //         return this.mChartTouchListener.onTouch(this, event);
-    //     else
-    //         return super.onTouchEvent(event);
-    // }
-
-    // public computeScroll() {
-    //     if (this.mChartTouchListener instanceof PieRadarChartTouchListener) {
-    //         this.mChartTouchListener.computeScroll();
-    //     }
-    // }
 
     public notifyDataSetChanged() {
         if (this.mData == null) {
@@ -294,6 +291,15 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      */
     public abstract getIndexForAngle(angle);
 
+    public setHighlightPerTapEnabled(enabled) {
+        super.setHighlightPerTapEnabled(enabled);
+        if (enabled) {
+            this.getOrCreateTouchListener().setTap(true);
+        } else if (this.mChartTouchListener) {
+            this.mChartTouchListener.setTap(false);
+        }
+    }
+
     /**
      * Set an offset for the rotation of the RadarChart in degrees. Default 270
      * --> top (NORTH)
@@ -335,6 +341,11 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      */
     public setRotationEnabled(enabled) {
         this.mRotateEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateTouchListener().setRotation(true);
+        } else if (this.mChartTouchListener) {
+            this.mChartTouchListener.setRotation(false);
+        }
     }
 
     /**
@@ -406,32 +417,49 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
         return 0;
     }
 
-    /**
-     * ################ ################ ################ ################
-     */
-    /** CODE BELOW THIS RELATED TO ANIMATION */
+    public addEventListener(arg: string | GestureTypes, callback: (data: EventData) => void, thisArg?: any) {
+        if (typeof arg === 'number') {
+            arg = GestureTypes[arg];
+        }
+        if (typeof arg === 'string') {
+            arg = getEventOrGestureName(arg);
+            const events = arg.split(',');
+            if (events.length > 0) {
+                for (let i = 0; i < events.length; i++) {
+                    const evt = events[i].trim();
+                    if (arg === 'tap') {
+                        this.getOrCreateTouchListener().setTap(true);
+                    } else if (arg === 'rotate') {
+                        this.getOrCreateTouchListener().setRotation(true);
+                    }
+                    Observable.prototype.addEventListener.call(this, evt, callback, thisArg);
+                }
+            } else {
+                Observable.prototype.addEventListener.call(this, arg, callback, thisArg);
+            }
+        }
+    }
 
-    /**
-     * Applies a spin animation to the Chart.
-     *
-     * @param durationInMillis
-     * @param fromAngle
-     * @param toAngle
-     */
-    // public spin(durationInMillis, fromAngle, toAngle, easing) {
-
-    //     this.setRotationAngle(fromAngle);
-
-    //     const spinAnimator = ObjectAnimator.ofFloat(this, "rotationAngle", fromAngle, toAngle);
-    //     spinAnimator.setDuration(durationMillis);
-    //     spinAnimator.setInterpolator(easing);
-
-    //     spinAnimator.addUpdateListener(new AnimatorUpdateListener() {
-
-    //         public onAnimationUpdate(ValueAnimator animation) {
-    //             postInvalidate();
-    //         }
-    //     });
-    //     spinAnimator.start();
-    // }
+    public removeEventListener(arg: string | GestureTypes, callback?: any, thisArg?: any) {
+        if (typeof arg === 'number') {
+            arg = GestureTypes[arg];
+        }
+        if (typeof arg === 'string') {
+            arg = getEventOrGestureName(arg);
+            const events = arg.split(',');
+            if (events.length > 0) {
+                for (let i = 0; i < events.length; i++) {
+                    const evt = events[i].trim();
+                    if (arg === 'tap' && !this.isHighlightPerTapEnabled()) {
+                        this.getOrCreateTouchListener().setTap(false);
+                    } else if (arg === 'rotate' && !this.isRotationEnabled()) {
+                        this.getOrCreateTouchListener().setRotation(false);
+                    }
+                    Observable.prototype.removeEventListener.call(this, evt, callback, thisArg);
+                }
+            } else {
+                Observable.prototype.removeEventListener.call(this, arg, callback, thisArg);
+            }
+        }
+    }
 }

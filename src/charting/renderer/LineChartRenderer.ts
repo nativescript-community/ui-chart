@@ -1,8 +1,9 @@
-import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, releaseImage } from '@nativescript-community/ui-canvas';
-import { Rounding } from '@nativescript-community/ui-chart/data/DataSet';
 import { ImageSource, profile } from '@nativescript/core';
+import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, releaseImage } from '@nativescript-community/ui-canvas';
+import { LineRadarRenderer } from './LineRadarRenderer';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { LineDataSet, Mode } from '../data/LineDataSet';
+import { Rounding } from '../data/DataSet';
 import { Highlight } from '../highlight/Highlight';
 import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
 import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
@@ -10,7 +11,6 @@ import { ColorTemplate } from '../utils/ColorTemplate';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { LineRadarRenderer } from './LineRadarRenderer';
 
 // fix drawing "too" thin paths on iOS
 

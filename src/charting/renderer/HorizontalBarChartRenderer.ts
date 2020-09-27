@@ -32,7 +32,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         this.mBarBorderPaint.setColor(dataSet.getBarBorderColor());
-        this.mBarBorderPaint.setStrokeWidth((dataSet.getBarBorderWidth()));
+        this.mBarBorderPaint.setStrokeWidth(dataSet.getBarBorderWidth());
 
         const drawBorder = dataSet.getBarBorderWidth() > 0;
 
@@ -123,7 +123,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         if (this.isDrawingValuesAllowed(this.mChart)) {
             const dataSets = this.mChart.getBarData().getDataSets();
 
-            const valueOffsetPlus = (5);
+            const valueOffsetPlus = 5;
             let posOffset = 0;
             let negOffset = 0;
             const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
@@ -150,8 +150,6 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                 const phaseY = this.mAnimator.getPhaseY();
 
                 const iconsOffset = dataSet.getIconsOffset();
-                iconsOffset.x = (iconsOffset.x);
-                iconsOffset.y = (iconsOffset.y);
 
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {

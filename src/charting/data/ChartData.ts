@@ -1,8 +1,8 @@
-import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from './Entry';
 import { AxisDependency } from '../components/YAxis';
+import { IValueFormatter } from '../formatter/IValueFormatter';
 import { Highlight } from '../highlight/Highlight';
-import { IValueFormatter } from '@nativescript-community/ui-chart/formatter/IValueFormatter';
+import { IDataSet } from '../interfaces/datasets/IDataSet';
 
 export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**

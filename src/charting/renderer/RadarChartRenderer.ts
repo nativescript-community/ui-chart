@@ -19,6 +19,12 @@ export class RadarChartRenderer extends LineRadarRenderer {
     protected mWebPaint: Paint;
     protected mHighlightCirclePaint: Paint;
 
+    protected mDrawDataSetSurfacePathBuffer = new Path();
+
+    private mLineBuffer: number[];
+
+    protected mDrawHighlightCirclePathBuffer = new Path();
+
     constructor(chart: RadarChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
@@ -47,7 +53,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
 
     public drawData(c: Canvas) {
         const radarData = this.mChart.getData();
-
         const mostEntries = radarData.getMaxEntryCountSet().getEntryCount();
 
         for (const set of radarData.getDataSets()) {
@@ -57,7 +62,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
         }
     }
 
-    protected mDrawDataSetSurfacePathBuffer = new Path();
     /**
      * Draws the RadarDataSet
      *
@@ -65,7 +69,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
      * @param dataSet
      * @param mostEntries the entry count of the dataset with the most entries
      */
-    private mLineBuffer: number[];
     protected drawDataSet(c: Canvas, dataSet: IRadarDataSet, mostEntries) {
         const phaseX = this.mAnimator.getPhaseX();
         const phaseY = this.mAnimator.getPhaseY();
@@ -84,8 +87,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
         let hasMovedToPoint = false;
         const minVal = this.mChart.getYChartMin();
         const angle = this.mChart.getRotationAngle();
-
-
 
         const entryCount = dataSet.getEntryCount();
         if (!this.mLineBuffer || this.mLineBuffer.length < Math.max(entryCount * 2, 2) * 2) {
@@ -170,9 +171,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
 
             const formatter = dataSet.getValueFormatter();
 
-            const iconsOffset = Object.assign({}, dataSet.getIconsOffset());
-            iconsOffset.x = iconsOffset.x;
-            iconsOffset.y = iconsOffset.y;
+            const iconsOffset = dataSet.getIconsOffset();
 
             for (let j = 0; j < dataSet.getEntryCount(); j++) {
                 const entry = dataSet.getEntryForIndex(j);
@@ -321,7 +320,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
         // MPPointF.recycleInstance(pOut);
     }
 
-    protected mDrawHighlightCirclePathBuffer = new Path();
     public drawHighlightCircle(c: Canvas, point: MPPointF, innerRadius, outerRadius, fillColor, strokeColor, strokeWidth) {
         c.save();
 

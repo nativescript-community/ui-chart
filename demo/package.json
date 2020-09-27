@@ -1,21 +1,21 @@
 {
     "name": "chartdemo",
-    "main": "app.js",
+    "main": "app",
     "version": "7.0.1",
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
     "description": "A native application built with NativeScript-Core JS",
     "license": "MIT",
     "dependencies": {
-        "@akylas/nativescript":"7.0.3-alpha.4",
+        "@akylas/nativescript": "7.0.3-alpha.4",
         "@nativescript/theme": "~2.3.3",
         "@nativescript-community/ui-chart": "../plugin",
         "nativescript-perms": "^2.0.11",
         "nativescript-ui-chart": "8.0.2",
-        "typescript":"4.0.3"
+        "typescript": "4.0.3"
     },
     "devDependencies": {
-        "@nativescript/core": "~7.0.3",
         "@nativescript/android": "7.0.0",
+        "@nativescript/core": "~7.0.3",
         "@nativescript/ios": "7.0.0",
         "@nativescript/types": "~7.0.3",
         "@nativescript/webpack": "~3.0.4"

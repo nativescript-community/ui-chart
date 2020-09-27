@@ -62,7 +62,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
         this.mAxisLabelPaint.setTextAlign(Align.CENTER);
 
-        let baseYOffset = (2.5);
+        let baseYOffset = 2.5;
         let textHeight = Utils.calcTextHeight(this.mAxisLabelPaint, "Q");
 
         const dependency = this.mYAxis.getAxisDependency();
@@ -237,10 +237,10 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
             c.drawPath(limitLinePath, this.mLimitLinePaint);
             limitLinePath.reset();
 
-            let label = l.getLabel();
+            const label = l.getLabel();
 
             // if drawing the limit-value label is enabled
-            if (label != null && label != "") {
+            if (label != null && label != '') {
 
                 this.mLimitLinePaint.setStyle(l.getTextStyle());
                 this.mLimitLinePaint.setPathEffect(null);
@@ -249,19 +249,19 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
                 this.mLimitLinePaint.setStrokeWidth(0.5);
                 this.mLimitLinePaint.setTextSize(l.getTextSize());
 
-                let xOffset = l.getLineWidth() + l.getXOffset();
-                let yOffset = (2) + l.getYOffset();
+                const xOffset = l.getLineWidth() + l.getXOffset();
+                const yOffset = 2 + l.getYOffset();
 
                 const position = l.getLabelPosition();
 
-                if (position == LimitLabelPosition.RIGHT_TOP) {
+                if (position === LimitLabelPosition.RIGHT_TOP) {
                     const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
                     this.mLimitLinePaint.setTextAlign(Align.LEFT);
                     c.drawText(label, pts[0] + xOffset, this.mViewPortHandler.contentTop() + yOffset + labelLineHeight, this.mLimitLinePaint);
-                } else if (position == LimitLabelPosition.RIGHT_BOTTOM) {
+                } else if (position === LimitLabelPosition.RIGHT_BOTTOM) {
                     this.mLimitLinePaint.setTextAlign(Align.LEFT);
                     c.drawText(label, pts[0] + xOffset, this.mViewPortHandler.contentBottom() - yOffset, this.mLimitLinePaint);
-                } else if (position == LimitLabelPosition.LEFT_TOP) {
+                } else if (position === LimitLabelPosition.LEFT_TOP) {
                     this.mLimitLinePaint.setTextAlign(Align.RIGHT);
                     const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
                     c.drawText(label, pts[0] - xOffset, this.mViewPortHandler.contentTop() + yOffset + labelLineHeight, this.mLimitLinePaint);

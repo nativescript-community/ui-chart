@@ -19,7 +19,7 @@ export abstract class LineScatterCandleRadarDataSet<T extends Entry> extends Bar
 
     constructor(yVals, label, xProperty?, yProperty?) {
         super(yVals, label, xProperty, yProperty);
-        this.mHighlightLineWidth = (0.5);
+        this.mHighlightLineWidth = 0.5;
     }
 
     /**
@@ -60,7 +60,7 @@ export abstract class LineScatterCandleRadarDataSet<T extends Entry> extends Bar
      * @param width
      */
     public setHighlightLineWidth(width) {
-        this.mHighlightLineWidth = (width);
+        this.mHighlightLineWidth = width;
     }
 
     public getHighlightLineWidth() {
