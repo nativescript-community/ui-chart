@@ -20,7 +20,7 @@
     "homepage": "https://github.com/nativescript-community/ui-chart",
     "readmeFilename": "README.md",
     "main": "charts/index.js",
-    "typings": "index.d.ts",
+    "typings": "charts/index.d.ts",
     "dependencies": {
         "@nativescript-community/gesturehandler": "^0.1.22",
         "@nativescript-community/tween": "0.0.11",
