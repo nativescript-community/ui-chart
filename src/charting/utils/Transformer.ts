@@ -5,6 +5,8 @@ import { profile } from '@nativescript/core/profiling';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
 import { CandleDataSet } from '../data/CandleDataSet';
+import { CandleEntry } from '../data/CandleEntry';
+import { getEntryXValue } from '../data/BaseEntry';
 
 /**
  * Transformer class that contains all matrices and is responsible for
@@ -198,15 +200,14 @@ export class Transformer {
         }
         const valuePoints = this.valuePointsForGenerateTransformedValuesCandle;
 
-        const xProperty = dataSet.xProperty;
-        const yProperty = dataSet.yProperty;
-        for (let j = 0; j < count; j += 2) {
-            const e = dataSet.getEntryForIndex(j / 2 + from);
+        for (let j = 0, e: CandleEntry, index: number; j < count; j += 2) {
+            index = j / 2 + from;
+            e = dataSet.getEntryForIndex(index);
 
-            const xProperty = dataSet.xProperty;
+            const xKey = dataSet.xProperty;
             const highProperty = dataSet.highProperty;
-            if (e != null) {
-                valuePoints[j] = e[xProperty];
+            if (e) {
+                valuePoints[j] = getEntryXValue(e, xKey, index);
                 valuePoints[j + 1] = e[highProperty] * phaseY;
             } else {
                 valuePoints[j] = 0;

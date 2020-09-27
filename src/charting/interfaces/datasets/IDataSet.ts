@@ -14,7 +14,6 @@ import { IValueFormatter } from '@nativescript-community/ui-chart/formatter/IVal
  * Created by Philipp Jahoda on 21/10/15.
  */
 export interface IDataSet<T extends Entry> {
-
     xProperty: string;
     yProperty: string;
     /** ###### ###### DATA RELATED METHODS ###### ###### */
@@ -88,6 +87,24 @@ export interface IDataSet<T extends Entry> {
     getEntryForXValue(xValue: number, closestToY: number, rounding?: Rounding): T;
 
     /**
+     * Returns the first Entry object found at the given x-value with binary
+     * search.
+     * If the no Entry at the specified x-value is found, this method
+     * returns the Entry at the closest x-value according to the rounding.
+     * INFORMATION: This method does calculations at runtime. Do
+     * not over-use in performance critical situations.
+     *
+     * @param xValue the x-value
+     * @param closestToY If there are multiple y-values for the specified x-value,
+     * @param rounding determine whether to round up/down/closest
+     *                 if there is no Entry matching the provided x-value
+     * @return
+     *
+     *
+     */
+    getEntryAndIndexForXValue(xValue: number, closestToY: number, rounding?: Rounding): { entry: T; index: number };
+
+    /**
      * Returns all Entry objects found at the given x-value with binary
      * search. An empty array if no Entry object at that x-value.
      * INFORMATION: This method does calculations at runtime. Do
@@ -97,6 +114,17 @@ export interface IDataSet<T extends Entry> {
      * @return
      */
     getEntriesForXValue(xValue: number): T[];
+
+    /**
+     * Returns all Entry objects found at the given x-value with binary
+     * search. An empty array if no Entry object at that x-value.
+     * INFORMATION: This method does calculations at runtime. Do
+     * not over-use in performance critical situations.
+     *
+     * @param xValue
+     * @return
+     */
+    getEntriesAndIndexesForXValue(xValue: number): { entry: T; index: number }[];
 
     /**
      * Returns the Entry object found at the given index (NOT xIndex) in the values array.
@@ -259,21 +287,6 @@ export interface IDataSet<T extends Entry> {
     getColors(): (string | Color)[];
 
     /**
-     * Returns the first color (index 0) of the colors-array this DataSet
-     * contains. This is only used for performance reasons when only one color is in the colors array (size == 1)
-     *
-     * @return
-     */
-    getColor(): string | Color;
-
-    /**
-     * Returns the Gradient color model
-     *
-     * @return
-     */
-    getGradientColor(): GradientColor;
-
-    /**
      * Returns the Gradient colors
      *
      * @return
@@ -286,7 +299,7 @@ export interface IDataSet<T extends Entry> {
      * @param index
      * @return
      */
-    getGradientColor(index: number): GradientColor;
+    getGradientColor(index?: number): GradientColor;
 
     /**
      * Returns the color at the given index of the DataSet's color array.
@@ -295,7 +308,7 @@ export interface IDataSet<T extends Entry> {
      * @param index
      * @return
      */
-    getColor(index: number): string | Color;
+    getColor(index?: number): string | Color;
 
     /**
      * returns true if highlighting of values is enabled, false if not
@@ -364,13 +377,6 @@ export interface IDataSet<T extends Entry> {
      * @param size
      */
     setValueTextSize(size: number);
-
-    /**
-     * Returns only the first color of all colors that are set to be used for the values.
-     *
-     * @return
-     */
-    getValueTextColor(): string | Color;
 
     /**
      * Returns the color at the specified index that is used for drawing the values inside the chart.

@@ -9,6 +9,7 @@ import { BarHighlighter } from '../highlight/BarHighlighter';
 import { Highlight } from '../highlight/Highlight';
 import { BarChartRenderer } from '../renderer/BarChartRenderer';
 import { RectF } from '@nativescript-community/ui-canvas';
+import { getEntryXValue } from '../data/BaseEntry';
 
 const LOG_TAG = 'BarChart';
 
@@ -97,7 +98,8 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @return
      */
     public getBarBounds(e: BarEntry): RectF {
-        const set = this.mData.getDataSetForEntry(e);
+        // WARNING: wont work if index is used as xKey(xKey not set)
+        const { set, index } = this.mData.getDataSetAndIndexForEntry(e);
         if (set === null) {
             return new RectF(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
         }
@@ -105,8 +107,8 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         const xKey = set.xProperty;
         const yKey = set.yProperty;
 
-        const y = e[xKey];
-        const x = e[yKey];
+        const x = getEntryXValue(e, xKey, index);
+        const y = e[yKey];
 
         const barWidth = this.mData.getBarWidth();
 

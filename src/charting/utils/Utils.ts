@@ -476,8 +476,8 @@ export namespace Utils {
         drawOffsetY += -mFontMetricsBuffer.ascent;
 
         // To have a consistent point of reference, we always draw left-aligned
-        const originalTextAlign = paint.getTextAlign();
-        paint.setTextAlign(Align.LEFT);
+        // const originalTextAlign = paint.getTextAlign();
+        // paint.setTextAlign(Align.LEFT);
 
         if (angleDegrees !== 0) {
             // Move the text drawing rect in a way that it always rotates around its center
@@ -513,7 +513,7 @@ export namespace Utils {
 
             c.drawText(text, drawOffsetX, drawOffsetY, paint);
         }
-        paint.setTextAlign(originalTextAlign);
+        // paint.setTextAlign(originalTextAlign);
     }
 
     export function drawMultilineText(c: Canvas, textLayout, x, y, textpaint: Paint, anchor, angleDegrees, lineHeight) {

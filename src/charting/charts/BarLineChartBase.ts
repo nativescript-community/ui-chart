@@ -341,7 +341,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         const toX = this.getHighestVisibleX();
 
         this.mData.calcMinMaxYRange(fromX, toX);
-        console.log('autoScale', fromX, toX);
 
         this.mXAxis.calculate(this.mData.getXMin(), this.mData.getXMax());
 
@@ -963,16 +962,16 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param e
      * @return
      */
-    public getPosition(e, axis) {
-        if (e == null) return null;
+    // public getPosition(e: U, axis) {
+    //     if (e == null) return null;
 
-        this.mGetPositionBuffer[0] = e.getX();
-        this.mGetPositionBuffer[1] = e.getY();
+    //     this.mGetPositionBuffer[0] = e.getX();
+    //     this.mGetPositionBuffer[1] = e.getY();
 
-        this.getTransformer(axis).pointValuesToPixel(this.mGetPositionBuffer);
+    //     this.getTransformer(axis).pointValuesToPixel(this.mGetPositionBuffer);
 
-        return { x: this.mGetPositionBuffer[0], y: this.mGetPositionBuffer[1] };
-    }
+    //     return { x: this.mGetPositionBuffer[0], y: this.mGetPositionBuffer[1] };
+    // }
 
     /**
      * sets the number of maximum visible drawn values on the chart only active
@@ -1333,7 +1332,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
 
     public getLowestVisibleX() {
-        console.log('getLowestVisibleX', this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.mXAxis.mAxisMinimum);
         this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.posForGetLowestVisibleX);
         const result = Math.max(this.mXAxis.mAxisMinimum, this.posForGetLowestVisibleX.x);
         return result;

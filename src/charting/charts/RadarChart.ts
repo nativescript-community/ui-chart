@@ -23,7 +23,7 @@ export class RadarChart extends PieRadarChartBase<RadarEntry, RadarDataSet, Rada
     /**
      * width of the main web lines
      */
-    private mWebLineWidth = 2.5;
+    private mWebLineWidth = 1.5;
 
     /**
      * width of the inner web lines
@@ -67,9 +67,6 @@ export class RadarChart extends PieRadarChartBase<RadarEntry, RadarDataSet, Rada
         super.init();
 
         this.mYAxis = new YAxis(AxisDependency.LEFT);
-
-        this.mWebLineWidth = 1.5;
-        this.mInnerWebLineWidth = 0.75;
 
         this.mRenderer = new RadarChartRenderer(this, this.mAnimator, this.mViewPortHandler);
         this.mYAxisRenderer = new YAxisRendererRadarChart(this.mViewPortHandler, this.mYAxis, this);

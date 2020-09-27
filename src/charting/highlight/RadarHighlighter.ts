@@ -50,19 +50,18 @@ export class RadarHighlighter extends PieRadarHighlighter<RadarEntry, RadarDataS
         const pOut: MPPointF = { x: 0, y: 0 };
         for (let i = 0; i < this.mChart.getData().getDataSetCount(); i++) {
             const dataSet = this.mChart.getData().getDataSetByIndex(i);
-            const xProperty = dataSet.xProperty;
-            const yProperty = dataSet.yProperty;
+            const yKey = dataSet.yProperty;
 
             const entry = dataSet.getEntryForIndex(index);
 
-            const y = entry[yProperty] - this.mChart.getYChartMin();
+            const y = entry[yKey] - this.mChart.getYChartMin();
 
             Utils.getPosition(this.mChart.getCenterOffsets(), y * factor * phaseY, sliceangle * index * phaseX + this.mChart.getRotationAngle(), pOut);
 
             this.mHighlightBuffer.push({
                 entry,
                 x: index,
-                y: entry[yProperty],
+                y: entry[yKey],
                 xPx: pOut.x,
                 yPx: pOut.y,
                 dataSetIndex: i,
