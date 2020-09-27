@@ -1,6 +1,6 @@
+import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { Chart } from '../charts/Chart';
 import { Highlight } from '../highlight/Highlight';
-import { BarLineChartBase } from '@nativescript-community/ui-chart/charts/BarLineChartBase';
 
 export enum ChartGesture {
     NONE,
@@ -130,6 +130,7 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
             this.mChart.highlight(h, true);
             this.mLastHighlighted = h;
         }
+        console.log("ubla1");
     }
 
     /**

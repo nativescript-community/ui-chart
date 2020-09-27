@@ -1,13 +1,13 @@
+import { Color } from '@nativescript/core/color';
+import { DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
+import { createLTTB } from 'downsample';
 import { Entry } from './Entry';
 import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
 import { LineRadarDataSet } from './LineRadarDataSet';
-import { Color } from '@nativescript/core/color';
+import { ColorTemplate } from '../utils/ColorTemplate';
 import { Utils } from '../utils/Utils';
 import { DefaultFillFormatter } from '../formatter/DefaultFillFormatter';
 import { IFillFormatter } from '../formatter/IFillFormatter';
-import { DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
-import { ColorTemplate } from '@nativescript-community/ui-chart/utils/ColorTemplate';
-import { createLTTB } from 'downsample';
 
 export enum Mode {
     LINEAR,
@@ -120,8 +120,8 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     constructor(yVals, label, xProperty?, yProperty?) {
         super(yVals, label, xProperty, yProperty);
 
-        // this.mCircleRadius = (4f);
-        // this.mLineWidth = (1);
+        // this.mCircleRadius = 4;
+        // this.mLineWidth = 1;
 
         // if (this.mCircleColors == null) {
         //     this.mCircleColors = [];

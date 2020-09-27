@@ -29,6 +29,6 @@ export class RadarData extends ChartData<RadarEntry, RadarDataSet> {
     }
 
     public getEntryForHighlight(highlight: Highlight) {
-        return this.getDataSetByIndex(highlight.dataSetIndex).getEntryForIndex(highlight.y);
+        return this.getDataSetByIndex(highlight.dataSetIndex).getEntryForIndex(highlight.x);
     }
 }

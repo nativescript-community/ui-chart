@@ -93,11 +93,6 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      */
     private mMinAngleForSlices: number = 0;
 
-    constructor() {
-        super();
-        this.init();
-    }
-
     protected init() {
         super.init();
 

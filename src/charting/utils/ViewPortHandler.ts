@@ -634,7 +634,7 @@ export class ViewPortHandler {
      * @param offset
      */
     public setDragOffsetX(offset) {
-        this.mTransOffsetX = (offset);
+        this.mTransOffsetX = offset;
     }
 
     /**
@@ -644,7 +644,7 @@ export class ViewPortHandler {
      * @param offset
      */
     public setDragOffsetY(offset) {
-        this.mTransOffsetY = (offset);
+        this.mTransOffsetY = offset;
     }
 
     /**

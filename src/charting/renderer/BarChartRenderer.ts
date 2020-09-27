@@ -214,8 +214,6 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 const formatter = dataSet.getValueFormatter();
 
                 const iconsOffset = dataSet.getIconsOffset();
-                iconsOffset.x = iconsOffset.x;
-                iconsOffset.y = iconsOffset.y;
 
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {

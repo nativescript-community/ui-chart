@@ -1,15 +1,15 @@
 import { Canvas } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
+import { PieRadarChartBase } from './PieRadarChartBase';
 import { AxisDependency, YAxis } from '../components/YAxis';
 import { RadarData } from '../data/RadarData';
 import { RadarDataSet } from '../data/RadarDataSet';
-import { RadarEntry } from '../data/RadarEntry';
+import { Entry } from '../data/Entry';
 import { RadarHighlighter } from '../highlight/RadarHighlighter';
 import { RadarChartRenderer } from '../renderer/RadarChartRenderer';
 import { XAxisRendererRadarChart } from '../renderer/XAxisRendererRadarChart';
 import { YAxisRendererRadarChart } from '../renderer/YAxisRendererRadarChart';
 import { Utils } from '../utils/Utils';
-import { PieRadarChartBase } from './PieRadarChartBase';
 
 const LOG_TAG = 'RadarChart';
 
@@ -19,7 +19,7 @@ const LOG_TAG = 'RadarChart';
  *
  * @author Philipp Jahoda
  */
-export class RadarChart extends PieRadarChartBase<RadarEntry, RadarDataSet, RadarData> {
+export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData> {
     /**
      * width of the main web lines
      */
@@ -60,6 +60,10 @@ export class RadarChart extends PieRadarChartBase<RadarEntry, RadarDataSet, Rada
      */
     private mYAxis: YAxis;
 
+    // for performance tracking
+    private totalTime = 0;
+    private drawCycles = 0;
+
     protected mYAxisRenderer: YAxisRendererRadarChart;
     protected mXAxisRenderer: XAxisRendererRadarChart;
 
@@ -94,10 +98,6 @@ export class RadarChart extends PieRadarChartBase<RadarEntry, RadarDataSet, Rada
 
         this.calculateOffsets();
     }
-
-    // for performance tracking
-    private totalTime = 0;
-    private drawCycles = 0;
 
     onDraw(c: Canvas) {
         const startTime = Date.now();

@@ -399,8 +399,6 @@ export class PieChartRenderer extends DataRenderer {
             const sliceSpace = this.getSliceSpace(dataSet);
 
             const iconsOffset = dataSet.getIconsOffset();
-            iconsOffset.x = iconsOffset.x;
-            iconsOffset.y = iconsOffset.y;
 
             for (let j = 0; j < entryCount; j++) {
                 const entry = dataSet.getEntryForIndex(j);
@@ -576,7 +574,7 @@ export class PieChartRenderer extends DataRenderer {
      * hole.
      */
     protected drawHole(c: Canvas) {
-        if (this.mChart.isDrawHoleEnabled() && this.mBitmapCanvas != null) {
+        if (this.mChart.isDrawHoleEnabled()) {
             const radius = this.mChart.getRadius();
             const holeRadius = radius * (this.mChart.getHoleRadius() / 100);
             const center = this.mChart.getCenterCircleBox();
@@ -819,7 +817,7 @@ export class PieChartRenderer extends DataRenderer {
             }
 
             this.mPathBuffer.close();
-            this.mBitmapCanvas.drawPath(this.mPathBuffer, this.mRenderPaint);
+            c.drawPath(this.mPathBuffer, this.mRenderPaint);
         }
     }
 
@@ -863,7 +861,7 @@ export class PieChartRenderer extends DataRenderer {
                 const y = (r - circleRadius) * Math.sin((angle + sliceAngle) * phaseY * Utils.DEG2RAD) + center.y;
 
                 this.mRenderPaint.setColor(dataSet.getColor(j));
-                this.mBitmapCanvas.drawCircle(x, y, circleRadius, this.mRenderPaint);
+                c.drawCircle(x, y, circleRadius, this.mRenderPaint);
             }
 
             angle += sliceAngle * phaseX;

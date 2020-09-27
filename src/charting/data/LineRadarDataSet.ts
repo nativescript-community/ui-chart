@@ -103,7 +103,7 @@ export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
     public setLineWidth(width) {
         if (width < 0.0) width = 0.0;
         if (width > 10.0) width = 10.0;
-        // this.mLineWidth = (width);
+        // this.mLineWidth = width;
         this.mLineWidth = width;
     }
 

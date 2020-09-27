@@ -6,22 +6,6 @@ import { LineDataSet } from '../data/LineDataSet';
 import { LineChartRenderer } from '../renderer/LineChartRenderer';
 
 export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {
-    // public LineChart(Context context) {
-    //     super(context);
-    // }
-
-    // public LineChart(Context context, AttributeSet attrs) {
-    //     super(context, attrs);
-    // }
-
-    // public LineChart(Context context, AttributeSet attrs, let defStyle) {
-    //     super(context, attrs, defStyle);
-    // }
-    constructor() {
-        super();
-        this.init();
-    }
-
     protected init() {
         super.init();
 

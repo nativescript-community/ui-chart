@@ -1,9 +1,9 @@
+import { Align, DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
 import { ComponentBase } from './ComponentBase';
 import { LimitLine } from './LimitLine';
-import { Align, DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
-import { ValueFormatter } from '../formatter/ValueFormatter';
 import { DefaultAxisValueFormatter } from '../formatter/DefaultAxisValueFormatter';
-import { IAxisValueFormatter } from '@nativescript-community/ui-chart/formatter/IAxisValueFormatter';
+import { IAxisValueFormatter } from '../formatter/IAxisValueFormatter';
+import { ValueFormatter } from '../formatter/ValueFormatter';
 
 /**
  * Base-class of all axes (previously called labels).

@@ -605,8 +605,9 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     public highlight(high: Highlight, callListener = false) {
         let e: Entry = null;
 
-        if (high == null) this.mIndicesToHighlight = null;
-        else {
+        if (high == null) {
+            this.mIndicesToHighlight = null;
+        } else {
             if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted', high);
 
             e = this.mData.getEntryForHighlight(high);

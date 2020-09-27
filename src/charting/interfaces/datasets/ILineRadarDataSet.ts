@@ -1,6 +1,6 @@
-import { Entry } from '@nativescript-community/ui-chart/data/Entry';
-import { RadarEntry } from '@nativescript-community/ui-chart/data/RadarEntry';
 import { ILineScatterCandleRadarDataSet } from './ILineScatterCandleRadarDataSet';
+import { Entry } from '../../data/Entry';
+import { RadarEntry } from '../../data/RadarEntry';
 
 /**
  * Created by Philipp Jahoda on 21/10/15.

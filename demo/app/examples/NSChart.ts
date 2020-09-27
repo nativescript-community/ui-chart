@@ -173,6 +173,11 @@ export function redraw(args) {
     if (pc) {
         pc.invalidate();
     }
+
+    const rc = page.getViewById('radar-chart');
+    if (rc) {
+        rc.invalidate();
+    }
 }
 
 export function onNavigationButtonTap(args) {
