@@ -85,7 +85,7 @@ export default Vue.extend({
 
             // chart.setDrawGridBackground(false);
             // chart.setMaxHighlightDistance(300);
-            // // chart.setLogEnabled(true);
+            chart.setLogEnabled(true);
             // chart.getLegend().setEnabled(false);
             // chart.getAxisRight().setEnabled(false);
             // const x = chart.getXAxis();
@@ -119,7 +119,6 @@ export default Vue.extend({
         },
         setWeatherData() {
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
-            const now = Math.round(Date.now() / 60000);
             const values = [
                 { t: 1601112480000, v: 1.5984 },
                 { t: 1601112540000, v: 1.6872 },
@@ -155,7 +154,7 @@ export default Vue.extend({
                 { t: 1601114340000, v: 1.4968 },
                 { t: 1601114400000, v: 1.538 },
                 { t: 1601114460000, v: 1.4034 },
-                { t: 1601114520000, v: 1.2688},
+                { t: 1601114520000, v: 1.2688 },
                 { t: 1601114580000, v: 1.1342 },
                 { t: 1601114640000, v: 0.9996 },
                 { t: 1601114700000, v: 0.865 },
@@ -183,6 +182,7 @@ export default Vue.extend({
                 { t: 1601116020000, v: 0.2914 },
                 { t: 1601116080000, v: 0.3346 }
             ];
+            const now = values[0].t;
             const count = values.length;
             const textColor = 'black';
             const limitColor = new Color(255 * 0.5, 0, 0, 0);
@@ -197,15 +197,19 @@ export default Vue.extend({
             let lastValue = 0;
             xAxis.setValueFormatter({
                 getAxisLabel: f => {
-                    const result = Math.floor((f - now) / 10) * 10;
-                    if (result !== lastValue) {
-                        lastValue = result;
-                        return result === 0 ? '' : result + 'm';
+                    let val = values[f];
+                    if (val) {
+                        const result = Math.floor((val.t - now) / 600000) * 10;
+                        if (result !== lastValue) {
+                            lastValue = result;
+                            return result === 0 ? '' : result + 'm';
+                        }
                     }
+
                     return '';
                 }
             });
-            xAxis.setLabelCount(count / 2, true);
+            xAxis.setLabelCount(6, true);
             xAxis.setPosition(XAxisPosition.BOTTOM);
 
             const rightAxis = chart.getAxisRight();
@@ -252,7 +256,6 @@ export default Vue.extend({
             let min = 10000;
             let max = -10000;
             values.forEach(h => {
-                h.t = Math.round(h.t / 60000);
                 if (h.v < min) {
                     min = h.v;
                 }
@@ -264,7 +267,7 @@ export default Vue.extend({
             leftAxis.setAxisMaximum(Math.max(max, 2.4));
             leftAxis.setDrawLimitLines(true);
             console.log('test1', values[0]);
-            const precipChartSet = new LineDataSet(values, 'precipIntensity', 't', 'v');
+            const precipChartSet = new LineDataSet(values, 'precipIntensity', undefined, 'v');
             // precipChartSet.setAxisDependency(AxisDependency.LEFT);
             precipChartSet.setLineWidth(1);
             precipChartSet.setDrawIcons(false);
@@ -277,7 +280,7 @@ export default Vue.extend({
             // precipChartSet.setCubicIntensity(0.2);
             precipChartSet.setMode(Mode.CUBIC_BEZIER);
 
-            chart.setData(new LineData([precipChartSet].filter((s) => !!s)));
+            chart.setData(new LineData([precipChartSet].filter(s => !!s)));
         },
         setData(count, range) {
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
