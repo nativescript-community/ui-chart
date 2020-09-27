@@ -128,7 +128,7 @@ export class XAxisRenderer extends AxisRenderer {
     }
 
     public renderAxisLine(c: Canvas) {
-        if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled() || this.mXAxis.getAxisLineWidth() === 0) return;
+        if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled() || this.mXAxis.getAxisLineWidth() === 0 || this.mXAxis.mEntryCount === 0) return;
 
         this.mAxisLinePaint.setColor(this.mXAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mXAxis.getAxisLineWidth());
