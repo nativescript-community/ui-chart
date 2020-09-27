@@ -280,11 +280,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             console.log(LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.mXAxis.mAxisMinimum + ', xmax: ' + this.mXAxis.mAxisMaximum + ', xdelta: ' + this.mXAxis.mAxisRange);
         }
         if (this.mAxisRight.isEnabled()) {
-            console.log(LOG_TAG, 'mRightAxisTransformer prepareValuePxMatrix', this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
             this.mRightAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
         }
         if (this.mAxisLeft.isEnabled()) {
-            console.log(LOG_TAG, 'mLeftAxisTransformer prepareValuePxMatrix', this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
             this.mLeftAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
         }
     }
