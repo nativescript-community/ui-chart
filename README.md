@@ -6,7 +6,7 @@ The main goal was to prevent the need for marshalling all datasets. This is extr
 
 The demo_vue app show the power of the future plugin:
 
-* It is the fastest drawing library in comparaison to ```nativescript-ui-chart``` and ```nativescript-mpchart```. This is due to:
+* It is the fastest drawing library in comparaison to ```@nativescript-community/ui-chart``` and ```nativescript-mpchart```. This is due to:
     - do not marshal or recreate any subset of the data sets. Directly uses the provided array.
     - can share the same data array beetween multiple datasets
     - still use the power of native arrays to NOT marshal arrays of positions while drawing lines with ```@nativescript-community/ui-canvas```

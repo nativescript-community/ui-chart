@@ -40,10 +40,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
 
     @profile
     drawPath(canvas: Canvas, path: Path, paint: Paint) {
-        // canvas.save()
-        // canvas.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
         canvas.drawPath(path, paint);
-        // canvas.restore()
     }
 
     /**

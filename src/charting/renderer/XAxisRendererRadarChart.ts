@@ -23,6 +23,7 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
 
         this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize());
+        this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
 
         const sliceangle = this.mChart.getSliceAngle();

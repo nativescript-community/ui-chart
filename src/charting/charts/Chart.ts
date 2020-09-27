@@ -608,6 +608,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         if (high == null) {
             this.mIndicesToHighlight = null;
         } else {
+            if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted', high);
+
             e = this.mData.getEntryForHighlight(high);
             if (e == null) {
                 this.mIndicesToHighlight = null;

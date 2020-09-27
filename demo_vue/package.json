@@ -7,11 +7,11 @@
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
     "license": "MIT",
     "dependencies": {
+        "@nativescript-community/ui-canvas": "4.0.15",
         "@nativescript-community/ui-chart": "../plugin",
-        "@nativescript/core": "~7.0.3",
+        "@nativescript/core": "~7.0.7",
         "@nativescript/theme": "~2.3.3",
         "nativescript-perms": "^2.0.11",
-        "nativescript-ui-chart": "8.0.2",
         "nativescript-vue": "~2.8.1"
     },
     "devDependencies": {
@@ -19,7 +19,8 @@
         "@babel/preset-env": "~7.11.5",
         "@nativescript/android": "7.0.0",
         "@nativescript/ios": "7.0.0",
-        "@nativescript/webpack": "~3.0.4",
+        "@nativescript/types": "^7.0.4",
+        "@nativescript/webpack": "~3.0.5",
         "babel-loader": "~8.1.0",
         "nativescript-vue-template-compiler": "~2.8.1",
         "node-sass": "^4.14.1",

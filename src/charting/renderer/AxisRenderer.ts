@@ -1,7 +1,7 @@
 
 import {Renderer} from './Renderer';
 import { AxisBase } from '../components/AxisBase';
-import { Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
@@ -49,7 +49,7 @@ export abstract class AxisRenderer extends Renderer {
 
             this.mAxisLabelPaint = new Paint();
             this.mAxisLabelPaint.setAntiAlias(true);
-            this.mAxisLabelPaint.setFontFamily('arial');
+            this.mAxisLabelPaint.setTextAlign(Align.LEFT);
 
             this.mGridPaint = new Paint();
             this.mGridPaint.setColor('gray');
@@ -144,7 +144,6 @@ export abstract class AxisRenderer extends Renderer {
      * @return
      */
     protected computeAxisValues( min,  max) {
-
         const yMin = min;
         const yMax = max;
 

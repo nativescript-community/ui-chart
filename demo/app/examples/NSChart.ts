@@ -32,7 +32,7 @@ export function onBarChartLoaded(args) {
     const chart = args.object as BarChart;
 
     chart.drawFameRate = true;
-    chart.setLogEnabled(true);
+    // chart.setLogEnabled(true);
     chart.setScaleEnabled(true);
     chart.setDragEnabled(true);
     chart.getAxisRight().setEnabled(false);
@@ -43,7 +43,7 @@ export function onBarChartLoaded(args) {
         return { index: i, value: Math.random() * 1 };
     });
 
-    console.log('setData', data.length, data[0]);
+    // console.log('setData', data.length, data[0]);
     const sets = [];
     const set = new BarDataSet(data, 'value', 'index', 'value');
     set.setDrawIcons(true);
@@ -62,7 +62,7 @@ export function onLineChartLoaded(args) {
     const chart = args.object as LineChart;
 
     chart.drawFameRate = true;
-    chart.setLogEnabled(true);
+    // chart.setLogEnabled(true);
     chart.setScaleEnabled(true);
     chart.setDragEnabled(true);
     // chart.setHardwareAccelerationEnabled(true);
@@ -72,7 +72,7 @@ export function onLineChartLoaded(args) {
         value: Math.random() * 1,
     }));
 
-    console.log('setData', data.length, data[0]);
+    // console.log('setData', data.length, data[0]);
     const sets = [];
     const set = new LineDataSet(data, 'value', 'index', 'value');
     set.setColor(getRandomColor());

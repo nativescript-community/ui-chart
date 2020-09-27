@@ -476,8 +476,8 @@ export namespace Utils {
         drawOffsetY += -mFontMetricsBuffer.ascent;
 
         // To have a consistent point of reference, we always draw left-aligned
-        const originalTextAlign = paint.getTextAlign();
-        paint.setTextAlign(Align.LEFT);
+        // const originalTextAlign = paint.getTextAlign();
+        // paint.setTextAlign(Align.LEFT);
 
         if (angleDegrees !== 0) {
             // Move the text drawing rect in a way that it always rotates around its center
@@ -513,7 +513,7 @@ export namespace Utils {
 
             c.drawText(text, drawOffsetX, drawOffsetY, paint);
         }
-        paint.setTextAlign(originalTextAlign);
+        // paint.setTextAlign(originalTextAlign);
     }
 
     export function drawMultilineText(c: Canvas, textLayout, x, y, textpaint: Paint, anchor, angleDegrees, lineHeight) {
@@ -655,14 +655,12 @@ export namespace Utils {
         if (global.isAndroid) {
             const bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
             const result = (ArrayBuffer as any).from(bb);
-            // result.bb = bb;
             const array = new Float32Array(result);
+            // return new FloatConstructor(result) as any;
             return array as any;
         } else {
-            // } else if (force) {
             return new FloatConstructor(length) as any;
         }
-        // return [];
     }
     // export const pointsFromBuffer = profile('pointsFromBuffer', function(float32Array) {
     export function pointsFromBuffer(float32Array) {
@@ -670,7 +668,6 @@ export namespace Utils {
             const buffer = float32Array.buffer;
             const length = float32Array.length;
             const testArray = Array.create('float', length);
-            // bb.asFloatBuffer().get(testArray);
             (buffer.nativeObject as java.nio.ByteBuffer).asFloatBuffer().get(testArray, 0, length);
             return testArray;
         }
@@ -714,7 +711,6 @@ export namespace Utils {
         return false;
     }
     export function setHardwareAccelerationEnabled(view: android.view.View, enabled) {
-        // console.log('setHardwareAccelerationEnabled', view, enabled);
         if (global.isAndroid) {
             if (view) {
                 if (enabled) view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);

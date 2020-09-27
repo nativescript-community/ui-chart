@@ -3,6 +3,7 @@ import { Highlight } from './Highlight';
 import { BarData } from '../data/BarData';
 import { BarDataProvider } from '../interfaces/dataprovider/BarDataProvider';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
+import { getEntryXValue } from '../data/BaseEntry';
 
 export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
     constructor(chart: BarDataProvider) {
@@ -39,7 +40,7 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
      * @return
      */
     public getStackedHighlight(high: Highlight, set: IBarDataSet, xVal, yVal): Highlight {
-        const entry = set.getEntryForXValue(xVal, yVal);
+        const { entry, index } = set.getEntryAndIndexForXValue(xVal, yVal);
         if (entry == null) {
             return null;
         }
@@ -51,16 +52,16 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
 
         const ranges = entry.ranges;
         if (ranges.length > 0) {
-            const xProperty = set.xProperty;
-            const yProperty = set.yProperty;
+            const xKey = set.xProperty;
+            const yKey = set.yProperty;
             const stackIndex = this.getClosestStackIndex(ranges, yVal);
             const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(high.x, ranges[stackIndex][1]);
 
             //MPPointD.recycleInstance(pixels);
 
             return {
-                x: entry[xProperty],
-                y: entry[yProperty],
+                x: getEntryXValue(entry, xKey, index),
+                y: entry[yKey],
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex: high.dataSetIndex,
