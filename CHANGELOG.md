@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.34](https://github.com/Akylas/nativescript-chart/compare/v0.0.33...v0.0.34) (2020-09-27)
+
+
+### Bug Fixes
+
+* dont render axis line if not necessary ([9977223](https://github.com/Akylas/nativescript-chart/commit/997722396bb71b63db85d852868adf66b2c7cfaf))
+* removed unecessary computeAxis ([d916ee8](https://github.com/Akylas/nativescript-chart/commit/d916ee8531c6761969371a6d938f02890281b166))
+* reset minmax if values cleared ([3234332](https://github.com/Akylas/nativescript-chart/commit/3234332a925545ad5b0e5675c69ac6e51d285664))
+
+
+
+
+
 ## [0.0.33](https://github.com/Akylas/nativescript-chart/compare/v0.0.32...v0.0.33) (2020-09-27)
 
 
