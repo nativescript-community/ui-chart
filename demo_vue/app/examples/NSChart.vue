@@ -2,7 +2,11 @@
     <Page>
         <ActionBar title="NS Chart">
             <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onNavigationButtonTap"></NavigationButton>
-            <Button text="redraw" @tap="redraw" />
+            <StackLayout orientation="horizontal">
+                <Button text="redraw" @tap="redraw" />
+                <Button text="reset" @tap="reset" />
+                <Button text="clear" @tap="clearDataSet" />
+            </StackLayout>
             <!-- <Switch text /> -->
         </ActionBar>
         <ScrollView>
@@ -103,6 +107,10 @@ export default Vue.extend({
             console.log('onChartTap', e.data.extraData, e.highlight);
         },
         redraw() {
+            const chart = this.$refs.lineChart['nativeView'] as LineChart;
+            chart.invalidate();
+        },
+        reset() {
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
             this.setWeatherData();
         },
@@ -315,6 +323,16 @@ export default Vue.extend({
             // set data
             chart.setData(data);
             //    chart.animateXY(2000, 2000);
+        },
+        clearDataSet() {
+            const chart = this.$refs.lineChart['nativeView'] as LineChart;
+            const leftAxis = chart.getAxisLeft();
+            leftAxis.removeAllLimitLines();
+            const chartData = chart.getData();
+            const chartDataset = chartData.getDataSets();
+            chartDataset.forEach(d => {d.clear(); d.notifyDataSetChanged();});
+            chart.getData().notifyDataChanged();
+            chart.notifyDataSetChanged();
         }
     },
     mounted() {
