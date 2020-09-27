@@ -52,7 +52,7 @@ export abstract class AxisBase extends ComponentBase {
     /**
      * the labels text alignment
      */
-    private mLabelTextAlign = Align.LEFT;
+    private mLabelTextAlign: Align = Align.LEFT;
 
     /**
      * the minimum erval between axis values
