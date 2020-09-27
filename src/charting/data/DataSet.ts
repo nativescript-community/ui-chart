@@ -70,12 +70,11 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     calcMinMax() {
-        if (this.mValues == null || this.mValues.length === 0) return;
-
         this.mYMax = -Infinity;
         this.mYMin = Infinity;
         this.mXMax = -Infinity;
         this.mXMin = Infinity;
+        if (this.mValues == null || this.mValues.length === 0) return;
 
         for (let index = 0, e: T; index < this.mValues.length; index++) {
             e = this.mValues[index];
