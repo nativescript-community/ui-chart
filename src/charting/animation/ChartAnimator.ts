@@ -79,7 +79,7 @@ export class ChartAnimator {
      * @param easingX EasingFunction for the X axis
      * @param easingY EasingFunction for the Y axis
      */
-    public animateXY(durationMillisX, durationMillisY, easingX: EasingFunction, easingY: EasingFunction) {
+    public animateXY(durationMillisX, durationMillisY, easingX: EasingFunction= Easing.Linear.None, easingY: EasingFunction = Easing.Linear.None) {
         const xAnimator = this.xAnimator(durationMillisX, easingX, durationMillisX > durationMillisY ? this.mListener : undefined);
         const yAnimator = this.yAnimator(durationMillisY, easingY || easingX, durationMillisX > durationMillisY ? undefined : this.mListener);
         xAnimator.start(0);

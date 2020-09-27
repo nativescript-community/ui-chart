@@ -15,6 +15,7 @@ import { HorizontalViewPortHandler } from '../utils/HorizontalViewPortHandler';
 import { TransformerHorizontalBarChart } from '../utils/TransformerHorizontalBarChart';
 import { Utils } from '../utils/Utils';
 import { RectF } from '@nativescript-community/ui-canvas';
+import { getEntryXValue } from '../data/BaseEntry';
 
 const LOG_TAG = 'HorizontalBarChart';
 
@@ -92,8 +93,12 @@ export class HorizontalBarChart extends BarChart {
     }
 
     protected prepareValuePxMatrix() {
-        this.mRightAxisTransformer.prepareMatrixValuePx(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisRange, this.mXAxis.mAxisRange, this.mXAxis.mAxisMinimum);
-        this.mLeftAxisTransformer.prepareMatrixValuePx(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisRange, this.mXAxis.mAxisRange, this.mXAxis.mAxisMinimum);
+        if (this.mAxisRight.isEnabled()) {
+            this.mRightAxisTransformer.prepareMatrixValuePx(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisRange, this.mXAxis.mAxisRange, this.mXAxis.mAxisMinimum);
+        }
+        if (this.mAxisLeft.isEnabled()) {
+            this.mLeftAxisTransformer.prepareMatrixValuePx(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisRange, this.mXAxis.mAxisRange, this.mXAxis.mAxisMinimum);
+        }
     }
 
     protected getMarkerPosition(high: Highlight) {
@@ -108,7 +113,8 @@ export class HorizontalBarChart extends BarChart {
      * @return
      */
     public getBarBounds(e: BarEntry): RectF {
-        const set = this.mData.getDataSetForEntry(e);
+        // WARNING: wont work if index is used as xKey(xKey not set)
+        const { set, index } = this.mData.getDataSetAndIndexForEntry(e);
         if (set === null) {
             return new RectF(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
         }
@@ -116,8 +122,8 @@ export class HorizontalBarChart extends BarChart {
         const xKey = set.xProperty;
         const yKey = set.yProperty;
 
-        const y = e[xKey];
-        const x = e[yKey];
+        const x = getEntryXValue(e, xKey, index);
+        const y = e[yKey];
 
         const barWidth = this.mData.getBarWidth();
 
@@ -139,27 +145,27 @@ export class HorizontalBarChart extends BarChart {
      * @return
      */
 
-    public getPosition(e: Entry, axis: AxisDependency) {
-        if (e == null) {
-            return null;
-        }
+    // public getPosition(e: Entry, axis: AxisDependency) {
+    //     if (e == null) {
+    //         return null;
+    //     }
 
-        const set = this.mData.getDataSetForEntry(e);
-        if (set === null) {
-            return null;
-        }
+    //     const set = this.mData.getDataSetForEntry(e);
+    //     if (set === null) {
+    //         return null;
+    //     }
 
-        const xKey = set.xProperty;
-        const yKey = set.yProperty;
+    //     const xKey = set.xProperty;
+    //     const yKey = set.yProperty;
 
-        const vals = this.mGetPositionBuffer;
-        vals[0] = e[xKey];
-        vals[1] = e[yKey];
+    //     const vals = this.mGetPositionBuffer;
+    //     vals[0] = e[xKey];
+    //     vals[1] = e[yKey];
 
-        this.getTransformer(axis).pointValuesToPixel(vals);
+    //     this.getTransformer(axis).pointValuesToPixel(vals);
 
-        return { x: vals[0], y: vals[1] };
-    }
+    //     return { x: vals[0], y: vals[1] };
+    // }
 
     /**
      * Returns the Highlight object (contains x-index and DataSet index) of the selected value at the given touch point

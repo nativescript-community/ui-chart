@@ -216,13 +216,11 @@ export class PieChartRenderer extends DataRenderer {
 
         const sliceSpace = visibleAngleCount <= 1 ? 0 : this.getSliceSpace(dataSet);
 
-        // console.log('drawAngles', drawAngles);
         for (let j = 0; j < entryCount; j++) {
             const sliceAngle = drawAngles[j];
             let innerRadius = userInnerRadius;
 
             const e = dataSet.getEntryForIndex(j);
-            // console.log('draw slice', e);
 
             // draw only if the value is greater than zero
             if (!(Math.abs(e[yKey]) > Utils.NUMBER_EPSILON)) {

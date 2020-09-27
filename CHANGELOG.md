@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.33](https://github.com/Akylas/nativescript-chart/compare/v0.0.32...v0.0.33) (2020-09-27)
+
+
+### Bug Fixes
+
+* allow string colors ([6f3317e](https://github.com/Akylas/nativescript-chart/commit/6f3317e890c034876d4682efdcd0f6251f1bd3a3))
+* check for axis enabled ([d3782d4](https://github.com/Akylas/nativescript-chart/commit/d3782d40957b3354cd4f6c6b1a4ff28e04c8d725))
+* default parameters ([895fb05](https://github.com/Akylas/nativescript-chart/commit/895fb056fce57649acb7ca0b7d6144a1161f2747))
+* defaut system font ([b27b1cb](https://github.com/Akylas/nativescript-chart/commit/b27b1cbf5c7b1ab73957d7ec0d5bddad6e8fdc97))
+* some radar chart fixes ([2171052](https://github.com/Akylas/nativescript-chart/commit/217105294dae63ee9e3d19eb5728da605dd90038))
+
+
+
+
+
 ## [0.0.32](https://github.com/Akylas/nativescript-chart/compare/v0.0.31...v0.0.32) (2020-09-22)
 
 

@@ -9,6 +9,7 @@ import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Align, Canvas, RectF } from '@nativescript-community/ui-canvas';
+import { getEntryXValue } from '../data/BaseEntry';
 
 export class HorizontalBarChartRenderer extends BarChartRenderer {
     constructor(chart: BarChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
@@ -51,7 +52,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
             for (let i = 0, count = Math.min(Math.ceil(dataSet.getEntryCount() * phaseX), dataSet.getEntryCount()); i < count; i++) {
                 const e = dataSet.getEntryForIndex(i);
-                x = e[xKey];
+                x = getEntryXValue(e, xKey, i);
 
                 this.mBarShadowRectBuffer.top = x - barWidthHalf;
                 this.mBarShadowRectBuffer.bottom = x + barWidthHalf;
@@ -134,13 +135,12 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                     continue;
                 }
 
-                const xKey = dataSet.xProperty;
                 const yKey = dataSet.yProperty;
                 const isInverted = this.mChart.isInverted(dataSet.getAxisDependency());
 
                 // apply the text-styling defined by the DataSet
                 this.applyValueTextStyle(dataSet);
-                const halfTextHeight = Utils.calcTextHeight(this.mValuePaint, "10") / 2;
+                const halfTextHeight = Utils.calcTextHeight(this.mValuePaint, '10') / 2;
 
                 const formatter = dataSet.getValueFormatter();
 
@@ -186,8 +186,8 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                         }
 
                         if (dataSet.isDrawValuesEnabled()) {
-                            this.drawValue(c, formattedValue, 
-                                val >= 0 ? (buffer.buffer[j + 2] + posOffset) : (buffer.buffer[j + 0] + negOffset), 
+                            this.drawValue(c, formattedValue,
+                                val >= 0 ? (buffer.buffer[j + 2] + posOffset) : (buffer.buffer[j + 0] + negOffset),
                                 y + halfTextHeight, dataSet.getValueTextColor(j / 2));
                         }
 
@@ -236,7 +236,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             const formattedValue = formatter.getBarLabel(entry[yKey]);
 
                             // calculate the correct offset depending on the draw position of the value
-                            let valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
+                            const valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
                             posOffset = (drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus));
                             negOffset = (drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus);
 
@@ -246,8 +246,8 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             }
 
                             if (dataSet.isDrawValuesEnabled()) {
-                                this.drawValue(c, formattedValue, 
-                                    entry[yKey] >= 0 ? (buffer.buffer[bufferIndex + 2] + posOffset) : (buffer.buffer[bufferIndex + 0] + negOffset), 
+                                this.drawValue(c, formattedValue,
+                                    entry[yKey] >= 0 ? (buffer.buffer[bufferIndex + 2] + posOffset) : (buffer.buffer[bufferIndex + 0] + negOffset),
                                     buffer.buffer[bufferIndex + 1] + halfTextHeight, color);
                             }
 

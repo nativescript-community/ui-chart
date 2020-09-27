@@ -9,7 +9,7 @@ export enum XAxisPosition {
     BOTTOM,
     BOTH_SIDED,
     TOP_INSIDE,
-    BOTTOM_INSIDE
+    BOTTOM_INSIDE,
 }
 
 /**
@@ -78,7 +78,7 @@ export class XAxis extends AxisBase {
      *
      * @param pos
      */
-    public setPosition(pos:XAxisPosition) {
+    public setPosition(pos: XAxisPosition) {
         this.mPosition = pos;
     }
 

@@ -20,6 +20,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     abstract getXMax(): number;
     abstract calcMinMaxYRange(fromX: number, toX: number);
     abstract getEntriesForXValue(xValue: number): T[];
+    abstract getEntriesAndIndexesForXValue(xValue: number): { entry: T; index: number }[];
     abstract getEntryIndexForXValue(xValue: number, closestToY: number, rounding?: Rounding): number;
     abstract getEntryIndex(e: T): number;
     abstract addEntry(e: T): boolean;
@@ -28,6 +29,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     abstract getEntryCount(): number;
     abstract getEntryForIndex(index: number): T;
     abstract getEntryForXValue(xValue: number, closestToY: number, rounding?: Rounding): T;
+    abstract getEntryAndIndexForXValue(xValue: number, closestToY: number, rounding?: Rounding): { entry: T; index: number };
     abstract calcMinMax();
 
     /**
@@ -125,9 +127,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     constructor(label, xProperty?, yProperty?) {
         this.mColors = [];
         this.mValueColors = [];
-        if (xProperty) {
-            this.xProperty = xProperty;
-        }
+        this.xProperty = xProperty;
         if (yProperty) {
             this.yProperty = yProperty;
         }

@@ -5,6 +5,7 @@ import { AxisDependency } from '../components/YAxis';
 import { Rounding } from '../data/DataSet';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
+import { getEntryXValue } from '../data/BaseEntry';
 
 export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> implements IHighlighter {
     /**
@@ -133,30 +134,33 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * @return
      */
     protected buildHighlights(set: IDataSet<Entry>, dataSetIndex, xVal, rounding) {
-        const xProperty = set.xProperty;
-        const yProperty = set.yProperty;
+        const xKey = set.xProperty;
+        const yKey = set.yProperty;
         const highlights: Highlight[] = [];
 
         //noinspection unchecked
-        let entries = set.getEntriesForXValue(xVal);
+        let entries = set.getEntriesAndIndexesForXValue(xVal);
         if (entries.length === 0) {
             // Try to find closest x-value and take all entries for that x-value
-            const closest = set.getEntryForXValue(xVal, NaN, rounding);
+            const closest = set.getEntryAndIndexForXValue(xVal, NaN, rounding);
             if (closest !== null) {
                 //noinspection unchecked
-                entries = set.getEntriesForXValue(closest[xProperty]);
+                entries = set.getEntriesAndIndexesForXValue(getEntryXValue(closest.entry, xKey, closest.index));
             }
         }
 
         if (entries.length === 0) return highlights;
 
-        for (const e of entries) {
-            const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[xProperty], e[yProperty]);
+        for (const r of entries) {
+            const e = r.entry;
+            const xVal = getEntryXValue(e.entry, xKey, r.index);
+            const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(xVal, e[yKey]);
 
             highlights.push({
                 entry: e,
-                x: e[xProperty],
-                y: e[yProperty],
+                entryIndex: r.index,
+                x: xVal,
+                y: e[yKey],
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex,

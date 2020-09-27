@@ -72,7 +72,8 @@ export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
      */
     protected mShadowColor = ColorTemplate.COLOR_SKIP;
 
-    protected calcMinMaxForEntry(e: CandleEntry) {
+    protected calcMinMaxForEntry(e?: CandleEntry, index?: number) {
+        if (!e) return;
         if (e.getLow() < this.mYMin) this.mYMin = e.getLow();
 
         if (e.getHigh() > this.mYMax) this.mYMax = e.getHigh();
@@ -113,7 +114,7 @@ export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
      * @param width
      */
     public setShadowWidth(width) {
-        this.mShadowWidth = (width);
+        this.mShadowWidth = width;
     }
 
     public getShadowWidth() {

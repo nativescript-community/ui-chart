@@ -61,11 +61,12 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
                 fromX += barWidthHalf;
 
                 if (i < set.getEntryCount()) {
-                    const xProperty = set.xProperty;
+                    const xKey = set.xProperty;
                     const entry = set.getEntryForIndex(i);
 
-                    if (entry != null) {
-                        entry[xProperty] = fromX;
+                    if (entry !== null) {
+                        // TODO: this is bad we should not modify the entry!
+                        entry[xKey] = fromX;
                     }
                 }
 

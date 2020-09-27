@@ -3,6 +3,7 @@ import { Entry } from './Entry';
 import { AxisDependency } from '../components/YAxis';
 import { Highlight } from '../highlight/Highlight';
 import { IValueFormatter } from '@nativescript-community/ui-chart/formatter/IValueFormatter';
+import { getEntryXValue } from './BaseEntry';
 
 export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
@@ -313,6 +314,22 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     }
 
     /**
+     * Get the Entry for a corresponding highlight object
+     *
+     * @param highlight
+     * @return the entry that is highlighted
+     */
+    public getEntryAndIndexForHighlight(highlight: Highlight) {
+        if (highlight.entry) {
+            return { entry: highlight.entry, index: highlight.entryIndex };
+        }
+        if (highlight.dataSetIndex >= this.mDataSets.length) return null;
+        else {
+            return this.mDataSets[highlight.dataSetIndex].getEntryAndIndexForXValue(highlight.x, highlight.y);
+        }
+    }
+
+    /**
      * Returns the DataSet object with the given label. Search can be case
      * sensitive or not. IMPORTANT: This method does calculations at runtime.
      * Use with care in performance critical situations.
@@ -395,10 +412,11 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         if (this.mDataSets.length > dataSetIndex && dataSetIndex >= 0) {
             const set = this.mDataSets[dataSetIndex];
             // add the entry to the dataset
+            const length = set.getEntryCount();
             if (!set.addEntry(e)) return;
 
             if (set.isVisible()) {
-                this.calcMinMaxForEntry(set, e, set.getAxisDependency());
+                this.calcMinMaxForEntry(set, e, length, set.getAxisDependency());
             }
         } else {
             console.error('addEntry', 'Cannot add Entry because dataSetIndex too high or too low.');
@@ -411,21 +429,23 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param e
      * @param axis
      */
-    protected calcMinMaxForEntry(set: IDataSet<Entry>, e: Entry, axis) {
-        const xProperty = set.xProperty;
-        const yProperty = set.yProperty;
-        if (this.mYMax < e[yProperty]) this.mYMax = e[yProperty];
-        if (this.mYMin > e[yProperty]) this.mYMin = e[yProperty];
+    protected calcMinMaxForEntry(set: IDataSet<Entry>, e: Entry, entryIndex: number, axis: AxisDependency) {
+        const xKey = set.xProperty;
+        const yKey = set.yProperty;
+        const xValue = getEntryXValue(e, xKey, entryIndex);
+        const yValue = e[yKey];
+        if (this.mYMax < yValue) this.mYMax = yValue;
+        if (this.mYMin > yValue) this.mYMin = yValue;
 
-        if (this.mXMax < e[xProperty]) this.mXMax = e[xProperty];
-        if (this.mXMin > e[xProperty]) this.mXMin = e[xProperty];
+        if (this.mXMax < xValue) this.mXMax = xValue;
+        if (this.mXMin > xValue) this.mXMin = xValue;
 
         if (axis === AxisDependency.LEFT) {
-            if (this.mLeftAxisMax < e[yProperty]) this.mLeftAxisMax = e[yProperty];
-            if (this.mLeftAxisMin > e[yProperty]) this.mLeftAxisMin = e[yProperty];
+            if (this.mLeftAxisMax < yValue) this.mLeftAxisMax = yValue;
+            if (this.mLeftAxisMin > yValue) this.mLeftAxisMin = yValue;
         } else {
-            if (this.mRightAxisMax < e[yProperty]) this.mRightAxisMax = e[yProperty];
-            if (this.mRightAxisMin > e[yProperty]) this.mRightAxisMin = e[yProperty];
+            if (this.mRightAxisMax < yValue) this.mRightAxisMax = yValue;
+            if (this.mRightAxisMin > yValue) this.mRightAxisMin = yValue;
         }
     }
 
@@ -502,16 +522,41 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @return
      */
     public getDataSetForEntry(e: Entry) {
+        // WARNING: wont work if index is used as xKey(xKey not set)
         if (e == null) return null;
 
         for (let i = 0; i < this.mDataSets.length; i++) {
             const set = this.mDataSets[i];
 
-            const xProperty = set.xProperty;
-            const yProperty = set.yProperty;
-            for (let j = 0; j < set.getEntryCount(); j++) {
-                if (e === set.getEntryForXValue(e[xProperty], e[yProperty])) return set;
-            }
+            const xKey = set.xProperty;
+            const yKey = set.yProperty;
+            // for (let j = 0; j < set.getEntryCount(); j++) {
+            if (e === set.getEntryForXValue(e[xKey], e[yKey])) return set;
+            // }
+        }
+
+        return null;
+    }
+    /**
+     * Returns the DataSet that contains the provided Entry and the entry index, or null, if no
+     * DataSet contains this Entry.
+     *
+     * @param e
+     * @return
+     */
+    public getDataSetAndIndexForEntry(e: Entry) {
+        // WARNING: wont work if index is used as xKey(xKey not set)
+        if (e == null) return null;
+
+        for (let i = 0; i < this.mDataSets.length; i++) {
+            const set = this.mDataSets[i];
+
+            const xKey = set.xProperty;
+            const yKey = set.yProperty;
+            const r = set.getEntryAndIndexForXValue(e[xKey], e[yKey]);
+            // for (let j = 0; j < set.getEntryCount(); j++) {
+            if (e === r.entry) return { set, index: r.index };
+            // }
         }
 
         return null;
