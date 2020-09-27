@@ -144,7 +144,6 @@ export abstract class AxisRenderer extends Renderer {
      * @return
      */
     protected computeAxisValues( min,  max) {
-
         const yMin = min;
         const yMax = max;
 
