@@ -23,7 +23,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
     /**
      * width of the main web lines
      */
-    private mWebLineWidth = 2.5;
+    private mWebLineWidth = 1.5;
 
     /**
      * width of the inner web lines
@@ -33,12 +33,12 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
     /**
      * color for the main web lines
      */
-    private mWebColor = new Color(255, 122, 122, 122);
+    private mWebColor: Color | string = new Color(255, 122, 122, 122);
 
     /**
      * color for the inner web
      */
-    private mWebColorInner = new Color(255, 122, 122, 122);
+    private mWebColorInner: Color | string = new Color(255, 122, 122, 122);
 
     /**
      * transparency the grid is drawn with (0-255)
@@ -71,9 +71,6 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
         super.init();
 
         this.mYAxis = new YAxis(AxisDependency.LEFT);
-
-        this.mWebLineWidth = 1.5;
-        this.mInnerWebLineWidth = 0.75;
 
         this.mRenderer = new RadarChartRenderer(this, this.mAnimator, this.mViewPortHandler);
         this.mYAxisRenderer = new YAxisRendererRadarChart(this.mViewPortHandler, this.mYAxis, this);
@@ -248,7 +245,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
      *
      * @param color
      */
-    public setWebColor(color: Color) {
+    public setWebColor(color: Color | string) {
         this.mWebColor = color;
     }
 
@@ -263,7 +260,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
      *
      * @param color
      */
-    public setWebColorInner(color: Color) {
+    public setWebColorInner(color: Color | string) {
         this.mWebColorInner = color;
     }
 

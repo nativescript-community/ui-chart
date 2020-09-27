@@ -96,7 +96,8 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         }
     }
 
-    protected calcMinMaxForEntry(e: BarEntry) {
+    protected calcMinMaxForEntry(e?: BarEntry, index?: number) {
+        if (!e) return;
         const yProperty = this.yProperty;
         if (e != null && !isNaN(e[yProperty])) {
             if (e.yVals == null) {

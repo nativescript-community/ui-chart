@@ -2,6 +2,7 @@ import { ImageSource, profile } from '@nativescript/core';
 import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, releaseImage } from '@nativescript-community/ui-canvas';
 import { LineRadarRenderer } from './LineRadarRenderer';
 import { ChartAnimator } from '../animation/ChartAnimator';
+import { getEntryXValue } from '../data/BaseEntry';
 import { LineDataSet, Mode } from '../data/LineDataSet';
 import { Rounding } from '../data/DataSet';
 import { Highlight } from '../highlight/Highlight';
@@ -209,17 +210,18 @@ export class LineChartRenderer extends LineRadarRenderer {
             const xKey = dataSet.xProperty;
             const yKey = dataSet.yProperty;
             let prev = dataSet.getEntryForIndex(this.mXBounds.min);
+            let prevXVal = getEntryXValue(prev, xKey, this.mXBounds.min);
             let cur = prev;
             const float32arr = this.mLineBuffer;
-            float32arr[0] = cur[xKey];
+            float32arr[0] = prevXVal;
             float32arr[1] = cur[yKey] * phaseY;
 
             const firstIndex = Math.max(0, this.mXBounds.min);
             // let firstIndex = this.mXBounds.min + 1;
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
             // let the spline start
-            // this.cubicPath.moveTo(cur[xKey], cur[yKey] * phaseY);
-            let index = 2;
+            let index = 2,
+                curXVal;
 
             for (let j = firstIndex + 1; j <= lastIndex; j++) {
                 const newEntry = dataSet.getEntryForIndex(j);
@@ -227,17 +229,17 @@ export class LineChartRenderer extends LineRadarRenderer {
                     continue;
                 }
                 prev = cur;
+                prevXVal = curXVal;
                 cur = dataSet.getEntryForIndex(j);
-
-                const cpx = prev[xKey] + (cur[xKey] - prev[xKey]) / 2.0;
+                curXVal = getEntryXValue(prev, xKey, j);
+                const cpx = prevXVal + (curXVal - prevXVal) / 2.0;
 
                 float32arr[index++] = cpx;
                 float32arr[index++] = prev[yKey] * phaseY;
                 float32arr[index++] = cpx;
                 float32arr[index++] = cur[yKey] * phaseY;
-                float32arr[index++] = cur[xKey];
+                float32arr[index++] = curXVal;
                 float32arr[index++] = cur[yKey] * phaseY;
-                // this.cubicPath.cubicTo(cpx, prev[yKey] * phaseY, cpx, cur[yKey] * phaseY, cur[xKey], cur[yKey] * phaseY);
             }
             const points = Utils.pointsFromBuffer(float32arr);
             outputPath.setCubicLines(points, 0, index);
@@ -274,48 +276,54 @@ export class LineChartRenderer extends LineRadarRenderer {
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
 
             let prevPrev;
-            let prev = dataSet.getEntryForIndex(Math.max(firstIndex - 2, 0));
-            let cur = dataSet.getEntryForIndex(Math.max(firstIndex - 1, 0));
+            let prevPrevXVal;
+            let i = Math.max(firstIndex - 2, 0);
+            let prev = dataSet.getEntryForIndex(i);
+            let prevXVal = getEntryXValue(prev, xKey, i);
+            i = Math.max(firstIndex - 1, 0);
+            let cur = dataSet.getEntryForIndex(i);
+            let curXVal = getEntryXValue(cur, xKey, i);
             let next = cur;
+            let nextXVal = curXVal;
             let nextIndex = -1;
 
             if (cur == null) return [];
 
             const float32arr = this.mLineBuffer;
-            float32arr[0] = cur[xKey];
-            float32arr[1] = cur[yKey] * phaseY;
+            let index = 0;
+            float32arr[index++] = curXVal;
+            float32arr[index++] = cur[yKey] * phaseY;
             // let the spline start
-            // outputPath.moveTo(cur[xKey], cur[yKey] * phaseY);
-            let index = 2;
             for (let j = firstIndex + 1; j <= lastIndex; j++) {
                 const newEntry = dataSet.getEntryForIndex(j);
                 if (newEntry[yKey] === undefined || newEntry[yKey] === null) {
                     continue;
                 }
                 prevPrev = prev;
+                prevPrevXVal = prevXVal;
                 prev = cur;
+                prevXVal = curXVal;
                 cur = nextIndex === j ? next : newEntry;
-
+                curXVal = nextIndex === j ? nextXVal : getEntryXValue(newEntry, xKey, j);
                 nextIndex = j + 1 < dataSet.getEntryCount() ? j + 1 : j;
                 next = dataSet.getEntryForIndex(nextIndex);
+                nextXVal = getEntryXValue(next, xKey, nextIndex);
                 if (next[yKey] === undefined || next[yKey] === null) {
                     continue;
                 }
-                prevDx = (cur[xKey] - prevPrev[xKey]) * intensity;
+                prevDx = (curXVal - prevPrevXVal) * intensity;
                 prevDy = (cur[yKey] - prevPrev[yKey]) * intensity;
-                curDx = (next[xKey] - prev[xKey]) * intensity;
+                curDx = (nextXVal - prevXVal) * intensity;
                 curDy = (next[yKey] - prev[yKey]) * intensity;
 
-                float32arr[index++] = prev[xKey] + prevDx;
+                float32arr[index++] = prevXVal + prevDx;
                 float32arr[index++] = (prev[yKey] + prevDy) * phaseY;
-                float32arr[index++] = cur[xKey] - curDx;
+                float32arr[index++] = curXVal - curDx;
                 float32arr[index++] = (cur[yKey] - curDy) * phaseY;
-                float32arr[index++] = cur[xKey];
+                float32arr[index++] = curXVal;
                 float32arr[index++] = cur[yKey] * phaseY;
-                // outputPath.cubicTo(prev[xKey] + prevDx, (prev[yKey] + prevDy) * phaseY, cur[xKey] - curDx, (cur[yKey] - curDy) * phaseY, cur[xKey], cur[yKey] * phaseY);
             }
             const points = Utils.pointsFromBuffer(float32arr);
-            // console.log('generateCubicPath', index, points.length);
             outputPath.setCubicLines(points, 0, index);
             return [points, index];
         } else {
@@ -342,38 +350,35 @@ export class LineChartRenderer extends LineRadarRenderer {
             const firstIndex = Math.max(0, this.mXBounds.min);
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
             const entry = dataSet.getEntryForIndex(firstIndex);
+            const entryXVal = getEntryXValue(entry, xKey, firstIndex);
 
-            // outputPath.moveTo(entry[xKey], entry[yKey] * phaseY);
             const float32arr = this.mLineBuffer;
-            float32arr[0] = entry[xKey];
+            float32arr[0] = entryXVal;
             float32arr[1] = entry[yKey] * phaseY;
             let index = 2;
             // create a new path
             let currentEntry = null;
+            let currentEntryXVal;
             let previousEntry = entry;
             for (let x = firstIndex + 1; x <= lastIndex; x++) {
                 currentEntry = dataSet.getEntryForIndex(x);
+                currentEntryXVal = getEntryXValue(currentEntry, xKey, x);
                 if (currentEntry[yKey] === undefined || currentEntry[yKey] === null) {
                     continue;
                 }
 
                 if (isDrawSteppedEnabled) {
-                    float32arr[index++] = currentEntry[xKey];
+                    float32arr[index++] = currentEntryXVal;
                     float32arr[index++] = previousEntry[yKey] * phaseY;
-                    // outputPath.lineTo(currentEntry[xKey], previousEntry[yKey] * phaseY);
                 }
 
-                float32arr[index++] = currentEntry[xKey];
+                float32arr[index++] = currentEntryXVal;
                 float32arr[index++] = currentEntry[yKey] * phaseY;
-                // outputPath.lineTo(currentEntry[xKey], currentEntry[yKey] * phaseY);
 
                 previousEntry = currentEntry;
             }
             const points = Utils.pointsFromBuffer(float32arr);
-            // console.log('generateLinearPath', index, points.length);
-            // if (isAndroid) {
             outputPath.setLines(points, 0, index);
-            // }
             return [points, index];
         } else {
             outputPath.reset();
@@ -395,9 +400,10 @@ export class LineChartRenderer extends LineRadarRenderer {
         if (dataSet.isDrawFilledEnabled()) {
             this.fillPath.reset();
             this.fillPath.addPath(this.linePath);
-
-            this.drawFill(c, dataSet, this.fillPath, trans, dataSet.getEntryForIndex(this.mXBounds.min)[xKey], dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range)[xKey]);
-            // result = true;
+            const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
+            const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
+            this.drawFill(c, dataSet, this.fillPath, trans, minEntryValue, maxEntryValue);
+            // result = true; // this would be to draw on a bitmap cache
         }
 
         if (dataSet.getLineWidth() > 0) {
@@ -422,9 +428,10 @@ export class LineChartRenderer extends LineRadarRenderer {
         if (dataSet.isDrawFilledEnabled()) {
             this.fillPath.reset();
             this.fillPath.addPath(this.linePath);
-
-            this.drawFill(c, dataSet, this.fillPath, trans, dataSet.getEntryForIndex(this.mXBounds.min)[xKey], dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range)[xKey]);
-            // result = true;
+            const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
+            const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
+            this.drawFill(c, dataSet, this.fillPath, trans, minEntryValue, maxEntryValue);
+            // result = true; // this would be to draw on a bitmap cache
         }
 
         if (dataSet.getLineWidth() > 0) {
@@ -457,7 +464,9 @@ export class LineChartRenderer extends LineRadarRenderer {
         if (drawFilled && (nbColors === 1 || !useColorsForFill)) {
             this.fillPath.reset();
             this.fillPath.addPath(this.linePath);
-            this.drawFill(c, dataSet, this.fillPath, trans, dataSet.getEntryForIndex(this.mXBounds.min)[xKey], dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range)[xKey]);
+            const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
+            const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
+            this.drawFill(c, dataSet, this.fillPath, trans, minEntryValue, maxEntryValue);
         }
         if (nbColors === 1) {
             if (drawLine) {
@@ -474,7 +483,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 nbItems;
             for (let index = 0; index < nbColors; index++) {
                 const color = colors[index];
-                let colorIndex = color[xKey] as number;
+                let colorIndex = color[xKey || 'index'] as number;
                 // if filtered we need to get the real index
                 if ((dataSet as any).isFiltered()) {
                     (dataSet as any).setIgnoreFiltered(true);
@@ -546,7 +555,6 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?) {
-        const xKey = dataSet.xProperty;
         const fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
 
         spline.lineTo(max, fillMin);
@@ -602,19 +610,12 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (!entry) continue;
 
             if (drawValues) {
-                // console.log('drawValue', entry[yKey], entry, index, dataSetCount);
-                this.drawValue(
-                    c,
-                    formatter.getFormattedValue(entry[yKey]),
-                    valuesOffset.x + x,
-                    valuesOffset.y + y - valOffset,
-                    dataSet.getValueTextColor(j / 2)
-                );
+                this.drawValue(c, formatter.getFormattedValue(entry[yKey]), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2));
             }
 
             if (drawIcons && entry.icon != null) {
                 const icon = entry.icon;
-                Utils.drawImage(c, icon, (x + iconsOffset.x), (y + iconsOffset.y));
+                Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y);
             }
         }
     }
@@ -692,7 +693,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             if (e == null) continue;
 
-            this.mCirclesBuffer[0] = e[xKey];
+            this.mCirclesBuffer[0] = getEntryXValue(e, xKey, j);
             this.mCirclesBuffer[1] = e[yKey] * phaseY;
 
             trans.pointValuesToPixel(this.mCirclesBuffer);
@@ -733,14 +734,15 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             if (set == null || !set.isHighlightEnabled()) continue;
 
-            const e = lineData.getEntryForHighlight(high);
+            const { entry, index } = lineData.getEntryAndIndexForHighlight(high);
             // let e = set.getEntryForXValue(high.x high.y);
 
-            if (!this.isInBoundsX(e, set)) continue;
+            if (!this.isInBoundsX(entry, set)) continue;
 
             const xKey = set.xProperty;
             const yKey = set.yProperty;
-            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[xKey], e[yKey] * this.mAnimator.getPhaseY());
+
+            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(getEntryXValue(entry, xKey, index), entry[yKey] * this.mAnimator.getPhaseY());
 
             high.drawX = pix.x;
             high.drawY = pix.y;

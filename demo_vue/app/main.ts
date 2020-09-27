@@ -1,12 +1,9 @@
 import Vue from 'nativescript-vue';
 import App from './App.vue';
 import './styles.scss';
-import RadChart from 'nativescript-ui-chart/vue';
 
 import { install } from '@nativescript-community/gesturehandler';
 install();
-
-Vue.use(RadChart);
 
 // setShowDebug(true);
 

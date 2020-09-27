@@ -60,7 +60,7 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
             let y = e[data.yProperty];
             const vals = e.yVals;
 
-            if (!this.mContainsStacks || vals == null || vals.length == 0) {
+            if (!this.mContainsStacks || vals == null || vals.length === 0) {
                 const left = x - barWidthHalf;
                 const right = x + barWidthHalf;
                 let bottom, top;

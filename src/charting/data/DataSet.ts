@@ -1,5 +1,6 @@
 import { Entry } from './Entry';
 import { BaseDataSet } from './BaseDataSet';
+import { getEntryXValue } from './BaseEntry';
 
 /**
  * Determines how to round DataSet index values for
@@ -60,23 +61,24 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         if (this.mValues == null) this.mValues = [];
 
         if (this.mValues.length > 0) {
-            for (const e of this.mValues) {
+            for (let index = 0, e: T; index < this.mValues.length; index++) {
+                e = this.mValues[index];
                 this.initEntryData(e);
-                this.calcMinMaxForEntry(e);
+                this.calcMinMaxForEntry(e, index);
             }
         }
     }
 
     calcMinMax() {
-        if (this.mValues == null || this.mValues.length === 0) return;
-
         this.mYMax = -Infinity;
         this.mYMin = Infinity;
         this.mXMax = -Infinity;
         this.mXMin = Infinity;
+        if (this.mValues == null || this.mValues.length === 0) return;
 
-        for (const e of this.mValues) {
-            this.calcMinMaxForEntry(e);
+        for (let index = 0, e: T; index < this.mValues.length; index++) {
+            e = this.mValues[index];
+            this.calcMinMaxForEntry(e, index);
         }
     }
 
@@ -84,10 +86,8 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
     public calcMinMaxYRange(fromX, toX) {
         if (this.mValues == null || this.mValues.length === 0) return;
-
         this.mYMax = -Infinity;
         this.mYMin = Infinity;
-
         const indexFrom = this.getEntryIndexForXValue(fromX, NaN, Rounding.DOWN);
         const indexTo = this.getEntryIndexForXValue(toX, NaN, Rounding.UP);
 
@@ -102,14 +102,14 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
      *
      * @param e
      */
-    protected calcMinMaxForEntry(e?: T) {
-        if (e == null) return;
-        this.calcMinMaxX(e);
+    protected calcMinMaxForEntry(e?: T, index?: number) {
+        if (!e) return;
+        this.calcMinMaxX(e, index);
 
-        this.calcMinMaxY(e);
+        this.calcMinMaxY(e, index);
     }
 
-    protected calcMinMaxX(e?: T) {
+    protected calcMinMaxX(e?: T, index?: number) {
         if (!e) {
             if (this.mValues == null || this.mValues.length === 0) return;
 
@@ -118,18 +118,19 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
             this.mXMax = -Infinity;
             this.mXMin = Infinity;
 
-            for (const e of this.mValues) {
-                this.calcMinMaxForEntry(e);
+            for (let index = 0, e: T; index < this.mValues.length; index++) {
+                e = this.mValues[index];
+                this.calcMinMaxForEntry(e, index);
             }
         } else {
-            const x = e[this.xProperty] || 0;
+            const x = getEntryXValue(e, this.xProperty, index);
             if (x < this.mXMin) this.mXMin = x;
 
             if (x > this.mXMax) this.mXMax = x;
         }
     }
 
-    protected calcMinMaxY(e: T) {
+    protected calcMinMaxY(e: T, index?: number) {
         const y = e[this.yProperty] || 0;
         if (y < this.mYMin) this.mYMin = y;
 
@@ -180,20 +181,20 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     public addEntryOrdered(e: T) {
-        if (e == null) return;
+        if (!e) return;
 
         if (this.mValues == null) {
             this.mValues = [];
         }
 
-        this.calcMinMaxForEntry(e);
-
-        if (this.mValues.length > 0 && this.mValues[this.mValues.length - 1][this.xProperty] > e[this.xProperty]) {
-            const closestIndex = this.getEntryIndexForXValue(e[this.xProperty], e[this.yProperty], Rounding.UP);
-            this.mValues.splice(closestIndex, 0, e);
+        let addedIndex = this.mValues.length;
+        if (this.mValues.length > 0 && this.xProperty && this.mValues[this.mValues.length - 1] > e[this.xProperty]) {
+            addedIndex = this.getEntryIndexForXValue(e[this.xProperty], e[this.yProperty], Rounding.UP);
+            this.mValues.splice(addedIndex, 0, e);
         } else {
             this.mValues.push(e);
         }
+        this.calcMinMaxForEntry(e, addedIndex);
     }
 
     public clear() {
@@ -202,14 +203,14 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     public addEntry(e: T) {
-        if (e == null) return false;
+        if (!e) return false;
 
         let values = this.getValues();
         if (values == null) {
             values = [];
         }
-
-        this.calcMinMaxForEntry(e);
+        const length = values.length;
+        this.calcMinMaxForEntry(e, length);
 
         // add the entry
         values.push(e);
@@ -217,7 +218,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     public removeEntry(e: T) {
-        if (e == null) return false;
+        if (!e) return false;
 
         if (this.mValues == null) return false;
 
@@ -241,6 +242,11 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         if (index > -1) return this.getInternalValues()[index];
         return null;
     }
+    public getEntryAndIndexForXValue(xValue, closestToY, rounding = Rounding.CLOSEST): { entry: T; index: number } {
+        const index = this.getEntryIndexForXValue(xValue, closestToY, rounding);
+        if (index > -1) return { entry: this.getInternalValues()[index], index };
+        return null;
+    }
 
     public getEntryForIndex(index) {
         return this.getInternalValues()[index];
@@ -253,12 +259,15 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         let low = 0;
         let high = values.length - 1;
         let closest = high;
-        const xProperty = this.xProperty;
-        const yProperty = this.yProperty;
+        const xKey = this.xProperty;
+        const yKey = this.yProperty;
+        let m: number, e: T, e1: T;
         while (low < high) {
-            const m = Math.floor((low + high) / 2);
-            const d1 = values[m][xProperty] - xValue,
-                d2 = values[m + 1][xProperty] - xValue,
+            m = Math.floor((low + high) / 2);
+            e = values[m];
+            e1 = values[m + 1];
+            const d1 = getEntryXValue(e, xKey, m) - xValue,
+                d2 = getEntryXValue(e1, xKey, m + 1) - xValue,
                 ad1 = Math.abs(d1),
                 ad2 = Math.abs(d2);
 
@@ -286,7 +295,8 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         }
 
         if (closest !== -1) {
-            const closestXValue = values[closest][xProperty];
+            let e = values[closest];
+            const closestXValue = getEntryXValue(e, xKey, closest);
             if (rounding === Rounding.UP) {
                 // If rounding up, and found x-value is lower than specified x, and we can go upper...
                 if (closestXValue < xValue && closest < values.length - 1) {
@@ -301,20 +311,23 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
             // Search by closest to y-value
             if (!isNaN(closestToY)) {
-                while (closest > 0 && values[closest - 1][xProperty] === closestXValue) closest -= 1;
+                e = values[closest - 1];
+                xValue = getEntryXValue(e, xKey, closest - 1);
+                while (closest > 0 && xValue === closestXValue) closest -= 1;
 
-                let closestYValue = values[closest][yProperty];
+                let closestYValue = values[closest][yKey];
                 let closestYIndex = closest;
 
                 while (true) {
                     closest += 1;
                     if (closest >= values.length) break;
 
-                    const value = values[closest];
+                    e = values[closest];
+                    xValue = getEntryXValue(e, xKey, closest);
 
-                    if (value[xProperty] !== closestXValue) break;
+                    if (xValue !== closestXValue) break;
 
-                    if (Math.abs(value[yProperty] - closestToY) < Math.abs(closestYValue - closestToY)) {
+                    if (Math.abs(e[yKey] - closestToY) < Math.abs(closestYValue - closestToY)) {
                         closestYValue = closestToY;
                         closestYIndex = closest;
                     }
@@ -334,21 +347,24 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         let low = 0;
         let high = values.length - 1;
 
-        const xProperty = this.xProperty;
+        const xKey = this.xProperty;
+        let m: number, e: T, e1: T, mXValue;
         while (low <= high) {
-            let m = Math.floor((high + low) / 2);
-            let entry = values[m];
+            m = Math.floor((high + low) / 2);
+            e = values[m];
+            mXValue = getEntryXValue(e, xKey, m);
             // if we have a match
-            if (xValue === entry[xProperty]) {
-                while (m > 0 && values[m - 1][xProperty] === xValue) m--;
+            if (xValue === mXValue) {
+                while (m > 0 && getEntryXValue(values[m - 1], xKey, m - 1) === xValue) m--;
 
                 high = values.length;
 
                 // loop over all "equal" entries
                 for (; m < high; m++) {
-                    entry = values[m];
-                    if (entry[xProperty] === xValue) {
-                        entries.push(entry);
+                    e = values[m];
+                    mXValue = getEntryXValue(e, xKey, m);
+                    if (mXValue === xValue) {
+                        entries.push(e);
                     } else {
                         break;
                     }
@@ -356,7 +372,46 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
                 break;
             } else {
-                if (xValue > entry[xProperty]) low = m + 1;
+                if (xValue > mXValue) low = m + 1;
+                else high = m - 1;
+            }
+        }
+
+        return entries;
+    }
+    public getEntriesAndIndexesForXValue(xValue) {
+        const entries = [];
+
+        const values = this.getInternalValues();
+        let low = 0;
+        let high = values.length - 1;
+
+        const xKey = this.xProperty;
+        let entry: T, mXValue;
+        while (low <= high) {
+            let m = Math.floor((high + low) / 2);
+            entry = values[m];
+            mXValue = getEntryXValue(entry, xKey, m);
+            // if we have a match
+            if (xValue === mXValue) {
+                while (m > 0 && getEntryXValue(values[m - 1], xKey, m - 1) === xValue) m--;
+
+                high = values.length;
+
+                // loop over all "equal" entries
+                for (; m < high; m++) {
+                    entry = values[m];
+                    mXValue = getEntryXValue(entry, xKey, m);
+                    if (mXValue === xValue) {
+                        entries.push({ entry, index: m });
+                    } else {
+                        break;
+                    }
+                }
+
+                break;
+            } else {
+                if (xValue > mXValue) low = m + 1;
                 else high = m - 1;
             }
         }

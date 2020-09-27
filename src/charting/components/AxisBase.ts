@@ -1,4 +1,4 @@
-import { DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
+import { Align, DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
 import { ComponentBase } from './ComponentBase';
 import { LimitLine } from './LimitLine';
 import { DefaultAxisValueFormatter } from '../formatter/DefaultAxisValueFormatter';
@@ -48,6 +48,11 @@ export abstract class AxisBase extends ComponentBase {
      * the number of label entries the axis should have, default 6
      */
     private mLabelCount: number = 6;
+
+    /**
+     * the labels text alignment
+     */
+    private mLabelTextAlign: Align = Align.LEFT;
 
     /**
      * the minimum erval between axis values
@@ -504,8 +509,9 @@ export abstract class AxisBase extends ComponentBase {
      * @return
      */
     public getValueFormatter() {
-        if (this.mAxisValueFormatter == null || (this.mAxisValueFormatter instanceof DefaultAxisValueFormatter && this.mAxisValueFormatter.getDecimalDigits() !== this.mDecimals))
-        {this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);}
+        if (this.mAxisValueFormatter == null || (this.mAxisValueFormatter instanceof DefaultAxisValueFormatter && this.mAxisValueFormatter.getDecimalDigits() !== this.mDecimals)) {
+            this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);
+        }
 
         return this.mAxisValueFormatter;
     }
@@ -763,5 +769,22 @@ export abstract class AxisBase extends ComponentBase {
      */
     public setSpaceMax(spaceMax) {
         this.mSpaceMax = spaceMax;
+    }
+
+    /**
+     * Returns the text alignment of the axis labels.
+     *
+     * @return
+     */
+    public getLabelTextAlign() {
+        return this.mLabelTextAlign;
+    }
+    /**
+     * Returns the text alignment of the description.
+     *
+     * @return
+     */
+    public setLabelTextAlign(value: Align) {
+        this.mLabelTextAlign = value;
     }
 }

@@ -89,7 +89,7 @@ export class YAxisRenderer extends AxisRenderer {
     }
 
     public renderAxisLine(c: Canvas) {
-        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawAxisLineEnabled() || this.mYAxis.getAxisLineWidth() === 0) return;
+        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawAxisLineEnabled() || this.mYAxis.getAxisLineWidth() === 0 || this.mYAxis.mEntryCount === 0) return;
 
         this.mAxisLinePaint.setColor(this.mYAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mYAxis.getAxisLineWidth());

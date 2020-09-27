@@ -68,6 +68,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize());
+        this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
 
         const pointF = { x: 0, y: 0 };

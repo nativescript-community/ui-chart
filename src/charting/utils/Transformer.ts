@@ -5,6 +5,8 @@ import { profile } from '@nativescript/core/profiling';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
 import { CandleDataSet } from '../data/CandleDataSet';
+import { CandleEntry } from '../data/CandleEntry';
+import { getEntryXValue } from '../data/BaseEntry';
 
 /**
  * Transformer class that contains all matrices and is responsible for
@@ -47,7 +49,6 @@ export class Transformer {
         if (!Number.isFinite(scaleY) || isNaN(scaleY)) {
             scaleY = 0;
         }
-
         // setup all matrices
         this.mMatrixValueToPx.reset();
         this.mMatrixValueToPx.postTranslate(-xChartMin, -yChartMin);
@@ -120,7 +121,7 @@ export class Transformer {
         const count = ((to - from) * phaseX + 1) * 2;
         // let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
 
-        if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length <  count) {
+        if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length < count) {
             this.valuePointsForGenerateTransformedValues = Utils.createArrayBuffer(count);
         }
         // let valuePoints = this.valuePointsForGenerateTransformedValues;
@@ -143,7 +144,7 @@ export class Transformer {
 
         this.getValueToPixelMatrix().mapPoints(points);
 
-        return {points, count};
+        return { points, count };
     }
 
     // protected valuePointsForGenerateTransformedValuesLine = [];
@@ -199,15 +200,14 @@ export class Transformer {
         }
         const valuePoints = this.valuePointsForGenerateTransformedValuesCandle;
 
-        const xProperty = dataSet.xProperty;
-        const yProperty = dataSet.yProperty;
-        for (let j = 0; j < count; j += 2) {
-            const e = dataSet.getEntryForIndex(j / 2 + from);
+        for (let j = 0, e: CandleEntry, index: number; j < count; j += 2) {
+            index = j / 2 + from;
+            e = dataSet.getEntryForIndex(index);
 
-            const xProperty = dataSet.xProperty;
+            const xKey = dataSet.xProperty;
             const highProperty = dataSet.highProperty;
-            if (e != null) {
-                valuePoints[j] = e[xProperty];
+            if (e) {
+                valuePoints[j] = getEntryXValue(e, xKey, index);
                 valuePoints[j + 1] = e[highProperty] * phaseY;
             } else {
                 valuePoints[j] = 0;
@@ -352,20 +352,6 @@ export class Transformer {
      * @param pixels
      */
     public pixelsToValue(pixels: number[]) {
-        // const nArray = Utils.arrayoNativeArray(pixels);
-        // const tmp = this.mPixelToValueMatrixBuffer;
-        // tmp.reset();
-        // // invert all matrixes to convert back to the original value
-        // this.mMatrixOffset.invert(tmp);
-        // tmp.mapPoints(pixels);
-
-        // this.mViewPortHandler.getMatrixTouch().invert(tmp);
-        // tmp.mapPoints(pixels);
-
-        // this.mMatrixValueToPx.invert(tmp);
-        // tmp.mapPoints(pixels);
-
-
         const tmp = this.getPixelToValueMatrix();
         tmp.mapPoints(pixels);
     }
@@ -374,7 +360,6 @@ export class Transformer {
      * buffer for performance
      */
     ptsBuffer = Utils.createNativeArray(2);
-    // ptsBuffer = new Float32Array(Utils.createArrayBuffer(2));
 
     /**
      * Returns a recyclable MPPointD instance.

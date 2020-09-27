@@ -87,8 +87,9 @@ export class XAxisRenderer extends AxisRenderer {
 
         this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize());
+        this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
-        const align = this.mAxisLabelPaint.getTextAlign();
+        // const align = this.mAxisLabelPaint.getTextAlign();
         // this.mAxisLabelPaint.setTextAlign(Align.CENTER);
         const pointF = { x: 0, y: 0 };
         if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
@@ -122,12 +123,12 @@ export class XAxisRenderer extends AxisRenderer {
             this.drawLabels(c, this.mViewPortHandler.contentBottom() + yoffset, pointF);
             this.drawMarkTicket(c,this.mViewPortHandler.contentBottom(),+yoffset/2);
         }
-        this.mAxisLabelPaint.setTextAlign(align);
+        // this.mAxisLabelPaint.setTextAlign(align);
         // MPPointF.recycleInstance(pointF);
     }
 
     public renderAxisLine(c: Canvas) {
-        if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled() || this.mXAxis.getAxisLineWidth() === 0) return;
+        if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled() || this.mXAxis.getAxisLineWidth() === 0 || this.mXAxis.mEntryCount === 0) return;
 
         this.mAxisLinePaint.setColor(this.mXAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mXAxis.getAxisLineWidth());

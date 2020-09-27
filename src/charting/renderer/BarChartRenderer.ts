@@ -9,6 +9,8 @@ import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Canvas, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
 import { profile } from '@nativescript/core';
+import { getEntryXValue } from '../data/BaseEntry';
+import { Entry } from '../data/Entry';
 
 export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     protected mChart: BarChart;
@@ -94,7 +96,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             for (let i = 0, count = Math.min(Math.ceil(dataSet.getEntryCount() * phaseX), dataSet.getEntryCount()); i < count; i++) {
                 const e = dataSet.getEntryForIndex(i);
-                x = e[xKey];
+                x = getEntryXValue(e, xKey, i);
 
                 this.mBarShadowRectBuffer.left = x - barWidthHalf;
                 this.mBarShadowRectBuffer.right = x + barWidthHalf;
@@ -187,7 +189,6 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                     continue;
                 }
 
-                const xKey = dataSet.xProperty;
                 const yKey = dataSet.yProperty;
 
                 // apply the text-styling defined by the DataSet
@@ -362,7 +363,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     public drawHighlighted(c: Canvas, indices: Highlight[]) {
         const barData = this.mChart.getBarData();
-
+        let entry: Entry, index: number;
         for (let i = 0; i < indices.length; i++) {
             const high = indices[i];
             const set = barData.getDataSetByIndex(high.dataSetIndex);
@@ -370,9 +371,15 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             if (set === null || !set.isHighlightEnabled()) {
                 continue;
             }
-
-            const e = set.getEntryForXValue(high.x, high.y);
-            if (!this.isInBoundsX(e, set)) {
+            if (high.entry) {
+                entry = high.entry;
+                index = high.entryIndex;
+            } else {
+                const r = set.getEntryAndIndexForXValue(high.x, high.y);
+                entry = r.entry;
+                index = r.index;
+            }
+            if (!this.isInBoundsX(entry, set)) {
                 continue;
             }
 
@@ -383,26 +390,26 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             this.mHighlightPaint.setColor(set.getHighLightColor());
             this.mHighlightPaint.setAlpha(set.getHighLightAlpha());
 
-            const isStack = high.stackIndex >= 0 && e.isStacked ? true : false;
+            const isStack = high.stackIndex >= 0 && entry.isStacked ? true : false;
 
             let y1;
             let y2;
 
             if (isStack) {
                 if (this.mChart.isHighlightFullBarEnabled()) {
-                    y1 = e.positiveSum;
-                    y2 = -e.negativeSum;
+                    y1 = entry.positiveSum;
+                    y2 = -entry.negativeSum;
                 } else {
-                    const range = e.ranges[high.stackIndex];
+                    const range = entry.ranges[high.stackIndex];
                     y1 = range[0];
                     y2 = range[1];
                 }
             } else {
-                y1 = e[yKey];
+                y1 = entry[yKey];
                 y2 = 0;
             }
 
-            this.prepareBarHighlight(e[xKey], y1, y2, barData.getBarWidth() / 2, trans);
+            this.prepareBarHighlight(getEntryXValue(entry, xKey, index), y1, y2, barData.getBarWidth() / 2, trans);
 
             this.setHighlightDrawPos(high, this.mBarRect);
 

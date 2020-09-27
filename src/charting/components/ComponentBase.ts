@@ -25,7 +25,7 @@ export abstract class ComponentBase {
     /**
      * the typeface used for the labels
      */
-    protected mTypeface: Font = Font.default.withFontFamily('Open Sans,OpenSans-Regular');
+    protected mTypeface: Font = Font.default;
 
     /**
      * the text size of the labels

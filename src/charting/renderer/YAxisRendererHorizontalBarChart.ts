@@ -25,20 +25,18 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      * @param yMax - the maximum y-value in the data object for this axis
      */
     public computeAxis(yMin, yMax, inverted) {
-
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
         if (this.mViewPortHandler.contentHeight() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
-
             const p1 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop());
             const p2 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentTop());
 
             if (!inverted) {
-                yMin =  p1.x;
-                yMax =  p2.x;
+                yMin = p1.x;
+                yMax = p2.x;
             } else {
-                yMin =  p2.x;
-                yMax =  p1.x;
+                yMin = p2.x;
+                yMax = p1.x;
             }
         }
 
@@ -50,7 +48,6 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      */
     @profile
     public renderAxisLabels(c: Canvas) {
-
         if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled()) {
             return;
         }
@@ -62,23 +59,22 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
         this.mAxisLabelPaint.setTextAlign(Align.CENTER);
 
-        let baseYOffset = 2.5;
-        let textHeight = Utils.calcTextHeight(this.mAxisLabelPaint, "Q");
+        const baseYOffset = 2.5;
+        const textHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q');
 
         const dependency = this.mYAxis.getAxisDependency();
         const labelPosition = this.mYAxis.getLabelPosition();
 
         let yPos = 0;
 
-        if (dependency == AxisDependency.LEFT) {
-            if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
+        if (dependency === AxisDependency.LEFT) {
+            if (labelPosition === YAxisLabelPosition.OUTSIDE_CHART) {
                 yPos = this.mViewPortHandler.contentTop() - baseYOffset;
             } else {
                 yPos = this.mViewPortHandler.contentTop() - baseYOffset;
             }
-
         } else {
-            if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
+            if (labelPosition === YAxisLabelPosition.OUTSIDE_CHART) {
                 yPos = this.mViewPortHandler.contentBottom() + textHeight + baseYOffset;
             } else {
                 yPos = this.mViewPortHandler.contentBottom() + textHeight + baseYOffset;
@@ -96,12 +92,10 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         this.mAxisLinePaint.setColor(this.mYAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mYAxis.getAxisLineWidth());
 
-        if (this.mYAxis.getAxisDependency() == AxisDependency.LEFT) {
-            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), 
-                this.mViewPortHandler.contentTop(), this.mAxisLinePaint);
+        if (this.mYAxis.getAxisDependency() === AxisDependency.LEFT) {
+            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentTop(), this.mAxisLinePaint);
         } else {
-            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.mViewPortHandler.contentRight(), 
-                this.mViewPortHandler.contentBottom(), this.mAxisLinePaint);
+            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.mAxisLinePaint);
         }
     }
 
@@ -113,13 +107,12 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      */
     @profile
     protected drawYLabels(c: Canvas, fixedPosition, positions, offset) {
-
         this.mAxisLabelPaint.setTypeface(this.mYAxis.getTypeface());
         this.mAxisLabelPaint.setTextSize(this.mYAxis.getTextSize());
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
 
         const from = this.mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
-        const to = this.mYAxis.isDrawTopYLabelEntryEnabled() ? this.mYAxis.mEntryCount : (this.mYAxis.mEntryCount - 1);
+        const to = this.mYAxis.isDrawTopYLabelEntryEnabled() ? this.mYAxis.mEntryCount : this.mYAxis.mEntryCount - 1;
 
         for (let i = from; i < to; i++) {
             const text = this.mYAxis.getFormattedLabel(i);
@@ -130,7 +123,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
     protected getTransformedPositions() {
         const length = this.mYAxis.mEntryCount * 2;
-        if (this.mGetTransformedPositionsBuffer.length != length) {
+        if (this.mGetTransformedPositionsBuffer.length !== length) {
             this.mGetTransformedPositionsBuffer = Utils.createArrayBuffer(length);
         }
 
@@ -139,7 +132,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
             // only fill x values, y values are not needed for x-labels
             positions[i] = this.mYAxis.mEntries[i / 2];
         }
-        
+
         const result = Utils.pointsFromBuffer(positions);
         this.mTrans.pointValuesToPixel(result);
         return Utils.nativeArrayToArray(result);
@@ -188,9 +181,8 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      *
      * @param c
      */
-    
-    public renderLimitLines(c: Canvas) {
 
+    public renderLimitLines(c: Canvas) {
         const limitLines = this.mYAxis.getLimitLines();
 
         if (limitLines == null || limitLines.length <= 0) {
@@ -206,7 +198,6 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         limitLinePath.reset();
 
         for (let i = 0; i < limitLines.length; i++) {
-
             const l = limitLines[i];
 
             if (!l.isEnabled()) {
@@ -240,8 +231,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
             const label = l.getLabel();
 
             // if drawing the limit-value label is enabled
-            if (label != null && label != '') {
-
+            if (label != null && label !== '') {
                 this.mLimitLinePaint.setStyle(l.getTextStyle());
                 this.mLimitLinePaint.setPathEffect(null);
                 this.mLimitLinePaint.setColor(l.getTextColor());

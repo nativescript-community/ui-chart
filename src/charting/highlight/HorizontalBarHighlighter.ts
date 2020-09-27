@@ -2,6 +2,7 @@ import { BarHighlighter } from './BarHighlighter';
 import { Highlight } from './Highlight';
 import { BarDataProvider } from '../interfaces/dataprovider/BarDataProvider';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
+import { getEntryXValue } from '../data/BaseEntry';
 
 export class HorizontalBarHighlighter extends BarHighlighter {
     constructor(chart: BarDataProvider) {
@@ -25,18 +26,18 @@ export class HorizontalBarHighlighter extends BarHighlighter {
     }
 
     protected buildHighlights(set: IBarDataSet, dataSetIndex, xVal, rounding) {
-        const xProperty = set.xProperty;
-        const yProperty = set.yProperty;
+        const xKey = set.xProperty;
+        const yKey = set.yProperty;
         const highlights: Highlight[] = [];
 
         //noinspection unchecked
-        let entries = set.getEntriesForXValue(xVal);
+        let entries = set.getEntriesAndIndexesForXValue(xVal);
         if (entries.length === 0) {
             // Try to find closest x-value and take all entries for that x-value
-            const closest = set.getEntryForXValue(xVal, NaN, rounding);
+            const closest = set.getEntryAndIndexForXValue(xVal, NaN, rounding);
             if (closest !== null) {
                 //noinspection unchecked
-                entries = set.getEntriesForXValue(closest[xProperty]);
+                entries = set.getEntriesAndIndexesForXValue(getEntryXValue(closest.entry, xKey, closest.index));
             }
         }
 
@@ -44,13 +45,16 @@ export class HorizontalBarHighlighter extends BarHighlighter {
             return highlights;
         }
 
-        for (const e of entries) {
-            const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[yProperty], e[xProperty]);
+        for (const r of entries) {
+            const e = r.entry;
+            const xVal = getEntryXValue(e.entry, xKey, r.index);
+            const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[yKey], xVal);
 
             highlights.push({
                 entry: e,
-                x: e[xProperty],
-                y: e[yProperty],
+                entryIndex: r.index,
+                x: xVal,
+                y: e[yKey],
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex,

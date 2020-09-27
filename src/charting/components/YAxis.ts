@@ -1,22 +1,24 @@
-import { AxisBase } from "./AxisBase";
-import { Color } from "@nativescript/core";
-import { Paint } from "@nativescript-community/ui-canvas";
+import { AxisBase } from './AxisBase';
+import { Color } from '@nativescript/core';
+import { Paint } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 
-    /**
-     * Enum that specifies the axis a DataSet should be plotted against, either LEFT or RIGHT.
-     *
-     * @author Philipp Jahoda
-     */
-    export  enum AxisDependency {
-        LEFT, RIGHT
-    }
-    /**
-     * enum for the position of the y-labels relative to the chart
-     */
-    export enum YAxisLabelPosition {
-        OUTSIDE_CHART, INSIDE_CHART
-    }
+/**
+ * Enum that specifies the axis a DataSet should be plotted against, either LEFT or RIGHT.
+ *
+ * @author Philipp Jahoda
+ */
+export enum AxisDependency {
+    LEFT,
+    RIGHT,
+}
+/**
+ * enum for the position of the y-labels relative to the chart
+ */
+export enum YAxisLabelPosition {
+    OUTSIDE_CHART,
+    INSIDE_CHART,
+}
 /**
  * Class representing the y-axis labels settings and its entries. Only use the setter methods to
  * modify it. Do not
@@ -29,26 +31,25 @@ import { Utils } from '../utils/Utils';
  * @author Philipp Jahoda
  */
 export class YAxis extends AxisBase {
-
     /**
      * indicates if the bottom y-label entry is drawn or not
      */
-    private  mDrawBottomYLabelEntry = true;
+    private mDrawBottomYLabelEntry = true;
 
     /**
      * indicates if the top y-label entry is drawn or not
      */
-    private  mDrawTopYLabelEntry = true;
+    private mDrawTopYLabelEntry = true;
 
     /**
      * flag that indicates if the axis is inverted or not
      */
-    protected  mInverted = false;
+    protected mInverted = false;
 
     /**
      * flag that indicates if the zero-line should be drawn regardless of other grid lines
      */
-    protected  mDrawZeroLine = false;
+    protected mDrawZeroLine = false;
 
     /**
      * flag indicating that auto scale min restriction should be used
@@ -85,8 +86,6 @@ export class YAxis extends AxisBase {
      */
     private mPosition = YAxisLabelPosition.OUTSIDE_CHART;
 
-
-
     /**
      * the side this axis object represents
      */
@@ -106,22 +105,20 @@ export class YAxis extends AxisBase {
      */
     protected mMaxWidth = Number.POSITIVE_INFINITY;
 
-
-
-    constructor( position = AxisDependency.LEFT) {
+    constructor(position = AxisDependency.LEFT) {
         super();
         this.mAxisDependency = position;
         this.mYOffset = 0;
     }
 
-    public  getAxisDependency() {
+    public getAxisDependency() {
         return this.mAxisDependency;
     }
 
     /**
      * @return the minimum width that the axis should take (in dp).
      */
-    public  getMinWidth() {
+    public getMinWidth() {
         return this.mMinWidth;
     }
 
@@ -130,14 +127,14 @@ export class YAxis extends AxisBase {
      *
      * @param minWidth
      */
-    public setMinWidth( minWidth) {
+    public setMinWidth(minWidth) {
         this.mMinWidth = minWidth;
     }
 
     /**
      * @return the maximum width that the axis can take (in dp).
      */
-    public  getMaxWidth() {
+    public getMaxWidth() {
         return this.mMaxWidth;
     }
 
@@ -146,14 +143,14 @@ export class YAxis extends AxisBase {
      *
      * @param maxWidth
      */
-    public setMaxWidth( maxWidth) {
+    public setMaxWidth(maxWidth) {
         this.mMaxWidth = maxWidth;
     }
 
     /**
      * returns the position of the y-labels
      */
-    public  getLabelPosition() {
+    public getLabelPosition() {
         return this.mPosition;
     }
 
@@ -162,7 +159,7 @@ export class YAxis extends AxisBase {
      *
      * @param pos
      */
-    public setPosition( pos: YAxisLabelPosition) {
+    public setPosition(pos: YAxisLabelPosition) {
         this.mPosition = pos;
     }
 
@@ -171,7 +168,7 @@ export class YAxis extends AxisBase {
      *
      * @return
      */
-    public  isDrawTopYLabelEntryEnabled() {
+    public isDrawTopYLabelEntryEnabled() {
         return this.mDrawTopYLabelEntry;
     }
 
@@ -180,7 +177,7 @@ export class YAxis extends AxisBase {
      *
      * @return
      */
-    public  isDrawBottomYLabelEntryEnabled() {
+    public isDrawBottomYLabelEntryEnabled() {
         return this.mDrawBottomYLabelEntry;
     }
 
@@ -191,7 +188,7 @@ export class YAxis extends AxisBase {
      *
      * @param enabled
      */
-    public setDrawTopYLabelEntry( enabled) {
+    public setDrawTopYLabelEntry(enabled) {
         this.mDrawTopYLabelEntry = enabled;
     }
 
@@ -202,7 +199,7 @@ export class YAxis extends AxisBase {
      *
      * @param enabled
      */
-    public setInverted( enabled) {
+    public setInverted(enabled) {
         this.mInverted = enabled;
     }
 
@@ -221,12 +218,10 @@ export class YAxis extends AxisBase {
      *
      * @param startAtZero
      */
-    
-    public setStartAtZero( startAtZero) {
-        if (startAtZero)
-        this.setAxisMinimum(0);
-        else
-        this.resetAxisMinimum();
+
+    public setStartAtZero(startAtZero) {
+        if (startAtZero) this.setAxisMinimum(0);
+        else this.resetAxisMinimum();
     }
 
     /**
@@ -275,7 +270,7 @@ export class YAxis extends AxisBase {
      *
      * @param this.mDrawZeroLine
      */
-    public setDrawZeroLine( drawZeroLine) {
+    public setDrawZeroLine(drawZeroLine) {
         this.mDrawZeroLine = drawZeroLine;
     }
 
@@ -311,20 +306,17 @@ export class YAxis extends AxisBase {
      * @param p
      * @return
      */
-    public getRequiredWidthSpace(p:Paint) {
-
+    public getRequiredWidthSpace(p: Paint) {
         p.setTextSize(this.mTextSize);
 
         const label = this.getLongestLabel();
-        let width =  Utils.calcTextWidth(p, label) + this.getXOffset() * 2;
+        let width = Utils.calcTextWidth(p, label) + this.getXOffset() * 2;
         let minWidth = this.getMinWidth();
         let maxWidth = this.getMaxWidth();
 
-        if (minWidth > 0)
-            minWidth = minWidth;
+        if (minWidth > 0) minWidth = minWidth;
 
-        if (maxWidth > 0 && maxWidth != Number.POSITIVE_INFINITY)
-            maxWidth = maxWidth;
+        if (maxWidth > 0 && maxWidth !== Number.POSITIVE_INFINITY) maxWidth = maxWidth;
 
         width = Math.max(minWidth, Math.min(width, maxWidth > 0.0 ? maxWidth : width));
 
@@ -337,12 +329,11 @@ export class YAxis extends AxisBase {
      * @param p
      * @return
      */
-    public getRequiredHeightSpace(p:Paint) {
-
+    public getRequiredHeightSpace(p: Paint) {
         p.setTextSize(this.mTextSize);
 
         const label = this.getLongestLabel();
-        return  Utils.calcTextHeight(p, label) + this.getYOffset() * 2;
+        return Utils.calcTextHeight(p, label) + this.getYOffset() * 2;
     }
 
     /**
@@ -351,33 +342,30 @@ export class YAxis extends AxisBase {
      * @return
      */
     public needsOffset() {
-        if (this.isEnabled() && this.isDrawLabelsEnabled() && this.getLabelPosition() == YAxisLabelPosition
-                .OUTSIDE_CHART)
-            return true;
-        else
-            return false;
+        if (this.isEnabled() && this.isDrawLabelsEnabled() && this.getLabelPosition() === YAxisLabelPosition.OUTSIDE_CHART) return true;
+        else return false;
     }
 
     /**
      * Returns true if autoscale restriction for axis min value is enabled
      */
-    
-    public isUseAutoScaleMinRestriction( ) {
+
+    public isUseAutoScaleMinRestriction() {
         return this.mUseAutoScaleRestrictionMin;
     }
 
     /**
      * Sets autoscale restriction for axis min value as enabled/disabled
      */
-    
-    public setUseAutoScaleMinRestriction(  isEnabled ) {
+
+    public setUseAutoScaleMinRestriction(isEnabled) {
         this.mUseAutoScaleRestrictionMin = isEnabled;
     }
 
     /**
      * Returns true if autoscale restriction for axis max value is enabled
      */
-    
+
     public isUseAutoScaleMaxRestriction() {
         return this.mUseAutoScaleRestrictionMax;
     }
@@ -385,22 +373,19 @@ export class YAxis extends AxisBase {
     /**
      * Sets autoscale restriction for axis max value as enabled/disabled
      */
-    
-    public setUseAutoScaleMaxRestriction(  isEnabled ) {
+
+    public setUseAutoScaleMaxRestriction(isEnabled) {
         this.mUseAutoScaleRestrictionMax = isEnabled;
     }
 
-
-    
-    public calculate(dataMin,  dataMax) {
-
+    public calculate(dataMin, dataMax) {
         let min = dataMin;
         let max = dataMax;
 
         let range = Math.abs(max - min);
 
         // in case all values are equal
-        if (range == 0) {
+        if (range === 0) {
             max = max + 1;
             min = min - 1;
         }
