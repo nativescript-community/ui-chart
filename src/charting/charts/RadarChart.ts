@@ -33,12 +33,12 @@ export class RadarChart extends PieRadarChartBase<RadarEntry, RadarDataSet, Rada
     /**
      * color for the main web lines
      */
-    private mWebColor = new Color(255, 122, 122, 122);
+    private mWebColor: Color | string = new Color(255, 122, 122, 122);
 
     /**
      * color for the inner web
      */
-    private mWebColorInner = new Color(255, 122, 122, 122);
+    private mWebColorInner: Color | string = new Color(255, 122, 122, 122);
 
     /**
      * transparency the grid is drawn with (0-255)
@@ -248,7 +248,7 @@ export class RadarChart extends PieRadarChartBase<RadarEntry, RadarDataSet, Rada
      *
      * @param color
      */
-    public setWebColor(color: Color) {
+    public setWebColor(color: Color | string) {
         this.mWebColor = color;
     }
 
@@ -263,7 +263,7 @@ export class RadarChart extends PieRadarChartBase<RadarEntry, RadarDataSet, Rada
      *
      * @param color
      */
-    public setWebColorInner(color: Color) {
+    public setWebColorInner(color: Color | string) {
         this.mWebColorInner = color;
     }
 
