@@ -11,7 +11,6 @@ module.exports = (env, params = {}) => {
         const srcPath = resolve(projectRoot, '..', 'src', 'charting');
         config.resolve.alias['@nativescript-community/ui-chart'] = srcPath;
         config.resolve.alias['@nativescript-community/ui-chart$'] = resolve(srcPath, 'charts');
-        console.log('development', srcPath, config.resolve.alias);
         config.plugins.push(new webpack.ContextReplacementPlugin(new RegExp('@nativescript-community/ui-chart'), srcPath));
     }
     return config;
