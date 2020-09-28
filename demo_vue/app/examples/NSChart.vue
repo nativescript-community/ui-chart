@@ -78,13 +78,13 @@ export default Vue.extend({
             // enable touch gestures
             // chart.setTouchEnabled(true);
 
-            // // enable scaling and dragging
+            // enable scaling and dragging
             // chart.setDragEnabled(true);
             // chart.setHighlightPerDragEnabled(true);
             // chart.setHighlightPerTapEnabled(true);
             // chart.setScaleEnabled(true);
 
-            // // if disabled, scaling can be done on x- and y-axis separately
+            // if disabled, scaling can be done on x- and y-axis separately
             // chart.setPinchZoom(false);
 
             // chart.setDrawGridBackground(false);

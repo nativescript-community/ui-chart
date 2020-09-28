@@ -121,6 +121,8 @@ export function onPieChartLoaded(args) {
     chart.drawFameRate = true;
     chart.setLogEnabled(true);
     chart.setHighlightPerTapEnabled(true);
+    // chart.setScaleEnabled(true);
+    // chart.setDragEnabled(true);
     //chart.setHoleRadius(10);
     //chart.setDrawHoleEnabled(false);
     // chart.setHardwareAccelerationEnabled(true);
