@@ -526,7 +526,7 @@ export abstract class AxisBase extends ComponentBase {
      * @param phase       offset, in degrees (normally, use 0)
      */
     public enableGridDashedLine(lineLength, spaceLength, phase) {
-        this.mGridDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`);
+        this.mGridDashPathEffect = new DashPathEffect([lineLength, spaceLength],phase);
     }
     /**
      * Enables the grid line to be drawn in dashed mode, e.g. like this

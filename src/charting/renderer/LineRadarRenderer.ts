@@ -1,5 +1,5 @@
-import { Canvas, Paint, Path, Style } from '@nativescript-community/ui-canvas';
-import { Color, profile } from '@nativescript/core';
+import { Canvas, Paint, Path, Rect, Style } from '@nativescript-community/ui-canvas';
+import { Color, ImageSource, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
@@ -23,14 +23,20 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      * @param drawable
      */
     @profile
-    protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable, shader) {
+    protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable: ImageSource, shader) {
         if (this.clipPathSupported()) {
             const save = c.save();
             // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
             c.clipPath(filledPath);
 
-            drawable.setBounds(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom());
-            drawable.draw(c);
+            // drawable.setBounds(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom());
+            // drawable.draw(c);
+            c.drawBitmap(
+                drawable,
+                new Rect(0,0, drawable.width, drawable.height),
+                new Rect(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom()),
+                null
+            );
 
             c.restoreToCount(save);
         } else {
@@ -72,7 +78,6 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
             this.mRenderPaint.setShader(shader);
         } else {
             this.mRenderPaint.setColor(color);
-
         }
 
         if (this.clipPathSupported()) {

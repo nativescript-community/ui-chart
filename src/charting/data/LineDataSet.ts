@@ -25,7 +25,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     /**
      * List representing all colors that are used for the circles
      */
-    private mCircleColors: Color[] = null;
+    private mCircleColors: string[] | Color[] = null;
 
     /**
      * the color of the inner circles
@@ -290,7 +290,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     public getCircleColor(index) {
-        return this.mCircleColors[index] || this.getColor();
+        return this.mCircleColors[Math.floor(index)] || this.getColor();
     }
 
     public getCircleColorCount() {
@@ -306,7 +306,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      *
      * @param colors
      */
-    public setCircleColors(colors) {
+    public setCircleColors(colors: string[] | Color[]) {
         this.mCircleColors = colors;
     }
 

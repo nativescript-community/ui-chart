@@ -2,6 +2,7 @@ import { CandleData } from '../data/CandleData';
 import { CandleEntry } from '../data/CandleEntry';
 import { CandleDataProvider } from '../interfaces/dataprovider/CandleDataProvider';
 import { ICandleDataSet } from '../interfaces/datasets/ICandleDataSet';
+import { CandleStickChartRenderer } from '../renderer/CandleStickChartRenderer';
 import { BarLineChartBase } from './BarLineChartBase';
 
 /**

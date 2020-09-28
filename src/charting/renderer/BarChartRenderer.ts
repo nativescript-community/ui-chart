@@ -232,7 +232,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         }
 
                         if (dataSet.isDrawValuesEnabled()) {
-                            this.drawValue(c, formatter.getBarLabel(val), x, val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset, dataSet.getValueTextColor(j / 4));
+                            this.drawValue(c, formatter.getBarLabel(val, entry), x, val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset, dataSet.getValueTextColor(j / 4));
                         }
 
                         if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
@@ -277,7 +277,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             if (dataSet.isDrawValuesEnabled()) {
                                 this.drawValue(
                                     c,
-                                    formatter.getBarLabel(entry[yKey]),
+                                    formatter.getBarLabel(entry[yKey], entry),
                                     x,
                                     entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 1] + posOffset : buffer.buffer[bufferIndex + 3] + negOffset,
                                     color

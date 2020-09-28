@@ -1,6 +1,7 @@
 import { ILineScatterCandleRadarDataSet } from './ILineScatterCandleRadarDataSet';
 import { Entry } from '../../data/Entry';
 import { RadarEntry } from '../../data/RadarEntry';
+import { ImageSource } from '@nativescript/core';
 
 /**
  * Created by Philipp Jahoda on 21/10/15.
@@ -18,7 +19,7 @@ export interface ILineRadarDataSet<T extends Entry> extends ILineScatterCandleRa
      *
      * @return
      */
-    getFillDrawable();
+    getFillDrawable(): ImageSource;
     /**
      * Returns the shader used for filling the area below the line.
      *
