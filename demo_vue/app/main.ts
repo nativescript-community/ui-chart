@@ -7,7 +7,8 @@ install();
 
 // setShowDebug(true);
 
-Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts/LineChart').LineChart);
+Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
+Vue.registerElement('ScatterChart', () => require('@nativescript-community/ui-chart/charts').ScatterChart);
 
 declare let com;
 // import { MPLineChart } from 'nativescript-mpchart-fork-adrianoop/chart/line-chart/nativescript-line-chart';
