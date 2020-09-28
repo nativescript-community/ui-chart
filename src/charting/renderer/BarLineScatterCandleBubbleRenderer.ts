@@ -14,17 +14,17 @@ export class XBounds {
     /**
      * minimum visible entry index
      */
-    public min;
+    public min: number;
 
     /**
      * maximum visible entry index
      */
-    public max;
+    public max: number;
 
     /**
      * range of visible entry indices
      */
-    public range;
+    public range: number;
 
     /**
      * Calculates the minimum and maximum x values as well as the range between them.

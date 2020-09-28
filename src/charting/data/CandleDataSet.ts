@@ -74,21 +74,21 @@ export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
 
     protected calcMinMaxForEntry(e?: CandleEntry, index?: number) {
         if (!e) return;
-        if (e.getLow() < this.mYMin) this.mYMin = e.getLow();
+        if (e.low < this.mYMin) this.mYMin = e.low;
 
-        if (e.getHigh() > this.mYMax) this.mYMax = e.getHigh();
+        if (e.high > this.mYMax) this.mYMax = e.high;
 
         this.calcMinMaxX(e);
     }
 
     protected calcMinMaxY(e: CandleEntry) {
-        if (e.getHigh() < this.mYMin) this.mYMin = e.getHigh();
+        if (e.high < this.mYMin) this.mYMin = e.high;
 
-        if (e.getHigh() > this.mYMax) this.mYMax = e.getHigh();
+        if (e.high > this.mYMax) this.mYMax = e.high;
 
-        if (e.getLow() < this.mYMin) this.mYMin = e.getLow();
+        if (e.low < this.mYMin) this.mYMin = e.low;
 
-        if (e.getLow() > this.mYMax) this.mYMax = e.getLow();
+        if (e.low > this.mYMax) this.mYMax = e.low;
     }
 
     /**

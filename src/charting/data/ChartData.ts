@@ -111,7 +111,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
      * Calc minimum and maximum values (both x and y) over all DataSets.
      */
-    protected calcMinMax() {
+    calcMinMax() {
         if (this.mDataSets == null) return;
 
         this.mYMax = -Infinity;

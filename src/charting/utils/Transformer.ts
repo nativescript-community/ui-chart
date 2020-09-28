@@ -5,8 +5,10 @@ import { profile } from '@nativescript/core/profiling';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
 import { CandleDataSet } from '../data/CandleDataSet';
+import { BubbleDataSet } from '../data/BubbleDataSet';
 import { CandleEntry } from '../data/CandleEntry';
 import { getEntryXValue } from '../data/BaseEntry';
+import { constants } from 'crypto';
 
 /**
  * Transformer class that contains all matrices and is responsible for
@@ -81,32 +83,67 @@ export class Transformer {
      * @param data
      * @return
      */
-    // public generateTransformedValuesScatter(dataSet: IDataSet<Entry>, phaseX, phaseY, from, to) {
-    //     let count = ((to - from) * phaseX + 1) * 2;
+    public generateTransformedValuesScatter(dataSet: IDataSet<Entry>, phaseX, phaseY, from, to) {
+        const count = ((to - from) * phaseX + 1) * 2;
 
-    //     if (this.valuePointsForGenerateTransformedValuesScatter.length != count) {
-    //         this.valuePointsForGenerateTransformedValuesScatter = [];
-    //     }
-    //     const valuePoints = this.valuePointsForGenerateTransformedValuesScatter;
+        if (this.valuePointsForGenerateTransformedValuesScatter.length !== count) {
+            this.valuePointsForGenerateTransformedValuesScatter = Utils.createArrayBuffer(count);
+        }
+        const valuePoints = this.valuePointsForGenerateTransformedValuesScatter;
 
-    //     const xProperty = dataSet.xProperty;
-    //     const yProperty = dataSet.yProperty;
-    //     for (let j = 0; j < count; j += 2) {
-    //         const e = dataSet.getEntryForIndex(j / 2 + from);
+        const xKey = dataSet.xProperty;
+        const yKey = dataSet.yProperty;
+        for (let j = 0; j < count; j += 2) {
+            const index = j / 2 + from;
+            const e = dataSet.getEntryForIndex(index);
 
-    //         if (e != null) {
-    //             valuePoints[j] = e[xProperty];
-    //             valuePoints[j + 1] = e[yProperty] * phaseY;
-    //         } else {
-    //             valuePoints[j] = 0;
-    //             valuePoints[j + 1] = 0;
-    //         }
-    //     }
+            if (e != null) {
+                valuePoints[j] = getEntryXValue(e, xKey, index);
+                valuePoints[j + 1] = e[yKey] * phaseY;
+            } else {
+                valuePoints[j] = 0;
+                valuePoints[j + 1] = 0;
+            }
+        }
 
-    //     this.getValueToPixelMatrix().mapPoints(valuePoints);
+        this.getValueToPixelMatrix().mapPoints(valuePoints);
 
-    //     return valuePoints;
-    // }
+        return valuePoints;
+    }
+
+    /**
+     * Transforms an List of Entry into a float array containing the x and
+     * y values transformed with all matrices for the BUBBLECHART.
+     *
+     * @param data
+     * @return
+     */
+    public generateTransformedValuesBubble(dataSet: BubbleDataSet, phaseY, from, to) {
+        const count = (to - from + 1) * 2; // (int) Math.ceil((to - from) * phaseX) * 2;
+
+        if (this.valuePointsForGenerateTransformedValuesCandle.length !== count) {
+            this.valuePointsForGenerateTransformedValuesCandle = Utils.createArrayBuffer(count);
+        }
+        const valuePoints = this.valuePointsForGenerateTransformedValuesCandle;
+        const xKey = dataSet.xProperty;
+        const yKey = dataSet.yProperty;
+        for (let j = 0; j < count; j += 2) {
+            const index = j / 2 + from;
+            const e = dataSet.getEntryForIndex(index);
+
+            if (e != null) {
+                valuePoints[j] = getEntryXValue(e, xKey, index);
+                valuePoints[j + 1] = e[yKey] * phaseY;
+            } else {
+                valuePoints[j] = 0;
+                valuePoints[j + 1] = 0;
+            }
+        }
+
+        this.getValueToPixelMatrix().mapPoints(valuePoints);
+
+        return valuePoints;
+    }
 
     protected valuePointsForGenerateTransformedValues: number[];
 
@@ -127,14 +164,15 @@ export class Transformer {
         // let valuePoints = this.valuePointsForGenerateTransformedValues;
         const valuePoints = this.valuePointsForGenerateTransformedValues;
 
-        const xProperty = dataSet.xProperty;
-        const yProperty = dataSet.yProperty;
+        const xKey = dataSet.xProperty;
+        const yKey = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
-            const e = dataSet.getEntryForIndex(j / 2 + from);
+            const index = j / 2 + from;
+            const e = dataSet.getEntryForIndex(index);
 
             if (e) {
-                valuePoints[j] = e[xProperty];
-                valuePoints[j + 1] = e[yProperty] * phaseY;
+                valuePoints[j] = getEntryXValue(e, xKey, index);
+                valuePoints[j + 1] = e[yKey] * phaseY;
             } else {
                 valuePoints[j] = 0;
                 valuePoints[j + 1] = 0;

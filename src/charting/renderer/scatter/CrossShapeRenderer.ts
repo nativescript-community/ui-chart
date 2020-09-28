@@ -1,0 +1,20 @@
+import { Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
+import { IScatterDataSet } from '../../interfaces/datasets/IScatterDataSet';
+import { ViewPortHandler } from '../../utils/ViewPortHandler';
+import { IShapeRenderer } from './IShapeRenderer';
+
+/**
+ * Created by wajdic on 15/06/2016.
+ * Created at Time 09:08
+ */
+export class CrossShapeRenderer implements IShapeRenderer {
+    public renderShape(c: Canvas, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler, posX, posY, renderPaint: Paint) {
+        const shapeHalf = dataSet.getScatterShapeSize() / 2;
+
+        renderPaint.setStyle(Style.STROKE);
+        renderPaint.setStrokeWidth(1);
+
+        c.drawLine(posX - shapeHalf, posY, posX + shapeHalf, posY, renderPaint);
+        c.drawLine(posX, posY - shapeHalf, posX, posY + shapeHalf, renderPaint);
+    }
+}

@@ -1,17 +1,16 @@
-import { BarEntry } from "../../data/BarEntry";
-import { IBarLineScatterCandleBubbleDataSet } from "./IBarLineScatterCandleBubbleDataSet";
+import { BarEntry } from '../../data/BarEntry';
+import { IBarLineScatterCandleBubbleDataSet } from './IBarLineScatterCandleBubbleDataSet';
 
 /**
  * Created by philipp on 21/10/15.
  */
 export interface IBarDataSet extends IBarLineScatterCandleBubbleDataSet<BarEntry> {
-
     /**
      * Returns true if this DataSet is stacked (stacksize > 1) or not.
      *
      * @return
      */
-     isStacked(): boolean;
+    isStacked(): boolean;
 
     /**
      * Returns the maximum number of bars that can be stacked upon another in
@@ -19,7 +18,7 @@ export interface IBarDataSet extends IBarLineScatterCandleBubbleDataSet<BarEntry
      *
      * @return
      */
-     getStackSize();
+    getStackSize();
 
     /**
      * Returns the color used for drawing the bar-shadows. The bar shadows is a
@@ -27,7 +26,7 @@ export interface IBarDataSet extends IBarLineScatterCandleBubbleDataSet<BarEntry
      *
      * @return
      */
-     getBarShadowColor();
+    getBarShadowColor();
 
     /**
      * Returns the width used for drawing borders around the bars.
@@ -35,14 +34,14 @@ export interface IBarDataSet extends IBarLineScatterCandleBubbleDataSet<BarEntry
      *
      * @return
      */
-     getBarBorderWidth();
+    getBarBorderWidth();
 
     /**
      * Returns the color drawing borders around the bars.
      *
      * @return
      */
-     getBarBorderColor();
+    getBarBorderColor();
 
     /**
      * Returns the alpha value (transparency) that is used for drawing the
@@ -50,8 +49,7 @@ export interface IBarDataSet extends IBarLineScatterCandleBubbleDataSet<BarEntry
      *
      * @return
      */
-     getHighLightAlpha();
-
+    getHighLightAlpha();
 
     /**
      * Returns the labels used for the different value-stacks in the legend.
@@ -59,5 +57,5 @@ export interface IBarDataSet extends IBarLineScatterCandleBubbleDataSet<BarEntry
      *
      * @return
      */
-     getStackLabels(): string[];
+    getStackLabels(): string[];
 }

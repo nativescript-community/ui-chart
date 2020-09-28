@@ -1,31 +1,11 @@
 
-package com.github.mikephil.charting.charts;
-
-import android.content.Context;
-import android.graphics.Canvas;
-import android.util.AttributeSet;
-import android.util.Log;
-
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BubbleData;
-import com.github.mikephil.charting.data.CandleData;
-import com.github.mikephil.charting.data.CombinedData;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.ScatterData;
-import com.github.mikephil.charting.highlight.CombinedHighlighter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.dataprovider.CombinedDataProvider;
-import com.github.mikephil.charting.interfaces.datasets.IDataSet;
-import com.github.mikephil.charting.renderer.CombinedChartRenderer;
-
 /**
  * This chart class allows the combination of lines, bars, scatter and candle
  * data all displayed in one chart area.
  *
  * @author Philipp Jahoda
  */
-public class CombinedChart extends BarLineChartBase<CombinedData> implements CombinedDataProvider {
+export class CombinedChart extends BarLineChartBase<CombinedData> implements CombinedDataProvider {
 
     /**
      * if set to true, all values are drawn above their bars, instead of below

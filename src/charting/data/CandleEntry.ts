@@ -1,22 +1,17 @@
 import { Entry } from './Entry';
 
-export class CandleEntry implements Entry {
-    x: number;
-    y: number;
-    icon?: any;
-    data?: any;
-
+export interface CandleEntry extends Entry {
     /** shadow-high value */
-    private mShadowHigh = 0;
+    high: number;
 
     /** shadow-low value */
-    private mShadowLow = 0;
+    low: number;
 
     /** close value */
-    private mClose = 0;
+    close: number;
 
     /** open value */
-    private mOpen = 0;
+    open: number;
 
     /**
      * Constructor.
@@ -27,15 +22,15 @@ export class CandleEntry implements Entry {
      * @param open The open value
      * @param close The close value
      */
-    constructor(x, shadowH, shadowL, open, close) {
-        this.x = x;
-        this.y = (shadowH + shadowL) / 2;
+    // constructor(x, shadowH, shadowL, open, close) {
+    //     this.x = x;
+    //     this.y = (shadowH + shadowL) / 2;
 
-        this.mShadowHigh = shadowH;
-        this.mShadowLow = shadowL;
-        this.mOpen = open;
-        this.mClose = close;
-    }
+    //     this.mShadowHigh = shadowH;
+    //     this.mShadowLow = shadowL;
+    //     this.mOpen = open;
+    //     this.mClose = close;
+    // }
 
     /**
      * Returns the overall range (difference) between shadow-high and
@@ -43,68 +38,68 @@ export class CandleEntry implements Entry {
      *
      * @return
      */
-    public getShadowRange() {
-        return Math.abs(this.mShadowHigh - this.mShadowLow);
-    }
+    // public getShadowRange() {
+    //     return Math.abs(this.mShadowHigh - this.mShadowLow);
+    // }
 
     /**
      * Returns the body size (difference between open and close).
      *
      * @return
      */
-    public getBodyRange() {
-        return Math.abs(this.mOpen - this.mClose);
-    }
+    // public getBodyRange() {
+    //     return Math.abs(this.mOpen - this.mClose);
+    // }
 
     /**
      * Returns the upper shadows highest value.
      *
      * @return
      */
-    public getHigh() {
-        return this.mShadowHigh;
-    }
+    // public getHigh() {
+    //     return this.mShadowHigh;
+    // }
 
-    public setHigh(mShadowHigh) {
-        this.mShadowHigh = mShadowHigh;
-    }
+    // public setHigh(mShadowHigh) {
+    //     this.mShadowHigh = mShadowHigh;
+    // }
 
     /**
      * Returns the lower shadows lowest value.
      *
      * @return
      */
-    public getLow() {
-        return this.mShadowLow;
-    }
+    // public getLow() {
+    //     return this.mShadowLow;
+    // }
 
-    public setLow(mShadowLow) {
-        this.mShadowLow = mShadowLow;
-    }
+    // public setLow(mShadowLow) {
+    //     this.mShadowLow = mShadowLow;
+    // }
 
     /**
      * Returns the bodys close value.
      *
      * @return
      */
-    public getClose() {
-        return this.mClose;
-    }
+    // public getClose() {
+    //     return this.mClose;
+    // }
 
-    public setClose(mClose) {
-        this.mClose = mClose;
-    }
+    // public setClose(mClose) {
+    //     this.mClose = mClose;
+    // }
 
     /**
      * Returns the bodys open value.
      *
      * @return
      */
-    public getOpen() {
-        return this.mOpen;
-    }
+    // public getOpen() {
+    //     return this.mOpen;
+    // }
 
-    public setOpen(mOpen) {
-        this.mOpen = mOpen;
-    }
+    // public setOpen(mOpen) {
+    //     this.mOpen = mOpen;
+    // }
 }
