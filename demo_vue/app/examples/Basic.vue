@@ -139,11 +139,12 @@ export default Vue.extend({
             this.setData(this.count, this.range);
         },
         setData(count, range) {
+            const start = ImageSource.fromFileOrResourceSync('~/assets/star.png');
             const chart = this.$refs.chart['nativeView'] as LineChart;
             console.log('setData', count, range);
             const values = new Array(Math.round(count)).fill(0).map((v, i) => ({
                 y: Math.random() * range - 30,
-                icon: '~/assets/star.png'
+                icon: start
             }));
             let set1: LineDataSet;
             if (chart.getData() !== null && chart.getData().getDataSetCount() > 0) {
@@ -156,7 +157,7 @@ export default Vue.extend({
                 // create a dataset and give it a type
                 set1 = new LineDataSet(values, 'DataSet 1');
 
-                set1.setDrawIcons(false);
+                set1.setDrawIcons(true);
 
                 // draw dashed line
                 set1.enableDashedLine(10, 5, 0);
