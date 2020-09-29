@@ -1351,6 +1351,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX);
         // console.log('getHighestVisibleX', this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX, this.mXAxis.mAxisMaximum);
         const result = Math.min(this.mXAxis.mAxisMaximum, this.posForGetHighestVisibleX.x);
+
         return result;
     }
 

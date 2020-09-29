@@ -101,14 +101,14 @@ export abstract class DataRenderer extends Renderer {
      * @param set
      */
     protected applyValueTextStyle(set: IDataSet<any>) {
-        if (set.getValueTypeface())
-        {
-            this.mValuePaint.setTypeface(set.getValueTypeface());
+        const typeface = set.getValueTypeface();
+        if (typeface) {
+            this.mValuePaint.setTypeface(typeface);
         }
 
-        if (set.getValueTextSize())
-        {
-            this.mValuePaint.setTextSize(set.getValueTextSize());
+        const textSize = set.getValueTextSize();
+        if (textSize !== undefined) {
+            this.mValuePaint.setTextSize(textSize);
         }
     }
 

@@ -3,6 +3,7 @@ import { ILineRadarDataSet } from '../interfaces/datasets/ILineRadarDataSet';
 import { LineScatterCandleRadarDataSet } from './LineScatterCandleRadarDataSet';
 import { Color } from '@nativescript/core/color';
 import { Utils } from '../utils/Utils';
+import { ImageSource } from '@nativescript/core';
 
 /**
  * Base dataset for line and radar DataSets.
@@ -18,7 +19,7 @@ export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
     /**
      * the drawable to be used for filling the line surface
      */
-    protected mFillDrawable;
+    protected mFillDrawable: ImageSource;
 
     /**
      * the shader to be used for filling the line surface
@@ -76,7 +77,7 @@ export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
      *
      * @param drawable
      */
-    public setFillDrawable(drawable) {
+    public setFillDrawable(drawable: ImageSource) {
         this.mFillDrawable = drawable;
     }
 

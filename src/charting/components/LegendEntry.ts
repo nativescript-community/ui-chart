@@ -12,7 +12,7 @@ export class LegendEntry {
      * @param formLineDashEffect Set to nil to use the legend's default.
      * @param formColor The color for drawing the form.
      */
-    constructor(label: string, form: LegendForm, formSize?, formLineWidth?, formLineDashEffect?: DashPathEffect, formColor?:string | number | Color) {
+    constructor(label: string, form: LegendForm, formSize?, formLineWidth?, formLineDashEffect?: DashPathEffect, formColor?: string | number | Color) {
         this.label = label;
         this.form = form;
         this.formSize = formSize;

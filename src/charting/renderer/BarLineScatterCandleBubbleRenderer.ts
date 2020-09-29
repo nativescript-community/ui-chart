@@ -6,6 +6,7 @@ import { ChartAnimator } from '../animation/ChartAnimator';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
+import { BarLineScatterCandleBubbleDataSet } from '../data/BarLineScatterCandleBubbleDataSet';
 
 /**
  * Class representing the bounds of the current viewport in terms of indices in the values array of a DataSet.
@@ -14,17 +15,17 @@ export class XBounds {
     /**
      * minimum visible entry index
      */
-    public min;
+    public min: number;
 
     /**
      * maximum visible entry index
      */
-    public max;
+    public max: number;
 
     /**
      * range of visible entry indices
      */
-    public range;
+    public range: number;
 
     /**
      * Calculates the minimum and maximum x values as well as the range between them.
@@ -32,7 +33,7 @@ export class XBounds {
      * @param chart
      * @param dataSet
      */
-    public set<T extends Entry>(chart: BarLineScatterCandleBubbleDataProvider, dataSet: IBarLineScatterCandleBubbleDataSet<T>, animator: ChartAnimator) {
+    public set<T extends Entry>(chart: BarLineScatterCandleBubbleDataProvider, dataSet: BarLineScatterCandleBubbleDataSet<T>, animator: ChartAnimator) {
         const phaseX = Math.max(0, Math.min(1, animator.getPhaseX()));
         const low = chart.getLowestVisibleX();
         const high = chart.getHighestVisibleX();

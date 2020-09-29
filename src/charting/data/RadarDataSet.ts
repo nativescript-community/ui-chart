@@ -19,8 +19,10 @@ export class RadarDataSet extends LineRadarDataSet<RadarEntry> implements IRadar
     protected mHighlightCircleOuterRadius = 4.0;
     protected mHighlightCircleStrokeWidth = 2.0;
 
+
     constructor(yVals: RadarEntry, label: string, yProperty?) {
         super(yVals, label,null,  yProperty);
+        this.init();
     }
 
     /// Returns true if highlight circle should be drawn, false if not

@@ -95,7 +95,7 @@ export class DataSetImageCache {
 }
 
 export class LineChartRenderer extends LineRadarRenderer {
-    protected mChart: LineDataProvider;
+    public mChart: LineDataProvider;
 
     /**
      * palet for the inner circle of the value indicators
@@ -166,7 +166,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    protected drawDataSet(c: Canvas, dataSet: ILineDataSet): boolean {
+    protected drawDataSet(c: Canvas, dataSet: LineDataSet): boolean {
         if (dataSet.getEntryCount() < 1) return false;
         this.mRenderPaint.setStrokeWidth(dataSet.getLineWidth());
         this.mRenderPaint.setPathEffect(dataSet.getDashPathEffect());
@@ -387,7 +387,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     @profile
-    protected drawCubicBezier(c: Canvas, dataSet: ILineDataSet) {
+    protected drawCubicBezier(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
@@ -415,7 +415,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     @profile
-    protected drawHorizontalBezier(c: Canvas, dataSet: ILineDataSet) {
+    protected drawHorizontalBezier(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
@@ -443,7 +443,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     @profile
-    protected drawLinear(c: Canvas, dataSet: ILineDataSet) {
+    protected drawLinear(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const drawFilled = dataSet.isDrawFilledEnabled();
         const drawLine = dataSet.getLineWidth() > 0;
@@ -596,7 +596,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         const drawIcons = dataSet.isDrawIconsEnabled();
         const drawValues = dataSet.isDrawValuesEnabled();
         const length = count;
-        const dataSetCount = dataSet.getEntryCount();
         for (let j = 0; j < length; j += 2) {
             const x = points[j];
             const y = points[j + 1];
@@ -610,7 +609,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (!entry) continue;
 
             if (drawValues) {
-                this.drawValue(c, formatter.getFormattedValue(entry[yKey]), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2));
+                this.drawValue(c, formatter.getFormattedValue(entry[yKey], entry), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2));
             }
 
             if (drawIcons && entry.icon != null) {

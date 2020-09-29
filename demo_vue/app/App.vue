@@ -30,8 +30,9 @@ export default class App extends BaseVueComponent {
         return getExamples();
     }
     goToExample({ item }) {
-        console.log('goToExample');
-        this.$navigateTo(item.component);
+        this.$navigateTo(item.component, {
+            props:{title: item.title}
+        });
     }
     // onItemTap(item) {
     //     const module = require(`./examples/${item.component}.vue`).default;

@@ -159,18 +159,18 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getColor(index = 0) {
-        if (this.mColors.length <= index || this.mColors.length === 0) {
+        if (this.mColors.length === 0) {
             return this.mColorDefault;
         }
-        return this.mColors[index % this.mColors.length];
+        return this.mColors[Math.floor(index) % this.mColors.length];
     }
 
     public getGradientColors() {
         return this.mGradientColors;
     }
 
-    public getGradientColor(index?) {
-        if (index === undefined) {
+    public getGradientColor(index?: number) {
+        if (!this.mGradientColors || index === undefined) {
             return this.mGradientColor;
         }
         return this.mGradientColors[index % this.mGradientColors.length];
@@ -307,7 +307,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getValueTextColor(index = 0) {
-        return this.mValueColors[index % this.mValueColors.length];
+        return this.mValueColors[Math.floor(index) % this.mValueColors.length];
     }
 
     public getValueTypeface() {

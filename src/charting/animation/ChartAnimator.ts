@@ -22,11 +22,11 @@ export class ChartAnimator {
         this.mListener = listener;
     }
 
-    private xAnimator(duration, easing: EasingFunction, listener?: () => void) {
+    private xAnimator(duration, easing: EasingFunction = Easing.Linear.None, listener?: () => void) {
         return new TWEEN.Tween({ value: 0 })
             .to({ value: 1 }, duration)
             .easing(easing)
-            .onUpdate(obj => {
+            .onUpdate((obj) => {
                 // this.log('onUpdate', obj.value);
                 this.setPhaseX(obj.value);
                 if (listener) {
@@ -45,7 +45,7 @@ export class ChartAnimator {
         return new TWEEN.Tween({ value: 0 })
             .to({ value: 1 }, duration)
             .easing(easing)
-            .onUpdate(obj => {
+            .onUpdate((obj) => {
                 // this.log('onUpdate', obj.value);
                 this.setPhaseY(obj.value);
                 if (listener) {
@@ -66,7 +66,7 @@ export class ChartAnimator {
      * @param durationMillis animation duration
      * @param easing EasingFunction
      */
-    public animateX(durationMillis, easing?: EasingFunction) {
+    public animateX(durationMillis, easing: EasingFunction = Easing.Linear.None) {
         const animatorX = this.xAnimator(durationMillis, easing, this.mListener);
         animatorX.start(0);
     }
@@ -79,7 +79,7 @@ export class ChartAnimator {
      * @param easingX EasingFunction for the X axis
      * @param easingY EasingFunction for the Y axis
      */
-    public animateXY(durationMillisX, durationMillisY, easingX: EasingFunction= Easing.Linear.None, easingY: EasingFunction = Easing.Linear.None) {
+    public animateXY(durationMillisX, durationMillisY, easingX: EasingFunction = Easing.Linear.None, easingY: EasingFunction = Easing.Linear.None) {
         const xAnimator = this.xAnimator(durationMillisX, easingX, durationMillisX > durationMillisY ? this.mListener : undefined);
         const yAnimator = this.yAnimator(durationMillisY, easingY || easingX, durationMillisX > durationMillisY ? undefined : this.mListener);
         xAnimator.start(0);
@@ -92,7 +92,7 @@ export class ChartAnimator {
      * @param durationMillis animation duration
      * @param easing EasingFunction
      */
-    public animateY(durationMillis, easing: EasingFunction) {
+    public animateY(durationMillis, easing: EasingFunction = Easing.Linear.None) {
         const animatorY = this.yAnimator(durationMillis, easing, this.mListener);
         animatorY.start(0);
     }
