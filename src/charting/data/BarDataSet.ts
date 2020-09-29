@@ -37,8 +37,8 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
 
     constructor(values, label, xProperty?, yProperty?) {
         super(values, label, xProperty, yProperty);
-
         this.mHighLightColor = 'black';
+        this.init();
     }
 
     private calcEntryRanges(e: BarEntry) {

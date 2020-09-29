@@ -1,5 +1,5 @@
-import { IBarLineScatterCandleBubbleDataSet } from '../interfaces/datasets/IBarLineScatterCandleBubbleDataSet';
 import { BarLineScatterCandleBubbleData } from './BarLineScatterCandleBubbleData';
+import { BarLineScatterCandleBubbleDataSet } from './BarLineScatterCandleBubbleDataSet';
 import { BubbleData } from './BubbleData';
 import { CandleData } from './CandleData';
 import { ScatterData } from './ScatterData';
@@ -15,7 +15,7 @@ import { Highlight } from '../highlight/Highlight';
  *
  * @author Philipp Jahoda
  */
-export class CombinedData extends BarLineScatterCandleBubbleData<Entry, IBarLineScatterCandleBubbleDataSet<Entry>> {
+export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineScatterCandleBubbleDataSet<Entry>> {
     mLineData: LineData;
     mBarData: BarData;
     mScatterData: ScatterData;
@@ -168,14 +168,14 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, IBarLine
 
         if (highlight.dataSetIndex >= data.getDataSetCount()) return null;
 
-        return data.getDataSets()[highlight.dataSetIndex] as IBarLineScatterCandleBubbleDataSet<any>;
+        return data.getDataSets()[highlight.dataSetIndex] as BarLineScatterCandleBubbleDataSet<any>;
     }
 
     public getDataIndex(data: ChartData<any, any>) {
         return this.getAllData().indexOf(data);
     }
 
-    public removeDataSet(d: IBarLineScatterCandleBubbleDataSet<any>) {
+    public removeDataSet(d: BarLineScatterCandleBubbleDataSet<any>) {
         const datas = this.getAllData();
 
         let success = false;

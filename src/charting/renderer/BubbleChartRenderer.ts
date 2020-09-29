@@ -9,6 +9,7 @@ import { Color } from '@nativescript/core';
 import { Highlight } from '../highlight/Highlight';
 import { BubbleEntry } from '../data/BubbleEntry';
 import { getEntryXValue } from '../data/BaseEntry';
+import { BubbleDataSet } from '../data/BubbleDataSet';
 
 /**
  * Bubble chart implementation: Copyright 2015 Pierre-Marc Airoldi Licensed
@@ -48,9 +49,10 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         return shapeSize;
     }
 
-    protected drawDataSet(c: Canvas, dataSet: IBubbleDataSet) {
+    protected drawDataSet(c: Canvas, dataSet: BubbleDataSet) {
         if (dataSet.getEntryCount() < 1) return;
-
+        const xKey = dataSet.xProperty;
+        const yKey = dataSet.yProperty;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         const phaseY = this.mAnimator.getPhaseY();
@@ -68,15 +70,15 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const maxBubbleWidth = Math.abs(this.sizeBuffer[2] - this.sizeBuffer[0]);
         const maxBubbleHeight = Math.abs(this.mViewPortHandler.contentBottom() - this.mViewPortHandler.contentTop());
         const referenceSize = Math.min(maxBubbleHeight, maxBubbleWidth);
-
+        const maxSize = dataSet.getMaxSize();
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             const entry = dataSet.getEntryForIndex(j);
-
-            this.pointBuffer[0] = entry.getX();
-            this.pointBuffer[1] = entry.getY() * phaseY;
+            const xValue = getEntryXValue(entry, xKey, j);
+            this.pointBuffer[0] = xValue;
+            this.pointBuffer[1] = entry[yKey] * phaseY;
             trans.pointValuesToPixel(this.pointBuffer);
 
-            const shapeHalf = this.getShapeSize(entry.getSize(), dataSet.getMaxSize(), referenceSize, normalizeSize) / 2;
+            const shapeHalf = this.getShapeSize(entry[dataSet.sizeProperty], maxSize, referenceSize, normalizeSize) / 2;
 
             if (!this.mViewPortHandler.isInBoundsTop(this.pointBuffer[1] + shapeHalf) || !this.mViewPortHandler.isInBoundsBottom(this.pointBuffer[1] - shapeHalf)) continue;
 
@@ -84,8 +86,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             if (!this.mViewPortHandler.isInBoundsRight(this.pointBuffer[0] - shapeHalf)) break;
 
-            const color = dataSet.getColor(entry.getX());
-
+            const color = dataSet.getColor(xValue);
             this.mRenderPaint.setColor(color);
             c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mRenderPaint);
         }
@@ -140,7 +141,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                     const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
                     if (dataSet.isDrawValuesEnabled()) {
-                        this.drawValue(c, formatter.getBubbleLabel(entry.size, entry), x, y + 0.5 * lineHeight, valueTextColor);
+                        this.drawValue(c, formatter.getBubbleLabel(entry[dataSet.sizeProperty], entry), x, y + 0.5 * lineHeight, valueTextColor);
                     }
 
                     if (entry.icon && dataSet.isDrawIconsEnabled()) {
@@ -207,7 +208,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             high.drawX = this.pointBuffer[0];
             high.drawY = this.pointBuffer[1];
 
-            const shapeHalf = this.getShapeSize(entry.size, set.getMaxSize(), referenceSize, normalizeSize) / 2;
+            const shapeHalf = this.getShapeSize(entry[set.sizeProperty], set.getMaxSize(), referenceSize, normalizeSize) / 2;
 
             if (!this.mViewPortHandler.isInBoundsTop(this.pointBuffer[1] + shapeHalf) || !this.mViewPortHandler.isInBoundsBottom(this.pointBuffer[1] - shapeHalf)) continue;
 
@@ -215,7 +216,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             if (!this.mViewPortHandler.isInBoundsRight(this.pointBuffer[0] - shapeHalf)) break;
 
-            let originalColor = set.getColor(entry.getX()) as Color;
+            let originalColor = set.getColor(getEntryXValue(entry, xKey, index)) as Color;
             if (!(originalColor instanceof Color)) {
                 originalColor = new Color(originalColor);
             }

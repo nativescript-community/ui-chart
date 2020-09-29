@@ -57,7 +57,14 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     constructor(values, label, xProperty?, yProperty?) {
         super(label, xProperty, yProperty);
         this.mValues = values;
+    }
 
+
+    toString() {
+        return `${this.constructor.name}[${this.getLabel()}]`;
+    }
+
+    init() {
         if (this.mValues == null) this.mValues = [];
 
         if (this.mValues.length > 0) {

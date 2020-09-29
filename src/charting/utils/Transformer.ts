@@ -155,7 +155,7 @@ export class Transformer {
      * @return
      */
     public generateTransformedValues(dataSet: IDataSet<Entry>, phaseX, phaseY, from, to) {
-        const count = ((to - from) * phaseX + 1) * 2;
+        const count = Math.ceil((to - from) * phaseX + 1) * 2;
         // let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
 
         if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length < count) {

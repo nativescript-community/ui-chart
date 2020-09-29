@@ -1,79 +1,72 @@
+import { Canvas } from '@nativescript-community/ui-canvas';
+import { BarLineScatterCandleBubbleDataSet } from '../data/BarLineScatterCandleBubbleDataSet';
+import { CombinedData } from '../data/CombinedData';
+import { Entry } from '../data/Entry';
+import { CombinedHighlighter } from '../highlight/CombinedHighlighter';
+import { CombinedDataProvider } from '../interfaces/dataprovider/CombinedDataProvider';
+import { IDataSet } from '../interfaces/datasets/IDataSet';
+import { BarLineChartBase } from './BarLineChartBase';
+import { CombinedChartRenderer } from '../renderer/CombinedChartRenderer';
 
+/**
+ * enum that allows to specify the order in which the different data objects
+ * for the combined-chart are drawn
+ */
+export enum DrawOrder {
+    BAR,
+    BUBBLE,
+    LINE,
+    CANDLE,
+    SCATTER,
+}
 /**
  * This chart class allows the combination of lines, bars, scatter and candle
  * data all displayed in one chart area.
  *
  * @author Philipp Jahoda
  */
-export class CombinedChart extends BarLineChartBase<CombinedData> implements CombinedDataProvider {
-
+export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleBubbleDataSet<Entry>, CombinedData> implements CombinedDataProvider {
     /**
      * if set to true, all values are drawn above their bars, instead of below
      * their top
      */
-    private boolean this.mDrawValueAboveBar = true;
-
+    mDrawValueAboveBar = true;
 
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */
-    protected boolean this.mHighlightFullBarEnabled = false;
+    mHighlightFullBarEnabled = false;
 
     /**
      * if set to true, a grey area is drawn behind each bar that indicates the
      * maximum value
      */
-    private boolean this.mDrawBarShadow = false;
+    mDrawBarShadow = false;
 
-    protected DrawOrder[] this.mDrawOrder;
+    mDrawOrder: DrawOrder[];
 
-    /**
-     * enum that allows to specify the order in which the different data objects
-     * for the combined-chart are drawn
-     */
-    public enum DrawOrder {
-        BAR, BUBBLE, LINE, CANDLE, SCATTER
-    }
-
-    public CombinedChart(Context context) {
-        super(context);
-    }
-
-    public CombinedChart(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public CombinedChart(Context context, AttributeSet attrs, let defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    
     protected init() {
         super.init();
 
         // Default values are not ready here yet
-        this.mDrawOrder = new DrawOrder[]{
-                DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.LINE, DrawOrder.CANDLE, DrawOrder.SCATTER
-        };
+        this.mDrawOrder = [DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.LINE, DrawOrder.CANDLE, DrawOrder.SCATTER];
 
-        setHighlighter(new CombinedHighlighter(this, this));
+        this.setHighlighter(new CombinedHighlighter(this, this));
 
         // Old default behaviour
-        setHighlightFullBarEnabled(true);
+        this.setHighlightFullBarEnabled(true);
 
         this.mRenderer = new CombinedChartRenderer(this, this.mAnimator, this.mViewPortHandler);
     }
 
-    
-    public CombinedData getCombinedData() {
+    public getCombinedData() {
         return this.mData;
     }
 
-    
-    public setData(CombinedData data) {
+    public setData(data: CombinedData) {
         super.setData(data);
-        setHighlighter(new CombinedHighlighter(this, this));
-        ((CombinedChartRenderer)mRenderer).createRenderers();
+        this.setHighlighter(new CombinedHighlighter(this, this));
+        (this.mRenderer as CombinedChartRenderer).createRenderers();
         this.mRenderer.initBuffers();
     }
 
@@ -86,64 +79,49 @@ export class CombinedChart extends BarLineChartBase<CombinedData> implements Com
      * @param y
      * @return
      */
-    
-    public Highlight getHighlightByTouchPoint(let x, let y) {
 
-        if (mData == null) {
-            console.error(LOG_TAG, "Can't select by touch. No data set.");
+    public getHighlightByTouchPoint(x, y) {
+        if (this.mData == null) {
+            console.error("Can't select by touch. No data set.");
             return null;
         } else {
-            Highlight h = getHighlighter().getHighlight(x, y);
-            if (h == null || !isHighlightFullBarEnabled()) return h;
+            const h = this.getHighlighter().getHighlight(x, y);
+            if (h == null || !this.isHighlightFullBarEnabled()) return h;
 
             // For isHighlightFullBarEnabled, remove stackIndex
-            return new Highlight(h.getX(), h.getY(),
-                    h.getXPx(), h.getYPx(),
-                    h.getDataSetIndex(), -1, h.getAxis());
+            return Object.assign({}, h, {});
         }
     }
 
-    
-    public LineData getLineData() {
-        if (mData == null)
-            return null;
+    public getLineData() {
+        if (this.mData == null) return null;
         return this.mData.getLineData();
     }
 
-    
-    public BarData getBarData() {
-        if (mData == null)
-            return null;
+    public getBarData() {
+        if (this.mData == null) return null;
         return this.mData.getBarData();
     }
 
-    
-    public ScatterData getScatterData() {
-        if (mData == null)
-            return null;
+    public getScatterData() {
+        if (this.mData == null) return null;
         return this.mData.getScatterData();
     }
 
-    
-    public CandleData getCandleData() {
-        if (mData == null)
-            return null;
+    public getCandleData() {
+        if (this.mData == null) return null;
         return this.mData.getCandleData();
     }
 
-    
-    public BubbleData getBubbleData() {
-        if (mData == null)
-            return null;
+    public getBubbleData() {
+        if (this.mData == null) return null;
         return this.mData.getBubbleData();
     }
 
-    
     public isDrawBarShadowEnabled() {
         return this.mDrawBarShadow;
     }
 
-    
     public isDrawValueAboveBarEnabled() {
         return this.mDrawValueAboveBar;
     }
@@ -154,10 +132,9 @@ export class CombinedChart extends BarLineChartBase<CombinedData> implements Com
      *
      * @param enabled
      */
-    public setDrawValueAboveBar( enabled) {
+    public setDrawValueAboveBar(enabled) {
         this.mDrawValueAboveBar = enabled;
     }
-
 
     /**
      * If set to true, a grey area is drawn behind each bar that indicates the
@@ -165,7 +142,7 @@ export class CombinedChart extends BarLineChartBase<CombinedData> implements Com
      *
      * @param enabled
      */
-    public setDrawBarShadow( enabled) {
+    public setDrawBarShadow(enabled) {
         this.mDrawBarShadow = enabled;
     }
 
@@ -175,14 +152,14 @@ export class CombinedChart extends BarLineChartBase<CombinedData> implements Com
      *
      * @param enabled
      */
-    public setHighlightFullBarEnabled( enabled) {
+    public setHighlightFullBarEnabled(enabled) {
         this.mHighlightFullBarEnabled = enabled;
     }
 
     /**
      * @return true the highlight operation is be full-bar oriented, false if single-value
      */
-    
+
     public isHighlightFullBarEnabled() {
         return this.mHighlightFullBarEnabled;
     }
@@ -192,7 +169,7 @@ export class CombinedChart extends BarLineChartBase<CombinedData> implements Com
      *
      * @return
      */
-    public DrawOrder[] getDrawOrder() {
+    public getDrawOrder() {
         return this.mDrawOrder;
     }
 
@@ -204,49 +181,41 @@ export class CombinedChart extends BarLineChartBase<CombinedData> implements Com
      *
      * @param order
      */
-    public setDrawOrder(DrawOrder[] order) {
-        if (order == null || order.length <= 0)
-            return;
+    public setDrawOrder(order: DrawOrder[]) {
+        if (order == null || order.length <= 0) return;
         this.mDrawOrder = order;
     }
 
     /**
      * draws all MarkerViews on the highlighted positions
      */
-    protected drawMarkers(c: Canvasanvas) {
-
+    protected drawMarkers(c: Canvas) {
         // if there is no marker view or drawing marker is disabled
-        if (mMarker == null || !isDrawMarkersEnabled() || !valuesToHighlight())
-            return;
+        if (this.mMarker == null || !this.isDrawMarkersEnabled() || !this.valuesToHighlight()) return;
 
         for (let i = 0; i < this.mIndicesToHighlight.length; i++) {
+            const highlight = this.mIndicesToHighlight[i];
 
-            Highlight highlight = this.mIndicesToHighlight[i];
+            const set: IDataSet<Entry> = this.mData.getDataSetByHighlight(highlight);
 
-            set:IDataSet = this.mData.getDataSetByHighlight(highlight);
+            const e = this.mData.getEntryForHighlight(highlight);
+            if (e == null) continue;
 
-            Entry e = this.mData.getEntryForHighlight(highlight);
-            if (e == null)
-                continue;
-
-            let entryIndex = set.getEntryIndex(e);
+            const entryIndex = set.getEntryIndex(e);
 
             // make sure entry not null
-            if (entryIndex > set.getEntryCount() * this.mAnimator.getPhaseX())
-                continue;
+            if (entryIndex > set.getEntryCount() * this.mAnimator.getPhaseX()) continue;
 
-            float[] pos = getMarkerPosition(highlight);
+            const pos = this.getMarkerPosition(highlight);
 
             // check bounds
-            if (!mViewPortHandler.isInBounds(pos[0], pos[1]))
-                continue;
+            if (!this.mViewPortHandler.isInBounds(pos[0], pos[1])) continue;
 
             // callbacks to update the content
             this.mMarker.refreshContent(e, highlight);
 
             // draw the marker
-            this.mMarker.draw(canvas, pos[0], pos[1]);
+            this.mMarker.draw(c, pos[0], pos[1]);
         }
     }
-
 }

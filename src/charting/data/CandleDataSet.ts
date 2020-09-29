@@ -17,6 +17,18 @@ export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
      */
     lowProperty: string = 'low';
     /**
+     * property to access the "close" value of an entry for this set
+     *
+     */
+    closeProperty: string = 'close';
+
+    /**
+     * property to access the "open" value of an entry for this set
+     *
+     */
+    openProperty: string = 'open';
+
+    /**
      * the width of the shadow of the candle
      */
     private mShadowWidth = 3;
@@ -72,23 +84,45 @@ export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
      */
     protected mShadowColor = ColorTemplate.COLOR_SKIP;
 
+    constructor(yVals, label, xProperty?, yProperty?, highProperty?, lowProperty?, openProperty?, closeProperty?) {
+        super(yVals, label, xProperty, yProperty);
+        if (highProperty) {
+            this.highProperty = highProperty;
+        }
+        if (lowProperty) {
+            this.lowProperty = lowProperty;
+        }
+        if (openProperty) {
+            this.openProperty = openProperty;
+        }
+        if (closeProperty) {
+            this.closeProperty = closeProperty;
+        }
+        this.init();
+    }
+
     protected calcMinMaxForEntry(e?: CandleEntry, index?: number) {
         if (!e) return;
-        if (e.low < this.mYMin) this.mYMin = e.low;
+        const high = e[this.highProperty];
+        const low = e[this.lowProperty];
 
-        if (e.high > this.mYMax) this.mYMax = e.high;
+        if (low < this.mYMin) this.mYMin = low;
 
-        this.calcMinMaxX(e);
+        if (high > this.mYMax) this.mYMax = high;
+
+        this.calcMinMaxX(e, index);
     }
 
     protected calcMinMaxY(e: CandleEntry) {
-        if (e.high < this.mYMin) this.mYMin = e.high;
+        const high = e[this.highProperty];
+        const low = e[this.lowProperty];
+        if (high < this.mYMin) this.mYMin = high;
 
-        if (e.high > this.mYMax) this.mYMax = e.high;
+        if (high > this.mYMax) this.mYMax = high;
 
-        if (e.low < this.mYMin) this.mYMin = e.low;
+        if (low < this.mYMin) this.mYMin = low;
 
-        if (e.low > this.mYMax) this.mYMax = e.low;
+        if (low > this.mYMax) this.mYMax = low;
     }
 
     /**

@@ -32,6 +32,7 @@ export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
 
     constructor(yVals, label, yProperty?) {
         super(yVals, label, null, yProperty);
+        this.init();
     }
 
     protected calcMinMaxForEntry(e?: PieEntry, index?: number) {

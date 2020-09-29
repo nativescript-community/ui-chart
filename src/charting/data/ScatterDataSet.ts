@@ -37,6 +37,10 @@ export class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
      */
     mScatterShapeHoleColor: string | Color = ColorTemplate.COLOR_NONE;
 
+    constructor(yVals, label, xProperty?, yProperty?) {
+        super(yVals, label, xProperty, yProperty);
+        this.init();
+    }
     /**
      * Sets the size in density pixels the drawn scattershape will have. This
      * only applies for non custom shapes.
@@ -119,7 +123,5 @@ export class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
             case ScatterShape.CHEVRON_DOWN:
                 return new ChevronDownShapeRenderer();
         }
-
-        return null;
     }
 }

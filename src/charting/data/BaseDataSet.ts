@@ -307,7 +307,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getValueTextColor(index = 0) {
-        return this.mValueColors[index % this.mValueColors.length];
+        return this.mValueColors[Math.floor(index) % this.mValueColors.length];
     }
 
     public getValueTypeface() {

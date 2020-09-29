@@ -13,7 +13,7 @@ import { getEntryXValue } from '../data/BaseEntry';
 import { Entry } from '../data/Entry';
 
 export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
-    protected mChart: BarChart;
+    public mChart: BarChart;
 
     protected mBarBuffers: BarBuffer[];
 

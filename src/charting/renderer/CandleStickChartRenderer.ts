@@ -11,6 +11,7 @@ import { CandleDataProvider } from '../interfaces/dataprovider/CandleDataProvide
 import { ICandleDataSet } from '../interfaces/datasets/ICandleDataSet';
 import { ColorTemplate } from '../utils/ColorTemplate';
 import { CandleEntry } from '../data/CandleEntry';
+import { CandleDataSet } from '../data/CandleDataSet';
 
 export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     mChart: CandleDataProvider;
@@ -38,7 +39,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         }
     }
 
-    protected drawDataSet(c: Canvas, dataSet: ICandleDataSet) {
+    protected drawDataSet(c: Canvas, dataSet: CandleDataSet) {
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         const phaseY = this.mAnimator.getPhaseY();
@@ -48,7 +49,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
         this.mRenderPaint.setStrokeWidth(dataSet.getShadowWidth());
-
+        const xKey = dataSet.xProperty;
         // draw the body
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             // get the entry
@@ -56,12 +57,12 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
             if (e == null) continue;
 
-            const xPos = e.x;
+            const xPos = getEntryXValue(e, xKey, j);
 
-            const open = e.open || 0;
-            const close = e.close || 0;
-            const high = e.high || 0;
-            const low = e.low || 0;
+            const open = e[dataSet.openProperty] || 0;
+            const close = e[dataSet.closeProperty] || 0;
+            const high = e[dataSet.highProperty] || 0;
+            const low = e[dataSet.lowProperty] || 0;
 
             if (showCandleBar) {
                 // calculate the shadow
@@ -258,8 +259,8 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
             }
             if (!this.isInBoundsX(entry, set)) continue;
 
-            const lowValue = (entry.low || 0) * this.mAnimator.getPhaseY();
-            const highValue = (entry.high || 0) * this.mAnimator.getPhaseY();
+            const lowValue = (entry[set.lowProperty] || 0) * this.mAnimator.getPhaseY();
+            const highValue = (entry[set.highProperty] || 0) * this.mAnimator.getPhaseY();
             const y = (lowValue + highValue) / 2;
 
             const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(getEntryXValue(entry, xKey, index), y);
