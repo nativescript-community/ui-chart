@@ -128,7 +128,7 @@ In short, these are the benefits of rewriting library into a NativeScript plugin
 * Same codebase for Android and iOS. Makes maintaining the library very easy.
 * Smaller apps size because there are no native libs or native frameworks to consume space. All done with the power of {N}
 
-The main goal was to prevent the need for marshalling all datasets. This is extremelly heavy, costly and unnecessary!
+Originally, the main goal was to prevent the need for marshalling all datasets. This is extremelly heavy, costly and unnecessary!
 
 Demo samples manifest the power of 'ui-chart' plugin:
 
