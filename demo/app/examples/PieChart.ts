@@ -14,6 +14,11 @@ function getRandomColor() {
     return new Color(255, r, g, b);
 }
 
+export function onNavigatedTo(args) {
+    const page = args.object;
+    page.bindingContext = args.context;
+}
+
 export function onChartLoaded(args) {
     const chart = args.object as PieChart;
 

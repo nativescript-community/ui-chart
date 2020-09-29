@@ -1,4 +1,4 @@
-import { Color } from '@nativescript/core';
+import { Color, ImageSource } from '@nativescript/core';
 import { BarChart } from '@nativescript-community/ui-chart/charts';
 import { BarData } from '@nativescript-community/ui-chart/data/BarData';
 import { BarDataSet } from '@nativescript-community/ui-chart/data/BarDataSet';
@@ -14,6 +14,11 @@ function getRandomColor() {
     return new Color(255, r, g, b);
 }
 
+export function onNavigatedTo(args) {
+    const page = args.object;
+    page.bindingContext = args.context;
+}
+
 export function onChartLoaded(args) {
     const chart = args.object as BarChart;
 
@@ -25,8 +30,10 @@ export function onChartLoaded(args) {
     chart.setHighlightPerTapEnabled(true);
     // chart.setHardwareAccelerationEnabled(true);
 
+    const icon = ImageSource.fromFileOrResourceSync('~/assets/star.png');
+
     const data = new Array(5).fill(0).map(function (v, i) {
-        return { index: i, value: Math.random() * 1 };
+        return { index: i, value: Math.random() * 1, icon };
     });
 
     const sets = [];

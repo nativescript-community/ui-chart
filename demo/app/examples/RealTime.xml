@@ -4,8 +4,12 @@
     </ActionBar>
     <ScrollView>
         <StackLayout>
-        	<Button text="Redraw" tap="redraw" width="200"/>
-            <chart:PieChart id="chart" width="300" height="350" loaded="onChartLoaded"/>
+        	<StackLayout orientation="horizontal" horizontalAlignment="center">
+                <Button text="Add" tap="tryAddEntry" />
+                <Button text="Start" tap="start" />
+                <Button text="Stop" tap="stop" />
+            </StackLayout>
+            <chart:LineChart id="chart" width="300" height="350" loaded="onChartLoaded"/>
         </StackLayout>
     </ScrollView>
 </Page>

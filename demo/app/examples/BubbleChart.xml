@@ -5,7 +5,7 @@
     <ScrollView>
         <StackLayout>
         	<Button text="Redraw" tap="redraw" width="200"/>
-            <chart:PieChart id="chart" width="300" height="350" loaded="onChartLoaded"/>
+            <chart:BubbleChart id="chart" width="300" height="350" loaded="onChartLoaded"/>
         </StackLayout>
     </ScrollView>
 </Page>

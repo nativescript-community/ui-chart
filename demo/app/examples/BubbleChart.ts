@@ -1,14 +1,7 @@
 import { Color } from '@nativescript/core';
-import { BarChart } from '@nativescript-community/ui-chart/charts';
-import { BarData } from '@nativescript-community/ui-chart/data/BarData';
-import { BarDataSet } from '@nativescript-community/ui-chart/data/BarDataSet';
-import { ValueFormatter } from '@nativescript-community/ui-chart/formatter/ValueFormatter';
-
-class LineDataFormatter extends ValueFormatter {
-    public getFormattedValue(value: number, entry?) {
-        return value.toPrecision(3) + 'a';
-    }
-}
+import { BubbleChart } from '@nativescript-community/ui-chart/charts';
+import { BubbleData } from '@nativescript-community/ui-chart/data/BubbleData';
+import { BubbleDataSet } from '@nativescript-community/ui-chart/data/BubbleDataSet';
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -27,7 +20,7 @@ export function onNavigatedTo(args) {
 }
 
 export function onChartLoaded(args) {
-    const chart = args.object as BarChart;
+    const chart = args.object as BubbleChart;
 
     chart.drawFameRate = true;
     // chart.setLogEnabled(true);
@@ -37,23 +30,19 @@ export function onChartLoaded(args) {
     chart.setHighlightPerTapEnabled(true);
     // chart.setHardwareAccelerationEnabled(true);
 
-    //const icon = ImageSource.fromFileOrResourceSync('~/assets/star.png');
-
-    const data = new Array(5).fill(0).map(function (v, i) {
-        return { index: i, value: Math.random() * 1 };
+    const data = new Array(10).fill(0).map(function (v, i) {
+        return { y: Math.random() * 1, size: Math.random() * 1 };
     });
 
     const sets = [];
-    const set = new BarDataSet(data, 'Dataset Label', 'index', 'value');
-    //set.setDrawIcons(true);
+    const set = new BubbleDataSet(data, 'Dataset Label');
+    set.setDrawIcons(true);
     set.setColor(getRandomColor());
     set.setDrawValues(true);
-    // Format drawn values
-    set.setValueFormatter(new LineDataFormatter());
     sets.push(set);
 
     // Create a data object with the data sets
-    const bd = new BarData(sets);
+    const bd = new BubbleData(sets);
 
     // Set data
     chart.setData(bd);
