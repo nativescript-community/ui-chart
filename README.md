@@ -9,7 +9,7 @@
 
 ---
 
-### Usage
+## Usage
 
 For gestures to work, make sure to add the following code block inside main application file (e.g. app.ts):
 ```typescript
