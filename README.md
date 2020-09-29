@@ -7,20 +7,26 @@
 
 * `tns plugin add @nativescript-community/ui-chart`
 
-Be sure to run a new build after adding plugins to avoid any issues.
-
 ---
 
-Experimental plugin to draw charts using @nativescript-community/ui-canvas. It is a direct JS port of [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
+This plugin is based on [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart), a powerful & easy to use chart library. Therefore, special thanks goes to Philipp Jahoda, the creator of [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) and the rest of his team.
 
-The main goal was to prevent the need for marshalling all datasets. This is extremelly heavy, costly and uncessary!
+Instead of directly importing existing native libraries, this library has been rewritten in TypeScript, using '@nativescript-community/ui-canvas' plugin API. Plugin 'ui-canvas'
+is an extremely powerful tool that converts Android Native Canvas API to a cross-platform API for NativeScript framework. In few words, 'ui-chart' has the same code-base for both Android and iOS.
 
-The demo_vue app show the power of the future plugin:
+In short, these are the benefits of rewriting library into a NativeScript plugin:
+* Same codebase for iOS and Android. Makes maintaining the library very easy.
+* Smaller apps size because there are no native libs or native frameworks to consume space. All done with the power of {N}
 
-* It is the fastest drawing library in comparaison to ```@nativescript-community/ui-chart``` and ```nativescript-mpchart```. This is due to:
+The main goal was to prevent the need for marshalling all datasets. This is extremelly heavy, costly and unnecessary!
+
+Demo samples manifest the power of 'ui-chart' plugin:
+
+* It is the fastest drawing library in comparison to ```@nativescript-community/ui-chart``` and ```nativescript-mpchart```. This is due to:
     - do not marshal or recreate any subset of the data sets. Directly uses the provided array.
     - can share the same data array beetween multiple datasets
     - still use the power of native arrays to NOT marshal arrays of positions while drawing lines with ```@nativescript-community/ui-canvas```
-* Same JS codebase for iOS and Android. Makes maintaining the library very easy.
-* smaller apps size because no native libs or no native framework. All done with the power of {N}
+
+
+
 
