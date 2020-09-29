@@ -19,7 +19,7 @@ install();
 
 ## Plain NativeScript
 
-<span style="color:red">IMPORTANT: </span>_Make sure you include `xmlns:cv="@nativescript-community/ui-chart"` on the Page element.
+<span style="color:red">IMPORTANT: </span>Make sure you include `xmlns:cv="@nativescript-community/ui-chart"` on the Page element.
 
 ### XML
 
@@ -87,7 +87,7 @@ The main goal was to prevent the need for marshalling all datasets. This is extr
 
 Demo samples manifest the power of 'ui-chart' plugin:
 
-* It is the fastest drawing library in comparison to ```@nativescript-community/ui-chart``` and ```nativescript-mpchart```. This is due to:
+* It is the fastest drawing library, in comparison to ```nativescript-ui-chart``` and ```nativescript-mpchart```. This is due to:
     - do not marshal or recreate any subset of the data sets. Directly uses the provided array.
     - can share the same data array between multiple datasets
     - still use the power of native arrays to NOT marshal arrays of positions while drawing lines with ```@nativescript-community/ui-canvas```
@@ -95,6 +95,6 @@ Demo samples manifest the power of 'ui-chart' plugin:
 ## Documentation
 
 The NativeScript 'ui-chart' plugin is based on the [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) library.
-In few words, its API is identical. 
+In few words, its API is identical. The possibility to add API reference will be considered in the future.
 
 
