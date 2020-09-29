@@ -51,8 +51,8 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      *
      * @param dataSets
      */
-    constructor(dataSets: T[]) {
-        this.mDataSets = dataSets;
+    constructor(dataSets?: T[]) {
+        this.mDataSets = dataSets || [];
         this.notifyDataChanged();
     }
 
