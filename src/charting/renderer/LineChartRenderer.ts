@@ -387,7 +387,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     @profile
-    protected drawCubicBezier(c: Canvas, dataSet: ILineDataSet) {
+    protected drawCubicBezier(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
@@ -415,7 +415,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     @profile
-    protected drawHorizontalBezier(c: Canvas, dataSet: ILineDataSet) {
+    protected drawHorizontalBezier(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
@@ -443,7 +443,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     @profile
-    protected drawLinear(c: Canvas, dataSet: ILineDataSet) {
+    protected drawLinear(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const drawFilled = dataSet.isDrawFilledEnabled();
         const drawLine = dataSet.getLineWidth() > 0;
