@@ -81,7 +81,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
                 this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-                const positions = this.mChart
+                const {points, count} = this.mChart
                     .getTransformer(dataSet.getAxisDependency())
                     .generateTransformedValuesScatter(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
 
@@ -91,20 +91,20 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
                 const iconsOffset = dataSet.getIconsOffset();
 
-                for (let j = 0; j < positions.length; j += 2) {
-                    if (!this.mViewPortHandler.isInBoundsRight(positions[j])) break;
+                for (let j = 0; j < count; j += 2) {
+                    if (!this.mViewPortHandler.isInBoundsRight(points[j])) break;
 
                     // make sure the lines don't do shitty things outside bounds
-                    if (!this.mViewPortHandler.isInBoundsLeft(positions[j]) || !this.mViewPortHandler.isInBoundsY(positions[j + 1])) continue;
+                    if (!this.mViewPortHandler.isInBoundsLeft(points[j]) || !this.mViewPortHandler.isInBoundsY(points[j + 1])) continue;
 
                     const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
                     if (dataSet.isDrawValuesEnabled()) {
-                        this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), positions[j], positions[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min));
+                        this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), points[j], points[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min));
                     }
 
                     if (entry.icon && dataSet.isDrawIconsEnabled()) {
-                        Utils.drawImage(c, entry.icon, positions[j] + iconsOffset.x, positions[j + 1] + iconsOffset.y);
+                        Utils.drawImage(c, entry.icon, points[j] + iconsOffset.x, points[j + 1] + iconsOffset.y);
                     }
                 }
             }

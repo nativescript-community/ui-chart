@@ -201,7 +201,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                 this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-                const positions = trans.generateTransformedValuesCandle(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
+                const {points, count} = trans.generateTransformedValuesCandle(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
 
                 const yOffset = 5;
 
@@ -209,9 +209,9 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                 const iconsOffset = dataSet.getIconsOffset();
 
-                for (let j = 0; j < positions.length; j += 2) {
-                    const x = positions[j];
-                    const y = positions[j + 1];
+                for (let j = 0; j < count; j += 2) {
+                    const x = points[j];
+                    const y = points[j + 1];
 
                     if (!this.mViewPortHandler.isInBoundsRight(x)) break;
 

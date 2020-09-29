@@ -109,7 +109,7 @@ export class Transformer {
         const points = Utils.pointsFromBuffer(valuePoints);
         this.getValueToPixelMatrix().mapPoints(points);
 
-        return valuePoints;
+        return { points, count };
     }
 
     protected valuePointsForGenerateTransformedValuesBubble: number[] = [];
@@ -141,11 +141,10 @@ export class Transformer {
                 valuePoints[j + 1] = 0;
             }
         }
-
         const points = Utils.pointsFromBuffer(valuePoints);
         this.getValueToPixelMatrix().mapPoints(points);
 
-        return valuePoints;
+        return { points, count };
     }
 
     protected valuePointsForGenerateTransformedValues: number[] = [];
@@ -257,7 +256,7 @@ export class Transformer {
         const points = Utils.pointsFromBuffer(valuePoints);
         this.getValueToPixelMatrix().mapPoints(points);
 
-        return valuePoints;
+        return { points, count };
     }
 
     /**

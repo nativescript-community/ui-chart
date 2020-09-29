@@ -105,7 +105,6 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             for (let i = 0; i < dataSets.length; i++) {
                 const dataSet = dataSets[i];
-
                 if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
 
                 // apply the text-styling defined by the DataSet
@@ -116,23 +115,26 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                 this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-                const positions = this.mChart.getTransformer(dataSet.getAxisDependency()).generateTransformedValuesBubble(dataSet, phaseY, this.mXBounds.min, this.mXBounds.max);
+                const {points, count} = this.mChart.getTransformer(dataSet.getAxisDependency()).generateTransformedValuesBubble(dataSet, phaseY, this.mXBounds.min, this.mXBounds.max);
 
                 const alpha = phaseX === 1 ? phaseY : phaseX;
 
                 const formatter = dataSet.getValueFormatter();
 
                 const iconsOffset = dataSet.getIconsOffset();
-
-                for (let j = 0; j < positions.length; j += 2) {
+                const isDrawValuesEnabled = dataSet.isDrawValuesEnabled();
+                const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
+                for (let j = 0; j < count; j += 2) {
                     let valueTextColor = dataSet.getValueTextColor(j / 2 + this.mXBounds.min);
                     if (!(valueTextColor instanceof Color)) {
                         valueTextColor = new Color(valueTextColor);
                     }
-                    valueTextColor = new Color(Math.round(255 * alpha), valueTextColor.r, valueTextColor.g, valueTextColor.b);
+                    if (alpha !== 1) {
+                        valueTextColor = new Color(Math.round(255 * alpha), valueTextColor.r, valueTextColor.g, valueTextColor.b);
+                    }
 
-                    const x = positions[j];
-                    const y = positions[j + 1];
+                    const x = points[j];
+                    const y = points[j + 1];
 
                     if (!this.mViewPortHandler.isInBoundsRight(x)) break;
 
@@ -140,11 +142,11 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                     const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
-                    if (dataSet.isDrawValuesEnabled()) {
+                    if (isDrawValuesEnabled) {
                         this.drawValue(c, formatter.getBubbleLabel(entry[dataSet.sizeProperty], entry), x, y + 0.5 * lineHeight, valueTextColor);
                     }
 
-                    if (entry.icon && dataSet.isDrawIconsEnabled()) {
+                    if (entry.icon && isDrawIconsEnabled) {
                         Utils.drawImage(c, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
                     }
                 }
