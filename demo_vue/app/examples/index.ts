@@ -1,7 +1,10 @@
 import NSChart, { title as nsChartTitle } from './NSChart.vue';
 import NSUIChart, { title as nsUIChartTitle } from './NSUIChart.vue';
 import Basic from './Basic.vue';
+import BubbleChart from './BubbleChart.vue';
 import ScatterPlot from './ScatterPlot.vue';
+import CandleStick from './CandleStickChart.vue';
+import Realtime from './Realtime.vue';
 
 export const getExamples = () =>
     [
@@ -30,8 +33,8 @@ export const getExamples = () =>
 
         // {  component:Combined Chart, title: 'Bar and line chart together.' },
         {  component:ScatterPlot, title: 'Simple scatter plot.' },
-        // {  component:Bubble Chart, title: 'Simple bubble chart.' },
-        // {  component:Candlestick, title: 'Simple financial chart.' },
+        {  component:BubbleChart, title: 'Simple bubble chart.' },
+        {  component:CandleStick, title: 'Simple financial chart.' },
         // {  component:Radar Chart, title: 'Simple web chart.' },
 
         // {  component:Multiple, title: 'Various types of charts as fragments.' },
@@ -43,6 +46,6 @@ export const getExamples = () =>
         // {  component:Even More Line Charts },
 
         // {  component:Dynamic, title: 'Build a line chart by adding points and sets.' },
-        // {  component:Realtime, title: 'Add data points in realtime.' },
+        {  component:Realtime, title: 'Add data points in realtime.' },
         // {  component:Hourly, title: 'Uses the current time to add a data point for each hour.' }
     ] as any[];

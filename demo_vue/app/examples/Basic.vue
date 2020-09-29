@@ -10,8 +10,8 @@
         </ActionBar>
         <GridLayout rows="*,auto,auto">
             <LineChart ref="chart" @loaded="onChartLoaded" @tap="onChartTap" />
-            <Slider row="1" maxValue="150" v-model="count" @valueChange="updateData" />
-            <Slider row="2" maxValue="150" v-model="range" @valueChange="updateData" />
+            <Slider row="1" maxValue="500" v-model="count" @valueChange="updateData" />
+            <Slider row="2" maxValue="180" v-model="range" @valueChange="updateData" />
         </GridLayout>
     </Page>
 </template>

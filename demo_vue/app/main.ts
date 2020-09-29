@@ -1,6 +1,5 @@
 import Vue from 'nativescript-vue';
 import App from './App.vue';
-import './styles.scss';
 
 import { install } from '@nativescript-community/gesturehandler';
 install();
@@ -8,7 +7,13 @@ install();
 // setShowDebug(true);
 
 Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
+Vue.registerElement('BarChart', () => require('@nativescript-community/ui-chart/charts').BarChart);
+Vue.registerElement('PieChart', () => require('@nativescript-community/ui-chart/charts').PieChart);
+Vue.registerElement('RadarChart', () => require('@nativescript-community/ui-chart/charts').RadarChart);
+Vue.registerElement('CandleStickChart', () => require('@nativescript-community/ui-chart/charts').CandleStickChart);
+Vue.registerElement('BubbleChart', () => require('@nativescript-community/ui-chart/charts').BubbleChart);
 Vue.registerElement('ScatterChart', () => require('@nativescript-community/ui-chart/charts').ScatterChart);
+Vue.registerElement('CombinedChart', () => require('@nativescript-community/ui-chart/charts').CombinedChart);
 
 declare let com;
 // import { MPLineChart } from 'nativescript-mpchart-fork-adrianoop/chart/line-chart/nativescript-line-chart';
