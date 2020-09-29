@@ -54,7 +54,7 @@ export function onLineChartLoaded(args) {
     }));
 
     const sets = [];
-    const set = new LineDataSet(data, 'value', 'index', 'value');
+    const set = new LineDataSet(data, 'Legend Label', 'index', 'value');
     set.setColor('blue');
     sets.push(set);
 
