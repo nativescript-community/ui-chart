@@ -1,0 +1,11 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:chart="@nativescript-community/ui-chart">
+    <ActionBar title="Simple Bar Chart">
+        <NavigationButton text="Back" android.systemIcon="ic_menu_back" tap="onNavigationButtonTap"/>
+        <Button text="Redraw" tap="redraw" />
+    </ActionBar>
+    <ScrollView>
+        <StackLayout>
+            <chart:BarChart id="chart" width="300" height="350" loaded="onChartLoaded"/>
+        </StackLayout>
+    </ScrollView>
+</Page>

@@ -5,8 +5,11 @@ export function onLoaded (args) {
 
     page.bindingContext = fromObject({
         examples: [
-            { title: 'NS Chart', moduleName: 'examples/NSChart' },
-            { title: 'NS UI Chart', moduleName: 'examples/NSUIChart' },
+            { title: 'Simple Bar Chart', moduleName: 'examples/BarChart' },
+            { title: 'Simple Horizontal Bar Chart', moduleName: 'examples/HorizontalBarChart' },
+            { title: 'Simple Line Chart', moduleName: 'examples/LineChart' },
+            { title: 'Simple Pie Chart', moduleName: 'examples/PieChart' },
+            { title: 'Simple Radar Chart', moduleName: 'examples/RadarChart' },
         ],
     });
 };
