@@ -24,7 +24,7 @@ Demo samples manifest the power of 'ui-chart' plugin:
 
 * It is the fastest drawing library in comparison to ```@nativescript-community/ui-chart``` and ```nativescript-mpchart```. This is due to:
     - do not marshal or recreate any subset of the data sets. Directly uses the provided array.
-    - can share the same data array beetween multiple datasets
+    - can share the same data array between multiple datasets
     - still use the power of native arrays to NOT marshal arrays of positions while drawing lines with ```@nativescript-community/ui-canvas```
 
 
