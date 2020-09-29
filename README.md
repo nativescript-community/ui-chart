@@ -27,8 +27,8 @@ install();
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:chart="@nativescript-community/ui-chart">
     <ScrollView>
         <StackLayout>
-            <Label text="Radar Chart" fontSize="20"/>
-            <chart:RadarChart id="radar-chart" backgroundColor="lightgray" width="300" height="350" loaded="onRadarChartLoaded"/>
+            <Label text="Line Chart" fontSize="20"/>
+            <chart:LineChart id="line-chart" backgroundColor="lightgray" width="300" height="350" loaded="onLineChartLoaded"/>
         </StackLayout>
     </ScrollView>
 </Page>
