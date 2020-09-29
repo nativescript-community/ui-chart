@@ -106,11 +106,13 @@ export class Transformer {
             }
         }
 
-        this.getValueToPixelMatrix().mapPoints(valuePoints);
+        const points = Utils.pointsFromBuffer(valuePoints);
+        this.getValueToPixelMatrix().mapPoints(points);
 
         return valuePoints;
     }
 
+    protected valuePointsForGenerateTransformedValuesBubble: number[] = [];
     /**
      * Transforms an List of Entry into a float array containing the x and
      * y values transformed with all matrices for the BUBBLECHART.
@@ -121,10 +123,10 @@ export class Transformer {
     public generateTransformedValuesBubble(dataSet: BubbleDataSet, phaseY, from, to) {
         const count = (to - from + 1) * 2; // (int) Math.ceil((to - from) * phaseX) * 2;
 
-        if (this.valuePointsForGenerateTransformedValuesCandle.length !== count) {
-            this.valuePointsForGenerateTransformedValuesCandle = Utils.createArrayBuffer(count);
+        if (this.valuePointsForGenerateTransformedValuesBubble.length !== count) {
+            this.valuePointsForGenerateTransformedValuesBubble = Utils.createArrayBuffer(count);
         }
-        const valuePoints = this.valuePointsForGenerateTransformedValuesCandle;
+        const valuePoints = this.valuePointsForGenerateTransformedValuesBubble;
         const xKey = dataSet.xProperty;
         const yKey = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
@@ -140,12 +142,13 @@ export class Transformer {
             }
         }
 
-        this.getValueToPixelMatrix().mapPoints(valuePoints);
+        const points = Utils.pointsFromBuffer(valuePoints);
+        this.getValueToPixelMatrix().mapPoints(points);
 
         return valuePoints;
     }
 
-    protected valuePointsForGenerateTransformedValues: number[];
+    protected valuePointsForGenerateTransformedValues: number[] = [];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -178,8 +181,7 @@ export class Transformer {
                 valuePoints[j + 1] = 0;
             }
         }
-        const points = Utils.pointsFromBuffer(this.valuePointsForGenerateTransformedValues);
-
+        const points = Utils.pointsFromBuffer(valuePoints);
         this.getValueToPixelMatrix().mapPoints(points);
 
         return { points, count };
@@ -221,7 +223,7 @@ export class Transformer {
     //     return valuePoints;
     // }
 
-    protected valuePointsForGenerateTransformedValuesCandle: number[];
+    protected valuePointsForGenerateTransformedValuesCandle: number[] = [];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -252,8 +254,7 @@ export class Transformer {
                 valuePoints[j + 1] = 0;
             }
         }
-        const points = Utils.pointsFromBuffer(this.valuePointsForGenerateTransformedValuesCandle);
-
+        const points = Utils.pointsFromBuffer(valuePoints);
         this.getValueToPixelMatrix().mapPoints(points);
 
         return valuePoints;
