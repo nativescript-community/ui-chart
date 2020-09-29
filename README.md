@@ -135,7 +135,7 @@ Upon running demo samples, one can conclude it is the fastest drawing library, i
 That is because:
 * It does not marshal or recreate any subset of the data sets, but directly uses the provided array instead
 * It can share the same data array between multiple datasets
-* It can still use the power of native arrays to NOT marshal arrays of positions while drawing lines with ```@nativescript-community/ui-canvas```
+* It can still use the power of native arrays to NOT marshal arrays of positions while drawing lines with [@nativescript-community/ui-canvas](https://github.com/nativescript-community/ui-canvas)
 
 ## Documentation
 
