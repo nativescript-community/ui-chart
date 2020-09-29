@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/Akylas/nativescript-chart/compare/v0.0.37...v1.0.0) (2020-09-29)
+
+
+### Bug Fixes
+
+* allow no dataset ([d4c67cf](https://github.com/Akylas/nativescript-chart/commit/d4c67cffc25bc8664d9e6cfd9414430cb63595d8))
+* almost everything is working! ([241ec78](https://github.com/Akylas/nativescript-chart/commit/241ec7839a9a7672e8e2c831ee44fe692af99860))
+* broken readme list ([e74bb1f](https://github.com/Akylas/nativescript-chart/commit/e74bb1fc20f124282ead9d2c9088ca77295ee387))
+* Corrected paths ([f16c93b](https://github.com/Akylas/nativescript-chart/commit/f16c93b1562f399da084c37053fc96bf1ae3944d))
+* fixed all transformers ([f912f6f](https://github.com/Akylas/nativescript-chart/commit/f912f6f5308ee0e42fc8e701d2d90048de9d235b))
+* github repos and stars not working ([968ea94](https://github.com/Akylas/nativescript-chart/commit/968ea94b44528236eb4e10792ec6ce215f5094f3))
+* more transformer fixes ([f9f0bb9](https://github.com/Akylas/nativescript-chart/commit/f9f0bb9705259b83d9d9af431f255a4a2366d13e))
+* nativeView 'undefined' error caused by scheduled interval. ([3307b6b](https://github.com/Akylas/nativescript-chart/commit/3307b6b55014d859b26668c86cc1ab2fa24cc4a3))
+* RadarChart to LineChart renaming ([121afdc](https://github.com/Akylas/nativescript-chart/commit/121afdce66d6962afe8748fb8590199ce153f038))
+* square shape drawing fix ([ea3cd68](https://github.com/Akylas/nativescript-chart/commit/ea3cd68e6c658c73dfb715a9266c7aaba833789c))
+
+
+### Features
+
+* missing charts ([24243fd](https://github.com/Akylas/nativescript-chart/commit/24243fdd7b518880c3c94f6e26854e2a69619339))
+
+
+
+
+
 ## [0.0.37](https://github.com/Akylas/nativescript-chart/compare/v0.0.36...v0.0.37) (2020-09-28)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
