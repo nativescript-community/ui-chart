@@ -1,4 +1,15 @@
-# Your Plugin Name
+[![npm](https://img.shields.io/npm/v/@nativescript-community/ui-canvas.svg)](https://www.npmjs.com/package/@nativescript-community/ui-canvas)
+[![npm](https://img.shields.io/npm/dt/@nativescript-community/ui-canvas.svg?label=npm%20downloads)](https://www.npmjs.com/package/@nativescript-community/ui-canvas)
+[![GitHub forks](https://img.shields.io/github/forks/@nativescript-community/ui-canvas.svg)](https://github.com/nativescript-community/ui-canvas/network)
+[![GitHub stars](https://img.shields.io/github/stars/@nativescript-community/ui-canvas.svg)](https://github.com/nativescript-community/ui-canvas/stargazers)
+
+## Installation
+
+* `tns plugin add @nativescript-community/ui-chart`
+
+Be sure to run a new build after adding plugins to avoid any issues.
+
+---
 
 Experimental plugin to draw charts using @nativescript-community/ui-canvas. It is a direct JS port of [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
 
