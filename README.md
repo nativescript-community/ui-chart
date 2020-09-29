@@ -55,7 +55,7 @@ export function onLineChartLoaded(args) {
 
     const sets = [];
     const set = new LineDataSet(data, 'value', 'index', 'value');
-    set.setColor(Color.BLUE);
+    set.setColor('blue');
     sets.push(set);
 
     // Create a data object with the data sets
