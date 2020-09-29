@@ -37,7 +37,6 @@ install();
 ### TypeScript
 
 ```typescript
-import { Color } from '@nativescript/core';
 import { LineChart } from '@nativescript-community/ui-chart/charts/LineChart';
 import { LineDataSet } from '@nativescript-community/ui-chart/data/LineDataSet';
 import { LineData } from '@nativescript-community/ui-chart/data/LineData';
@@ -68,6 +67,52 @@ export function onLineChartLoaded(args) {
 
 ## NativeScript + Vue
 ```javascript
+Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
+```
+```html
+<LineChart ref="chart" width="300" height="400" @loaded="onChartLoaded" @tap="onChartTap"> </LineChart>
+```
+```javascript
+import { LineChart } from '@nativescript-community/ui-chart/charts/LineChart';
+import { LineDataSet } from '@nativescript-community/ui-chart/data/LineDataSet';
+import { LineData } from '@nativescript-community/ui-chart/data/LineData';
+```
+```javascript
+onChartLoaded() {
+    const chart = this.$refs.chart['nativeView'] as LineChart;
+    chart.backgroundColor = 'white';
+
+    // enable touch gestures
+    chart.setTouchEnabled(true);
+
+    chart.setDrawGridBackground(false);
+
+    // enable scaling and dragging
+    chart.setDragEnabled(true);
+    chart.setScaleEnabled(true);
+
+    // force pinch zoom along both axis
+    chart.setPinchZoom(true);
+
+    // disable dual axis (only use LEFT axis)
+    chart.getAxisRight().setEnabled(false);
+
+    const data = new Array(500).fill(0).map((v, i) => ({
+        index: i,
+        value: Math.random() * 1,
+    }));
+
+    const sets = [];
+    const set = new LineDataSet(data, 'Legend Label', 'index', 'value');
+    set.setColor('blue');
+    sets.push(set);
+
+    // Create a data object with the data sets
+    const ld = new LineData(sets);
+
+    // Set data
+    chart.setData(ld);
+}
 ```
 
 ## About
