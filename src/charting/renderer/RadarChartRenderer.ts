@@ -129,7 +129,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
         if (dataSet.isDrawFilledEnabled()) {
             const drawable = dataSet.getFillDrawable();
             if (drawable != null) {
-                this.drawFilledPath(c, surface, drawable);
+                this.drawFilledPathBitmap(c, surface, drawable, dataSet.getFillShader());
             } else {
                 this.drawFilledPath(c, surface, dataSet.getFillColor(), dataSet.getFillAlpha());
             }

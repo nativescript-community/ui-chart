@@ -3,6 +3,7 @@
 node_modules
 platforms
 hooks
+lerna-debug.log
 package-lock.json
 .DS_Store
 npm-debug.log.*
