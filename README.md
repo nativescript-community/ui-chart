@@ -97,13 +97,13 @@ onChartLoaded() {
     // disable dual axis (only use LEFT axis)
     chart.getAxisRight().setEnabled(false);
 
-    const data = new Array(500).fill(0).map((v, i) => ({
+    const myData = new Array(500).fill(0).map((v, i) => ({
         index: i,
         value: Math.random() * 1,
     }));
 
     const sets = [];
-    const set = new LineDataSet(data, 'Legend Label', 'index', 'value');
+    const set = new LineDataSet(myData, 'Legend Label', 'index', 'value');
     set.setColor('blue');
     sets.push(set);
 
