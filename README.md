@@ -74,8 +74,10 @@ export function onLineChartLoaded(args) {
 
 This plugin is based on [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart), a powerful & easy to use chart library. Therefore, special thanks goes to Philipp Jahoda, the creator of [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) and the rest of his team.
 
-Instead of directly importing existing native libraries, this library has been rewritten in TypeScript, using '@nativescript-community/ui-canvas' plugin API as a basis. Plugin 'ui-canvas'
-is an extremely powerful tool that converts Android Native Canvas API to a cross-platform API for NativeScript framework. In few words, 'ui-chart' has the same code-base for both Android and iOS.
+Instead of directly importing existing native libraries, this library has been rewritten in TypeScript, using [@nativescript-community/ui-canvas](https://github.com/nativescript-community/ui-canvas) plugin API as a basis. Plugin 'ui-canvas' is an extremely powerful tool that converts Android Native Canvas API to a cross-platform API for NativeScript framework. In few words, 'ui-chart' has the same code-base for both Android and iOS.
+
+Additionally, [@nativescript-community/gesturehandler](https://github.com/nativescript-community/gesturehandler) plugin is used for handling chart gestures.
+
 
 In short, these are the benefits of rewriting library into a NativeScript plugin:
 * Same codebase for Android and iOS. Makes maintaining the library very easy.
