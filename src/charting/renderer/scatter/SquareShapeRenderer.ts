@@ -18,8 +18,7 @@ export class SquareShapeRenderer implements IShapeRenderer {
         const shapeStrokeSizeHalf = shapeStrokeSize / 2;
 
         const shapeHoleColor = dataSet.getScatterShapeHoleColor();
-
-        if (shapeSize > 0.0) {
+        if (shapeHoleSize > 0.0) {
             renderPaint.setStyle(Style.STROKE);
             renderPaint.setStrokeWidth(shapeStrokeSize);
 
