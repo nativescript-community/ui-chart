@@ -1,7 +1,7 @@
-[![npm](https://img.shields.io/npm/v/@nativescript-community/ui-canvas.svg)](https://www.npmjs.com/package/@nativescript-community/ui-canvas)
-[![npm](https://img.shields.io/npm/dt/@nativescript-community/ui-canvas.svg?label=npm%20downloads)](https://www.npmjs.com/package/@nativescript-community/ui-canvas)
-[![GitHub forks](https://img.shields.io/github/forks/@nativescript-community/ui-canvas.svg)](https://github.com/nativescript-community/ui-canvas/network)
-[![GitHub stars](https://img.shields.io/github/stars/@nativescript-community/ui-canvas.svg)](https://github.com/nativescript-community/ui-canvas/stargazers)
+[![npm](https://img.shields.io/npm/v/@nativescript-community/ui-chart.svg)](https://www.npmjs.com/package/@nativescript-community/ui-chart)
+[![npm](https://img.shields.io/npm/dt/@nativescript-community/ui-chart.svg?label=npm%20downloads)](https://www.npmjs.com/package/@nativescript-community/ui-chart)
+[![GitHub forks](https://img.shields.io/github/forks/@nativescript-community/ui-chart.svg)](https://github.com/nativescript-community/ui-chart/network)
+[![GitHub stars](https://img.shields.io/github/stars/@nativescript-community/ui-chart.svg)](https://github.com/nativescript-community/ui-chart/stargazers)
 
 ## Installation
 
