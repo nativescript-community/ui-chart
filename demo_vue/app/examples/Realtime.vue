@@ -109,8 +109,14 @@ export default Vue.extend({
             }
         },
         addEntry() {
-            const chart = this.$refs.chart['nativeView'] as LineChart;
+            // In case user leaves this page
+            if (!this.$refs.chart)
+            {
+                this.stop();
+                return;
+            }
 
+            const chart = this.$refs.chart['nativeView'] as LineChart;
             const data = chart.getData();
 
             if (data != null) {
