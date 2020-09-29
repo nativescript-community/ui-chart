@@ -6,3 +6,4 @@ export { RadarChart } from './RadarChart';
 export { ScatterChart } from './ScatterChart';
 export { BubbleChart } from './BubbleChart';
 export { CandleStickChart } from './CandleStickChart';
+export { CombinedChart } from './CombinedChart';
