@@ -130,7 +130,6 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
             this.mChart.highlight(h, true);
             this.mLastHighlighted = h;
         }
-        console.log("ubla1");
     }
 
     /**

@@ -153,7 +153,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
         for (const r of entries) {
             const e = r.entry;
-            const xVal = getEntryXValue(e.entry, xKey, r.index);
+            const xVal = getEntryXValue(e, xKey, r.index);
             const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(xVal, e[yKey]);
 
             highlights.push({

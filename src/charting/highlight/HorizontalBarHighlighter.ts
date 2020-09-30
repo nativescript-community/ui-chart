@@ -47,7 +47,7 @@ export class HorizontalBarHighlighter extends BarHighlighter {
 
         for (const r of entries) {
             const e = r.entry;
-            const xVal = getEntryXValue(e.entry, xKey, r.index);
+            const xVal = getEntryXValue(e, xKey, r.index);
             const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[yKey], xVal);
 
             highlights.push({

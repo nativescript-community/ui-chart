@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/nativescript-community/ui-chart/compare/v1.0.0...v1.0.1) (2020-09-30)
+
+
+### Bug Fixes
+
+* Highlighting got a bit broken for some charts during 'getEntryXValue' update. ([f3a1515](https://github.com/nativescript-community/ui-chart/commit/f3a15155fcb10fc8d5407146818f8491b3fbf493))
+
+
+### Features
+
+* **demo:** First work on plain ts demo ([dacb20c](https://github.com/nativescript-community/ui-chart/commit/dacb20c6f425719fa76432f810f4c03a5cc24c46))
+
+
+
+
+
+
 # [1.0.0](https://github.com/Akylas/nativescript-chart/compare/v0.0.37...v1.0.0) (2020-09-29)
 
 
