@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/Akylas/nativescript-chart/compare/v1.0.1...v1.0.2) (2020-09-30)
+
+
+### Bug Fixes
+
+* trying to ensure it does not fail on install ([b45d340](https://github.com/Akylas/nativescript-chart/commit/b45d3404a584ec4dda5c833c589f2f82c1cf7e22))
+
+
+
+
+
 ## [1.0.1](https://github.com/nativescript-community/ui-chart/compare/v1.0.0...v1.0.1) (2020-09-30)
 
 
