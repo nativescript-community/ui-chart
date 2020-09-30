@@ -70,7 +70,7 @@ export function onLineChartLoaded(args) {
 Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
 ```
 ```html
-<LineChart ref="chart" width="300" height="400" @loaded="onChartLoaded" @tap="onChartTap"> </LineChart>
+<LineChart ref="chart" width="300" height="400" @loaded="onChartLoaded"> </LineChart>
 ```
 ```javascript
 import { LineChart } from '@nativescript-community/ui-chart/charts/LineChart';
