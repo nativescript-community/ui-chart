@@ -19,6 +19,56 @@ function getRandomColor() {
     return new Color(255, r, g, b);
 }
 
+function addEntry(chart) {
+    // In case user leaves this page
+    if (!chart || !chart.nativeView)
+    {
+        stop();
+        return;
+    }
+
+    const data = chart.getData();
+
+    if (data != null) {
+        let set = data.getDataSetByIndex(0);
+        // set.addEntry(...); // can be called as well
+
+        if (set == null) {
+            set = createSet(chart);
+            data.addDataSet(set);
+        }
+
+        data.addEntry({ y: Math.random() * 40 + 30 }, 0);
+        data.notifyDataChanged();
+
+        // let the chart know it's data has changed
+        chart.notifyDataSetChanged();
+
+        // Limit the number of visible entries
+        chart.setVisibleXRangeMaximum(120);
+        // chart.setVisibleYRange(30, AxisDependency.LEFT);
+
+        // Move to the latest entry
+        chart.moveViewToX(data.getEntryCount());
+    }
+}
+
+function createSet(chart) {
+    const set = new LineDataSet(null, 'Dynamic Data');
+    set.setAxisDependency(AxisDependency.LEFT);
+    set.setColor(ColorTemplate.getHoloBlue());
+    set.setCircleColor('white');
+    set.setLineWidth(2);
+    set.setCircleRadius(4);
+    set.setFillAlpha(65);
+    set.setFillColor(ColorTemplate.getHoloBlue());
+    set.setHighLightColor(new Color(255, 244, 117, 117));
+    set.setValueTextColor('white');
+    set.setValueTextSize(9);
+    set.setDrawValues(false);
+    return set;
+}
+
 export function onNavigatedTo(args) {
     const page = args.object;
     page.bindingContext = args.context;
@@ -99,56 +149,6 @@ export function tryAddEntry(args) {
     if (!timer) {
         addEntry(args.object.page.getViewById('chart'));
     }
-}
-
-export function addEntry(chart) {
-    // In case user leaves this page
-    if (!chart || !chart.nativeView)
-    {
-        stop();
-        return;
-    }
-
-    const data = chart.getData();
-
-    if (data != null) {
-        let set = data.getDataSetByIndex(0);
-        // set.addEntry(...); // can be called as well
-
-        if (set == null) {
-            set = createSet(chart);
-            data.addDataSet(set);
-        }
-
-        data.addEntry({ y: Math.random() * 40 + 30 }, 0);
-        data.notifyDataChanged();
-
-        // let the chart know it's data has changed
-        chart.notifyDataSetChanged();
-
-        // Limit the number of visible entries
-        chart.setVisibleXRangeMaximum(120);
-        // chart.setVisibleYRange(30, AxisDependency.LEFT);
-
-        // Move to the latest entry
-        chart.moveViewToX(data.getEntryCount());
-    }
-}
-
-export function createSet(chart) {
-    const set = new LineDataSet(null, 'Dynamic Data');
-    set.setAxisDependency(AxisDependency.LEFT);
-    set.setColor(ColorTemplate.getHoloBlue());
-    set.setCircleColor('white');
-    set.setLineWidth(2);
-    set.setCircleRadius(4);
-    set.setFillAlpha(65);
-    set.setFillColor(ColorTemplate.getHoloBlue());
-    set.setHighLightColor(new Color(255, 244, 117, 117));
-    set.setValueTextColor('white');
-    set.setValueTextSize(9);
-    set.setDrawValues(false);
-    return set;
 }
 
 export function onNavigationButtonTap(args) {
