@@ -9,6 +9,12 @@
         "Android",
         "iOS"
     ],
+    "nativescript": {
+        "platforms": {
+            "android": "6.5.2",
+            "ios": "6.5.2"
+        }
+    },
     "author": {
         "name": "Martin Guillon",
         "email": "martin@akylas.fr"
