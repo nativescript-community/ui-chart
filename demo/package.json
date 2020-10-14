@@ -8,7 +8,7 @@
     "dependencies": {
         "@akylas/nativescript": "7.0.6-alpha.2",
         "@nativescript/theme": "~2.3.3",
-        "@nativescript-community/ui-chart": "../plugin",
+        "@nativescript-community/ui-chart": "file:../plugin",
         "nativescript-perms": "^2.0.11"
     },
     "devDependencies": {
