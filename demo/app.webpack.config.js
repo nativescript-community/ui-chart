@@ -6,7 +6,6 @@ module.exports = (env, params = {}) => {
     const { development } = env;
     const projectRoot = __dirname;
     const config = webpackConfig(env, params);
-    config.resolve.alias['@nativescript/core'] = '@akylas/nativescript';
     if (development) {
         const srcPath = resolve(projectRoot, '..', 'src', 'charting');
         config.resolve.alias['@nativescript-community/ui-chart'] = srcPath;

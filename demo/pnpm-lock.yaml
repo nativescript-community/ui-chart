@@ -1,28 +1,16 @@
 dependencies:
-  '@akylas/nativescript': 7.0.6-alpha.2
   '@nativescript-community/ui-chart': 'link:../plugin'
-  '@nativescript/theme': 2.3.3
+  '@nativescript/core': 7.0.11
+  '@nativescript/theme': 3.0.0
   nativescript-perms: 2.0.11
-  nativescript-ui-chart: 8.0.2_typescript@4.0.3
-  typescript: 4.0.3
 devDependencies:
   '@nativescript/android': 7.0.0
-  '@nativescript/core': 7.0.7
   '@nativescript/ios': 7.0.0
   '@nativescript/types': 7.0.4
-  '@nativescript/webpack': 3.0.5_typescript@4.0.3
+  '@nativescript/webpack': 3.0.5_typescript@3.9.7
+  typescript: 3.9.7
 lockfileVersion: 5.1
 packages:
-  /@akylas/nativescript/7.0.6-alpha.2:
-    dependencies:
-      '@nativescript/hook': 2.0.0
-      css-tree: 1.0.0-alpha.39
-      reduce-css-calc: 2.1.7
-      tslib: 2.0.0
-    dev: false
-    requiresBuild: true
-    resolution:
-      integrity: sha512-E1i9z17pQd/nsnvDEAyqeYylvcjWCIfXnoKkoXNPc6SCrFws2kzOWhQcnI9aYX+wfZbr2MBZ4cL/j7hV9vrCgQ==
   /@angular-devkit/core/10.0.8:
     dependencies:
       ajv: 6.12.3
@@ -59,16 +47,16 @@ packages:
     dev: true
     resolution:
       integrity: sha512-RplCS/0nteROpatMYZHXlyA1xp+9c0+sBBm5QxUy7MYaoY+iHdfboAv+J62XTI8aEmbNHDkBm7/eYFxgCbrdEA==
-  /@nativescript/core/7.0.7:
+  /@nativescript/core/7.0.11:
     dependencies:
       '@nativescript/hook': 2.0.0
       css-tree: 1.0.0-alpha.39
       reduce-css-calc: 2.1.7
       tslib: 2.0.0
-    dev: true
+    dev: false
     requiresBuild: true
     resolution:
-      integrity: sha512-yZQn3Aa182stZ1Wr1zIRjZ2m+c/yUrYovTxH8F/uXJVLEbB2/UsROdlbs7t8fFEdqpXUaBrljRdMWm7nVweJjA==
+      integrity: sha512-mp9DNW3vOVv5rYUiCTSlqyTo7exc3IOL3AnrajD3k7PreSN015SckESJnxsEqVbQUjb6Uionm7nkSu6yeOrIag==
   /@nativescript/hook/2.0.0:
     dependencies:
       glob: 7.1.6
@@ -79,10 +67,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-6Tv4WG7plnuzVhnJ16E9XJ5flJOzqb5Wmmgx6Tn1NMNXTNZuT6c7rfDBGDR/xexz0gZ8Sx3PULyeBdUCKa/LIg==
-  /@nativescript/theme/2.3.3:
+  /@nativescript/theme/3.0.0:
     dev: false
     resolution:
-      integrity: sha512-fWn9qTCWJSaN3REX23Fb4N5X2IGNh+RbvzS3b3/ib0KeXrrhovOzBBxoP9db7kgJ5/FUtyBqbvB4xzxE+1z2nQ==
+      integrity: sha512-7oxHRF9R36oMie//rvZAI1kdizGJwZcRISlSiA3pAoCiqHMRpuM4tb3V+nTS2waSVA1tmUtU50oHcG7NEcEv7A==
   /@nativescript/types-android/7.0.4:
     dev: true
     resolution:
@@ -98,7 +86,7 @@ packages:
     dev: true
     resolution:
       integrity: sha512-G01GlQm2aZEF05XBXxpyPd8XJE5EXrDRyR2q6vrowAIgSY5KaJXu6YjXz9Zfwmn7tvoyWlFsgxaZy2vPFUcsFQ==
-  /@nativescript/webpack/3.0.5_typescript@4.0.3:
+  /@nativescript/webpack/3.0.5_typescript@3.9.7:
     dependencies:
       '@angular-devkit/core': 10.0.8
       '@nativescript/hook': 2.0.0
@@ -124,7 +112,7 @@ packages:
       tapable: 1.1.3
       terser: 5.0.0
       terser-webpack-plugin: 3.0.8_webpack@4.44.2
-      ts-loader: 8.0.4_typescript@4.0.3
+      ts-loader: 8.0.4_typescript@3.9.7
       webpack: 4.44.2_93ca2875a658e9d1552850624e6b91c7
       webpack-bundle-analyzer: 3.8.0
       webpack-cli: 3.3.12_webpack@4.44.2
@@ -494,10 +482,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-Y9J6ZjXtoYh8RnXVCMOU/ttDmk1aBjunq9vO0ta5x85WDQiQfUF9sIPBITdbiiIVcBo03Hi3jMxigBtsddlXRw==
-  /arg/4.1.3:
-    dev: false
-    resolution:
-      integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==
   /arity-n/1.0.4:
     dev: true
     resolution:
@@ -777,6 +761,7 @@ packages:
     resolution:
       integrity: sha512-Z942RysHXmJrhqk88FmKBVq/v5tqmSkDz7p54G/MGyjMnCFFnC79XWNbg+Vta8W6Wb2qtSZTSxIGkJrRpCFEiA==
   /buffer-from/1.1.1:
+    dev: true
     resolution:
       integrity: sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==
   /buffer-xor/1.0.3:
@@ -1248,11 +1233,13 @@ packages:
     dependencies:
       mdn-data: 2.0.6
       source-map: 0.6.1
+    dev: false
     engines:
       node: '>=8.0.0'
     resolution:
       integrity: sha512-7UvkEYgBAHRG9Nt980lYxjsTrCyHFN53ky3wVsDkiMdVqylqRt+Zc+jm5qw7/qyOvN2dHSYtX0e4MbCCExSvnA==
   /css-unit-converter/1.1.2:
+    dev: false
     resolution:
       integrity: sha512-IiJwMC8rdZE0+xiEZHeru6YoONC4rfPMqGm2W85jMIbkFvv5nFTwJVFHam2eFrN6txmoUYFAFXiv8ICVeTO0MA==
   /css/2.2.4:
@@ -1376,12 +1363,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-8NZtA2cqglyxtzvbP+YjEMjlUrc=
-  /diff/4.0.2:
-    dev: false
-    engines:
-      node: '>=0.3.1'
-    resolution:
-      integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
   /diffie-hellman/5.0.3:
     dependencies:
       bn.js: 4.11.9
@@ -2633,10 +2614,6 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
-  /make-error/1.3.6:
-    dev: false
-    resolution:
-      integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
   /map-cache/0.2.2:
     dev: true
     engines:
@@ -2660,6 +2637,7 @@ packages:
     resolution:
       integrity: sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg==
   /mdn-data/2.0.6:
+    dev: false
     resolution:
       integrity: sha512-rQvjv71olwNHgiTbfPZFkJtjNMciWgswYeciZhtvWLO8bmX3TnhyA62I6sTWOyZssWHJJjY6/KiWwqQsWWsqOA==
   /media-typer/0.3.0:
@@ -2913,19 +2891,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-3ksYayKWNIZhNeoLzh72ZHUYPLR6quXaKWjksHRRcoTKlLROFSvOkQxj4VvHbafpl9VkFjv8TU85XLKKcDeVkQ==
-  /nativescript-ui-chart/8.0.2_typescript@4.0.3:
-    dependencies:
-      nativescript-ui-core: 4.0.0
-      ts-node: 8.10.2_typescript@4.0.3
-    dev: false
-    peerDependencies:
-      typescript: '*'
-    resolution:
-      integrity: sha512-p/ERnKZWlvftjuD69DIjpYy5f9A1oxP/Zj3PEHbvAsuB6LPcQrQZLGmd4TWSuDjKQ0WElL8vEKZLAOPcnQAwYw==
-  /nativescript-ui-core/4.0.0:
-    dev: false
-    resolution:
-      integrity: sha512-YbGZApyI84RGSevCmXVD18yGov7/RJyLcIXXx6p2y4WM41hL+uRxyUak/9qLP2vwSSy0bCZKXFoyYwsIcf8EoA==
   /nativescript-worker-loader/0.12.1:
     dependencies:
       loader-utils: 2.0.0
@@ -3347,6 +3312,7 @@ packages:
     resolution:
       integrity: sha512-0ClFaY4X1ra21LRqbW6y3rUbWcxnSVkDFG57R7Nxus9J9myPFlv+jYDMohzpkBx0RrjjiqjtycpchQ+PLGmZ9w==
   /postcss-value-parser/3.3.1:
+    dev: false
     resolution:
       integrity: sha512-pISE66AbVkp4fDQ7VHBwRNXzAAKJjw4Vw7nWI/+Q3vuly7SNfgYXvm6i5IgFylHGK5sP/xHAbB7N49OS4gWNyQ==
   /postcss-value-parser/4.1.0:
@@ -3575,6 +3541,7 @@ packages:
     dependencies:
       css-unit-converter: 1.1.2
       postcss-value-parser: 3.3.1
+    dev: false
     resolution:
       integrity: sha512-fDnlZ+AybAS3C7Q9xDq5y8A2z+lT63zLbynew/lur/IR24OQF5x98tfNwf79mzEdfywZ0a2wpM860FhFfMxZlA==
   /regex-not/1.0.2:
@@ -3988,6 +3955,7 @@ packages:
     dependencies:
       buffer-from: 1.1.1
       source-map: 0.6.1
+    dev: true
     resolution:
       integrity: sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
   /source-map-url/0.4.0:
@@ -4278,14 +4246,14 @@ packages:
     dev: true
     resolution:
       integrity: sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==
-  /ts-loader/8.0.4_typescript@4.0.3:
+  /ts-loader/8.0.4_typescript@3.9.7:
     dependencies:
       chalk: 2.4.2
       enhanced-resolve: 4.3.0
       loader-utils: 1.4.0
       micromatch: 4.0.2
       semver: 6.3.0
-      typescript: 4.0.3
+      typescript: 3.9.7
     dev: true
     engines:
       node: '>=10.0.0'
@@ -4293,27 +4261,12 @@ packages:
       typescript: '*'
     resolution:
       integrity: sha512-5u8KF1SW8eCUb/Ff7At81e3wznPmT/27fvaGRO9CziVy+6NlPVRvrzSox4OwU0/e6OflOUB32Err4VquysCSAQ==
-  /ts-node/8.10.2_typescript@4.0.3:
-    dependencies:
-      arg: 4.1.3
-      diff: 4.0.2
-      make-error: 1.3.6
-      source-map-support: 0.5.19
-      typescript: 4.0.3
-      yn: 3.1.1
-    dev: false
-    engines:
-      node: '>=6.0.0'
-    hasBin: true
-    peerDependencies:
-      typescript: '>=2.7'
-    resolution:
-      integrity: sha512-ISJJGgkIpDdBhWVu3jufsWpK3Rzo7bdiIXJjQc0ynKxVOVcg2oIrf2H2cejminGrptVc6q6/uynAHNCuWGbpVA==
   /tslib/1.13.0:
     dev: true
     resolution:
       integrity: sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
   /tslib/2.0.0:
+    dev: false
     resolution:
       integrity: sha512-lTqkx847PI7xEDYJntxZH89L2/aXInsyF2luSafe/+0fHOMjlBNXdH6th7f70qxLDhul7KZK0zC8V5ZIyHl0/g==
   /tty-browserify/0.0.0:
@@ -4341,13 +4294,13 @@ packages:
     dev: true
     resolution:
       integrity: sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
-  /typescript/4.0.3:
-    dev: false
+  /typescript/3.9.7:
+    dev: true
     engines:
       node: '>=4.2.0'
     hasBin: true
     resolution:
-      integrity: sha512-tEu6DGxGgRJPb/mVPIZ48e69xCn2yRmCgYmDugAVwmJ6o+0u1RI18eO7E7WBTLYLaEVVOhwQmcdhQHweux/WPg==
+      integrity: sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
   /union-value/1.0.1:
     dependencies:
       arr-union: 3.1.0
@@ -4655,21 +4608,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-AX3Zw5iPruN5ie6xGRIDgqkT+ZhnRlZMLMHAs8tg7nRruy2Nb+i5o9bwghAogtM08q1dpr2LVoS8KSTMYpWXUw==
-  /yn/3.1.1:
-    dev: false
-    engines:
-      node: '>=6'
-    resolution:
-      integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 specifiers:
-  '@akylas/nativescript': 7.0.6-alpha.2
   '@nativescript-community/ui-chart': ../plugin
   '@nativescript/android': 7.0.0
-  '@nativescript/core': ~7.0.7
+  '@nativescript/core': ~7.0.11
   '@nativescript/ios': 7.0.0
-  '@nativescript/theme': ~2.3.3
+  '@nativescript/theme': ~3.0.0
   '@nativescript/types': ~7.0.4
   '@nativescript/webpack': ~3.0.5
   nativescript-perms: ^2.0.11
-  nativescript-ui-chart: 8.0.2
-  typescript: 4.0.3
+  typescript: ^3.9.7
