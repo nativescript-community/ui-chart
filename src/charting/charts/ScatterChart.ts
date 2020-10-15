@@ -5,6 +5,14 @@ import { ScatterDataSet } from '../data/ScatterDataSet';
 import { Entry } from '../data/Entry';
 import { IScatterDataSet } from '../interfaces/datasets/IScatterDataSet';
 import { ScatterChartRenderer } from '../renderer/ScatterChartRenderer';
+import { Canvas, Paint } from '@nativescript-community/ui-canvas';
+import { Highlight } from '../highlight/Highlight';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+
+export interface CustomRenderer {
+    drawShape: (c: Canvas, e: Entry, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler, x: number, y: number, paint: Paint) => void;
+    drawHighlight: (c: Canvas, e: Highlight, set: IScatterDataSet, paint: Paint) => void;
+}
 
 export enum ScatterShape {
     SQUARE = 'SQUARE',
@@ -36,8 +44,17 @@ export class ScatterChart extends BarLineChartBase<Entry, IScatterDataSet, Scatt
         return this.mData;
     }
 
+    mCustomRenderer: CustomRenderer;
     /**
-     * Predefined ScatterShapes that allow the specification of a shape a ScatterDataSet should be drawn with.
-     * If a ScatterShape is specified for a ScatterDataSet, the required renderer is set.
+     * set a custom line renderer
      */
+    public setCustomRenderer(renderer: CustomRenderer) {
+        this.mCustomRenderer = renderer;
+    }
+    /**
+     * get the custom line renderer
+     */
+    public getCustomRenderer() {
+        return this.mCustomRenderer;
+    }
 }

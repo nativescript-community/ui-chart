@@ -9,10 +9,14 @@ import { PieChartRenderer } from '../renderer/PieChartRenderer';
 import { MPPointF } from '../utils/MPPointF';
 import { Utils } from '../utils/Utils';
 import { Font } from '@nativescript/core/ui/styling/font';
-import { Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
+import { Canvas, Paint, Path, RectF } from '@nativescript-community/ui-canvas';
 
 const LOG_TAG = 'PieChart';
 
+export interface CustomRenderer {
+    drawSlice: (c: Canvas, e: Entry, slice: Path, paint: Paint) => void;
+    drawHighlight: (c: Canvas, e: Highlight, slice: Path, paint: Paint) => void;
+}
 /**
  * View that represents a pie chart. Draws cake like slices.
  *
@@ -755,5 +759,19 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
             this.mRenderer.releaseBitmap();
         }
         //super.onDetachedFromWindow();
+    }
+
+    mCustomRenderer: CustomRenderer;
+    /**
+     * set a custom line renderer
+     */
+    public setCustomRenderer(renderer: CustomRenderer) {
+        this.mCustomRenderer = renderer;
+    }
+    /**
+     * get the custom line renderer
+     */
+    public getCustomRenderer() {
+        return this.mCustomRenderer;
     }
 }

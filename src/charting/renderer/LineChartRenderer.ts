@@ -12,6 +12,7 @@ import { ColorTemplate } from '../utils/ColorTemplate';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { LineChart } from '../charts';
 
 // fix drawing "too" thin paths on iOS
 
@@ -95,7 +96,7 @@ export class DataSetImageCache {
 }
 
 export class LineChartRenderer extends LineRadarRenderer {
-    public mChart: LineDataProvider;
+    public mChart: LineChart;
 
     /**
      * palet for the inner circle of the value indicators
@@ -124,7 +125,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     protected linePath = new Path();
     protected fillPath = new Path();
 
-    constructor(chart: LineDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
+    constructor(chart: LineChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
         if (global.isAndroid) {
@@ -408,7 +409,12 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         if (dataSet.getLineWidth() > 0) {
             trans.pathValueToPixel(this.linePath);
-            this.drawPath(c, this.linePath, this.mRenderPaint);
+            const customRender = this.mChart.getCustomRenderer();
+            if (customRender && customRender.drawLine) {
+                customRender.drawLine(c, this.linePath, this.mRenderPaint);
+            } else {
+                this.drawPath(c, this.linePath, this.mRenderPaint);
+            }
         }
 
         return result;
@@ -728,6 +734,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?: boolean) {
         const lineData = this.mChart.getLineData();
 
+        const customRender = this.mChart.getCustomRenderer();
         for (const high of indices) {
             const set = lineData.getDataSetByIndex(high.dataSetIndex);
 
@@ -745,10 +752,14 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             high.drawX = pix.x;
             high.drawY = pix.y;
-            // high.setDraw( pix.x,  pix.y);
-
-            // draw the lines
-            actualDraw && this.drawHighlightLines(c, pix.x, pix.y, set);
+            if (!actualDraw) {
+                continue;
+            }
+            if (customRender && customRender.drawHighlight) {
+                customRender.drawHighlight(c, high, set, this.mHighlightPaint);
+            } else {
+                this.drawHighlightLines(c, pix.x, pix.y, set);
+            }
         }
     }
 

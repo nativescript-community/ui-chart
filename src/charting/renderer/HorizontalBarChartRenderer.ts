@@ -21,8 +21,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         const barData = this.mChart.getBarData();
         this.mBarBuffers = [] as HorizontalBarBuffer[];
 
-        for (let i = 0; i < barData.getDataSetCount(); i++)
-        {
+        for (let i = 0; i < barData.getDataSetCount(); i++) {
             const set = barData.getDataSetByIndex(i);
             this.mBarBuffers.push(new HorizontalBarBuffer(set.getEntryCount() * 4 * (set.isStacked() ? set.getStackSize() : 1), barData.getDataSetCount(), set.isStacked()));
         }
@@ -94,6 +93,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             this.mRenderPaint.setColor(dataSet.getColor());
         }
 
+        const customRender = this.mChart.getCustomRenderer();
         for (let j = 0, pos = 0; j < buffer.size(); j += 4, pos++) {
             if (!this.mViewPortHandler.isInBoundsTop(buffer.buffer[j + 3])) {
                 break;
@@ -102,17 +102,20 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             if (!this.mViewPortHandler.isInBoundsBottom(buffer.buffer[j + 1])) {
                 continue;
             }
-
             if (!isSingleColor) {
                 // Set the color for the currently drawn value. If the index
                 // is out of bounds, reuse colors.
                 this.mRenderPaint.setColor(dataSet.getColor(j / 4));
             }
+            if (customRender && customRender.drawBar) {
+                const e = dataSet.getEntryForIndex(j / 4);
+                customRender.drawBar(c, e, dataSet, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
+            } else {
+                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
 
-            c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
-
-            if (drawBorder) {
-                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mBarBorderPaint);
+                if (drawBorder) {
+                    c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mBarBorderPaint);
+                }
             }
         }
 
@@ -175,8 +178,8 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
                         // calculate the correct offset depending on the draw position of the value
                         const valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
-                        posOffset = (drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus));
-                        negOffset = (drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus);
+                        posOffset = drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus);
+                        negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus;
 
                         if (isInverted) {
                             posOffset = -posOffset - valueTextWidth;
@@ -184,15 +187,13 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                         }
 
                         if (dataSet.isDrawValuesEnabled()) {
-                            this.drawValue(c, formattedValue,
-                                val >= 0 ? (buffer.buffer[j + 2] + posOffset) : (buffer.buffer[j + 0] + negOffset),
-                                y + halfTextHeight, dataSet.getValueTextColor(j / 2));
+                            this.drawValue(c, formattedValue, val >= 0 ? buffer.buffer[j + 2] + posOffset : buffer.buffer[j + 0] + negOffset, y + halfTextHeight, dataSet.getValueTextColor(j / 2));
                         }
 
                         if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                             const icon = entry.icon;
 
-                            let px = val >= 0 ? (buffer.buffer[j + 2] + posOffset) : (buffer.buffer[j + 0] + negOffset);
+                            let px = val >= 0 ? buffer.buffer[j + 2] + posOffset : buffer.buffer[j + 0] + negOffset;
                             let py = y;
 
                             px += iconsOffset.x;
@@ -202,8 +203,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                         }
                     }
                     // if each value of a potential stack should be drawn
-                }
-                else {
+                } else {
                     const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
                     let bufferIndex = 0;
@@ -235,8 +235,8 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
                             // calculate the correct offset depending on the draw position of the value
                             const valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
-                            posOffset = (drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus));
-                            negOffset = (drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus);
+                            posOffset = drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus);
+                            negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus;
 
                             if (isInverted) {
                                 posOffset = -posOffset - valueTextWidth;
@@ -244,15 +244,19 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             }
 
                             if (dataSet.isDrawValuesEnabled()) {
-                                this.drawValue(c, formattedValue,
-                                    entry[yKey] >= 0 ? (buffer.buffer[bufferIndex + 2] + posOffset) : (buffer.buffer[bufferIndex + 0] + negOffset),
-                                    buffer.buffer[bufferIndex + 1] + halfTextHeight, color);
+                                this.drawValue(
+                                    c,
+                                    formattedValue,
+                                    entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 2] + posOffset : buffer.buffer[bufferIndex + 0] + negOffset,
+                                    buffer.buffer[bufferIndex + 1] + halfTextHeight,
+                                    color
+                                );
                             }
 
                             if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                                 const icon = entry.icon;
 
-                                let px = entry[yKey] >= 0 ? (buffer.buffer[bufferIndex + 2] + posOffset) : (buffer.buffer[bufferIndex + 0] + negOffset);
+                                let px = entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 2] + posOffset : buffer.buffer[bufferIndex + 0] + negOffset;
                                 let py = buffer.buffer[bufferIndex + 1];
 
                                 px += iconsOffset.x;
@@ -261,8 +265,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                                 Utils.drawImage(c, icon, px, py);
                             }
                             // draw stack values
-                        }
-                        else {
+                        } else {
                             const transformed = Utils.createNativeArray(vals.length * 2);
 
                             let posY = 0;
@@ -272,18 +275,13 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                                 const value = vals[idx];
                                 let y;
 
-                                if (value === 0 && (posY === 0 || negY === 0))
-                                {
+                                if (value === 0 && (posY === 0 || negY === 0)) {
                                     // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
                                     y = value;
-                                }
-                                else if (value >= 0)
-                                {
+                                } else if (value >= 0) {
                                     posY += value;
                                     y = posY;
-                                }
-                                else
-                                {
+                                } else {
                                     y = negY;
                                     negY -= value;
                                 }
@@ -299,8 +297,8 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
                                 // calculate the correct offset depending on the draw position of the value
                                 const valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
-                                posOffset = (drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus));
-                                negOffset = (drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus);
+                                posOffset = drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus);
+                                negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus;
 
                                 if (isInverted) {
                                     posOffset = -posOffset - valueTextWidth;
@@ -324,12 +322,12 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                                 }
 
                                 if (dataSet.isDrawValuesEnabled()) {
-                                    this.drawValue(c, formattedValue, x, (y + halfTextHeight), color);
+                                    this.drawValue(c, formattedValue, x, y + halfTextHeight, color);
                                 }
 
                                 if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                                     const icon = entry.icon;
-                                    Utils.drawImage(c, icon, (x + iconsOffset.x), (y + iconsOffset.y));
+                                    Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y);
                                 }
                             }
                         }

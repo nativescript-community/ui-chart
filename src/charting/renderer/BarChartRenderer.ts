@@ -138,7 +138,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             this.mRenderPaint.setColor(dataSet.getColor());
         }
 
-        const customRender = this.mChart.getCustomBarRenderer();
+        const customRender = this.mChart.getCustomRenderer();
         for (let j = 0; j < buffer.size(); j += 4) {
             if (!this.mViewPortHandler.isInBoundsLeft(buffer.buffer[j + 2])) {
                 continue;
@@ -147,16 +147,15 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             if (!this.mViewPortHandler.isInBoundsRight(buffer.buffer[j])) {
                 break;
             }
-            if (customRender) {
+            if (!isSingleColor) {
+                // Set the color for the currently drawn value. If the index
+                // is out of bounds, reuse colors.
+                this.mRenderPaint.setColor(dataSet.getColor(j / 4));
+            }
+            if (customRender && customRender.drawBar) {
                 const e = dataSet.getEntryForIndex(j / 4);
-                customRender(c, e, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
+                customRender.drawBar(c, e, dataSet, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
             } else {
-                if (!isSingleColor) {
-                    // Set the color for the currently drawn value. If the index
-                    // is out of bounds, reuse colors.
-                    this.mRenderPaint.setColor(dataSet.getColor(j / 4));
-                }
-
                 c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
 
                 if (drawBorder) {
@@ -418,7 +417,13 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             this.setHighlightDrawPos(high, this.mBarRect);
 
-            c.drawRect(this.mBarRect, this.mHighlightPaint);
+            const customRender = this.mChart.getCustomRenderer();
+            if (customRender && customRender.drawHighlight) {
+                const rect = this.mBarRect;
+                customRender.drawHighlight(c, high, rect.left, rect.top, rect.right, rect.bottom, this.mHighlightPaint);
+            } else {
+                c.drawRect(this.mBarRect, this.mHighlightPaint);
+            }
         }
     }
 

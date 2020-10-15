@@ -10,8 +10,14 @@ import { Highlight } from '../highlight/Highlight';
 import { BarChartRenderer } from '../renderer/BarChartRenderer';
 import { Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
 import { getEntryXValue } from '../data/BaseEntry';
+import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 
 const LOG_TAG = 'BarChart';
+
+export interface CustomRenderer {
+    drawBar: (c: Canvas, e: BarEntry, dataSet: IBarDataSet, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+    drawHighlight: (c: Canvas, e: Highlight, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+}
 
 export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider {
     /**
@@ -31,7 +37,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      */
     private mDrawBarShadow = false;
 
-    private mCustomBarRenderer: (c: Canvas, e: BarEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+    private mCustomRenderer: CustomRenderer;
 
     protected init() {
         super.init();
@@ -207,14 +213,14 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
     /**
      * set a custom bar renderer
      */
-    public setCustomBarRenderer(func: (c: Canvas, e: BarEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void) {
-        this.mCustomBarRenderer = func;
+    public setCustomRenderer(renderer: CustomRenderer) {
+        this.mCustomRenderer = renderer;
     }
     /**
      * get the custom bar renderer
      */
-    public getCustomBarRenderer() {
-        return this.mCustomBarRenderer;
+    public getCustomRenderer() {
+        return this.mCustomRenderer;
     }
 
     /**

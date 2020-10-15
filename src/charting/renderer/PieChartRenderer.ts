@@ -216,6 +216,7 @@ export class PieChartRenderer extends DataRenderer {
 
         const sliceSpace = visibleAngleCount <= 1 ? 0 : this.getSliceSpace(dataSet);
 
+        const customRender = this.mChart.getCustomRenderer();
         for (let j = 0; j < entryCount; j++) {
             const sliceAngle = drawAngles[j];
             let innerRadius = userInnerRadius;
@@ -322,8 +323,11 @@ export class PieChartRenderer extends DataRenderer {
             }
 
             this.mPathBuffer.close();
-
-            c.drawPath(this.mPathBuffer, this.mRenderPaint);
+            if (customRender && customRender.drawSlice) {
+                customRender.drawSlice(c, e, this.mPathBuffer, this.mRenderPaint);
+            } else {
+                c.drawPath(this.mPathBuffer, this.mRenderPaint);
+            }
 
             angle += sliceAngle * phaseX;
         }
@@ -690,15 +694,17 @@ export class PieChartRenderer extends DataRenderer {
         const highlightedCircleBox = this.mDrawHighlightedRectF;
         highlightedCircleBox.set(0, 0, 0, 0);
 
+        const customRender = this.mChart.getCustomRenderer();
         for (let i = 0; i < indices.length; i++) {
             // get the index to highlight
-            const index = indices[i].x;
+            const high = indices[i];
+            const index = high.x;
 
             if (index >= drawAngles.length) {
                 continue;
             }
 
-            const set = this.mChart.getData().getDataSetByIndex(indices[i].dataSetIndex);
+            const set = this.mChart.getData().getDataSetByIndex(high.dataSetIndex);
 
             if (set == null || !set.isHighlightEnabled()) {
                 continue;
@@ -817,7 +823,11 @@ export class PieChartRenderer extends DataRenderer {
             }
 
             this.mPathBuffer.close();
-            c.drawPath(this.mPathBuffer, this.mRenderPaint);
+            if (customRender && customRender.drawHighlight) {
+                customRender.drawHighlight(c, high, this.mPathBuffer, this.mRenderPaint);
+            } else {
+                c.drawPath(this.mPathBuffer, this.mRenderPaint);
+            }
         }
     }
 

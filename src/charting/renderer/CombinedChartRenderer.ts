@@ -48,16 +48,16 @@ export class CombinedChartRenderer extends DataRenderer {
                     if (chart.getBarData() != null) this.mRenderers.push(new BarChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
                     break;
                 case DrawOrder.BUBBLE:
-                    if (chart.getBubbleData() != null) this.mRenderers.push(new BubbleChartRenderer(chart, this.mAnimator, this.mViewPortHandler));
+                    if (chart.getBubbleData() != null) this.mRenderers.push(new BubbleChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
                     break;
                 case DrawOrder.LINE:
-                    if (chart.getLineData() != null) this.mRenderers.push(new LineChartRenderer(chart, this.mAnimator, this.mViewPortHandler));
+                    if (chart.getLineData() != null) this.mRenderers.push(new LineChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
                     break;
                 case DrawOrder.CANDLE:
-                    if (chart.getCandleData() != null) this.mRenderers.push(new CandleStickChartRenderer(chart, this.mAnimator, this.mViewPortHandler));
+                    if (chart.getCandleData() != null) this.mRenderers.push(new CandleStickChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
                     break;
                 case DrawOrder.SCATTER:
-                    if (chart.getScatterData() != null) this.mRenderers.push(new ScatterChartRenderer(chart, this.mAnimator, this.mViewPortHandler));
+                    if (chart.getScatterData() != null) this.mRenderers.push(new ScatterChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
                     break;
             }
         }

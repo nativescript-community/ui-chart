@@ -1,4 +1,4 @@
-import { Canvas } from '@nativescript-community/ui-canvas';
+import { Canvas, Paint } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
 import { PieRadarChartBase } from './PieRadarChartBase';
 import { AxisDependency, YAxis } from '../components/YAxis';
@@ -10,9 +10,13 @@ import { RadarChartRenderer } from '../renderer/RadarChartRenderer';
 import { XAxisRendererRadarChart } from '../renderer/XAxisRendererRadarChart';
 import { YAxisRendererRadarChart } from '../renderer/YAxisRendererRadarChart';
 import { Utils } from '../utils/Utils';
+import { Highlight } from '../highlight/Highlight';
 
 const LOG_TAG = 'RadarChart';
-
+export interface CustomRenderer {
+    drawRadar: (c: Canvas, e: Entry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+    drawHighlight: (c: Canvas, e: Highlight, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+}
 /**
  * Implementation of the RadarChart, a "spidernet"-like chart. It works best
  * when displaying 5-10 entries per DataSet.
@@ -331,5 +335,19 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
      */
     public getYRange() {
         return this.mYAxis.mAxisRange;
+    }
+
+    mCustomRenderer: CustomRenderer;
+    /**
+     * set a custom line renderer
+     */
+    public setCustomRenderer(renderer: CustomRenderer) {
+        this.mCustomRenderer = renderer;
+    }
+    /**
+     * get the custom line renderer
+     */
+    public getCustomRenderer() {
+        return this.mCustomRenderer;
     }
 }

@@ -1,6 +1,6 @@
 import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubbleRenderer';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { BubbleDataProvider } from '../interfaces/dataprovider/BubbleDataProvider';
+import { BubbleChart } from '../charts/BubbleChart';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Canvas, Style } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
@@ -16,12 +16,12 @@ import { BubbleDataSet } from '../data/BubbleDataSet';
  * under Apache License 2.0 Ported by Daniel Cohen Gindi
  */
 export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
-    mChart: BubbleDataProvider;
+    mChart: BubbleChart;
 
     private sizeBuffer = Utils.createNativeArray(4);
     private pointBuffer = Utils.createNativeArray(2);
 
-    constructor(chart: BubbleDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
+    constructor(chart: BubbleChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
 
@@ -71,6 +71,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const maxBubbleHeight = Math.abs(this.mViewPortHandler.contentBottom() - this.mViewPortHandler.contentTop());
         const referenceSize = Math.min(maxBubbleHeight, maxBubbleWidth);
         const maxSize = dataSet.getMaxSize();
+        const customRender = this.mChart.getCustomRenderer();
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             const entry = dataSet.getEntryForIndex(j);
             const xValue = getEntryXValue(entry, xKey, j);
@@ -88,7 +89,11 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             const color = dataSet.getColor(xValue);
             this.mRenderPaint.setColor(color);
-            c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mRenderPaint);
+            if (customRender && customRender.drawBubble) {
+                customRender.drawBubble(c, entry, this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mRenderPaint);
+            } else {
+                c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mRenderPaint);
+            }
         }
     }
 
@@ -115,7 +120,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                 this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-                const {points, count} = this.mChart.getTransformer(dataSet.getAxisDependency()).generateTransformedValuesBubble(dataSet, phaseY, this.mXBounds.min, this.mXBounds.max);
+                const { points, count } = this.mChart.getTransformer(dataSet.getAxisDependency()).generateTransformedValuesBubble(dataSet, phaseY, this.mXBounds.min, this.mXBounds.max);
 
                 const alpha = phaseX === 1 ? phaseY : phaseX;
 
@@ -167,6 +172,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const phaseY = this.mAnimator.getPhaseY();
 
         let entry: BubbleEntry, index: number;
+        const customRender = this.mChart.getCustomRenderer();
         for (const high of indices) {
             const set = bubbleData.getDataSetByIndex(high.dataSetIndex);
             const xKey = set.xProperty;
@@ -229,7 +235,12 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             this.mHighlightPaint.setColor(color);
             this.mHighlightPaint.setStrokeWidth(set.getHighlightCircleWidth());
-            c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mHighlightPaint);
+
+            if (customRender && customRender.drawHighlight) {
+                customRender.drawHighlight(c, high, this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mHighlightPaint);
+            } else {
+                c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mHighlightPaint);
+            }
         }
     }
 }

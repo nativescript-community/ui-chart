@@ -12,9 +12,10 @@ import { ICandleDataSet } from '../interfaces/datasets/ICandleDataSet';
 import { ColorTemplate } from '../utils/ColorTemplate';
 import { CandleEntry } from '../data/CandleEntry';
 import { CandleDataSet } from '../data/CandleDataSet';
+import { CandleStickChart } from '../charts';
 
 export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
-    mChart: CandleDataProvider;
+    mChart: CandleStickChart;
 
     mShadowBuffers = Utils.createNativeArray(8);
     mBodyBuffers = Utils.createNativeArray(4);
@@ -22,7 +23,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     mOpenBuffers = Utils.createNativeArray(4);
     mCloseBuffers = Utils.createNativeArray(4);
 
-    constructor(chart: CandleDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
+    constructor(chart: CandleStickChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
     }
@@ -51,6 +52,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         this.mRenderPaint.setStrokeWidth(dataSet.getShadowWidth());
         const xKey = dataSet.xProperty;
         // draw the body
+        const customRender = this.mChart.getCustomRenderer();
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             // get the entry
             const e = dataSet.getEntryForIndex(j);
@@ -104,7 +106,11 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                 this.mRenderPaint.setStyle(Style.STROKE);
 
-                c.drawLines(this.mShadowBuffers, this.mRenderPaint);
+                if (customRender && customRender.drawShadows) {
+                    customRender.drawShadows(c, e, this.mShadowBuffers, this.mRenderPaint);
+                } else {
+                    c.drawLines(this.mShadowBuffers, this.mRenderPaint);
+                }
 
                 // calculate the body
 
@@ -127,7 +133,11 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                     this.mRenderPaint.setStyle(dataSet.getDecreasingPaintStyle());
 
-                    c.drawRect(this.mBodyBuffers[0], this.mBodyBuffers[3], this.mBodyBuffers[2], this.mBodyBuffers[1], this.mRenderPaint);
+                    if (customRender && customRender.drawOpened) {
+                        customRender.drawOpened(c, e, this.mBodyBuffers[0], this.mBodyBuffers[3], this.mBodyBuffers[2], this.mBodyBuffers[1], this.mRenderPaint);
+                    } else {
+                        c.drawRect(this.mBodyBuffers[0], this.mBodyBuffers[3], this.mBodyBuffers[2], this.mBodyBuffers[1], this.mRenderPaint);
+                    }
                 } else if (open < close) {
                     if (dataSet.getIncreasingColor() === ColorTemplate.COLOR_NONE) {
                         this.mRenderPaint.setColor(dataSet.getColor(j));
@@ -137,7 +147,11 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                     this.mRenderPaint.setStyle(dataSet.getIncreasingPaintStyle());
 
-                    c.drawRect(this.mBodyBuffers[0], this.mBodyBuffers[1], this.mBodyBuffers[2], this.mBodyBuffers[3], this.mRenderPaint);
+                    if (customRender && customRender.drawClosed) {
+                        customRender.drawClosed(c, e, this.mBodyBuffers[0], this.mBodyBuffers[1], this.mBodyBuffers[2], this.mBodyBuffers[3], this.mRenderPaint);
+                    } else {
+                        c.drawRect(this.mBodyBuffers[0], this.mBodyBuffers[1], this.mBodyBuffers[2], this.mBodyBuffers[3], this.mRenderPaint);
+                    }
                 } else {
                     // equal values
 
@@ -146,8 +160,11 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                     } else {
                         this.mRenderPaint.setColor(dataSet.getNeutralColor());
                     }
-
-                    c.drawLine(this.mBodyBuffers[0], this.mBodyBuffers[1], this.mBodyBuffers[2], this.mBodyBuffers[3], this.mRenderPaint);
+                    if (customRender && customRender.drawEqual) {
+                        customRender.drawEqual(c, e, this.mBodyBuffers[0], this.mBodyBuffers[1], this.mBodyBuffers[2], this.mBodyBuffers[3], this.mRenderPaint);
+                    } else {
+                        c.drawLine(this.mBodyBuffers[0], this.mBodyBuffers[1], this.mBodyBuffers[2], this.mBodyBuffers[3], this.mRenderPaint);
+                    }
                 }
             } else {
                 this.mRangeBuffers[0] = xPos;
@@ -177,9 +194,17 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 else barColor = dataSet.getNeutralColor() === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.getNeutralColor();
 
                 this.mRenderPaint.setColor(barColor);
-                c.drawLine(this.mRangeBuffers[0], this.mRangeBuffers[1], this.mRangeBuffers[2], this.mRangeBuffers[3], this.mRenderPaint);
-                c.drawLine(this.mOpenBuffers[0], this.mOpenBuffers[1], this.mOpenBuffers[2], this.mOpenBuffers[3], this.mRenderPaint);
-                c.drawLine(this.mCloseBuffers[0], this.mCloseBuffers[1], this.mCloseBuffers[2], this.mCloseBuffers[3], this.mRenderPaint);
+
+                if (customRender && customRender.drawLines) {
+                    customRender.drawLines(c, e, this.mRangeBuffers, this.mOpenBuffers, this.mCloseBuffers, this.mRenderPaint);
+                } else {
+                    c.drawLines(this.mRangeBuffers, this.mRenderPaint);
+                    c.drawLines(this.mOpenBuffers, this.mRenderPaint);
+                    c.drawLines(this.mCloseBuffers, this.mRenderPaint);
+                }
+
+                // c.drawLine(this.mOpenBuffers[0], this.mOpenBuffers[1], this.mOpenBuffers[2], this.mOpenBuffers[3], this.mRenderPaint);
+                // c.drawLine(this.mCloseBuffers[0], this.mCloseBuffers[1], this.mCloseBuffers[2], this.mCloseBuffers[3], this.mRenderPaint);
             }
         }
     }
@@ -201,7 +226,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                 this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-                const {points, count} = trans.generateTransformedValuesCandle(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
+                const { points, count } = trans.generateTransformedValuesCandle(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
 
                 const yOffset = 5;
 
@@ -242,6 +267,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         const candleData = this.mChart.getCandleData();
 
         let entry: CandleEntry, index: number;
+        const customRender = this.mChart.getCustomRenderer();
         for (const high of indices) {
             const set = candleData.getDataSetByIndex(high.dataSetIndex);
             const xKey = set.xProperty;
@@ -268,7 +294,11 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
             high.drawX = pix.x;
             high.drawY = pix.y;
             // draw the lines
-            this.drawHighlightLines(c, pix.x, pix.y, set);
+            if (customRender && customRender.drawHighlight) {
+                customRender.drawHighlight(c, high, set, this.mHighlightPaint);
+            } else {
+                this.drawHighlightLines(c, pix.x, pix.y, set);
+            }
         }
     }
 }
