@@ -138,6 +138,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             this.mRenderPaint.setColor(dataSet.getColor());
         }
 
+        const customRender = this.mChart.getCustomBarRenderer();
         for (let j = 0; j < buffer.size(); j += 4) {
             if (!this.mViewPortHandler.isInBoundsLeft(buffer.buffer[j + 2])) {
                 continue;
@@ -146,17 +147,21 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             if (!this.mViewPortHandler.isInBoundsRight(buffer.buffer[j])) {
                 break;
             }
+            if (customRender) {
+                const e = dataSet.getEntryForIndex(j / 4);
+                customRender(c, e, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
+            } else {
+                if (!isSingleColor) {
+                    // Set the color for the currently drawn value. If the index
+                    // is out of bounds, reuse colors.
+                    this.mRenderPaint.setColor(dataSet.getColor(j / 4));
+                }
 
-            if (!isSingleColor) {
-                // Set the color for the currently drawn value. If the index
-                // is out of bounds, reuse colors.
-                this.mRenderPaint.setColor(dataSet.getColor(j / 4));
-            }
+                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
 
-            c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
-
-            if (drawBorder) {
-                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mBarBorderPaint);
+                if (drawBorder) {
+                    c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mBarBorderPaint);
+                }
             }
         }
 

@@ -27,9 +27,10 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
     public computeAxis(yMin, yMax, inverted) {
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
-        if (this.mViewPortHandler.contentHeight() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
-            const p1 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop());
-            const p2 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentTop());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        if (rect.height() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
+            const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
+            const p2 = this.mTrans.getValuesByTouchPoint(rect.right, rect.top);
 
             if (!inverted) {
                 yMin = p1.x;
@@ -67,17 +68,18 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
         let yPos = 0;
 
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         if (dependency === AxisDependency.LEFT) {
             if (labelPosition === YAxisLabelPosition.OUTSIDE_CHART) {
-                yPos = this.mViewPortHandler.contentTop() - baseYOffset;
+                yPos = rect.top - baseYOffset;
             } else {
-                yPos = this.mViewPortHandler.contentTop() - baseYOffset;
+                yPos = rect.top - baseYOffset;
             }
         } else {
             if (labelPosition === YAxisLabelPosition.OUTSIDE_CHART) {
-                yPos = this.mViewPortHandler.contentBottom() + textHeight + baseYOffset;
+                yPos = rect.bottom + textHeight + baseYOffset;
             } else {
-                yPos = this.mViewPortHandler.contentBottom() + textHeight + baseYOffset;
+                yPos = rect.bottom + textHeight + baseYOffset;
             }
         }
 
@@ -92,10 +94,11 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         this.mAxisLinePaint.setColor(this.mYAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mYAxis.getAxisLineWidth());
 
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         if (this.mYAxis.getAxisDependency() === AxisDependency.LEFT) {
-            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentTop(), this.mAxisLinePaint);
+            c.drawLine(rect.left, rect.top, rect.right, rect.top, this.mAxisLinePaint);
         } else {
-            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.mAxisLinePaint);
+            c.drawLine(rect.left, rect.bottom, rect.right, rect.bottom, this.mAxisLinePaint);
         }
     }
 
@@ -139,21 +142,23 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
     }
 
     public getGridClippingRect(): RectF {
-        this.mGridClippingRect.set(this.mViewPortHandler.getContentRect());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        this.mGridClippingRect.set(rect);
         this.mGridClippingRect.inset(-this.mAxis.getGridLineWidth(), 0);
         return this.mGridClippingRect;
     }
 
     // protected linePath(p: Path, i, positions): Path {
-    //     p.moveTo(positions[i], this.mViewPortHandler.contentTop());
-    //     p.lineTo(positions[i], this.mViewPortHandler.contentBottom());
+    //     p.moveTo(positions[i], rect.top);
+    //     p.lineTo(positions[i], rect.bottom);
 
     //     return p;
     // }
 
     protected drawZeroLine(c: Canvas) {
         const clipRestoreCount = c.save();
-        this.mZeroLineClippingRect.set(this.mViewPortHandler.getContentRect());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        this.mZeroLineClippingRect.set(rect);
         this.mZeroLineClippingRect.inset(-this.mYAxis.getZeroLineWidth(), 0);
         c.clipRect(this.mLimitLineClippingRect);
 
@@ -166,8 +171,8 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         const zeroLinePath = this.mDrawZeroLinePathBuffer;
         zeroLinePath.reset();
 
-        zeroLinePath.moveTo(pos.x - 1, this.mViewPortHandler.contentTop());
-        zeroLinePath.lineTo(pos.x - 1, this.mViewPortHandler.contentBottom());
+        zeroLinePath.moveTo(pos.x - 1, rect.top);
+        zeroLinePath.lineTo(pos.x - 1, rect.bottom);
 
         // draw a path because lines don't support dashing on lower android versions
         c.drawPath(zeroLinePath, this.mZeroLinePaint);
@@ -197,6 +202,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         const limitLinePath = this.mRenderLimitLines;
         limitLinePath.reset();
 
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
@@ -205,7 +211,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
             }
 
             const clipRestoreCount = c.save();
-            this.mLimitLineClippingRect.set(this.mViewPortHandler.getContentRect());
+            this.mLimitLineClippingRect.set(rect);
             this.mLimitLineClippingRect.inset(-l.getLineWidth(), 0);
             c.clipRect(this.mLimitLineClippingRect);
 
@@ -214,8 +220,8 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
             this.mTrans.pointValuesToPixel(pts);
 
-            pts[1] = this.mViewPortHandler.contentTop();
-            pts[3] = this.mViewPortHandler.contentBottom();
+            pts[1] = rect.top;
+            pts[3] = rect.bottom;
 
             limitLinePath.moveTo(pts[0], pts[1]);
             limitLinePath.lineTo(pts[2], pts[3]);
@@ -247,17 +253,17 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
                 if (position === LimitLabelPosition.RIGHT_TOP) {
                     const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
                     this.mLimitLinePaint.setTextAlign(Align.LEFT);
-                    c.drawText(label, pts[0] + xOffset, this.mViewPortHandler.contentTop() + yOffset + labelLineHeight, this.mLimitLinePaint);
+                    c.drawText(label, pts[0] + xOffset, rect.top + yOffset + labelLineHeight, this.mLimitLinePaint);
                 } else if (position === LimitLabelPosition.RIGHT_BOTTOM) {
                     this.mLimitLinePaint.setTextAlign(Align.LEFT);
-                    c.drawText(label, pts[0] + xOffset, this.mViewPortHandler.contentBottom() - yOffset, this.mLimitLinePaint);
+                    c.drawText(label, pts[0] + xOffset, rect.bottom - yOffset, this.mLimitLinePaint);
                 } else if (position === LimitLabelPosition.LEFT_TOP) {
                     this.mLimitLinePaint.setTextAlign(Align.RIGHT);
                     const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
-                    c.drawText(label, pts[0] - xOffset, this.mViewPortHandler.contentTop() + yOffset + labelLineHeight, this.mLimitLinePaint);
+                    c.drawText(label, pts[0] - xOffset, rect.top + yOffset + labelLineHeight, this.mLimitLinePaint);
                 } else {
                     this.mLimitLinePaint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, pts[0] - xOffset, this.mViewPortHandler.contentBottom() - yOffset, this.mLimitLinePaint);
+                    c.drawText(label, pts[0] - xOffset, rect.bottom - yOffset, this.mLimitLinePaint);
                 }
             }
 

@@ -16,7 +16,7 @@ import { IMarker } from '../components/IMarker';
 import { LegendRenderer } from '../renderer/LegendRenderer';
 import { IHighlighter } from '../highlight/IHighlighter';
 import { profile } from '@nativescript/core/profiling';
-import { ChartAnimator } from '../animation/ChartAnimator';
+import { ChartAnimator, EasingFunction } from '../animation/ChartAnimator';
 import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
 import { layout } from '@nativescript/core/utils/utils';
@@ -800,7 +800,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param easingX         a custom easing function to be used on the animation phase
      * @param easingY         a custom easing function to be used on the animation phase
      */
-    public animateXY(durationMillisX, durationMillisY, easingX?, easingY?) {
+    public animateXY(durationMillisX, durationMillisY, easingX?: EasingFunction, easingY?: EasingFunction) {
         this.mAnimator.animateXY(durationMillisX, durationMillisY, easingX, easingY);
     }
 
@@ -813,7 +813,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param durationMillis
      * @param easing         a custom easing function to be used on the animation phase
      */
-    public animateX(durationMillis, easing?) {
+    public animateX(durationMillis, easing?: EasingFunction) {
         this.mAnimator.animateX(durationMillis, easing);
     }
 
@@ -826,7 +826,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param durationMillis
      * @param easing         a custom easing function to be used on the animation phase
      */
-    public animateY(durationMillis, easing?) {
+    public animateY(durationMillis, easing?: EasingFunction) {
         this.mAnimator.animateY(durationMillis, easing);
     }
 

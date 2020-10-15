@@ -1,5 +1,6 @@
 import { AbstractBuffer } from './AbstractBuffer';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
+import { getEntryXValue } from '../data/BaseEntry';
 
 export class BarBuffer extends AbstractBuffer<IBarDataSet> {
     protected mDataSetIndex = 0;
@@ -49,15 +50,16 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
     public feed(data: IBarDataSet) {
         const size = data.getEntryCount() * this.phaseX;
         const barWidthHalf = this.mBarWidth / 2;
-
+        const xKey = data.xProperty;
+        const yKey = data.yProperty;
         for (let i = 0; i < size; i++) {
             const e = data.getEntryForIndex(i);
             if (e == null) {
                 continue;
             }
 
-            const x = e[data.xProperty];
-            let y = e[data.yProperty];
+            const x = getEntryXValue(e, xKey, i);
+            let y = e[yKey];
             const vals = e.yVals;
 
             if (!this.mContainsStacks || vals == null || vals.length === 0) {
@@ -66,11 +68,11 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                 let bottom, top;
 
                 if (this.mInverted) {
-                    bottom = y >= 0 ? y : (this.mYAxisMax <= 0 ? this.mYAxisMax : 0);
-                    top = y <= 0 ? y : (this.mYAxisMin >= 0 ? this.mYAxisMin : 0);
+                    bottom = y >= 0 ? y : this.mYAxisMax <= 0 ? this.mYAxisMax : 0;
+                    top = y <= 0 ? y : this.mYAxisMin >= 0 ? this.mYAxisMin : 0;
                 } else {
-                    top = y >= 0 ? y : (this.mYAxisMax <= 0 ? this.mYAxisMax : 0);
-                    bottom = y <= 0 ? y : (this.mYAxisMin >= 0 ? this.mYAxisMin : 0);
+                    top = y >= 0 ? y : this.mYAxisMax <= 0 ? this.mYAxisMax : 0;
+                    bottom = y <= 0 ? y : this.mYAxisMin >= 0 ? this.mYAxisMin : 0;
                 }
 
                 // multiply the height of the rect with the phase

@@ -31,9 +31,10 @@ export class XAxisRenderer extends AxisRenderer {
     public computeAxis(min, max, inverted) {
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
-        if (this.mViewPortHandler.contentWidth() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
-            const p1 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop());
-            const p2 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentTop());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        if (rect.width() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
+            const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
+            const p2 = this.mTrans.getValuesByTouchPoint(rect.top, rect.top);
 
             if (inverted) {
                 min = p2.x;
@@ -91,37 +92,38 @@ export class XAxisRenderer extends AxisRenderer {
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
         // const align = this.mAxisLabelPaint.getTextAlign();
         // this.mAxisLabelPaint.setTextAlign(Align.CENTER);
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         const pointF = { x: 0, y: 0 };
         if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
             pointF.x = 0.5;
             pointF.y = 1.0;
-            this.drawLabels(c, this.mViewPortHandler.contentTop() - yoffset, pointF);
-            this.drawMarkTicket(c,this.mViewPortHandler.contentTop(),-yoffset/2);
+            this.drawLabels(c, rect.top - yoffset, pointF);
+            this.drawMarkTicket(c,rect.top,-yoffset/2);
         } else if (this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE) {
             pointF.x = 0.5;
             pointF.y = 1.0;
-            this.drawLabels(c, this.mViewPortHandler.contentTop() + yoffset + this.mXAxis.mLabelRotatedHeight, pointF);
-            this.drawMarkTicket(c,this.mViewPortHandler.contentTop(),-yoffset/2);
+            this.drawLabels(c, rect.top + yoffset + this.mXAxis.mLabelRotatedHeight, pointF);
+            this.drawMarkTicket(c,rect.top,-yoffset/2);
         } else if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
             pointF.x = 0.5;
             pointF.y = 0.0;
-            this.drawLabels(c, this.mViewPortHandler.contentBottom() + yoffset, pointF);
-            this.drawMarkTicket(c,this.mViewPortHandler.contentBottom(),+yoffset/2);
+            this.drawLabels(c, rect.bottom + yoffset, pointF);
+            this.drawMarkTicket(c,rect.bottom,+yoffset/2);
         } else if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE) {
             pointF.x = 0.5;
             pointF.y = 0.0;
-            this.drawLabels(c, this.mViewPortHandler.contentBottom() - yoffset - this.mXAxis.mLabelRotatedHeight, pointF);
-            this.drawMarkTicket(c,this.mViewPortHandler.contentBottom(),+yoffset/2);
+            this.drawLabels(c, rect.bottom - yoffset - this.mXAxis.mLabelRotatedHeight, pointF);
+            this.drawMarkTicket(c,rect.bottom,+yoffset/2);
         } else {
             // BOTH SIDED
             pointF.x = 0.5;
             pointF.y = 1.0;
-            this.drawLabels(c, this.mViewPortHandler.contentTop() - yoffset, pointF);
-            this.drawMarkTicket(c,this.mViewPortHandler.contentTop(),-yoffset/2);
+            this.drawLabels(c, rect.top - yoffset, pointF);
+            this.drawMarkTicket(c,rect.top,-yoffset/2);
             pointF.x = 0.5;
             pointF.y = 0.0;
-            this.drawLabels(c, this.mViewPortHandler.contentBottom() + yoffset, pointF);
-            this.drawMarkTicket(c,this.mViewPortHandler.contentBottom(),+yoffset/2);
+            this.drawLabels(c, rect.bottom + yoffset, pointF);
+            this.drawMarkTicket(c,rect.bottom,+yoffset/2);
         }
         // this.mAxisLabelPaint.setTextAlign(align);
         // MPPointF.recycleInstance(pointF);
@@ -133,13 +135,14 @@ export class XAxisRenderer extends AxisRenderer {
         this.mAxisLinePaint.setColor(this.mXAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mXAxis.getAxisLineWidth());
         this.mAxisLinePaint.setPathEffect(this.mXAxis.getAxisLineDashPathEffect());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
         if (this.mXAxis.getPosition() === XAxisPosition.TOP || this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
-            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentTop(), this.mAxisLinePaint);
+            c.drawLine(rect.left, rect.top, rect.top, rect.top, this.mAxisLinePaint);
         }
 
         if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM || this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
-            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.mAxisLinePaint);
+            c.drawLine(rect.left, rect.bottom, rect.top, rect.bottom, this.mAxisLinePaint);
         }
     }
 
@@ -168,7 +171,11 @@ export class XAxisRenderer extends AxisRenderer {
         }
         this.mTrans.pointValuesToPixel(positions);
         const chartWidth = this.mViewPortHandler.getChartWidth();
-        const offsetRight = this.mViewPortHandler.offsetRight();
+        let offsetRight = 0;
+        if (this.mAxis.isIgnoringOffsets()) {
+        } else {
+            offsetRight = this.mViewPortHandler.offsetRight();
+        }
         for (let i = 0; i < positions.length; i += 2) {
             let x = positions[i];
 
@@ -264,7 +271,8 @@ export class XAxisRenderer extends AxisRenderer {
     protected mGridClippingRect = new RectF(0, 0, 0, 0);
 
     public getGridClippingRect() {
-        this.mGridClippingRect.set(this.mViewPortHandler.getContentRect());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        this.mGridClippingRect.set(rect);
         this.mGridClippingRect.inset(-this.mAxis.getGridLineWidth(), 0);
         return this.mGridClippingRect;
     }
@@ -278,8 +286,9 @@ export class XAxisRenderer extends AxisRenderer {
      * @param gridLinePath
      */
     protected drawGridLine(c: Canvas, x, y, gridLinePath: Path) {
-        gridLinePath.moveTo(x, this.mViewPortHandler.contentBottom());
-        gridLinePath.lineTo(x, this.mViewPortHandler.contentTop());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        gridLinePath.moveTo(x, rect.bottom);
+        gridLinePath.lineTo(x, rect.top);
 
         // draw a path because lines don't support dashing on lower android versions
         c.drawPath(gridLinePath, this.mGridPaint);
@@ -305,6 +314,7 @@ export class XAxisRenderer extends AxisRenderer {
         position[0] = 0;
         position[1] = 0;
 
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
@@ -312,7 +322,7 @@ export class XAxisRenderer extends AxisRenderer {
             const lineWidth = l.getLineWidth();
 
             const clipRestoreCount = c.save();
-            this.mLimitLineClippingRect.set(this.mViewPortHandler.getContentRect());
+            this.mLimitLineClippingRect.set(rect);
             this.mLimitLineClippingRect.inset(-lineWidth, 0);
             c.clipRect(this.mLimitLineClippingRect);
 
@@ -334,10 +344,11 @@ export class XAxisRenderer extends AxisRenderer {
     private mLimitLinePath = new Path();
 
     public renderLimitLineLine(c: Canvas, limitLine: LimitLine, position) {
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         this.mLimitLineSegmentsBuffer[0] = position[0];
-        this.mLimitLineSegmentsBuffer[1] = this.mViewPortHandler.contentTop();
+        this.mLimitLineSegmentsBuffer[1] = rect.top;
         this.mLimitLineSegmentsBuffer[2] = position[0];
-        this.mLimitLineSegmentsBuffer[3] = this.mViewPortHandler.contentBottom();
+        this.mLimitLineSegmentsBuffer[3] = rect.bottom;
 
         this.mLimitLinePath.reset();
         this.mLimitLinePath.moveTo(this.mLimitLineSegmentsBuffer[0], this.mLimitLineSegmentsBuffer[1]);
@@ -353,9 +364,10 @@ export class XAxisRenderer extends AxisRenderer {
 
     public renderLimitLineLabel(c: Canvas, limitLine: LimitLine, position, yOffset) {
         const label = limitLine.getLabel();
-
         // if drawing the limit-value label is enabled
         if (label != null && label !== '') {
+            const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+
             this.mLimitLinePaint.setStyle(limitLine.getTextStyle());
             this.mLimitLinePaint.setPathEffect(null);
             this.mLimitLinePaint.setColor(limitLine.getTextColor());
@@ -369,17 +381,17 @@ export class XAxisRenderer extends AxisRenderer {
             if (labelPosition === LimitLabelPosition.RIGHT_TOP) {
                 const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
                 this.mLimitLinePaint.setTextAlign(Align.LEFT);
-                c.drawText(label, position[0] + xOffset, this.mViewPortHandler.contentTop() + yOffset + labelLineHeight, this.mLimitLinePaint);
+                c.drawText(label, position[0] + xOffset, rect.top + yOffset + labelLineHeight, this.mLimitLinePaint);
             } else if (labelPosition === LimitLabelPosition.RIGHT_BOTTOM) {
                 this.mLimitLinePaint.setTextAlign(Align.LEFT);
-                c.drawText(label, position[0] + xOffset, this.mViewPortHandler.contentBottom() - yOffset, this.mLimitLinePaint);
+                c.drawText(label, position[0] + xOffset, rect.bottom - yOffset, this.mLimitLinePaint);
             } else if (labelPosition === LimitLabelPosition.LEFT_TOP) {
                 this.mLimitLinePaint.setTextAlign(Align.RIGHT);
                 const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
-                c.drawText(label, position[0] - xOffset, this.mViewPortHandler.contentTop() + yOffset + labelLineHeight, this.mLimitLinePaint);
+                c.drawText(label, position[0] - xOffset, rect.top + yOffset + labelLineHeight, this.mLimitLinePaint);
             } else {
                 this.mLimitLinePaint.setTextAlign(Align.RIGHT);
-                c.drawText(label, position[0] - xOffset, this.mViewPortHandler.contentBottom() - yOffset, this.mLimitLinePaint);
+                c.drawText(label, position[0] - xOffset, rect.bottom - yOffset, this.mLimitLinePaint);
             }
         }
     }

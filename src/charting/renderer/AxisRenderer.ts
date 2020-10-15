@@ -117,9 +117,9 @@ export abstract class AxisRenderer extends Renderer {
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
         if (this.mViewPortHandler != null && this.mViewPortHandler.contentWidth() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
-
-            const p1 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop());
-            const p2 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom());
+            const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+            const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
+            const p2 = this.mTrans.getValuesByTouchPoint(rect.left, rect.bottom);
 
             if (!inverted) {
 

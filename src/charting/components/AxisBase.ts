@@ -157,6 +157,10 @@ export abstract class AxisBase extends ComponentBase {
      * the total range of values this axis covers
      */
     public mAxisRange = 0;
+    /**
+     * the total range of values this axis covers
+     */
+    public mIgnoreOffsets = false;
 
     /**
      * default constructor
@@ -202,6 +206,23 @@ export abstract class AxisBase extends ComponentBase {
      */
     public isDrawAxisLineEnabled() {
         return this.mDrawAxisLine;
+    }
+    /**
+     * Set this to true to draw axis ignoring viewport offsets
+     *
+     * @param enabled
+     */
+    public setIgnoreOffsets(enabled) {
+        this.mIgnoreOffsets = enabled;
+    }
+
+    /**
+     * Returns true if we draw axis ignoring viewport offsets
+     *
+     * @return
+     */
+    public isIgnoringOffsets() {
+        return this.mIgnoreOffsets;
     }
 
     /**
@@ -526,7 +547,7 @@ export abstract class AxisBase extends ComponentBase {
      * @param phase       offset, in degrees (normally, use 0)
      */
     public enableGridDashedLine(lineLength, spaceLength, phase) {
-        this.mGridDashPathEffect = new DashPathEffect([lineLength, spaceLength],phase);
+        this.mGridDashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
     }
     /**
      * Enables the grid line to be drawn in dashed mode, e.g. like this

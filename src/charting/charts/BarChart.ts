@@ -8,7 +8,7 @@ import { BarDataSet } from '../data/BarDataSet';
 import { BarHighlighter } from '../highlight/BarHighlighter';
 import { Highlight } from '../highlight/Highlight';
 import { BarChartRenderer } from '../renderer/BarChartRenderer';
-import { RectF } from '@nativescript-community/ui-canvas';
+import { Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
 import { getEntryXValue } from '../data/BaseEntry';
 
 const LOG_TAG = 'BarChart';
@@ -30,6 +30,8 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * if set to true, a grey area is drawn behind each bar that indicates the maximum value
      */
     private mDrawBarShadow = false;
+
+    private mCustomBarRenderer: (c: Canvas, e: BarEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
 
     protected init() {
         super.init();
@@ -200,6 +202,19 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      */
     public setFitBars(enabled: boolean) {
         this.mFitBars = enabled;
+    }
+
+    /**
+     * set a custom bar renderer
+     */
+    public setCustomBarRenderer(func: (c: Canvas, e: BarEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void) {
+        this.mCustomBarRenderer = func;
+    }
+    /**
+     * get the custom bar renderer
+     */
+    public getCustomBarRenderer() {
+        return this.mCustomBarRenderer;
     }
 
     /**

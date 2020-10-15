@@ -17,6 +17,7 @@ export class ViewPortHandler {
      * this rectangle defines the area in which graph values can be drawn
      */
     protected mContentRect = new RectF(0.0, 0.0, 0.0, 0.0);
+    protected mChartRect = new RectF(0.0, 0.0, 0.0, 0.0);
 
     protected mChartWidth = 0;
     protected mChartHeight = 0;
@@ -98,6 +99,7 @@ export class ViewPortHandler {
 
         this.mChartHeight = Math.round(height);
         this.mChartWidth = Math.round(width);
+        this.mChartRect.set(0, 0, this.mChartWidth, this.mChartHeight);
         this.restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom);
     }
 
@@ -152,6 +154,10 @@ export class ViewPortHandler {
 
     public getContentRect() {
         return this.mContentRect;
+    }
+
+    public getChartRect() {
+        return this.mChartRect;
     }
 
     public getContentCenter() {

@@ -24,8 +24,9 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
         if (this.mViewPortHandler.contentWidth() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
-            const p1 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom());
-            const p2 = this.mTrans.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop());
+            const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+            const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.bottom);
+            const p2 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
 
             if (inverted) {
                 min = p2.y;
@@ -73,30 +74,31 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         const pointF = { x: 0, y: 0 };
 
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
             pointF.x = 0.0;
             pointF.y = 0.5;
-            this.drawLabels(c, this.mViewPortHandler.contentRight() + xOffset, pointF);
+            this.drawLabels(c, rect.right + xOffset, pointF);
         } else if (this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE) {
             pointF.x = 1.0;
             pointF.y = 0.5;
-            this.drawLabels(c, this.mViewPortHandler.contentRight() - xOffset, pointF);
+            this.drawLabels(c, rect.right - xOffset, pointF);
         } else if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
             pointF.x = 1.0;
             pointF.y = 0.5;
-            this.drawLabels(c, this.mViewPortHandler.contentLeft() - xOffset, pointF);
+            this.drawLabels(c, rect.left - xOffset, pointF);
         } else if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE) {
             pointF.x = 1.0;
             pointF.y = 0.5;
-            this.drawLabels(c, this.mViewPortHandler.contentLeft() + xOffset, pointF);
+            this.drawLabels(c, rect.left + xOffset, pointF);
         } else {
             // BOTH SIDED
             pointF.x = 0.0;
             pointF.y = 0.5;
-            this.drawLabels(c, this.mViewPortHandler.contentRight() + xOffset, pointF);
+            this.drawLabels(c, rect.right + xOffset, pointF);
             pointF.x = 1.0;
             pointF.y = 0.5;
-            this.drawLabels(c, this.mViewPortHandler.contentLeft() - xOffset, pointF);
+            this.drawLabels(c, rect.left - xOffset, pointF);
         }
     }
 
@@ -133,14 +135,16 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     public getGridClippingRect(): RectF {
-        this.mGridClippingRect.set(this.mViewPortHandler.getContentRect());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        this.mGridClippingRect.set(rect);
         this.mGridClippingRect.inset(0, -this.mAxis.getGridLineWidth());
         return this.mGridClippingRect;
     }
 
     protected drawGridLine(c: Canvas, x: number, y: number, gridLinePath: Path) {
-        gridLinePath.moveTo(this.mViewPortHandler.contentRight(), y);
-        gridLinePath.lineTo(this.mViewPortHandler.contentLeft(), y);
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        gridLinePath.moveTo(rect.right, y);
+        gridLinePath.lineTo(rect.left, y);
 
         // draw a path because lines don't support dashing on lower android versions
         c.drawPath(gridLinePath, this.mGridPaint);
@@ -155,13 +159,14 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         this.mAxisLinePaint.setColor(this.mXAxis.getAxisLineColor());
         this.mAxisLinePaint.setStrokeWidth(this.mXAxis.getAxisLineWidth());
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
         if (this.mXAxis.getPosition() === XAxisPosition.TOP || this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
-            c.drawLine(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.mAxisLinePaint);
+            c.drawLine(rect.right, rect.top, rect.right, rect.bottom, this.mAxisLinePaint);
         }
 
         if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM || this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
-            c.drawLine(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.mAxisLinePaint);
+            c.drawLine(rect.left, rect.top, rect.left, rect.bottom, this.mAxisLinePaint);
         }
     }
 
@@ -183,7 +188,14 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         const limitLinePath = this.mRenderLimitLinesPathBuffer;
         limitLinePath.reset();
-
+        let offsetLeft = 0;
+        let rect: RectF;
+        if (this.mAxis.isIgnoringOffsets()) {
+            rect = this.mViewPortHandler.getChartRect();
+        } else {
+            rect = this.mViewPortHandler.getContentRect();
+            offsetLeft = this.mViewPortHandler.offsetLeft();
+        }
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
@@ -192,7 +204,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
             }
 
             const clipRestoreCount = c.save();
-            this.mLimitLineClippingRect.set(this.mViewPortHandler.getContentRect());
+            this.mLimitLineClippingRect.set(rect);
             this.mLimitLineClippingRect.inset(0, -l.getLineWidth());
             c.clipRect(this.mLimitLineClippingRect);
 
@@ -205,8 +217,8 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
             this.mTrans.pointValuesToPixel(pts);
 
-            limitLinePath.moveTo(this.mViewPortHandler.contentLeft(), pts[1]);
-            limitLinePath.lineTo(this.mViewPortHandler.contentRight(), pts[1]);
+            limitLinePath.moveTo(rect.left, pts[1]);
+            limitLinePath.lineTo(rect.right, pts[1]);
 
             c.drawPath(limitLinePath, this.mLimitLinePaint);
             limitLinePath.reset();
@@ -229,16 +241,16 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
                 if (position === LimitLabelPosition.RIGHT_TOP) {
                     this.mLimitLinePaint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, this.mViewPortHandler.contentRight() - xOffset, pts[1] - yOffset + labelLineHeight, this.mLimitLinePaint);
+                    c.drawText(label, rect.right - xOffset, pts[1] - yOffset + labelLineHeight, this.mLimitLinePaint);
                 } else if (position === LimitLabelPosition.RIGHT_BOTTOM) {
                     this.mLimitLinePaint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, this.mViewPortHandler.contentRight() - xOffset, pts[1] + yOffset, this.mLimitLinePaint);
+                    c.drawText(label, rect.right - xOffset, pts[1] + yOffset, this.mLimitLinePaint);
                 } else if (position === LimitLabelPosition.LEFT_TOP) {
                     this.mLimitLinePaint.setTextAlign(Align.LEFT);
-                    c.drawText(label, this.mViewPortHandler.contentLeft() + xOffset, pts[1] - yOffset + labelLineHeight, this.mLimitLinePaint);
+                    c.drawText(label, rect.left + xOffset, pts[1] - yOffset + labelLineHeight, this.mLimitLinePaint);
                 } else {
                     this.mLimitLinePaint.setTextAlign(Align.LEFT);
-                    c.drawText(label, this.mViewPortHandler.offsetLeft() + xOffset, pts[1] + yOffset, this.mLimitLinePaint);
+                    c.drawText(label, offsetLeft + xOffset, pts[1] + yOffset, this.mLimitLinePaint);
                 }
             }
 
