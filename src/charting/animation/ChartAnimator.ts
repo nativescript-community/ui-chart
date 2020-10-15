@@ -1,6 +1,6 @@
 import TWEEN from '@nativescript-community/tween';
 const Easing = TWEEN.Easing;
-type EasingFunction = (k: number) => number;
+export type EasingFunction = (k: number) => number;
 export { Easing };
 /**
  * Object responsible for all animations in the Chart. Animations require API level 11.
