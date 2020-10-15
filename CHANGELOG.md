@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/Akylas/nativescript-chart/compare/v1.0.2...v1.0.3) (2020-10-15)
+
+
+### Bug Fixes
+
+* missing export ([0adb5e0](https://github.com/Akylas/nativescript-chart/commit/0adb5e003dc5c11cf5ff44384456314fc2c1e87e))
+
+
+### Features
+
+* axis iggnoreOffsets and barchart custom renderer ([2f9c169](https://github.com/Akylas/nativescript-chart/commit/2f9c16929e78cd4b676c3ead00343315cbb64339))
+
+
+
+
+
 ## [1.0.2](https://github.com/Akylas/nativescript-chart/compare/v1.0.1...v1.0.2) (2020-09-30)
 
 
