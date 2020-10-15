@@ -19,16 +19,16 @@ install();
 
 ## Plain NativeScript
 
-<span style="color:red">IMPORTANT: </span>Make sure you include `xmlns:cv="@nativescript-community/ui-chart"` on the Page element.
+<span style="color:red">IMPORTANT: </span>Make sure you include `xmlns:ch="@nativescript-community/ui-chart"` on the Page element.
 
 ### XML
 
 ```XML
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:chart="@nativescript-community/ui-chart">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:ch="@nativescript-community/ui-chart">
     <ScrollView>
         <StackLayout>
             <Label text="Line Chart" fontSize="20"/>
-            <chart:LineChart id="line-chart" backgroundColor="lightgray" width="300" height="350" loaded="onLineChartLoaded"/>
+            <ch:LineChart id="line-chart" backgroundColor="lightgray" width="300" height="350" loaded="onLineChartLoaded"/>
         </StackLayout>
     </ScrollView>
 </Page>
@@ -70,7 +70,7 @@ export function onLineChartLoaded(args) {
 Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
 ```
 ```html
-<LineChart ref="chart" width="300" height="400" @loaded="onChartLoaded" @tap="onChartTap"> </LineChart>
+<LineChart ref="chart" width="300" height="400" @loaded="onChartLoaded"> </LineChart>
 ```
 ```javascript
 import { LineChart } from '@nativescript-community/ui-chart/charts/LineChart';
