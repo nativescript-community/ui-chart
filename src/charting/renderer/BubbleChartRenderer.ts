@@ -98,62 +98,61 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
     }
 
     public drawValues(c: Canvas) {
-        const bubbleData = this.mChart.getBubbleData();
-
-        if (bubbleData == null) return;
+        const data = this.mChart.getBubbleData();
+        const dataSets = data.getDataSets();
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+            return;
+        }
 
         // if values are drawn
-        if (this.isDrawingValuesAllowed(this.mChart)) {
-            const dataSets = bubbleData.getDataSets();
 
-            const lineHeight = Utils.calcTextHeight(this.mValuePaint, '1');
+        const lineHeight = Utils.calcTextHeight(this.mValuePaint, '1');
 
-            for (let i = 0; i < dataSets.length; i++) {
-                const dataSet = dataSets[i];
-                if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
+        for (let i = 0; i < dataSets.length; i++) {
+            const dataSet = dataSets[i];
+            if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
 
-                // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle(dataSet);
+            // apply the text-styling defined by the DataSet
+            this.applyValueTextStyle(dataSet);
 
-                const phaseX = Math.max(0, Math.min(1, this.mAnimator.getPhaseX()));
-                const phaseY = this.mAnimator.getPhaseY();
+            const phaseX = Math.max(0, Math.min(1, this.mAnimator.getPhaseX()));
+            const phaseY = this.mAnimator.getPhaseY();
 
-                this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+            this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-                const { points, count } = this.mChart.getTransformer(dataSet.getAxisDependency()).generateTransformedValuesBubble(dataSet, phaseY, this.mXBounds.min, this.mXBounds.max);
+            const { points, count } = this.mChart.getTransformer(dataSet.getAxisDependency()).generateTransformedValuesBubble(dataSet, phaseY, this.mXBounds.min, this.mXBounds.max);
 
-                const alpha = phaseX === 1 ? phaseY : phaseX;
+            const alpha = phaseX === 1 ? phaseY : phaseX;
 
-                const formatter = dataSet.getValueFormatter();
+            const formatter = dataSet.getValueFormatter();
 
-                const iconsOffset = dataSet.getIconsOffset();
-                const isDrawValuesEnabled = dataSet.isDrawValuesEnabled();
-                const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
-                for (let j = 0; j < count; j += 2) {
-                    let valueTextColor = dataSet.getValueTextColor(j / 2 + this.mXBounds.min);
-                    if (!(valueTextColor instanceof Color)) {
-                        valueTextColor = new Color(valueTextColor);
-                    }
-                    if (alpha !== 1) {
-                        valueTextColor = new Color(Math.round(255 * alpha), valueTextColor.r, valueTextColor.g, valueTextColor.b);
-                    }
+            const iconsOffset = dataSet.getIconsOffset();
+            const isDrawValuesEnabled = dataSet.isDrawValuesEnabled();
+            const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
+            for (let j = 0; j < count; j += 2) {
+                let valueTextColor = dataSet.getValueTextColor(j / 2 + this.mXBounds.min);
+                if (!(valueTextColor instanceof Color)) {
+                    valueTextColor = new Color(valueTextColor);
+                }
+                if (alpha !== 1) {
+                    valueTextColor = new Color(Math.round(255 * alpha), valueTextColor.r, valueTextColor.g, valueTextColor.b);
+                }
 
-                    const x = points[j];
-                    const y = points[j + 1];
+                const x = points[j];
+                const y = points[j + 1];
 
-                    if (!this.mViewPortHandler.isInBoundsRight(x)) break;
+                if (!this.mViewPortHandler.isInBoundsRight(x)) break;
 
-                    if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
+                if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
 
-                    const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
+                const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
-                    if (isDrawValuesEnabled) {
-                        this.drawValue(c, formatter.getBubbleLabel(entry[dataSet.sizeProperty], entry), x, y + 0.5 * lineHeight, valueTextColor);
-                    }
+                if (isDrawValuesEnabled) {
+                    this.drawValue(c, formatter.getBubbleLabel(entry[dataSet.sizeProperty], entry), x, y + 0.5 * lineHeight, valueTextColor);
+                }
 
-                    if (entry.icon && isDrawIconsEnabled) {
-                        Utils.drawImage(c, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
-                    }
+                if (entry.icon && isDrawIconsEnabled) {
+                    Utils.drawImage(c, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
                 }
             }
         }

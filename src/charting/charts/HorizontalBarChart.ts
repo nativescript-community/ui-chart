@@ -20,6 +20,7 @@ import { getEntryXValue } from '../data/BaseEntry';
 const LOG_TAG = 'HorizontalBarChart';
 
 export class HorizontalBarChart extends BarChart {
+    mRenderer: HorizontalBarChartRenderer;
     protected mGetPositionBuffer = Utils.createNativeArray(2);
 
     protected init() {

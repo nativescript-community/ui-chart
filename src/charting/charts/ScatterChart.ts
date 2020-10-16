@@ -31,6 +31,8 @@ export enum ScatterShape {
  * @author Philipp Jahoda
  */
 export class ScatterChart extends BarLineChartBase<Entry, IScatterDataSet, ScatterData> implements ScatterDataProvider {
+    mRenderer: ScatterChartRenderer;
+
     protected init() {
         super.init();
 

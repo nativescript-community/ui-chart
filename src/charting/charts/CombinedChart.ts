@@ -26,6 +26,7 @@ export enum DrawOrder {
  * @author Philipp Jahoda
  */
 export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleBubbleDataSet<Entry>, CombinedData> implements CombinedDataProvider {
+    mRenderer: CombinedChartRenderer;
     /**
      * if set to true, all values are drawn above their bars, instead of below
      * their top
@@ -66,7 +67,7 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
     public setData(data: CombinedData) {
         super.setData(data);
         this.setHighlighter(new CombinedHighlighter(this, this));
-        (this.mRenderer as CombinedChartRenderer).createRenderers();
+        (this.mRenderer).createRenderers();
         this.mRenderer.initBuffers();
     }
 

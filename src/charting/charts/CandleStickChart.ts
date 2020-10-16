@@ -21,6 +21,7 @@ export interface CustomRenderer {
  * @author Philipp Jahoda
  */
 export class CandleStickChart extends BarLineChartBase<CandleEntry, ICandleDataSet, CandleData> implements CandleDataProvider {
+    mRenderer: CandleStickChartRenderer;
     protected init() {
         super.init();
 

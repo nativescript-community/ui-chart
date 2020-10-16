@@ -20,6 +20,7 @@ export interface CustomRenderer {
 }
 
 export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider {
+    mRenderer: BarChartRenderer;
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */

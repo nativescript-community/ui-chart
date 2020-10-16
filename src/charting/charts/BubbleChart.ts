@@ -21,6 +21,7 @@ export interface CustomRenderer {
  * @author Philipp Jahoda
  */
 export class BubbleChart extends BarLineChartBase<BubbleEntry, IBubbleDataSet, BubbleData> implements BubbleDataProvider {
+    mRenderer: BubbleChartRenderer;
     protected init() {
         super.init();
 

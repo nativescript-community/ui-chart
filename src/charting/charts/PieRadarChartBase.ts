@@ -73,7 +73,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
 
         this.calcMinMax();
 
-        if (this.mLegend != null) {
+        if (this.mLegend != null && this.mLegend.isEnabled()) {
             this.mLegendRenderer.computeLegend(this.mData);
         }
 

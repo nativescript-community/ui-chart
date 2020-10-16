@@ -13,6 +13,7 @@ export interface CustomRenderer {
 }
 
 export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {
+    mRenderer: LineChartRenderer;
     protected init() {
         super.init();
 

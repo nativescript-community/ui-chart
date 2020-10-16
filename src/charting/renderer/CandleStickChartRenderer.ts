@@ -210,47 +210,49 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     public drawValues(c: Canvas) {
+        const data = this.mChart.getCandleData();
+        const dataSets = data.getDataSets();
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+            return;
+        }
         // if values are drawn
-        if (this.isDrawingValuesAllowed(this.mChart)) {
-            const dataSets = this.mChart.getCandleData().getDataSets();
 
-            for (let i = 0; i < dataSets.length; i++) {
-                const dataSet = dataSets[i];
+        for (let i = 0; i < dataSets.length; i++) {
+            const dataSet = dataSets[i];
 
-                if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
+            if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
 
-                // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle(dataSet);
+            // apply the text-styling defined by the DataSet
+            this.applyValueTextStyle(dataSet);
 
-                const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+            const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
-                this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+            this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-                const { points, count } = trans.generateTransformedValuesCandle(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
+            const { points, count } = trans.generateTransformedValuesCandle(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
 
-                const yOffset = 5;
+            const yOffset = 5;
 
-                const formatter = dataSet.getValueFormatter();
+            const formatter = dataSet.getValueFormatter();
 
-                const iconsOffset = dataSet.getIconsOffset();
+            const iconsOffset = dataSet.getIconsOffset();
 
-                for (let j = 0; j < count; j += 2) {
-                    const x = points[j];
-                    const y = points[j + 1];
+            for (let j = 0; j < count; j += 2) {
+                const x = points[j];
+                const y = points[j + 1];
 
-                    if (!this.mViewPortHandler.isInBoundsRight(x)) break;
+                if (!this.mViewPortHandler.isInBoundsRight(x)) break;
 
-                    if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
+                if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
 
-                    const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
+                const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
-                    if (dataSet.isDrawValuesEnabled()) {
-                        this.drawValue(c, formatter.getCandleLabel(entry.high, entry), x, y - yOffset, dataSet.getValueTextColor(j / 2));
-                    }
+                if (dataSet.isDrawValuesEnabled()) {
+                    this.drawValue(c, formatter.getCandleLabel(entry.high, entry), x, y - yOffset, dataSet.getValueTextColor(j / 2));
+                }
 
-                    if (entry.icon && dataSet.isDrawIconsEnabled()) {
-                        Utils.drawImage(c, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
-                    }
+                if (entry.icon && dataSet.isDrawIconsEnabled()) {
+                    Utils.drawImage(c, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
                 }
             }
         }

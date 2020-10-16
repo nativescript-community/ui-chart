@@ -95,7 +95,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const float32arr = this.mLineBuffer;
         let index = 0;
         for (let j = 0; j < dataSet.getEntryCount(); j++) {
-            this.mRenderPaint.setColor(dataSet.getColor());
 
             const e = dataSet.getEntryForIndex(j);
             const yProperty = dataSet.yProperty;
@@ -135,11 +134,13 @@ export class RadarChartRenderer extends LineRadarRenderer {
             }
         }
 
-        this.mRenderPaint.setStrokeWidth(dataSet.getLineWidth());
-        this.mRenderPaint.setStyle(Style.STROKE);
 
         // draw the line (only if filled is disabled or alpha is below 255)
-        if (!dataSet.isDrawFilledEnabled() || dataSet.getFillAlpha() < 255) {
+        const lineWidth = dataSet.getLineWidth();
+        if ((!dataSet.isDrawFilledEnabled() || dataSet.getFillAlpha() < 255)&& lineWidth> 0) {
+            this.mRenderPaint.setColor(dataSet.getColor());
+            this.mRenderPaint.setStrokeWidth(lineWidth);
+            this.mRenderPaint.setStyle(Style.STROKE);
             c.drawPath(surface, this.mRenderPaint);
         }
         // MPPointF.recycleInstance(center);
@@ -147,6 +148,11 @@ export class RadarChartRenderer extends LineRadarRenderer {
     }
 
     public drawValues(c: Canvas) {
+        const data = this.mChart.getData();
+        const dataSets = data.getDataSets();
+        if (dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+            return;
+        }
         const phaseX = this.mAnimator.getPhaseX();
         const phaseY = this.mAnimator.getPhaseY();
 
@@ -161,9 +167,15 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const pIcon: MPPointF = { x: 0, y: 0 };
 
         const yoffset = 5;
+        for (let i = 0; i < data.getDataSetCount(); i++) {
+            const dataSet = data.getDataSetByIndex(i);
+            if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
 
-        for (let i = 0; i < this.mChart.getData().getDataSetCount(); i++) {
-            const dataSet = this.mChart.getData().getDataSetByIndex(i);
+            const drawValues = dataSet.isDrawValuesEnabled();
+            const drawIcons = dataSet.isDrawIconsEnabled();
+            if (!drawValues && !drawIcons) {
+                continue;
+            }
             const yProperty = dataSet.yProperty;
 
             if (!this.shouldDrawValues(dataSet)) continue;
@@ -180,11 +192,11 @@ export class RadarChartRenderer extends LineRadarRenderer {
 
                 Utils.getPosition(center, (entry[yProperty] - this.mChart.getYChartMin()) * factor * phaseY, sliceangle * j * phaseX + this.mChart.getRotationAngle(), pOut);
 
-                if (dataSet.isDrawValuesEnabled()) {
+                if (drawValues) {
                     this.drawValue(c, formatter.getRadarLabel(entry[yProperty], entry), pOut.x, pOut.y - yoffset, dataSet.getValueTextColor(j));
                 }
 
-                if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
+                if (drawIcons && entry.icon != null ) {
                     const icon = entry.icon;
 
                     Utils.getPosition(center, entry[yProperty] * factor * phaseY + iconsOffset.y, sliceangle * j * phaseX + this.mChart.getRotationAngle(), pIcon);

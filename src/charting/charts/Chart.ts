@@ -149,6 +149,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     constructor() {
         super();
+        // disable by default. Render is so much better!
+        this.hardwareAccelerated = false;
         this.init();
     }
 

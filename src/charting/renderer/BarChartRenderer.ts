@@ -178,181 +178,183 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     }
 
     public drawValues(c: Canvas) {
+        const data = this.mChart.getData();
+        const dataSets = data.getDataSets();
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+            return;
+        }
         // if values are drawn
-        if (this.isDrawingValuesAllowed(this.mChart)) {
-            const dataSets = this.mChart.getBarData().getDataSets();
 
-            const valueOffsetPlus = 4.5;
-            let posOffset = 0;
-            let negOffset = 0;
-            const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
+        const valueOffsetPlus = 4.5;
+        let posOffset = 0;
+        let negOffset = 0;
+        const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
 
-            for (let i = 0; i < this.mChart.getBarData().getDataSetCount(); i++) {
-                const dataSet = dataSets[i];
-                if (!this.shouldDrawValues(dataSet)) {
-                    continue;
+        for (let i = 0; i < this.mChart.getBarData().getDataSetCount(); i++) {
+            const dataSet = dataSets[i];
+            if (!this.shouldDrawValues(dataSet)) {
+                continue;
+            }
+
+            const yKey = dataSet.yProperty;
+
+            // apply the text-styling defined by the DataSet
+            this.applyValueTextStyle(dataSet);
+
+            const isInverted = this.mChart.isInverted(dataSet.getAxisDependency());
+
+            // calculate the correct offset depending on the draw position of
+            // the value
+            const valueTextHeight = Utils.calcTextHeight(this.mValuePaint, '8');
+            posOffset = drawValueAboveBar ? -valueOffsetPlus : valueTextHeight + valueOffsetPlus;
+            negOffset = drawValueAboveBar ? valueTextHeight + valueOffsetPlus : -valueOffsetPlus;
+
+            if (isInverted) {
+                posOffset = -posOffset - valueTextHeight;
+                negOffset = -negOffset - valueTextHeight;
+            }
+
+            // get the buffer
+            const buffer = this.mBarBuffers[i];
+
+            const phaseY = this.mAnimator.getPhaseY();
+            const formatter = dataSet.getValueFormatter();
+
+            const iconsOffset = dataSet.getIconsOffset();
+
+            // if only single values are drawn (sum)
+            if (!dataSet.isStacked()) {
+                for (let j = 0; j < buffer.size() * this.mAnimator.getPhaseX(); j += 4) {
+                    const x = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2;
+
+                    if (!this.mViewPortHandler.isInBoundsRight(x)) {
+                        break;
+                    }
+
+                    const entry = dataSet.getEntryForIndex(j / 4);
+                    const val = entry[yKey];
+
+                    if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[j + (val >= 0 ? 1 : 3)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
+                        continue;
+                    }
+
+                    if (dataSet.isDrawValuesEnabled()) {
+                        this.drawValue(c, formatter.getBarLabel(val, entry), x, val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset, dataSet.getValueTextColor(j / 4));
+                    }
+
+                    if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
+                        const icon = entry.icon;
+
+                        let px = x;
+                        let py = val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset;
+
+                        px += iconsOffset.x;
+                        py += iconsOffset.y;
+
+                        Utils.drawImage(c, icon, px, py);
+                    }
                 }
+                // if we have stacks
+            } else {
+                const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
-                const yKey = dataSet.yProperty;
+                let bufferIndex = 0;
+                let index = 0;
 
-                // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle(dataSet);
+                while (index < dataSet.getEntryCount() * this.mAnimator.getPhaseX()) {
+                    const entry = dataSet.getEntryForIndex(index);
 
-                const isInverted = this.mChart.isInverted(dataSet.getAxisDependency());
+                    const vals = entry.yVals;
+                    const x = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) / 2;
 
-                // calculate the correct offset depending on the draw position of
-                // the value
-                const valueTextHeight = Utils.calcTextHeight(this.mValuePaint, '8');
-                posOffset = drawValueAboveBar ? -valueOffsetPlus : valueTextHeight + valueOffsetPlus;
-                negOffset = drawValueAboveBar ? valueTextHeight + valueOffsetPlus : -valueOffsetPlus;
+                    const color = dataSet.getValueTextColor(index);
 
-                if (isInverted) {
-                    posOffset = -posOffset - valueTextHeight;
-                    negOffset = -negOffset - valueTextHeight;
-                }
-
-                // get the buffer
-                const buffer = this.mBarBuffers[i];
-
-                const phaseY = this.mAnimator.getPhaseY();
-                const formatter = dataSet.getValueFormatter();
-
-                const iconsOffset = dataSet.getIconsOffset();
-
-                // if only single values are drawn (sum)
-                if (!dataSet.isStacked()) {
-                    for (let j = 0; j < buffer.size() * this.mAnimator.getPhaseX(); j += 4) {
-                        const x = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2;
-
+                    // we still draw stacked bars, but there is one
+                    // non-stacked
+                    // in between
+                    if (vals == null) {
                         if (!this.mViewPortHandler.isInBoundsRight(x)) {
                             break;
                         }
 
-                        const entry = dataSet.getEntryForIndex(j / 4);
-                        const val = entry[yKey];
-
-                        if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[j + (val >= 0 ? 1 : 3)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
+                        if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[bufferIndex + (entry[yKey] >= 0 ? 1 : 3)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
                             continue;
                         }
 
                         if (dataSet.isDrawValuesEnabled()) {
-                            this.drawValue(c, formatter.getBarLabel(val, entry), x, val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset, dataSet.getValueTextColor(j / 4));
+                            this.drawValue(
+                                c,
+                                formatter.getBarLabel(entry[yKey], entry),
+                                x,
+                                entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 1] + posOffset : buffer.buffer[bufferIndex + 3] + negOffset,
+                                color
+                            );
                         }
 
                         if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                             const icon = entry.icon;
 
                             let px = x;
-                            let py = val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset;
+                            let py = entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 1] + posOffset : buffer.buffer[bufferIndex + 3] + negOffset;
 
                             px += iconsOffset.x;
                             py += iconsOffset.y;
 
                             Utils.drawImage(c, icon, px, py);
                         }
-                    }
-                    // if we have stacks
-                } else {
-                    const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+                        // draw stack values
+                    } else {
+                        const transformed = Utils.createNativeArray(vals.length * 2);
 
-                    let bufferIndex = 0;
-                    let index = 0;
+                        let posY = 0;
+                        let negY = -entry.negativeSum;
 
-                    while (index < dataSet.getEntryCount() * this.mAnimator.getPhaseX()) {
-                        const entry = dataSet.getEntryForIndex(index);
+                        for (let k = 0, idx = 0; k < transformed.length; k += 2, idx++) {
+                            const value = vals[idx];
+                            let y;
 
-                        const vals = entry.yVals;
-                        const x = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) / 2;
+                            if (value === 0 && (posY === 0 || negY === 0)) {
+                                // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
+                                y = value;
+                            } else if (value >= 0) {
+                                posY += value;
+                                y = posY;
+                            } else {
+                                y = negY;
+                                negY -= value;
+                            }
 
-                        const color = dataSet.getValueTextColor(index);
+                            transformed[k + 1] = y * phaseY;
+                        }
 
-                        // we still draw stacked bars, but there is one
-                        // non-stacked
-                        // in between
-                        if (vals == null) {
+                        trans.pointValuesToPixel(transformed);
+
+                        for (let k = 0; k < transformed.length; k += 2) {
+                            const val = vals[k / 2];
+                            const drawBelow = (val === 0 && negY === 0 && posY > 0) || val < 0;
+                            const y = transformed[k + 1] + (drawBelow ? negOffset : posOffset);
+
                             if (!this.mViewPortHandler.isInBoundsRight(x)) {
                                 break;
                             }
 
-                            if (!this.mViewPortHandler.isInBoundsY(buffer.buffer[bufferIndex + (entry[yKey] >= 0 ? 1 : 3)]) || !this.mViewPortHandler.isInBoundsLeft(x)) {
+                            if (!this.mViewPortHandler.isInBoundsY(y) || !this.mViewPortHandler.isInBoundsLeft(x)) {
                                 continue;
                             }
 
                             if (dataSet.isDrawValuesEnabled()) {
-                                this.drawValue(
-                                    c,
-                                    formatter.getBarLabel(entry[yKey], entry),
-                                    x,
-                                    entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 1] + posOffset : buffer.buffer[bufferIndex + 3] + negOffset,
-                                    color
-                                );
+                                this.drawValue(c, formatter.getBarStackedLabel(val, entry), x, y, color);
                             }
 
                             if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
                                 const icon = entry.icon;
-
-                                let px = x;
-                                let py = entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 1] + posOffset : buffer.buffer[bufferIndex + 3] + negOffset;
-
-                                px += iconsOffset.x;
-                                py += iconsOffset.y;
-
-                                Utils.drawImage(c, icon, px, py);
-                            }
-                            // draw stack values
-                        } else {
-                            const transformed = Utils.createNativeArray(vals.length * 2);
-
-                            let posY = 0;
-                            let negY = -entry.negativeSum;
-
-                            for (let k = 0, idx = 0; k < transformed.length; k += 2, idx++) {
-                                const value = vals[idx];
-                                let y;
-
-                                if (value === 0 && (posY === 0 || negY === 0)) {
-                                    // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
-                                    y = value;
-                                } else if (value >= 0) {
-                                    posY += value;
-                                    y = posY;
-                                } else {
-                                    y = negY;
-                                    negY -= value;
-                                }
-
-                                transformed[k + 1] = y * phaseY;
-                            }
-
-                            trans.pointValuesToPixel(transformed);
-
-                            for (let k = 0; k < transformed.length; k += 2) {
-                                const val = vals[k / 2];
-                                const drawBelow = (val === 0 && negY === 0 && posY > 0) || val < 0;
-                                const y = transformed[k + 1] + (drawBelow ? negOffset : posOffset);
-
-                                if (!this.mViewPortHandler.isInBoundsRight(x)) {
-                                    break;
-                                }
-
-                                if (!this.mViewPortHandler.isInBoundsY(y) || !this.mViewPortHandler.isInBoundsLeft(x)) {
-                                    continue;
-                                }
-
-                                if (dataSet.isDrawValuesEnabled()) {
-                                    this.drawValue(c, formatter.getBarStackedLabel(val, entry), x, y, color);
-                                }
-
-                                if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
-                                    const icon = entry.icon;
-                                    Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y);
-                                }
+                                Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y);
                             }
                         }
-
-                        bufferIndex = vals == null ? bufferIndex + 4 : bufferIndex + 4 * vals.length;
-                        index++;
                     }
+
+                    bufferIndex = vals == null ? bufferIndex + 4 : bufferIndex + 4 * vals.length;
+                    index++;
                 }
             }
         }

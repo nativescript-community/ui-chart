@@ -626,15 +626,17 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     public drawValues(c: Canvas) {
-        if (this.isDrawingValuesAllowed(this.mChart)) {
-            const dataSets = this.mChart.getLineData().getDataSets();
+        const data = this.mChart.getLineData();
+        const dataSets = data.getDataSets();
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+            return;
+        }
 
-            for (let i = 0; i < dataSets.length; i++) {
-                const dataSet = dataSets[i];
+        for (let i = 0; i < dataSets.length; i++) {
+            const dataSet = dataSets[i];
 
-                if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
-                this.drawValuesForDataset(c, dataSet, i);
-            }
+            if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
+            this.drawValuesForDataset(c, dataSet, i);
         }
     }
 

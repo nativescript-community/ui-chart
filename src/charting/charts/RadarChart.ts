@@ -24,6 +24,7 @@ export interface CustomRenderer {
  * @author Philipp Jahoda
  */
 export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData> {
+    mRenderer: RadarChartRenderer;
     /**
      * width of the main web lines
      */
@@ -109,12 +110,10 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         if (this.mData == null) return;
 
-        //        if (mYAxis.isEnabled())
-        //            this.mYAxisRenderer.computeAxis(mYAxis.mAxisMinimum, this.mYAxis.mAxisMaximum, this.mYAxis.isInverted());
-
-        if (this.mXAxis.isEnabled()) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
-
-        this.mXAxisRenderer.renderAxisLabels(c);
+        if (this.mXAxis.isEnabled()) {
+            this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+            this.mXAxisRenderer.renderAxisLabels(c);
+        };
 
         if (this.mDrawWeb) this.mRenderer.drawExtras(c);
 
@@ -124,9 +123,10 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         if (this.valuesToHighlight()) this.mRenderer.drawHighlighted(c, this.mIndicesToHighlight);
 
-        if (this.mYAxis.isEnabled() && !this.mYAxis.isDrawLimitLinesBehindDataEnabled()) this.mYAxisRenderer.renderLimitLines(c);
-
-        this.mYAxisRenderer.renderAxisLabels(c);
+        if (this.mYAxis.isEnabled() && !this.mYAxis.isDrawLimitLinesBehindDataEnabled()){
+            this.mYAxisRenderer.renderLimitLines(c);
+            this.mYAxisRenderer.renderAxisLabels(c);
+        }
 
         this.mRenderer.drawValues(c);
 

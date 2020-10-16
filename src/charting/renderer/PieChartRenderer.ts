@@ -336,6 +336,12 @@ export class PieChartRenderer extends DataRenderer {
     }
 
     public drawValues(c: Canvas) {
+        const drawEntryLabels = this.mChart.isDrawEntryLabelsEnabled();
+        const data = this.mChart.getData();
+        const dataSets = data.getDataSets();
+        if (!drawEntryLabels || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+            return;
+        }
         const center = this.mChart.getCenterCircleBox();
 
         // Get whole the radius
@@ -362,12 +368,9 @@ export class PieChartRenderer extends DataRenderer {
 
         const labelRadius = radius - labelRadiusOffset;
 
-        const data = this.mChart.getData();
-        const dataSets = data.getDataSets();
 
         const yValueSum = data.getYValueSum();
 
-        const drawEntryLabels = this.mChart.isDrawEntryLabelsEnabled();
 
         let angle;
         let xIndex = 0;
@@ -380,7 +383,7 @@ export class PieChartRenderer extends DataRenderer {
             const dataSet = dataSets[i];
             const drawValues = dataSet.isDrawValuesEnabled();
 
-            if (!drawValues && !drawEntryLabels) {
+            if (!drawValues) {
                 continue;
             }
 

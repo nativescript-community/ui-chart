@@ -23,6 +23,7 @@ export interface CustomRenderer {
  * @author Philipp Jahoda
  */
 export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
+    mRenderer: PieChartRenderer;
     /**
      * rect object that represents the bounds of the piechart, needed for
      * drawing the circle
@@ -363,7 +364,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param color
      */
     public setHoleColor(color) {
-        (this.mRenderer as PieChartRenderer).getPaintHole().setColor(color);
+        (this.mRenderer).getPaintHole().setColor(color);
     }
 
     /**
@@ -483,7 +484,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param t
      */
     public setCenterTextTypeface(t: Font) {
-        (this.mRenderer as PieChartRenderer).getPaintCenterText().setTypeface(t);
+        (this.mRenderer).getPaintCenterText().setTypeface(t);
     }
 
     /**
@@ -492,7 +493,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param sizeDp
      */
     public setCenterTextSize(sizeDp) {
-        (this.mRenderer as PieChartRenderer).getPaintCenterText().setTextSize(sizeDp);
+        (this.mRenderer).getPaintCenterText().setTextSize(sizeDp);
     }
 
     /**
@@ -501,7 +502,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param sizePixels
      */
     public setCenterTextSizePixels(sizePixels) {
-        (this.mRenderer as PieChartRenderer).getPaintCenterText().setTextSize(sizePixels);
+        (this.mRenderer).getPaintCenterText().setTextSize(sizePixels);
     }
 
     /**
@@ -530,7 +531,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param color
      */
     public setCenterTextColor(color) {
-        (this.mRenderer as PieChartRenderer).getPaintCenterText().setColor(color);
+        (this.mRenderer).getPaintCenterText().setColor(color);
     }
 
     /**
@@ -558,7 +559,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param color
      */
     public setTransparentCircleColor(color) {
-        const p: Paint = (this.mRenderer as PieChartRenderer).getPaintTransparentCircle();
+        const p: Paint = (this.mRenderer).getPaintTransparentCircle();
         const alpha = p.getAlpha();
         p.setColor(color);
         p.setAlpha(alpha);
@@ -588,7 +589,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param alpha 0-255
      */
     public setTransparentCircleAlpha(alpha) {
-        (this.mRenderer as PieChartRenderer).getPaintTransparentCircle().setAlpha(alpha);
+        (this.mRenderer).getPaintTransparentCircle().setAlpha(alpha);
     }
 
     /**
@@ -626,7 +627,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param color
      */
     public setEntryLabelColor(color) {
-        (this.mRenderer as PieChartRenderer).getPaintEntryLabels().setColor(color);
+        (this.mRenderer).getPaintEntryLabels().setColor(color);
     }
 
     /**
@@ -635,7 +636,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param tf
      */
     public setEntryLabelTypeface(tf) {
-        (this.mRenderer as PieChartRenderer).getPaintEntryLabels().setTypeface(tf);
+        (this.mRenderer).getPaintEntryLabels().setTypeface(tf);
     }
 
     /**
@@ -644,7 +645,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
      * @param size
      */
     public setEntryLabelTextSize(size) {
-        (this.mRenderer as PieChartRenderer).getPaintEntryLabels().setTextSize(size);
+        (this.mRenderer).getPaintEntryLabels().setTextSize(size);
     }
 
     /**

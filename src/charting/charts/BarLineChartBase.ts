@@ -325,7 +325,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         // }
         // this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
 
-        if (this.mLegend != null) this.mLegendRenderer.computeLegend(this.mData);
+        if (this.mLegend != null && this.mLegend.isEnabled()) {
+            this.mLegendRenderer.computeLegend(this.mData);
+        }
 
         this.calculateOffsets(); // needs chart size
         this.invalidate();

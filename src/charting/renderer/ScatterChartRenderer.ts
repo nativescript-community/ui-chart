@@ -74,46 +74,48 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     public drawValues(c: Canvas) {
+        const data = this.mChart.getScatterData();
+        const dataSets = data.getDataSets();
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+            return;
+        }
         // if values are drawn
-        if (this.isDrawingValuesAllowed(this.mChart)) {
-            const dataSets = this.mChart.getScatterData().getDataSets();
 
-            for (let i = 0; i < this.mChart.getScatterData().getDataSetCount(); i++) {
-                const dataSet = dataSets[i];
-                const yKey = dataSet.yProperty;
+        for (let i = 0; i < this.mChart.getScatterData().getDataSetCount(); i++) {
+            const dataSet = dataSets[i];
+            const yKey = dataSet.yProperty;
 
-                if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
+            if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
 
-                // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle(dataSet);
+            // apply the text-styling defined by the DataSet
+            this.applyValueTextStyle(dataSet);
 
-                this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+            this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-                const { points, count } = this.mChart
-                    .getTransformer(dataSet.getAxisDependency())
-                    .generateTransformedValuesScatter(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
+            const { points, count } = this.mChart
+                .getTransformer(dataSet.getAxisDependency())
+                .generateTransformedValuesScatter(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
 
-                const shapeSize = dataSet.getScatterShapeSize();
+            const shapeSize = dataSet.getScatterShapeSize();
 
-                const formatter = dataSet.getValueFormatter();
+            const formatter = dataSet.getValueFormatter();
 
-                const iconsOffset = dataSet.getIconsOffset();
+            const iconsOffset = dataSet.getIconsOffset();
 
-                for (let j = 0; j < count; j += 2) {
-                    if (!this.mViewPortHandler.isInBoundsRight(points[j])) break;
+            for (let j = 0; j < count; j += 2) {
+                if (!this.mViewPortHandler.isInBoundsRight(points[j])) break;
 
-                    // make sure the lines don't do shitty things outside bounds
-                    if (!this.mViewPortHandler.isInBoundsLeft(points[j]) || !this.mViewPortHandler.isInBoundsY(points[j + 1])) continue;
+                // make sure the lines don't do shitty things outside bounds
+                if (!this.mViewPortHandler.isInBoundsLeft(points[j]) || !this.mViewPortHandler.isInBoundsY(points[j + 1])) continue;
 
-                    const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
+                const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
-                    if (dataSet.isDrawValuesEnabled()) {
-                        this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), points[j], points[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min));
-                    }
+                if (dataSet.isDrawValuesEnabled()) {
+                    this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), points[j], points[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min));
+                }
 
-                    if (entry.icon && dataSet.isDrawIconsEnabled()) {
-                        Utils.drawImage(c, entry.icon, points[j] + iconsOffset.x, points[j + 1] + iconsOffset.y);
-                    }
+                if (entry.icon && dataSet.isDrawIconsEnabled()) {
+                    Utils.drawImage(c, entry.icon, points[j] + iconsOffset.x, points[j + 1] + iconsOffset.y);
                 }
             }
         }
