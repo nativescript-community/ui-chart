@@ -138,7 +138,7 @@ export class XAxisRenderer extends AxisRenderer {
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
         if (this.mXAxis.getPosition() === XAxisPosition.TOP || this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
-            c.drawLine(rect.left, rect.top, rect.top, rect.top, this.mAxisLinePaint);
+            c.drawLine(rect.left, rect.top, rect.right, rect.top, this.mAxisLinePaint);
         }
 
         if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM || this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
