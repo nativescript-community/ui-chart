@@ -339,7 +339,7 @@ export class PieChartRenderer extends DataRenderer {
         const drawEntryLabels = this.mChart.isDrawEntryLabelsEnabled();
         const data = this.mChart.getData();
         const dataSets = data.getDataSets();
-        if (!drawEntryLabels || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+        if (!drawEntryLabels || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         const center = this.mChart.getCenterCircleBox();
@@ -407,6 +407,7 @@ export class PieChartRenderer extends DataRenderer {
 
             const iconsOffset = dataSet.getIconsOffset();
 
+            const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
             for (let j = 0; j < entryCount; j++) {
                 const entry = dataSet.getEntryForIndex(j);
 
@@ -535,7 +536,7 @@ export class PieChartRenderer extends DataRenderer {
                     }
                 }
 
-                if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
+                if (isDrawIconsEnabled && entry.icon != null) {
                     const icon = entry.icon;
 
                     const x = (labelRadius + iconsOffset.y) * sliceXBase + center.x;

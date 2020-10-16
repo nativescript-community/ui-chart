@@ -100,7 +100,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getBubbleData();
         const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
 

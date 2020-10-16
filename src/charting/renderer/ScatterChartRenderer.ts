@@ -76,7 +76,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getScatterData();
         const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         // if values are drawn
@@ -101,7 +101,8 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
             const formatter = dataSet.getValueFormatter();
 
             const iconsOffset = dataSet.getIconsOffset();
-
+            const drawValues = dataSet.isDrawValuesEnabled();
+            const drawIcons = dataSet.isDrawIconsEnabled();
             for (let j = 0; j < count; j += 2) {
                 if (!this.mViewPortHandler.isInBoundsRight(points[j])) break;
 
@@ -110,11 +111,11 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
                 const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
-                if (dataSet.isDrawValuesEnabled()) {
+                if (drawValues) {
                     this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), points[j], points[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min));
                 }
 
-                if (entry.icon && dataSet.isDrawIconsEnabled()) {
+                if (drawIcons && entry.icon ) {
                     Utils.drawImage(c, entry.icon, points[j] + iconsOffset.x, points[j + 1] + iconsOffset.y);
                 }
             }

@@ -150,7 +150,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getData();
         const dataSets = data.getDataSets();
-        if (dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+        if (dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         const phaseX = this.mAnimator.getPhaseX();

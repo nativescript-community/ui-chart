@@ -180,7 +180,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getData();
         const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         // if values are drawn
@@ -223,6 +223,9 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const iconsOffset = dataSet.getIconsOffset();
 
             // if only single values are drawn (sum)
+
+            const isDrawValuesEnabled = dataSet.isDrawValuesEnabled();
+            const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
             if (!dataSet.isStacked()) {
                 for (let j = 0; j < buffer.size() * this.mAnimator.getPhaseX(); j += 4) {
                     const x = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2;
@@ -238,11 +241,11 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         continue;
                     }
 
-                    if (dataSet.isDrawValuesEnabled()) {
+                    if (isDrawValuesEnabled) {
                         this.drawValue(c, formatter.getBarLabel(val, entry), x, val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset, dataSet.getValueTextColor(j / 4));
                     }
 
-                    if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
+                    if (isDrawIconsEnabled && entry.icon != null) {
                         const icon = entry.icon;
 
                         let px = x;
@@ -281,7 +284,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             continue;
                         }
 
-                        if (dataSet.isDrawValuesEnabled()) {
+                        if (isDrawValuesEnabled) {
                             this.drawValue(
                                 c,
                                 formatter.getBarLabel(entry[yKey], entry),
@@ -291,7 +294,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             );
                         }
 
-                        if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
+                        if (isDrawIconsEnabled && entry.icon != null ) {
                             const icon = entry.icon;
 
                             let px = x;

@@ -212,7 +212,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getCandleData();
         const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled()) === false) {
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         // if values are drawn
