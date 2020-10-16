@@ -460,7 +460,10 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-        const res = this.generateLinearPath(dataSet, this.linePath);
+        const [points, index] = this.generateLinearPath(dataSet, this.linePath);
+        if (!points) {
+            return result;
+        }
 
         const colors = dataSet.getColors();
         const nbColors = colors.length;
@@ -476,11 +479,12 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
         if (nbColors === 1) {
             if (drawLine) {
+                // trans.pointValuesToPixel(points);
+                // this.drawLines(c, points, 0,index, this.mRenderPaint);
                 trans.pathValueToPixel(this.linePath);
                 this.drawPath(c, this.linePath, this.mRenderPaint);
             }
         } else {
-            const points = res[0];
             trans.pointValuesToPixel(points);
             const firstIndex = Math.max(0, this.mXBounds.min);
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
