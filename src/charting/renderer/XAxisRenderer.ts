@@ -34,7 +34,7 @@ export class XAxisRenderer extends AxisRenderer {
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         if (rect.width() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
-            const p2 = this.mTrans.getValuesByTouchPoint(rect.top, rect.top);
+            const p2 = this.mTrans.getValuesByTouchPoint(rect.right, rect.top);
 
             if (inverted) {
                 min = p2.x;
