@@ -41,7 +41,7 @@ declare let com;
 // Vue.registerElement('MPLineChart', () => MPLineChart);
 
 // Prints Vue logs when --env.production is *NOT* set while building
-Vue.config.silent = false;
+Vue.config.silent = true;
 
 Vue.config.errorHandler = (e, vm, info) => {
     if (e) {

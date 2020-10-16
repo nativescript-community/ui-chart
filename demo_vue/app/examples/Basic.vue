@@ -8,10 +8,11 @@
                 <Button text="clear" @tap="clearDataSet" />
             </StackLayout>
         </ActionBar>
-        <GridLayout rows="*,auto,auto">
-            <LineChart ref="chart" @loaded="onChartLoaded" @tap="onChartTap" />
+        <GridLayout rows="*,auto,auto,auto">
+            <LineChart ref="chart" @loaded="onChartLoaded" @tap="onChartTap" :hardwareAccelerated="hardwareAccelerated" />
             <Slider row="1" maxValue="500" v-model="count" @valueChange="updateData" />
             <Slider row="2" maxValue="180" v-model="range" @valueChange="updateData" />
+            <Switch row="3" v-model="hardwareAccelerated" />
         </GridLayout>
     </Page>
 </template>
@@ -35,7 +36,8 @@ export default Vue.extend({
     data() {
         return {
             range: 180,
-            count: 45
+            count: 45,
+            hardwareAccelerated: false
         };
     },
     created() {},
@@ -46,7 +48,7 @@ export default Vue.extend({
             chart.drawFameRate = true;
 
             chart.backgroundColor = 'white';
-
+            chart.setLogEnabled(true);
             // disable description text
             // chart.getDescription().setEnabled(false);
 

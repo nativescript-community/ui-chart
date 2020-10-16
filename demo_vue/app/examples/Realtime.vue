@@ -9,7 +9,8 @@
             </StackLayout>
         </ActionBar>
         <GridLayout rows="*,auto,auto">
-            <LineChart ref="chart" @loaded="onChartLoaded" @tap="onChartTap" />
+            <LineChart ref="chart" @loaded="onChartLoaded" @tap="onChartTap" :hardwareAccelerated="hardwareAccelerated" />
+            <Switch row="1" v-model="hardwareAccelerated" />
         </GridLayout>
     </Page>
 </template>
@@ -32,6 +33,7 @@ export default Vue.extend({
     props: ['title'],
     data() {
         return {
+            hardwareAccelerated: false
         };
     },
     created() {},
@@ -45,7 +47,7 @@ export default Vue.extend({
 
             // disable description text
             // chart.getDescription().setEnabled(false);
-
+            chart.setLogEnabled(true);
             // enable touch gestures
             chart.setTouchEnabled(true);
 
@@ -94,7 +96,6 @@ export default Vue.extend({
             const rightAxis = chart.getAxisRight();
             rightAxis.setEnabled(false);
 
-
             // draw points over time
         },
         start() {
@@ -110,8 +111,7 @@ export default Vue.extend({
         },
         addEntry() {
             // In case user leaves this page
-            if (!this.$refs.chart)
-            {
+            if (!this.$refs.chart) {
                 this.stop();
                 return;
             }
@@ -176,8 +176,7 @@ export default Vue.extend({
         },
         onNavigationButtonTap() {
             Frame.topmost().goBack();
-        },
-        
+        }
     },
     mounted() {}
 });
