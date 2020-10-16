@@ -28,9 +28,9 @@
     "main": "charts/index.js",
     "typings": "charts/index.d.ts",
     "dependencies": {
-        "@nativescript-community/gesturehandler": "^0.1.22",
-        "@nativescript-community/tween": "0.0.11",
-        "@nativescript-community/ui-canvas": "^4.0.17",
+        "@nativescript-community/gesturehandler": "^0.1.23",
+        "@nativescript-community/tween": "0.0.12",
+        "@nativescript-community/ui-canvas": "^4.0.25",
         "downsample": "^1.3.0",
         "number-format.js": "^2.0.9"
     }

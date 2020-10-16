@@ -149,8 +149,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     constructor() {
         super();
-        // disable by default. Render is so much better!
-        this.hardwareAccelerated = false;
         this.init();
     }
 
@@ -1593,7 +1591,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param enabled
      */
     public setHardwareAccelerationEnabled(enabled) {
-        Utils.setHardwareAccelerationEnabled(this.nativeViewProtected, enabled);
+        this.hardwareAccelerated = enabled;
     }
 
     // protected onDetachedFromWindow() {

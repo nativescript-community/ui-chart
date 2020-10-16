@@ -12,6 +12,14 @@ if (global.isAndroid) {
     FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
 }
 
+
+let SDK_INT = -1;
+function getSDK() {
+    if (SDK_INT === -1) {
+        SDK_INT = android.os.Build.VERSION.SDK_INT;
+    }
+    return SDK_INT;
+}
 /**
  * Utilities class that has some helper methods. Needs to be initialized by
  * calling Utils.init(...) before usage. Inside the Chart.init() method, this is
@@ -616,9 +624,6 @@ export namespace Utils {
         };
     }
 
-    //export function getSDKInt() {
-    //     return android.os.Build.VERSION.SDK_INT;
-    // }
 
     export function logMethod(target, key, descriptor) {
         // save a reference to the original method this way we keep the values currently in the
@@ -706,17 +711,9 @@ export namespace Utils {
 
     export function clipPathSupported() {
         if (global.isAndroid) {
-            return android.os.Build.VERSION.SDK_INT >= 18;
+            return getSDK() >= 18;
         }
         return false;
-    }
-    export function setHardwareAccelerationEnabled(view: android.view.View, enabled) {
-        if (global.isAndroid) {
-            if (view) {
-                if (enabled) view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
-                else view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
-            }
-        }
     }
 
     /**
