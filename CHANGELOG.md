@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4](https://github.com/Akylas/nativescript-chart/compare/v1.0.3...v1.0.4) (2020-10-16)
+
+
+### Bug Fixes
+
+* broken axis rendereing ([10f97c1](https://github.com/Akylas/nativescript-chart/commit/10f97c12d584430955a6197fd75b0efbfbf179c1))
+* fix for isIgnoringOffsets ([1114a12](https://github.com/Akylas/nativescript-chart/commit/1114a121ce0d278075a3bd32f53e7dc57bad92f4))
+* icons not drawing ([b321e57](https://github.com/Akylas/nativescript-chart/commit/b321e573a088866eabd9b34df0e8acf563d25789))
+* rewrote HWA handling ([3716a84](https://github.com/Akylas/nativescript-chart/commit/3716a845b3a862620fbb45b96a1be99e21866065))
+* speed improvements ([b55f796](https://github.com/Akylas/nativescript-chart/commit/b55f79627d60675eaf7fcc3c2ff4868a25757ce4))
+
+
+### Features
+
+* first draft of full custom renderer ([cc43215](https://github.com/Akylas/nativescript-chart/commit/cc43215bb13f52656707f427ec9bb037e70b4fe4))
+
+
+
+
+
 ## [1.0.3](https://github.com/Akylas/nativescript-chart/compare/v1.0.2...v1.0.3) (2020-10-15)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4](https://github.com/Akylas/nativescript-chart/compare/v1.0.3...v1.0.4) (2020-10-16)
+
+
+### Bug Fixes
+
+* rewrote HWA handling ([3716a84](https://github.com/Akylas/nativescript-chart/commit/3716a845b3a862620fbb45b96a1be99e21866065))
+
+
+
+
+
 ## [1.0.3](https://github.com/Akylas/nativescript-chart/compare/v1.0.2...v1.0.3) (2020-10-15)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
