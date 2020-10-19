@@ -8,6 +8,7 @@
     "license": "MIT",
     "dependencies": {
         "@nativescript-community/ui-chart": "file:../plugin",
+        "@nativescript-community/ui-svg": "^0.0.2",
         "@nativescript/core": "~7.0.7",
         "@nativescript/theme": "~2.3.3",
         "nativescript-perms": "^2.0.11",

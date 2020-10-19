@@ -30,6 +30,7 @@ import { ColorTemplate } from '@nativescript-community/ui-chart/utils/ColorTempl
 import { YAxisLabelPosition, AxisDependency } from '@nativescript-community/ui-chart/components/YAxis';
 import { XAxisPosition } from '@nativescript-community/ui-chart/components/XAxis';
 import { DashPathEffect } from '@nativescript-community/ui-canvas';
+import { SVG } from '@nativescript-community/ui-svg';
 
 export default Vue.extend({
     props: ['title'],
@@ -37,7 +38,7 @@ export default Vue.extend({
         return {
             range: 180,
             count: 45,
-            hardwareAccelerated: false
+            hardwareAccelerated: false,
         };
     },
     created() {},
@@ -141,12 +142,16 @@ export default Vue.extend({
             this.setData(this.count, this.range);
         },
         setData(count, range) {
-            const start = ImageSource.fromFileOrResourceSync('~/assets/star.png');
+            // const start = ImageSource.fromFileOrResourceSync('~/assets/star.png');
+            const startSVG = new SVG();
+            startSVG.src = '~/assets/star.svg';
+            startSVG.width = 30;
+            startSVG.height = 30;
             const chart = this.$refs.chart['nativeView'] as LineChart;
             console.log('setData', count, range);
             const values = new Array(Math.round(count)).fill(0).map((v, i) => ({
                 y: Math.random() * range - 30,
-                icon: start
+                icon: startSVG,
             }));
             let set1: LineDataSet;
             if (chart.getData() !== null && chart.getData().getDataSetCount() > 0) {
@@ -192,7 +197,7 @@ export default Vue.extend({
                 set1.setFillFormatter({
                     getFillLinePosition(dataSet, dataProvider) {
                         return chart.getAxisLeft().getAxisMinimum();
-                    }
+                    },
                 });
 
                 // set color of filled area
@@ -213,14 +218,14 @@ export default Vue.extend({
             const leftAxis = chart.getAxisLeft();
             const chartData = chart.getData();
             const chartDataset = chartData.getDataSets();
-            chartDataset.forEach(d => {
+            chartDataset.forEach((d) => {
                 d.clear();
                 d.notifyDataSetChanged();
             });
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
-        }
+        },
     },
-    mounted() {}
+    mounted() {},
 });
 </script>

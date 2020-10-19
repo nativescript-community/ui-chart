@@ -2,8 +2,10 @@ import Vue from 'nativescript-vue';
 import App from './App.vue';
 
 import { install } from '@nativescript-community/gesturehandler';
-install();
 
+install();
+import CanvasSVG from '@nativescript-community/ui-svg/vue';
+Vue.use(CanvasSVG);
 // setShowDebug(true);
 
 Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
