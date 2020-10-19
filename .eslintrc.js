@@ -1,15 +1,15 @@
 module.exports = {
-    env: {
-        browser: true
-    },
+    extends: ['plugin:prettier/recommended'],
+    plugins: ['prettier', '@typescript-eslint'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         createDefaultProgram: true,
         project: './tsconfig.json',
-        sourceType: 'module'
     },
-    plugins: ['@typescript-eslint'],
     rules: {
+        'prettier/prettier': 'warn',
+
+        '@typescript-eslint/no-redeclare': 'off',
         '@typescript-eslint/adjacent-overload-signatures': 'error',
         '@typescript-eslint/array-type': 'error',
         '@typescript-eslint/await-thenable': 'error',
@@ -20,21 +20,21 @@ module.exports = {
         '@typescript-eslint/explicit-member-accessibility': [
             'off',
             {
-                accessibility: 'explicit'
-            }
+                accessibility: 'explicit',
+            },
         ],
         '@typescript-eslint/indent': [
             'error',
             4,
             {
                 FunctionDeclaration: {
-                    parameters: 'first'
+                    parameters: 'first',
                 },
                 FunctionExpression: {
-                    parameters: 'first'
+                    parameters: 'first',
                 },
-                SwitchCase:1
-            }
+                SwitchCase: 1,
+            },
         ],
         '@typescript-eslint/interface-name-prefix': 'off',
         '@typescript-eslint/member-delimiter-style': 'error',
@@ -59,8 +59,8 @@ module.exports = {
             'error',
             'single',
             {
-                avoidEscape: true
-            }
+                avoidEscape: true,
+            },
         ],
         '@typescript-eslint/semi': ['error'],
         '@typescript-eslint/space-within-parens': ['off', 'never'],
@@ -86,8 +86,8 @@ module.exports = {
                 ignoreCase: false,
                 ignoreDeclarationSort: true,
                 ignoreMemberSort: false,
-                memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single']
-            }
+                memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+            },
         ],
         'linebreak-style': 'off',
         'max-classes-per-file': 'off',
@@ -95,8 +95,8 @@ module.exports = {
             'off',
             {
                 ignorePattern: '^import |^export {(.*?)}',
-                code: 200
-            }
+                code: 200,
+            },
         ],
         'new-parens': 'off',
         'newline-per-chained-call': 'off',
@@ -126,9 +126,9 @@ module.exports = {
                     'profile',
                     'profileEnd',
                     'timeStamp',
-                    'context'
-                ]
-            }
+                    'context',
+                ],
+            },
         ],
         'no-constant-condition': 'error',
         'no-control-regex': 'off',
@@ -143,14 +143,14 @@ module.exports = {
         'no-irregular-whitespace': 'off',
         'no-multiple-empty-lines': 'off',
         'no-new-wrappers': 'error',
-        'no-redeclare': 'error',
+        'no-redeclare': ['error', { builtinGlobals: false }],
         'no-regex-spaces': 'error',
         'no-return-await': 'error',
         'no-shadow': [
             'off',
             {
-                hoist: 'all'
-            }
+                hoist: 'all',
+            },
         ],
         'no-throw-literal': 'error',
         'no-trailing-spaces': 'error',
@@ -161,8 +161,8 @@ module.exports = {
             'error',
             {
                 allowTaggedTemplates: true,
-                allowShortCircuit: true
-            }
+                allowShortCircuit: true,
+            },
         ],
         'no-unused-labels': 'error',
         'no-var': 'error',
@@ -174,6 +174,6 @@ module.exports = {
         radix: 'error',
         'space-before-function-paren': 'off',
         'use-isnan': 'error',
-        'valid-typeof': 'off'
-    }
+        'valid-typeof': 'off',
+    },
 };
