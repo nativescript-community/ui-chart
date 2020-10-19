@@ -171,7 +171,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         // initialize the utils
         // Utils.init(this._context);
-        this.mMaxHighlightDistance = (500);
+        this.mMaxHighlightDistance = 500;
 
         // this.mDescription = new Description();
         this.mLegend = new Legend();
@@ -467,7 +467,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param distDp
      */
     public setMaxHighlightDistance(distDp) {
-        this.mMaxHighlightDistance = (distDp);
+        this.mMaxHighlightDistance = distDp;
     }
 
     /**
@@ -624,10 +624,11 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.setLastHighlighted(this.mIndicesToHighlight);
 
         if (callListener) {
-            if (!this.valuesToHighlight()) this.notify({ eventName: 'nothingSelected', object: this });
-            else {
+            if (!this.valuesToHighlight()) {
+                this.notify({ eventName: 'selected', object: this });
+            } else {
                 // notify the listener
-                this.notify({ eventName: 'valueSelected', object: this, entry: e, highlight: high });
+                this.notify({ eventName: 'selected', object: this, entry: e, highlight: high });
             }
         }
 

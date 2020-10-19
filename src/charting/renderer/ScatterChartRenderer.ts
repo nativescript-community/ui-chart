@@ -65,10 +65,8 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
             this.mRenderPaint.setColor(dataSet.getColor(i / 2));
             if (customRender && customRender.drawShape) {
                 customRender.drawShape(c, e, dataSet, this.mViewPortHandler, this.mPixelBuffer[0], this.mPixelBuffer[1], this.mRenderPaint);
-
             } else {
                 renderer.renderShape(c, dataSet, this.mViewPortHandler, this.mPixelBuffer[0], this.mPixelBuffer[1], this.mRenderPaint);
-
             }
         }
     }
@@ -76,7 +74,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getScatterData();
         const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         // if values are drawn
@@ -115,8 +113,8 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                     this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), points[j], points[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min));
                 }
 
-                if (drawIcons && entry.icon ) {
-                    Utils.drawImage(c, entry.icon, points[j] + iconsOffset.x, points[j + 1] + iconsOffset.y);
+                if (drawIcons && entry.icon) {
+                    Utils.drawIcon(c, this.mChart, entry.icon, points[j] + iconsOffset.x, points[j + 1] + iconsOffset.y);
                 }
             }
         }

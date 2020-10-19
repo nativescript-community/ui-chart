@@ -339,7 +339,7 @@ export class PieChartRenderer extends DataRenderer {
         const drawEntryLabels = this.mChart.isDrawEntryLabelsEnabled();
         const data = this.mChart.getData();
         const dataSets = data.getDataSets();
-        if (!drawEntryLabels || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        if (!drawEntryLabels || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         const center = this.mChart.getCenterCircleBox();
@@ -368,9 +368,7 @@ export class PieChartRenderer extends DataRenderer {
 
         const labelRadius = radius - labelRadiusOffset;
 
-
         const yValueSum = data.getYValueSum();
-
 
         let angle;
         let xIndex = 0;
@@ -543,7 +541,7 @@ export class PieChartRenderer extends DataRenderer {
                     let y = (labelRadius + iconsOffset.y) * sliceYBase + center.y;
                     y += iconsOffset.x;
 
-                    Utils.drawImage(c, icon, x, y);
+                    Utils.drawIcon(c, this.mChart, icon, x, y);
                 }
 
                 xIndex++;

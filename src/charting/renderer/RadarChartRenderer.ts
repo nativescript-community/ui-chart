@@ -95,7 +95,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const float32arr = this.mLineBuffer;
         let index = 0;
         for (let j = 0; j < dataSet.getEntryCount(); j++) {
-
             const e = dataSet.getEntryForIndex(j);
             const yProperty = dataSet.yProperty;
 
@@ -134,10 +133,9 @@ export class RadarChartRenderer extends LineRadarRenderer {
             }
         }
 
-
         // draw the line (only if filled is disabled or alpha is below 255)
         const lineWidth = dataSet.getLineWidth();
-        if ((!dataSet.isDrawFilledEnabled() || dataSet.getFillAlpha() < 255)&& lineWidth> 0) {
+        if ((!dataSet.isDrawFilledEnabled() || dataSet.getFillAlpha() < 255) && lineWidth > 0) {
             this.mRenderPaint.setColor(dataSet.getColor());
             this.mRenderPaint.setStrokeWidth(lineWidth);
             this.mRenderPaint.setStyle(Style.STROKE);
@@ -150,7 +148,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getData();
         const dataSets = data.getDataSets();
-        if (dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        if (dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         const phaseX = this.mAnimator.getPhaseX();
@@ -196,7 +194,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
                     this.drawValue(c, formatter.getRadarLabel(entry[yProperty], entry), pOut.x, pOut.y - yoffset, dataSet.getValueTextColor(j));
                 }
 
-                if (drawIcons && entry.icon != null ) {
+                if (drawIcons && entry.icon != null) {
                     const icon = entry.icon;
 
                     Utils.getPosition(center, entry[yProperty] * factor * phaseY + iconsOffset.y, sliceangle * j * phaseX + this.mChart.getRotationAngle(), pIcon);
@@ -204,7 +202,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
                     //noinspection SuspiciousNameCombination
                     pIcon.y += iconsOffset.x;
 
-                    Utils.drawImage(c, icon, pIcon.x, pIcon.y);
+                    Utils.drawIcon(c, this.mChart, icon, pIcon.x, pIcon.y);
                 }
             }
 

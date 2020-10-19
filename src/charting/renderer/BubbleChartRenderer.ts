@@ -100,7 +100,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getBubbleData();
         const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
 
@@ -152,7 +152,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 }
 
                 if (entry.icon && isDrawIconsEnabled) {
-                    Utils.drawImage(c, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
+                    Utils.drawIcon(c, this.mChart, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
                 }
             }
         }

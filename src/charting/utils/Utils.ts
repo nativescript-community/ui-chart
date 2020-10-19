@@ -3,6 +3,8 @@ import { Screen } from '@nativescript/core/platform';
 import { Align, Canvas, FontMetrics, Paint, Rect, StaticLayout } from '@nativescript-community/ui-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { ValueFormatter } from '../formatter/ValueFormatter';
+import Shape from '@nativescript-community/ui-canvas/shapes/shape';
+import { Chart } from '../charts/Chart';
 
 export type FloatArray = Float32Array | Float64Array;
 export let FloatConstructor: typeof Float32Array | typeof Float64Array;
@@ -11,7 +13,6 @@ if (global.isAndroid) {
 } else {
     FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
 }
-
 
 let SDK_INT = -1;
 function getSDK() {
@@ -462,10 +463,21 @@ export namespace Utils {
     //     canvas.restore();
     // }
 
-    export function drawImage(canvas: Canvas, icon: ImageSource, x, y) {
-        const drawOffsetX = x - icon.width / 2;
-        const drawOffsetY = y - icon.height / 2;
-        canvas.drawBitmap(global.isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
+    export function drawIcon(canvas: Canvas, chart: Chart<any, any, any>, icon: ImageSource | Shape, x, y) {
+        if (icon instanceof Shape) {
+            const availableWidth = canvas.getWidth();
+            const availableHeight = canvas.getHeight();
+            const width = icon.getWidth(availableWidth, availableHeight);
+            const height = icon.getHeight(availableWidth, availableHeight);
+            canvas.save();
+            canvas.translate(x - width / 2, y - height / 2);
+            icon.drawMyShapeOnCanvas(canvas, chart, availableWidth, availableHeight);
+            canvas.restore();
+        } else {
+            const drawOffsetX = x - icon.width / 2;
+            const drawOffsetY = y - icon.height / 2;
+            canvas.drawBitmap(global.isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
+        }
     }
 
     export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees) {
@@ -623,7 +635,6 @@ export namespace Utils {
             height: Math.abs(rectangleWidth * Math.sin(radians)) + Math.abs(rectangleHeight * Math.cos(radians)),
         };
     }
-
 
     export function logMethod(target, key, descriptor) {
         // save a reference to the original method this way we keep the values currently in the

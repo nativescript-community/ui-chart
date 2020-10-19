@@ -12,7 +12,7 @@ export enum ChartGesture {
     SINGLE_TAP,
     DOUBLE_TAP,
     LONG_PRESS,
-    FLING
+    FLING,
 }
 /**
  * Created by philipp on 12/06/15.

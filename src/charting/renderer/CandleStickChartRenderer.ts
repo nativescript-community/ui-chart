@@ -212,7 +212,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getCandleData();
         const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         // if values are drawn
@@ -252,7 +252,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 }
 
                 if (entry.icon && dataSet.isDrawIconsEnabled()) {
-                    Utils.drawImage(c, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
+                    Utils.drawIcon(c, this.mChart, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
                 }
             }
         }

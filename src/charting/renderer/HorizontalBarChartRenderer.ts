@@ -125,7 +125,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
     public drawValues(c: Canvas) {
         const data = this.mChart.getData();
         const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some(d=>d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
             return;
         }
         // if values are drawn
@@ -204,7 +204,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                         px += iconsOffset.x;
                         py += iconsOffset.y;
 
-                        Utils.drawImage(c, icon, px, py);
+                        Utils.drawIcon(c, this.mChart, icon, px, py);
                     }
                 }
                 // if each value of a potential stack should be drawn
@@ -267,7 +267,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             px += iconsOffset.x;
                             py += iconsOffset.y;
 
-                            Utils.drawImage(c, icon, px, py);
+                            Utils.drawIcon(c, this.mChart, icon, px, py);
                         }
                         // draw stack values
                     } else {
@@ -332,7 +332,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
                             if (isDrawIconsEnabled && entry.icon != null) {
                                 const icon = entry.icon;
-                                Utils.drawImage(c, icon, x + iconsOffset.x, y + iconsOffset.y);
+                                Utils.drawIcon(c, this.mChart, icon, x + iconsOffset.x, y + iconsOffset.y);
                             }
                         }
                     }
