@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/Akylas/nativescript-chart/compare/v1.0.4...v1.1.0) (2020-10-19)
+
+
+### Features
+
+* you can now use shapes as icon ([c07575b](https://github.com/Akylas/nativescript-chart/commit/c07575b8c7f58acf6ebd7682a712fb1d92d59ea7))
+
+
+
+
+
 ## [1.0.4](https://github.com/Akylas/nativescript-chart/compare/v1.0.3...v1.0.4) (2020-10-16)
 
 
