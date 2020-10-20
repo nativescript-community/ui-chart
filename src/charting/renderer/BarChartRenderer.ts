@@ -174,6 +174,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const bottom = y2;
 
         this.mBarRect.set(left, top, right, bottom);
+
         trans.rectToPixelPhase(this.mBarRect, this.mAnimator.getPhaseY());
     }
 
@@ -417,11 +418,10 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 y1 = entry[yKey];
                 y2 = 0;
             }
-
-            this.prepareBarHighlight(getEntryXValue(entry, xKey, index), y1, y2, barData.getBarWidth() / 2, trans);
+            const x = getEntryXValue(entry, xKey, index);
+            this.prepareBarHighlight(x, y1, y2, barData.getBarWidth() / 2, trans);
 
             this.setHighlightDrawPos(high, this.mBarRect);
-
             const customRender = this.mChart.getCustomRenderer();
             if (customRender && customRender.drawHighlight) {
                 const rect = this.mBarRect;
