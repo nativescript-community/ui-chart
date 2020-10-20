@@ -20,6 +20,7 @@ import { ChartAnimator, EasingFunction } from '../animation/ChartAnimator';
 import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
 import { layout } from '@nativescript/core/utils/utils';
+import { EventData } from '@nativescript/core';
 
 const LOG_TAG = 'NSChart';
 
@@ -29,6 +30,10 @@ const LOG_TAG = 'NSChart';
 //     }
 // }
 
+export interface HighlightEventData extends EventData {
+    entry?: Entry;
+    highlight?: Highlight;
+}
 /**
  * Baseclass of all Chart-Views.
  *
@@ -608,7 +613,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         if (high == null) {
             this.mIndicesToHighlight = null;
         } else {
-            if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted', high);
+            // if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted', high);
 
             e = this.mData.getEntryForHighlight(high);
             if (e == null) {
@@ -1058,6 +1063,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param enabled
      */
     public setTouchEnabled(enabled) {
+        // actually not used...
         this.mTouchEnabled = enabled;
     }
 
