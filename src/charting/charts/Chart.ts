@@ -624,12 +624,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.setLastHighlighted(this.mIndicesToHighlight);
 
         if (callListener) {
-            if (!this.valuesToHighlight()) {
-                this.notify({ eventName: 'selected', object: this });
-            } else {
-                // notify the listener
-                this.notify({ eventName: 'selected', object: this, entry: e, highlight: high });
-            }
+            this.notify({ eventName: 'highlight', object: this, entry: e, highlight: high } as HighlightEventData);
         }
 
         // redraw the chart
