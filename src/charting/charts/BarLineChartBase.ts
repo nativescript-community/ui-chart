@@ -504,7 +504,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @return
      */
-    public getTransformer(which: AxisDependency) {
+    public getTransformer(which?: AxisDependency) {
+        if (which === undefined) {
+            if (this.getAxisLeft().isEnabled()) {
+                return this.mLeftAxisTransformer;
+            }
+            return this.mRightAxisTransformer;
+        }
         if (which === AxisDependency.LEFT) return this.mLeftAxisTransformer;
         else return this.mRightAxisTransformer;
     }
@@ -781,7 +787,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param xValue
      */
     public moveViewToX(xValue) {
-        const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, 0, this.getTransformer(AxisDependency.LEFT), this);
+        const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, 0, this.getTransformer(), this);
         this.addViewportJob(job);
     }
 
@@ -1332,7 +1338,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
 
     public getLowestVisibleX() {
-        this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.posForGetLowestVisibleX);
+        this.getTransformer().getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.posForGetLowestVisibleX);
         const result = Math.max(this.mXAxis.mAxisMinimum, this.posForGetLowestVisibleX.x);
         return result;
     }
@@ -1350,7 +1356,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
 
     public getHighestVisibleX() {
-        this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX);
+        this.getTransformer().getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX);
         const result = Math.min(this.mXAxis.mAxisMaximum, this.posForGetHighestVisibleX.x);
 
         return result;
@@ -1602,7 +1608,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mKeepPositionOnRotation) {
             this.mOnSizeChangedBuffer[0] = this.mViewPortHandler.contentLeft();
             this.mOnSizeChangedBuffer[1] = this.mViewPortHandler.contentTop();
-            this.getTransformer(AxisDependency.LEFT).pixelsToValue(this.mOnSizeChangedBuffer);
+            this.getTransformer().pixelsToValue(this.mOnSizeChangedBuffer);
         }
 
         //Superclass transforms chart.
@@ -1610,7 +1616,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         if (this.mKeepPositionOnRotation) {
             //Restoring old position of chart.
-            this.getTransformer(AxisDependency.LEFT).pointValuesToPixel(this.mOnSizeChangedBuffer);
+            this.getTransformer().pointValuesToPixel(this.mOnSizeChangedBuffer);
             this.mViewPortHandler.centerViewPort(this.mOnSizeChangedBuffer, this);
         } else {
             // a resize of the view will redraw the view anyway?

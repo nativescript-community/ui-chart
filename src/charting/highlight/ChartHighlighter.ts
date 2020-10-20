@@ -41,7 +41,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      */
     protected getValsForTouch(x, y) {
         // take any transformer to determine the x-axis value
-        const pos = this.mChart.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(x, y);
+        const pos = this.mChart.getTransformer().getValuesByTouchPoint(x, y);
         return pos;
     }
 

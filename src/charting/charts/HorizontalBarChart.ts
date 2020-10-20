@@ -188,12 +188,12 @@ export class HorizontalBarChart extends BarChart {
     }
 
     public getLowestVisibleX() {
-        this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.posForGetLowestVisibleX);
+        this.getTransformer().getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.posForGetLowestVisibleX);
         return Math.max(this.mXAxis.mAxisMinimum, this.posForGetLowestVisibleX.y);
     }
 
     public getHighestVisibleX() {
-        this.getTransformer(AxisDependency.LEFT).getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.posForGetHighestVisibleX);
+        this.getTransformer().getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.posForGetHighestVisibleX);
         return Math.min(this.mXAxis.mAxisMaximum, this.posForGetHighestVisibleX.y);
     }
 

@@ -4,9 +4,8 @@ import { AxisDependency } from '../../components/YAxis';
 import { Transformer } from '../../utils/Transformer';
 
 export interface BarLineScatterCandleBubbleDataProvider extends ChartInterface {
-
-    getTransformer( axis: AxisDependency): Transformer;
-    isInverted( axis: AxisDependency);
+    getTransformer(axis?: AxisDependency): Transformer;
+    isInverted(axis: AxisDependency);
 
     getLowestVisibleX();
     getHighestVisibleX();
