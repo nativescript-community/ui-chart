@@ -70,6 +70,8 @@ export default Vue.extend({
             // enable scaling and dragging
             chart.setDragEnabled(true);
             chart.setScaleEnabled(true);
+            chart.setHighlightPerTapEnabled(true);
+            chart.setHighlightPerDragEnabled(true);
             // chart.setScaleXEnabled(true);
             // chart.setScaleYEnabled(true);
 
