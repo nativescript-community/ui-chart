@@ -1097,7 +1097,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      *
      * @param desc
      */
-    public setDescription(desc) {
+    public setDescription(desc: Description) {
         this.mDescription = desc;
     }
 
