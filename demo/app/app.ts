@@ -6,7 +6,7 @@ purpose of the file is to pass control to the app’s first module.
 
 const { Application } = require('@nativescript/core');
 
-import { install } from '@nativescript-community/gesturehandler';
+import { install } from '@nativescript-community/ui-chart';
 install();
 
 Application.run({ moduleName: 'app-root' });

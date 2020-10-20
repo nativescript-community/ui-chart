@@ -1,8 +1,7 @@
 import Vue from 'nativescript-vue';
 import App from './App.vue';
 
-import { install } from '@nativescript-community/gesturehandler';
-
+import { install } from '@nativescript-community/ui-chart';
 install();
 import CanvasSVG from '@nativescript-community/ui-svg/vue';
 Vue.use(CanvasSVG);

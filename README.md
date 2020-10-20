@@ -5,15 +5,16 @@
 
 ## Installation
 
-* `tns plugin add @nativescript-community/ui-chart`
+-   `tns plugin add @nativescript-community/ui-chart`
 
 ---
 
 ## Usage
 
 For gestures to work, make sure to add the following code block inside main application file (e.g. app.ts):
+
 ```typescript
-import { install } from '@nativescript-community/gesturehandler';
+import { install } from '@nativescript-community/ui-chart';
 install();
 ```
 
@@ -66,17 +67,21 @@ export function onLineChartLoaded(args) {
 ```
 
 ## NativeScript + Vue
+
 ```javascript
 Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
 ```
+
 ```html
 <LineChart ref="chart" width="300" height="400" @loaded="onChartLoaded"> </LineChart>
 ```
+
 ```javascript
 import { LineChart } from '@nativescript-community/ui-chart/charts/LineChart';
 import { LineDataSet } from '@nativescript-community/ui-chart/data/LineDataSet';
 import { LineData } from '@nativescript-community/ui-chart/data/LineData';
 ```
+
 ```javascript
 onChartLoaded() {
     const chart = this.$refs.chart['nativeView'] as LineChart;
@@ -123,23 +128,22 @@ Instead of directly importing existing native libraries, this library has been r
 
 Additionally, [@nativescript-community/gesturehandler](https://github.com/nativescript-community/gesturehandler) plugin is used for handling chart gestures.
 
-
 In short, these are the benefits of rewriting library into a NativeScript plugin:
-* Same codebase for Android and iOS. Makes maintaining the library very easy.
-* Smaller apps size because there are no native libs or native frameworks to consume space. All done with the power of {N}
+
+-   Same codebase for Android and iOS. Makes maintaining the library very easy.
+-   Smaller apps size because there are no native libs or native frameworks to consume space. All done with the power of {N}
 
 Originally, the main goal was to prevent the need for marshalling all datasets. This is extremely heavy, costly and unnecessary!
 
-Upon running demo samples, one can conclude it is the fastest drawing library, in comparison to ```nativescript-ui-chart``` and ```nativescript-mpchart```.
+Upon running demo samples, one can conclude it is the fastest drawing library, in comparison to `nativescript-ui-chart` and `nativescript-mpchart`.
 
 That is because:
-* It does not marshal or recreate any subset of the data sets, but directly uses the provided array instead
-* It can share the same data array between multiple datasets
-* It can still use the power of native arrays to NOT marshal arrays of positions while drawing lines with [@nativescript-community/ui-canvas](https://github.com/nativescript-community/ui-canvas)
+
+-   It does not marshal or recreate any subset of the data sets, but directly uses the provided array instead
+-   It can share the same data array between multiple datasets
+-   It can still use the power of native arrays to NOT marshal arrays of positions while drawing lines with [@nativescript-community/ui-canvas](https://github.com/nativescript-community/ui-canvas)
 
 ## Documentation
 
 The NativeScript 'ui-chart' plugin is based on the [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) library.
 In few words, its API is identical. The possibility to add API reference will be considered in the future.
-
-
