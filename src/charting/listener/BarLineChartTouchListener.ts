@@ -14,8 +14,15 @@ import {
     Manager,
     PanGestureHandler,
     PinchGestureHandler,
-    TapGestureHandler
+    TapGestureHandler,
 } from '@nativescript-community/gesturehandler';
+
+const LOG_TAG = 'BarLineChartTouchListener';
+
+let TAP_HANDLER_TAG = 12450000;
+let DOUBLE_TAP_HANDLER_TAG = 12451000;
+let PINCH_HANDLER_TAG = 12451000;
+let PAN_HANDLER_TAG = 12451000;
 
 /**
  * TouchListener for Bar-, Line-, Scatter- and CandleStickChart with handles all
@@ -77,12 +84,20 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @param dragTriggerDistance the minimum movement distance that will be interpreted as a "drag" gesture in dp (3dp equals
      *                            to about 9 pixels on a 5.5" FHD screen)
      */
+    TAP_HANDLER_TAG;
+    DOUBLE_TAP_HANDLER_TAG;
+    PINCH_HANDLER_TAG;
+    PAN_HANDLER_TAG;
     constructor(chart: BarLineChartBase<any, any, any>, touchMatrix: Matrix, dragTriggerDistance) {
         super(chart);
         this.mMatrix = touchMatrix;
 
         this.mDragTriggerDist = dragTriggerDistance;
         this.mMinScalePointerDistance = 3.5;
+        this.TAP_HANDLER_TAG = TAP_HANDLER_TAG++;
+        this.DOUBLE_TAP_HANDLER_TAG = DOUBLE_TAP_HANDLER_TAG++;
+        this.PINCH_HANDLER_TAG = PINCH_HANDLER_TAG++;
+        this.PAN_HANDLER_TAG = PAN_HANDLER_TAG++;
     }
 
     panGestureHandler: PanGestureHandler;
@@ -101,14 +116,18 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     getOrCreateDoubleTapGestureHandler() {
         if (!this.doubleTapGestureHandler) {
             const manager = Manager.getInstance();
-            this.doubleTapGestureHandler = manager.createGestureHandler(HandlerType.TAP, 11234, { numberOfTaps: 2 }).on(GestureHandlerStateEvent, this.onDoubleTapGesture, this);
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'creating double tap gesture');
+            this.doubleTapGestureHandler = manager.createGestureHandler(HandlerType.TAP, this.DOUBLE_TAP_HANDLER_TAG, { numberOfTaps: 2 }).on(GestureHandlerStateEvent, this.onDoubleTapGesture, this);
         }
         return this.doubleTapGestureHandler;
     }
     getOrCreateTapGestureHandler() {
         if (!this.tapGestureHandler) {
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'creating tap gesture');
             const manager = Manager.getInstance();
-            this.tapGestureHandler = manager.createGestureHandler(HandlerType.TAP, 11232, { waitFor: [11234] }).on(GestureHandlerStateEvent, this.onTapGesture, this);
+            this.tapGestureHandler = manager
+                .createGestureHandler(HandlerType.TAP, this.TAP_HANDLER_TAG, { waitFor: [this.DOUBLE_TAP_HANDLER_TAG] })
+                .on(GestureHandlerStateEvent, this.onTapGesture, this);
         }
         return this.tapGestureHandler;
     }
@@ -116,10 +135,11 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         if (!this.pinchGestureHandler) {
             const manager = Manager.getInstance();
 
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'creating pinch gesture');
             this.pinchGestureHandler = manager
-                .createGestureHandler(HandlerType.PINCH, 11231, {
+                .createGestureHandler(HandlerType.PINCH, this.PINCH_HANDLER_TAG, {
                     minSpan: 20,
-                    shouldCancelWhenOutside: false
+                    shouldCancelWhenOutside: false,
                 })
                 .on(GestureHandlerStateEvent, this.onPinchGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPinchGestureTouch, this);
@@ -129,11 +149,12 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     getOrCreatePanGestureHandler() {
         if (!this.panGestureHandler) {
             const manager = Manager.getInstance();
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'creating pan gestures');
             this.panGestureHandler = manager
-                .createGestureHandler(HandlerType.PAN, 11230, {
+                .createGestureHandler(HandlerType.PAN, this.PAN_HANDLER_TAG, {
                     minPointers: 1,
                     maxPointers: 1,
-                    shouldCancelWhenOutside: false
+                    shouldCancelWhenOutside: false,
                 })
                 .on(GestureHandlerStateEvent, this.onPanGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPanGestureTouch, this);
@@ -144,28 +165,36 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     setDoubleTap(enabled: boolean) {
         if (enabled) {
             this.getOrCreateDoubleTapGestureHandler().attachToView(this.mChart);
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'enabling double tap gestures');
         } else if (this.doubleTapGestureHandler) {
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'disabling double tap gestures');
             this.doubleTapGestureHandler.detachFromView(this.mChart);
         }
     }
     setTap(enabled: boolean) {
         if (enabled) {
             this.getOrCreateTapGestureHandler().attachToView(this.mChart);
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'enabling tap gestures', this.mChart, this.mChart && this.mChart.nativeViewProtected);
         } else if (this.tapGestureHandler) {
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'disabling tap gestures');
             this.tapGestureHandler.detachFromView(this.mChart);
         }
     }
     setPinch(enabled: boolean) {
         if (enabled) {
             this.getOrCreatePinchGestureHandler().attachToView(this.mChart);
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'enabling pinch gestures');
         } else if (this.pinchGestureHandler) {
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'disabling pinch gestures');
             this.pinchGestureHandler.detachFromView(this.mChart);
         }
     }
     setPan(enabled: boolean) {
         if (enabled) {
             this.getOrCreatePanGestureHandler().attachToView(this.mChart);
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'enabling pan gestures');
         } else if (this.panGestureHandler) {
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'disabling pan gestures');
             this.panGestureHandler.detachFromView(this.mChart);
         }
     }
@@ -176,7 +205,10 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         this.pinchGestureHandler && this.pinchGestureHandler.detachFromView(chart);
         this.tapGestureHandler && this.tapGestureHandler.detachFromView(chart);
         this.doubleTapGestureHandler && this.doubleTapGestureHandler.detachFromView(chart);
-        // this.longpressGestureHandler.detachFromView(chart);
+        this.panGestureHandler = null;
+        this.pinchGestureHandler = null;
+        this.tapGestureHandler = null;
+        this.doubleTapGestureHandler = null;
     }
     init() {
         super.init();
@@ -196,8 +228,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         // this.longpressGestureHandler.attachToView(chart);
     }
     onPanGestureState(event: GestureStateEventData) {
+        const chart = this.mChart;
         // console.log('onPanGestureState', event.data.state, event.data.prevState, event.data.extraData);
-        if (!this.mChart.isDragEnabled() && !this.mChart.isScaleXEnabled() && !this.mChart.isScaleYEnabled()) return;
+        if (!chart.isHighlightPerDragEnabled() && !chart.isDragEnabled()) return;
         const state = event.data.state;
         switch (state) {
             // case GestureState.BEGAN:
@@ -223,7 +256,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     this.mDecelerationVelocity.x = event.data.extraData.velocityX;
                     this.mDecelerationVelocity.y = event.data.extraData.velocityY;
 
-                    this.mChart.invalidate();
+                    chart.invalidate();
                     // Utils.postInvalidateOnAnimation(this.mChart); // This causes computeScroll to fire, recommended for this by
                     // Google
                 }
@@ -233,11 +266,8 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     }
     onPanGestureTouch(event: GestureTouchEventData) {
         const chart = this.mChart;
-        if (chart.hasListeners('pan')) {
-            chart.notify({ eventName: 'pan', data: event.data, object: chart });
-        }
 
-        if (!chart.isDragEnabled() && !chart.isScaleXEnabled() && !chart.isScaleYEnabled()) return;
+        if (!chart.isHighlightPerDragEnabled() && !chart.isDragEnabled()) return;
 
         const data = event.data;
 
@@ -245,6 +275,10 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             return;
         }
         if (this.mTouchMode === ChartTouchListener.DRAG) {
+            if (chart.hasListeners('pan')) {
+                chart.notify({ eventName: 'pan', data: event.data, object: chart });
+            }
+
             // this.mChart.disableScroll();
 
             const x = event.data.extraData.translationX;
@@ -253,24 +287,22 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             this.performDrag(event, x, y);
             this.mMatrix = chart.getViewPortHandler().refresh(this.mMatrix, chart, true);
         } else if (this.mTouchMode === ChartTouchListener.NONE) {
-            if (this.mChart.isDragEnabled()) {
-                const shouldPan = !chart.isFullyZoomedOut() || !chart.hasNoDragOffset();
+            const shouldPan = !chart.isFullyZoomedOut() || !chart.hasNoDragOffset();
 
-                if (shouldPan) {
-                    // let distanceX = Math.abs(event.getX() - this.mTouchStartPoint.x);
-                    // let distanceY = Math.abs(event.getY() - this.mTouchStartPoint.y);
+            if (shouldPan) {
+                // let distanceX = Math.abs(event.getX() - this.mTouchStartPoint.x);
+                // let distanceY = Math.abs(event.getY() - this.mTouchStartPoint.y);
 
-                    // Disable dragging in a direction that's disallowed
-                    if (chart.isDragXEnabled() && chart.isDragYEnabled()) {
-                        this.mLastGesture = ChartGesture.DRAG;
-                        this.mTouchMode = ChartTouchListener.DRAG;
-                    }
-                } else {
-                    if (chart.isHighlightPerDragEnabled()) {
-                        this.mLastGesture = ChartGesture.DRAG;
+                // Disable dragging in a direction that's disallowed
+                if (chart.isDragXEnabled() && chart.isDragYEnabled()) {
+                    this.mLastGesture = ChartGesture.DRAG;
+                    this.mTouchMode = ChartTouchListener.DRAG;
+                }
+            } else {
+                if (chart.isHighlightPerDragEnabled()) {
+                    this.mLastGesture = ChartGesture.DRAG;
 
-                        if (chart.isHighlightPerDragEnabled()) this.performHighlightDrag(event);
-                    }
+                    this.performHighlightDrag(event);
                 }
             }
         }
@@ -329,14 +361,16 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     }
     onPinchGestureTouch(event: GestureTouchEventData) {
         const chart = this.mChart;
-        if (chart.hasListeners('pinch')) {
-            chart.notify({ eventName: 'pinch', data: event.data, object: chart });
-        }
+
         // console.log('onPinchGestureTouch', event.data.state, event.data.extraData, this.mChart.isScaleXEnabled(), this.mChart.isScaleYEnabled(), this.mTouchMode);
         if (!chart.isScaleXEnabled() && !chart.isScaleYEnabled()) return;
 
         if (event.data.state !== GestureState.ACTIVE) {
             return;
+        }
+
+        if (chart.hasListeners('pinch')) {
+            chart.notify({ eventName: 'pinch', data: event.data, object: chart });
         }
 
         if (this.mTouchMode === ChartTouchListener.X_ZOOM || this.mTouchMode === ChartTouchListener.Y_ZOOM || this.mTouchMode === ChartTouchListener.PINCH_ZOOM) {
@@ -409,7 +443,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             this.mMatrix = this.mChart.getViewPortHandler().refresh(this.mMatrix, this.mChart, true);
             // }
         }
-
     }
 
     /**
@@ -608,24 +641,24 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         }
     }
     public onTapGesture(event: GestureStateEventData) {
+        if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'onTapGesture', event.data.state, event.data.prevState);
         if (event.data.state === GestureState.END && event.data.prevState === GestureState.ACTIVE) {
             this.mLastGesture = ChartGesture.SINGLE_TAP;
             const chart = this.mChart;
-
-            // OnChartGestureListener l = this.mChart.getOnChartGestureListener();
-            const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
-            if (chart.hasListeners('tap')) {
-                chart.notify({ eventName: 'tap', data: event.data, object: chart, highlight: h });
-            }
-
-            // if (l != null) {
-            //     l.onChartSingleTapped(e);
-            // }
-            if (!chart.isHighlightPerTapEnabled()) {
+            const hasListener = chart.hasListeners('tap');
+            const isHighlightPerTapEnabled = chart.isHighlightPerTapEnabled();
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'tap', hasListener, isHighlightPerTapEnabled);
+            if (!hasListener && !isHighlightPerTapEnabled) {
                 return;
             }
-
-            this.performHighlight(h);
+            const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
+            if (this.mChart.isLogEnabled) console.log(LOG_TAG, 'tap highlight', h);
+            if (hasListener) {
+                chart.notify({ eventName: 'tap', data: event.data, object: chart, highlight: h });
+            }
+            if (isHighlightPerTapEnabled) {
+                this.performHighlight(h);
+            }
         }
     }
 

@@ -1662,13 +1662,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
                 for (let i = 0; i < events.length; i++) {
                     const evt = events[i].trim();
                     if (arg === 'tap' && !this.isHighlightPerTapEnabled()) {
-                        this.getOrCreateBarTouchListener().setTap(false);
+                        this.mChartTouchListener && this.mChartTouchListener.setTap(false);
                     } else if (arg === 'doubleTap' && !this.isDoubleTapToZoomEnabled()) {
-                        this.getOrCreateBarTouchListener().setDoubleTap(false);
+                        this.mChartTouchListener && this.mChartTouchListener.setDoubleTap(false);
                     } else if (arg === 'pan' && !this.isHighlightPerDragEnabled() && !this.isDragEnabled()) {
-                        this.getOrCreateBarTouchListener().setPan(false);
+                        this.mChartTouchListener && this.mChartTouchListener.setPan(false);
                     } else if (arg === 'pinch' && !this.isPinchZoomEnabled()) {
-                        this.getOrCreateBarTouchListener().setPinch(false);
+                        this.mChartTouchListener && this.mChartTouchListener.setPinch(false);
                     }
                     Observable.prototype.removeEventListener.call(this, evt, callback, thisArg);
                 }
