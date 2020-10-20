@@ -17,7 +17,6 @@ export enum Mode {
 }
 
 export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet {
-
     /**
      * Drawing mode for this line dataset
      **/
@@ -122,7 +121,6 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     isFiltered() {
         return !!this.mFilteredValues;
     }
-
 
     /**
      * Returns the drawing mode for this line dataset

@@ -59,7 +59,6 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         this.mValues = values;
     }
 
-
     toString() {
         return `${this.constructor.name}[${this.getLabel()}]`;
     }
@@ -325,6 +324,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
                 let closestYValue = values[closest][yKey];
                 let closestYIndex = closest;
 
+                // eslint-disable-next-line no-constant-condition
                 while (true) {
                     closest += 1;
                     if (closest >= values.length) break;

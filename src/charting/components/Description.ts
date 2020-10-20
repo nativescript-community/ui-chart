@@ -25,7 +25,7 @@ export class Description extends ComponentBase {
         super();
 
         // default size
-        this.mTextSize =8;
+        this.mTextSize = 8;
     }
 
     /**
