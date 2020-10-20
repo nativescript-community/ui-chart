@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/Akylas/nativescript-chart/compare/v1.1.0...v1.1.1) (2020-10-20)
+
+
+### Bug Fixes
+
+* fix for charts using only right axis ([e6ce46c](https://github.com/Akylas/nativescript-chart/commit/e6ce46c5c56bf526d8195648c2ac3273e70dbfe0))
+* gesture handling rewrite and bug fixes ([2b7c92a](https://github.com/Akylas/nativescript-chart/commit/2b7c92a1e805374878171610296d8e6dbc5d2570))
+* HighlightEventData ([aa046be](https://github.com/Akylas/nativescript-chart/commit/aa046be6e5459a76ea4385aaca37da6f3a6d2829))
+* rename event to highlight ([7c1f4af](https://github.com/Akylas/nativescript-chart/commit/7c1f4afce098fbec148198eafeeddd656e10a2f0))
+* use custom install for coherence ([46d27b1](https://github.com/Akylas/nativescript-chart/commit/46d27b171cc926eca01fb596347adf6e91b259c8))
+
+
+
+
+
 # [1.1.0](https://github.com/Akylas/nativescript-chart/compare/v1.0.4...v1.1.0) (2020-10-19)
 
 
