@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.3](https://github.com/Akylas/nativescript-chart/compare/v1.1.2...v1.1.3) (2020-10-21)
+
+
+### Bug Fixes
+
+* logging fix ([18b928a](https://github.com/Akylas/nativescript-chart/commit/18b928adf47f3280fc90e830e0bb1b62e760a550))
+
+
+### Features
+
+* setClipDataToContent ([922ea80](https://github.com/Akylas/nativescript-chart/commit/922ea801feba3f79bd7b3f8efe3601a371ffdcdf))
+
+
+
+
+
 ## [1.1.2](https://github.com/Akylas/nativescript-chart/compare/v1.1.1...v1.1.2) (2020-10-20)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
