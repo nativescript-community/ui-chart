@@ -82,6 +82,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected mClipValuesToContent = false;
 
+    protected mClipDataToContent = false;
+
     protected mDrawHighlight = true;
 
     /**
@@ -209,9 +211,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (rightLimitEnabled && this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
 
         // make sure the data cannot be drawn outside the content-rect
-        let clipRestoreCount = canvas.save();
-        canvas.clipRect(this.mViewPortHandler.getContentRect());
-        this.mRenderer.drawData(canvas);
+        if (this.isClipDataToContentEnabled()) {
+            canvas.save();
+            canvas.clipRect(this.mViewPortHandler.getContentRect());
+            this.mRenderer.drawData(canvas);
+        } else {
+            this.mRenderer.drawData(canvas);
+        }
 
         if (!this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
 
@@ -225,7 +231,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         }
 
         // Removes clipping rectangle
-        canvas.restoreToCount(clipRestoreCount);
+        if (this.isClipDataToContentEnabled()) {
+            canvas.restore();
+        }
 
         this.mRenderer.drawExtras(canvas);
 
@@ -240,12 +248,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mAxisRendererRight.renderAxisLabels(canvas);
 
         if (this.isClipValuesToContentEnabled()) {
-            clipRestoreCount = canvas.save();
+            canvas.save();
             canvas.clipRect(this.mViewPortHandler.getContentRect());
 
             this.mRenderer.drawValues(canvas);
 
-            // canvas.restoreToCount(clipRestoreCount);
             canvas.restore();
         } else {
             this.mRenderer.drawValues(canvas);
@@ -1205,6 +1212,26 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public isClipValuesToContentEnabled() {
         return this.mClipValuesToContent;
+    }
+
+    /**
+     * When enabled, the data will be clipped to contentRect,
+     * otherwise they can bleed outside the content rect.
+     *
+     * @param enabled
+     */
+    public setClipDataToContent(enabled) {
+        this.mClipDataToContent = enabled;
+    }
+
+    /**
+     * When enabled, the data will be clipped to contentRect,
+     * otherwise they can bleed outside the content rect.
+     *
+     * @return
+     */
+    public isClipDataToContentEnabled() {
+        return this.mClipDataToContent;
     }
 
     public setDrawHighlight(enabled) {
