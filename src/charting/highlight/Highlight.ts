@@ -6,7 +6,7 @@ import { Entry } from '../data/Entry';
  *
  * @author Philipp Jahoda
  */
-export class Highlight {
+export class Highlight<T extends Entry = Entry> {
     /**
      * the x-value of the highlighted value
      */
@@ -60,7 +60,7 @@ export class Highlight {
     /**
      * the associated entry
      */
-    entry?: Entry;
+    entry?: T;
 
     /**
      * the index of the dataset the highlighted value is in
