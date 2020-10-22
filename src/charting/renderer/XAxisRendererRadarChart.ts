@@ -8,6 +8,7 @@ import { XAxisRenderer } from './XAxisRenderer';
 
 export class XAxisRendererRadarChart extends XAxisRenderer {
     private mChart: RadarChart;
+    mForceLongestLabelComputation = true;
 
     constructor(viewPortHandler: ViewPortHandler, xAxis: XAxis, chart: RadarChart) {
         super(viewPortHandler, xAxis, null);

@@ -11,7 +11,7 @@ import { profile } from '@nativescript/core';
 
 export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     protected mChart: BarChart;
-
+    mForceLongestLabelComputation = true;
     protected mRenderLimitLinesPathBuffer: Path = new Path();
 
     constructor(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: Transformer, chart: BarChart) {

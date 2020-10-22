@@ -10,6 +10,7 @@ import { profile } from '@nativescript/core';
 
 export class XAxisRenderer extends AxisRenderer {
     protected mXAxis: XAxis;
+    protected mForceLongestLabelComputation = false;
 
     constructor(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: Transformer) {
         super(viewPortHandler, trans, xAxis);
@@ -56,92 +57,97 @@ export class XAxisRenderer extends AxisRenderer {
 
         this.computeSize();
     }
-
     protected computeSize() {
-        const longest = this.mXAxis.getLongestLabel();
+        const axis = this.mXAxis;
+        this.mAxisLabelPaint.setTypeface(axis.getTypeface());
+        this.mAxisLabelPaint.setTextSize(axis.getTextSize());
 
-        this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
-        this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize());
+        const rotation = axis.getLabelRotationAngle();
+        if (this.mForceLongestLabelComputation || rotation % 360 !== 0) {
+            const longest = axis.getLongestLabel();
+            const labelSize = Utils.calcTextSize(this.mAxisLabelPaint, longest);
+            const labelWidth = labelSize.width;
+            const labelHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q');
+            // const labelHeight = Utils.getLineHeight(this.mAxisLabelPaint);
 
-        const labelSize = Utils.calcTextSize(this.mAxisLabelPaint, longest);
+            const labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(labelWidth, labelHeight, axis.getLabelRotationAngle());
 
-        const labelWidth = labelSize.width;
-        const labelHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q');
-        // const labelHeight = Utils.getLineHeight(this.mAxisLabelPaint);
-
-        const labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(labelWidth, labelHeight, this.mXAxis.getLabelRotationAngle());
-
-        this.mXAxis.mLabelWidth = Math.round(labelWidth);
-        this.mXAxis.mLabelHeight = Math.round(labelHeight);
-        this.mXAxis.mLabelRotatedWidth = Math.round(labelRotatedSize.width);
-        this.mXAxis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
-
-        // FSize.recycleInstance(labelRotatedSize);
-        // FSize.recycleInstance(labelSize);
+            axis.mLabelWidth = Math.round(labelWidth);
+            axis.mLabelHeight = Math.round(labelHeight);
+            axis.mLabelRotatedWidth = Math.round(labelRotatedSize.width);
+            axis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
+        } else {
+            axis.mLabelWidth = 1;
+            axis.mLabelHeight = 1;
+            axis.mLabelRotatedWidth = 1;
+            axis.mLabelRotatedHeight = 1;
+        }
     }
 
     @profile
     public renderAxisLabels(c: Canvas) {
-        if (!this.mXAxis.isEnabled() || !this.mXAxis.isDrawLabelsEnabled()) return;
+        const axis = this.mXAxis;
+        if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) return;
 
-        const yoffset = this.mXAxis.getYOffset();
+        const yoffset = axis.getYOffset();
 
-        this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
-        this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize());
-        this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
-        this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
+        this.mAxisLabelPaint.setTypeface(axis.getTypeface());
+        this.mAxisLabelPaint.setTextSize(axis.getTextSize());
+        this.mAxisLabelPaint.setTextAlign(axis.getLabelTextAlign());
+        this.mAxisLabelPaint.setColor(axis.getTextColor());
         // const align = this.mAxisLabelPaint.getTextAlign();
         // this.mAxisLabelPaint.setTextAlign(Align.CENTER);
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         const pointF = { x: 0, y: 0 };
-        if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
+        if (axis.getPosition() === XAxisPosition.TOP) {
             pointF.x = 0.5;
             pointF.y = 1.0;
             this.drawLabels(c, rect.top - yoffset, pointF);
-            this.drawMarkTicket(c,rect.top,-yoffset/2);
-        } else if (this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE) {
+            this.drawMarkTicket(c, rect.top, -yoffset / 2);
+        } else if (axis.getPosition() === XAxisPosition.TOP_INSIDE) {
             pointF.x = 0.5;
             pointF.y = 1.0;
-            this.drawLabels(c, rect.top + yoffset + this.mXAxis.mLabelRotatedHeight, pointF);
-            this.drawMarkTicket(c,rect.top,-yoffset/2);
-        } else if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
+            this.drawLabels(c, rect.top + yoffset + axis.mLabelRotatedHeight, pointF);
+            this.drawMarkTicket(c, rect.top, -yoffset / 2);
+        } else if (axis.getPosition() === XAxisPosition.BOTTOM) {
             pointF.x = 0.5;
             pointF.y = 0.0;
             this.drawLabels(c, rect.bottom + yoffset, pointF);
-            this.drawMarkTicket(c,rect.bottom,+yoffset/2);
-        } else if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE) {
+            this.drawMarkTicket(c, rect.bottom, +yoffset / 2);
+        } else if (axis.getPosition() === XAxisPosition.BOTTOM_INSIDE) {
             pointF.x = 0.5;
             pointF.y = 0.0;
-            this.drawLabels(c, rect.bottom - yoffset - this.mXAxis.mLabelRotatedHeight, pointF);
-            this.drawMarkTicket(c,rect.bottom,+yoffset/2);
+            this.drawLabels(c, rect.bottom - yoffset - axis.mLabelRotatedHeight, pointF);
+            this.drawMarkTicket(c, rect.bottom, +yoffset / 2);
         } else {
             // BOTH SIDED
             pointF.x = 0.5;
             pointF.y = 1.0;
             this.drawLabels(c, rect.top - yoffset, pointF);
-            this.drawMarkTicket(c,rect.top,-yoffset/2);
+            this.drawMarkTicket(c, rect.top, -yoffset / 2);
             pointF.x = 0.5;
             pointF.y = 0.0;
             this.drawLabels(c, rect.bottom + yoffset, pointF);
-            this.drawMarkTicket(c,rect.bottom,+yoffset/2);
+            this.drawMarkTicket(c, rect.bottom, +yoffset / 2);
         }
         // this.mAxisLabelPaint.setTextAlign(align);
         // MPPointF.recycleInstance(pointF);
     }
 
     public renderAxisLine(c: Canvas) {
-        if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled() || this.mXAxis.getAxisLineWidth() === 0 || this.mXAxis.mEntryCount === 0) return;
+        const axis = this.mXAxis;
+        if (!axis.isDrawAxisLineEnabled() || !axis.isEnabled() || axis.getAxisLineWidth() === 0 || axis.mEntryCount === 0) return;
 
-        this.mAxisLinePaint.setColor(this.mXAxis.getAxisLineColor());
-        this.mAxisLinePaint.setStrokeWidth(this.mXAxis.getAxisLineWidth());
-        this.mAxisLinePaint.setPathEffect(this.mXAxis.getAxisLineDashPathEffect());
+        this.mAxisLinePaint.setColor(axis.getAxisLineColor());
+        this.mAxisLinePaint.setStrokeWidth(axis.getAxisLineWidth());
+        this.mAxisLinePaint.setPathEffect(axis.getAxisLineDashPathEffect());
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
-        if (this.mXAxis.getPosition() === XAxisPosition.TOP || this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
+        if (axis.getPosition() === XAxisPosition.TOP || axis.getPosition() === XAxisPosition.TOP_INSIDE || axis.getPosition() === XAxisPosition.BOTH_SIDED) {
             c.drawLine(rect.left, rect.top, rect.right, rect.top, this.mAxisLinePaint);
         }
 
-        if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM || this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
+        if (axis.getPosition() === XAxisPosition.BOTTOM || axis.getPosition() === XAxisPosition.BOTTOM_INSIDE || axis.getPosition() === XAxisPosition.BOTH_SIDED) {
             c.drawLine(rect.left, rect.bottom, rect.top, rect.bottom, this.mAxisLinePaint);
         }
     }
@@ -153,17 +159,18 @@ export class XAxisRenderer extends AxisRenderer {
      */
     @profile
     protected drawLabels(c: Canvas, pos, anchor: MPPointF) {
-        const labelRotationAngleDegrees = this.mXAxis.getLabelRotationAngle();
-        const centeringEnabled = this.mXAxis.isCenterAxisLabelsEnabled();
-        const length = this.mXAxis.mEntryCount * 2;
+        const axis = this.mXAxis;
+        const labelRotationAngleDegrees = axis.getLabelRotationAngle();
+        const centeringEnabled = axis.isCenterAxisLabelsEnabled();
+        const length = axis.mEntryCount * 2;
         const positions = Utils.createNativeArray(length);
 
         for (let i = 0; i < length; i += 2) {
             // only fill x values
             if (centeringEnabled) {
-                positions[i] = this.mXAxis.mCenteredEntries[i / 2];
+                positions[i] = axis.mCenteredEntries[i / 2];
             } else {
-                positions[i] = this.mXAxis.mEntries[i / 2];
+                positions[i] = axis.mEntries[i / 2];
             }
             if (i + 1 < length) {
                 positions[i + 1] = 0;
@@ -180,10 +187,10 @@ export class XAxisRenderer extends AxisRenderer {
             let x = positions[i];
 
             if (this.mViewPortHandler.isInBoundsX(x)) {
-                const label = this.mXAxis.getValueFormatter().getAxisLabel(this.mXAxis.mEntries[i / 2], this.mXAxis);
-                if (this.mXAxis.isAvoidFirstLastClippingEnabled()) {
+                const label = axis.getValueFormatter().getAxisLabel(axis.mEntries[i / 2], axis);
+                if (axis.isAvoidFirstLastClippingEnabled()) {
                     // avoid clipping of the last
-                    if (i / 2 === this.mXAxis.mEntryCount - 1 && this.mXAxis.mEntryCount > 1) {
+                    if (i / 2 === axis.mEntryCount - 1 && axis.mEntryCount > 1) {
                         const width = Utils.calcTextWidth(this.mAxisLabelPaint, label);
 
                         if (width > offsetRight * 2 && x + width > chartWidth) {
@@ -196,7 +203,6 @@ export class XAxisRenderer extends AxisRenderer {
                         x += width / 2;
                     }
                 }
-
                 this.drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees);
             }
         }
@@ -212,7 +218,7 @@ export class XAxisRenderer extends AxisRenderer {
      * @param pos
      * @param length
      */
-    protected  drawMarkTicket ( c: Canvas,  pos,  ticklength) {
+    protected drawMarkTicket(c: Canvas, pos, ticklength) {
         if (!this.mXAxis.isDrawMarkTicksEnabled()) return;
 
         const length = this.mAxis.mEntryCount * 2;
@@ -222,15 +228,15 @@ export class XAxisRenderer extends AxisRenderer {
         const positions = this.mRenderGridLinesBuffer;
         for (let i = 0; i < length; i += 2) {
             positions[i] = this.mXAxis.mEntries[i / 2];
-            if (i+1 < length) {
-                positions[i+1] = 0;
+            if (i + 1 < length) {
+                positions[i + 1] = 0;
             }
         }
         this.mTrans.pointValuesToPixel(positions);
 
         for (let i = 0; i < length; i += 2) {
             const x = positions[i];
-            c.drawLine(x, pos, x, pos+ticklength , this.mAxisLinePaint);
+            c.drawLine(x, pos, x, pos + ticklength, this.mAxisLinePaint);
         }
     }
 
@@ -238,7 +244,8 @@ export class XAxisRenderer extends AxisRenderer {
     protected mRenderGridLinesBuffer = [];
 
     public renderGridLines(c: Canvas) {
-        if (!this.mXAxis.isDrawGridLinesEnabled() || !this.mXAxis.isEnabled()) return;
+        const axis = this.mXAxis;
+        if (!axis.isDrawGridLinesEnabled() || !axis.isEnabled()) return;
 
         const clipRestoreCount = c.save();
         c.clipRect(this.getGridClippingRect());
@@ -250,8 +257,8 @@ export class XAxisRenderer extends AxisRenderer {
         const positions = this.mRenderGridLinesBuffer;
 
         for (let i = 0; i < length; i += 2) {
-            positions[i] = this.mXAxis.mEntries[i / 2];
-            positions[i + 1] = this.mXAxis.mEntries[i / 2];
+            positions[i] = axis.mEntries[i / 2];
+            positions[i + 1] = axis.mEntries[i / 2];
         }
 
         this.mTrans.pointValuesToPixel(positions);
