@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.4](https://github.com/Akylas/nativescript-chart/compare/v1.1.3...v1.1.4) (2020-10-22)
+
+
+### Bug Fixes
+
+* offset computation fix ([1c440c2](https://github.com/Akylas/nativescript-chart/commit/1c440c2bf3d7918ad5d4f04b32ef68f7aeb782d0))
+* some optimisations ([b15fe42](https://github.com/Akylas/nativescript-chart/commit/b15fe42ea6b56c3c57f156a345ae6b96c5a414da))
+
+
+### Features
+
+* setDrawLabelsBehindData ([d2e8bdd](https://github.com/Akylas/nativescript-chart/commit/d2e8bddfcb4e8d3aaeacc08b7ae0b7f43c98eb07))
+* setSuggestedAxisMinimum and setSuggestedAxisMaximum ([aead8af](https://github.com/Akylas/nativescript-chart/commit/aead8afafdb9e9826de0edc7e5755cf1797934c7))
+
+
+
+
+
 ## [1.1.3](https://github.com/Akylas/nativescript-chart/compare/v1.1.2...v1.1.3) (2020-10-21)
 
 
