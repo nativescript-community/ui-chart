@@ -289,7 +289,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mAxisRight.isEnabled()) {
             this.mRightAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
         }
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft.isEnabled() || this.mXAxis.isEnabled()) {
             this.mLeftAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
         }
     }
@@ -298,7 +298,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mAxisRight.isEnabled()) {
             this.mRightAxisTransformer.prepareMatrixOffset(this.mAxisRight.isInverted());
         }
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft.isEnabled() || this.mXAxis.isEnabled()) {
             this.mLeftAxisTransformer.prepareMatrixOffset(this.mAxisLeft.isInverted());
         }
     }
