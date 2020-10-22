@@ -1,5 +1,4 @@
-
-import {Renderer} from './Renderer';
+import { Renderer } from './Renderer';
 import { AxisBase } from '../components/AxisBase';
 import { Align, Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
@@ -12,41 +11,39 @@ import { profile } from '@nativescript/core/profiling';
  * @author Philipp Jahoda
  */
 export abstract class AxisRenderer extends Renderer {
-
     /** base axis this axis renderer works with */
     protected mAxis: AxisBase;
 
     /** transformer to transform values to screen pixels and return */
-    protected  mTrans: Transformer;
+    protected mTrans: Transformer;
 
     /**
      * palet object for the grid lines
      */
-    protected  mGridPaint: Paint;
+    protected mGridPaint: Paint;
 
     /**
      * palet for the x-label values
      */
-    protected  mAxisLabelPaint: Paint;
+    protected mAxisLabelPaint: Paint;
 
     /**
      * palet for the line surrounding the chart
      */
-    protected  mAxisLinePaint: Paint;
+    protected mAxisLinePaint: Paint;
 
     /**
      * palet used for the limit lines
      */
-    protected  mLimitLinePaint: Paint;
+    protected mLimitLinePaint: Paint;
 
-    constructor( viewPortHandler: ViewPortHandler,  trans: Transformer,  axis: AxisBase) {
+    constructor(viewPortHandler: ViewPortHandler, trans: Transformer, axis: AxisBase) {
         super(viewPortHandler);
 
         this.mTrans = trans;
         this.mAxis = axis;
 
-        if(this.mViewPortHandler != null) {
-
+        if (this.mViewPortHandler != null) {
             this.mAxisLabelPaint = new Paint();
             this.mAxisLabelPaint.setAntiAlias(true);
             this.mAxisLabelPaint.setTextAlign(Align.LEFT);
@@ -73,7 +70,7 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @return
      */
-    public  getPaintAxisLabels() {
+    public getPaintAxisLabels() {
         return this.mAxisLabelPaint;
     }
 
@@ -83,7 +80,7 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @return
      */
-    public  getPaintGrid() {
+    public getPaintGrid() {
         return this.mGridPaint;
     }
 
@@ -93,7 +90,7 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @return
      */
-    public  getPaintAxisLine() {
+    public getPaintAxisLine() {
         return this.mAxisLinePaint;
     }
 
@@ -102,7 +99,7 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @return
      */
-    public  getTransformer() {
+    public getTransformer() {
         return this.mTrans;
     }
 
@@ -112,8 +109,7 @@ export abstract class AxisRenderer extends Renderer {
      * @param min - the minimum value in the data object for this axis
      * @param max - the maximum value in the data object for this axis
      */
-    public computeAxis( min,  max,  inverted) {
-
+    public computeAxis(min, max, inverted) {
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
         if (this.mViewPortHandler != null && this.mViewPortHandler.contentWidth() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
@@ -122,13 +118,11 @@ export abstract class AxisRenderer extends Renderer {
             const p2 = this.mTrans.getValuesByTouchPoint(rect.left, rect.bottom);
 
             if (!inverted) {
-
-                min =  p2.y;
-                max =  p1.y;
+                min = p2.y;
+                max = p1.y;
             } else {
-
-                min =  p1.y;
-                max =  p2.y;
+                min = p1.y;
+                max = p2.y;
             }
 
             // MPPointD.recycleInstance(p1);
@@ -143,7 +137,7 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @return
      */
-    protected computeAxisValues( min,  max) {
+    protected computeAxisValues(min, max) {
         const yMin = min;
         const yMax = max;
 
@@ -163,12 +157,13 @@ export abstract class AxisRenderer extends Renderer {
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
-        if (this.mAxis.isGranularityEnabled())
-        {interval = interval < this.mAxis.getGranularity() ? this.mAxis.getGranularity() : interval;}
+        if (this.mAxis.isGranularityEnabled()) {
+            interval = interval < this.mAxis.getGranularity() ? this.mAxis.getGranularity() : interval;
+        }
 
         // Normalize interval
-        const intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10,  Math.log10(interval)));
-        const intervalSigDigit =  (interval / intervalMagnitude);
+        const intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10, Math.log10(interval)));
+        const intervalSigDigit = interval / intervalMagnitude;
         if (intervalSigDigit > 5) {
             // Use one order of magnitude higher, to avoid intervals like 0.9 or
             // 90
@@ -179,8 +174,7 @@ export abstract class AxisRenderer extends Renderer {
 
         // force label count
         if (this.mAxis.isForceLabelsEnabled()) {
-
-            interval =  range /  (labelCount - 1);
+            interval = range / (labelCount - 1);
             this.mAxis.mEntryCount = labelCount;
 
             if (this.mAxis.mEntries.length < labelCount) {
@@ -199,9 +193,8 @@ export abstract class AxisRenderer extends Renderer {
 
             // no forced count
         } else {
-
             let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
-            if(this.mAxis.isCenterAxisLabelsEnabled()) {
+            if (this.mAxis.isCenterAxisLabelsEnabled()) {
                 first -= interval;
             }
 
@@ -224,23 +217,23 @@ export abstract class AxisRenderer extends Renderer {
             }
 
             for (f = first, i = 0; i < n; f += interval, ++i) {
+                if (f === 0.0) {
+                    // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
+                    f = 0.0;
+                }
 
-                if (f === 0.0) // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
-                {f = 0.0;}
-
-                this.mAxis.mEntries[i] =  f;
+                this.mAxis.mEntries[i] = f;
             }
         }
 
         // set decimals
         if (interval < 1) {
-            this.mAxis.mDecimals =  Math.ceil(-Math.log10(interval));
+            this.mAxis.mDecimals = Math.ceil(-Math.log10(interval));
         } else {
             this.mAxis.mDecimals = 0;
         }
 
         if (this.mAxis.isCenterAxisLabelsEnabled()) {
-
             if (this.mAxis.mCenteredEntries.length < n) {
                 this.mAxis.mCenteredEntries = [];
             }
@@ -258,26 +251,26 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @param c
      */
-    public abstract  renderAxisLabels( c: Canvas);
+    public abstract renderAxisLabels(c: Canvas);
 
     /**
      * Draws the grid lines belonging to the axis.
      *
      * @param c
      */
-    public abstract  renderGridLines( c: Canvas);
+    public abstract renderGridLines(c: Canvas);
 
     /**
      * Draws the line that goes alongside the axis.
      *
      * @param c
      */
-    public abstract  renderAxisLine( c: Canvas);
+    public abstract renderAxisLine(c: Canvas);
 
     /**
      * Draws the LimitLines associated with this axis to the screen.
      *
      * @param c
      */
-    public abstract  renderLimitLines( c: Canvas);
+    public abstract renderLimitLines(c: Canvas);
 }
