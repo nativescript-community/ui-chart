@@ -158,6 +158,16 @@ export abstract class AxisBase extends ComponentBase {
     public mAxisMinimum = 0;
 
     /**
+     * don't touch this direclty, use setter
+     */
+    public mAxisSuggestedMaximum = undefined;
+
+    /**
+     * don't touch this directly, use setter
+     */
+    public mAxisSuggestedMinimum = undefined;
+
+    /**
      * the total range of values this axis covers
      */
     public mAxisRange = 0;
@@ -715,6 +725,26 @@ export abstract class AxisBase extends ComponentBase {
     }
 
     /**
+     * Set a suggested minimum value for this axis. If set, this will be used
+     * as minimum is no value is smaller than it.
+     *
+     * @param min
+     */
+    public setSuggestedAxisMinimum(min) {
+        this.mAxisSuggestedMinimum = min;
+    }
+
+    /**
+     * Set a suggested maximum value for this axis. If set, this will be used
+     * as maximum is no value is greater than it.
+     *
+     * @param min
+     */
+    public setSuggestedAxisMaximum(max) {
+        this.mAxisSuggestedMaximum = max;
+    }
+
+    /**
      * Use setAxisMinimum(...) instead.
      *
      * @param min
@@ -758,7 +788,12 @@ export abstract class AxisBase extends ComponentBase {
         // if custom, use value as is, else use data value
         let min = this.mCustomAxisMin ? this.mAxisMinimum : dataMin - this.mSpaceMin;
         let max = this.mCustomAxisMax ? this.mAxisMaximum : dataMax + this.mSpaceMax;
-
+        if (this.mAxisSuggestedMinimum !== undefined) {
+            min = Math.min(min, this.mAxisSuggestedMinimum);
+        }
+        if (this.mAxisSuggestedMaximum !== undefined) {
+            max = Math.max(max, this.mAxisSuggestedMaximum);
+        }
         // temporary range (before calculations)
         const range = Math.abs(max - min);
 
