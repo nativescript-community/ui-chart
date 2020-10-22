@@ -199,16 +199,16 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mAxisRendererRight.renderAxisLine(canvas);
 
         if (this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
-
         if (this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
-
         if (this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
 
         if (xLimitEnabled && this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
-
         if (leftLimitEnabled && this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
-
         if (rightLimitEnabled && this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+
+        if (this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
+        if (this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
+        if (this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
 
         // make sure the data cannot be drawn outside the content-rect
         if (this.isClipDataToContentEnabled()) {
@@ -220,12 +220,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         }
 
         if (!this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
-
         if (!this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
-
         if (!this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
 
-        // if highlighting is enabled
         if (this.valuesToHighlight()) {
             this.mRenderer.drawHighlighted(canvas, this.mIndicesToHighlight, this.isDrawHighlightEnabled());
         }
@@ -238,14 +235,12 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mRenderer.drawExtras(canvas);
 
         if (xLimitEnabled && !this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
-
         if (leftLimitEnabled && !this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
-
         if (rightLimitEnabled && !this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
 
-        this.mXAxisRenderer.renderAxisLabels(canvas);
-        this.mAxisRendererLeft.renderAxisLabels(canvas);
-        this.mAxisRendererRight.renderAxisLabels(canvas);
+        if (!this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
+        if (!this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
+        if (!this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
 
         if (this.isClipValuesToContentEnabled()) {
             canvas.save();

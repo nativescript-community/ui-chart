@@ -112,6 +112,10 @@ export abstract class AxisBase extends ComponentBase {
      * flag indicating the limit lines layer depth
      */
     protected mDrawLimitLineBehindData = false;
+    /**
+     * flag indicating the labels layer depth
+     */
+    protected mDrawLabelsBehindData = false;
 
     /**
      * flag indicating the grid lines layer depth
@@ -438,6 +442,19 @@ export abstract class AxisBase extends ComponentBase {
         return this.mLimitLines;
     }
 
+    /**
+     * If this is set to true, the labels are drawn behind the actual data,
+     * otherwise on top. Default: false
+     *
+     * @param enabled
+     */
+    public setDrawLabelsBehindData(enabled) {
+        this.mDrawLabelsBehindData = enabled;
+    }
+
+    public isDrawLabelsBehindDataEnabled() {
+        return this.mDrawLabelsBehindData;
+    }
     /**
      * If this is set to true, the LimitLines are drawn behind the actual data,
      * otherwise on top. Default: false
