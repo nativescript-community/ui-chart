@@ -319,13 +319,15 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.calcMinMax();
 
-        // if (this.mAxisLeft.isEnabled()) {
-        //     this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
-        // }
-        // if (this.mAxisRight.isEnabled()) {
-        //     this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
-        // }
-        // this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+        if (this.mAxisLeft.isEnabled()) {
+            this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
+        }
+        if (this.mAxisRight.isEnabled()) {
+            this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
+        }
+        if (this.mXAxis.isEnabled()) {
+            this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+        }
 
         if (this.mLegend != null && this.mLegend.isEnabled()) {
             this.mLegendRenderer.computeLegend(this.mData);
