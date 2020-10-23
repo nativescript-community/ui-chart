@@ -18,6 +18,8 @@ import { install } from '@nativescript-community/ui-chart';
 install();
 ```
 
+You can also check [Wiki](https://github.com/nativescript-community/ui-chart/wiki) for any useful material.
+
 ## Plain NativeScript
 
 <span style="color:red">IMPORTANT: </span>Make sure you include `xmlns:ch="@nativescript-community/ui-chart"` on the Page element.
