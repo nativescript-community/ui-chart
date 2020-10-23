@@ -522,11 +522,12 @@ export abstract class AxisBase extends ComponentBase {
      */
     public getLongestLabel() {
         let longest = '';
-
         for (let i = 0; i < this.mEntries.length; i++) {
-            const text = this.getFormattedLabel(i);
+            const text = this.getValueFormatter().getAxisLabel(this.mEntries[i], this);
 
-            if (text != null && longest.length < text.length) longest = text;
+            if (text != null && longest.length < text.length) {
+                longest = text;
+            }
         }
 
         return longest;
