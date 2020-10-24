@@ -31,11 +31,10 @@ export class DefaultAxisValueFormatter extends ValueFormatter {
 
         let b = '';
         for (let i = 0; i < digits; i++) {
-            if (i === 0) b += '.';
             b += '0';
         }
-
-        this.mFormat = '###,###,###,##0' + b;
+        // Requires decimal separator in order to avoid zero format issues
+        this.mFormat = '###,###,###,##0.' + b;
     }
 
     public getFormattedValue(value) {
