@@ -54,7 +54,7 @@ export class DataSetImageCache {
         const circleHoleRadius = set.getCircleHoleRadius();
 
         for (let i = 0; i < colorCount; i++) {
-            const circleBitmap = createImage({ width: circleRadius * 2.1, height: circleRadius * 2.1, scale: Utils.density });
+            const circleBitmap = createImage({ width: circleRadius * 2.1, height: circleRadius * 2.1, scale: 1 });
 
             const canvas = new Canvas(circleBitmap);
             mRenderPaint.setColor(set.getCircleColor(i));
@@ -137,7 +137,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.mCirclePaintInner.setColor('white');
     }
 
-    public initBuffers() {}
+    public initBuffers() { }
 
     @profile
     public drawData(c: Canvas) {
