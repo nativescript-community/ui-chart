@@ -524,7 +524,7 @@ export namespace Utils {
             c.restore();
         } else {
             if (anchor.x !== 0 || anchor.y !== 0) {
-                //drawOffsetX -= mDrawTextRectBuffer.width() * anchor.x;
+                drawOffsetX -= mDrawTextRectBuffer.width() * anchor.x;
                 drawOffsetY -= lineHeight * anchor.y;
             }
 
