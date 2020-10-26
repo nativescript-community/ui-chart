@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.6](https://github.com/Akylas/nativescript-chart/compare/v1.1.5...v1.1.6) (2020-10-26)
+
+
+### Bug Fixes
+
+* Format was breaking if number was non-decimal zero. ([33d0a7a](https://github.com/Akylas/nativescript-chart/commit/33d0a7a9f34e0febc72713c270c330e7eb2ed478))
+* no need to set textSize everytime. Done in component ([5f1dcdc](https://github.com/Akylas/nativescript-chart/commit/5f1dcdc70743e33c0dbf18bc482f55a2933bcbcf))
+
+
+
+
+
 ## [1.1.5](https://github.com/Akylas/nativescript-chart/compare/v1.1.4...v1.1.5) (2020-10-23)
 
 
