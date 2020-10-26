@@ -145,7 +145,7 @@ export class XAxisRenderer extends AxisRenderer {
         }
 
         if (axis.getPosition() === XAxisPosition.BOTTOM || axis.getPosition() === XAxisPosition.BOTTOM_INSIDE || axis.getPosition() === XAxisPosition.BOTH_SIDED) {
-            c.drawLine(rect.left, rect.bottom, rect.top, rect.bottom, this.mAxisLinePaint);
+            c.drawLine(rect.left, rect.bottom, rect.right, rect.bottom, this.mAxisLinePaint);
         }
     }
 
