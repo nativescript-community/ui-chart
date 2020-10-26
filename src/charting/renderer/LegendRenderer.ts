@@ -99,14 +99,11 @@ export class LegendRenderer extends Renderer {
 
                     for (let j = 0; j < clrs.length && j < entryCount; j++) {
                         const label = pds.getEntryForIndex(j).label;
-                        if (label == null)
-                        {
+                        if (label == null) {
                             continue;
                         }
 
-                        this.computedEntries.push(
-                            new LegendEntry(label.toString(), dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j])
-                        );
+                        this.computedEntries.push(new LegendEntry(label.toString(), dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j]));
                     }
 
                     if (pds.getLabel() != null) {
@@ -149,11 +146,7 @@ export class LegendRenderer extends Renderer {
             this.mLegend.setEntries(this.computedEntries);
         }
 
-        const tf = this.mLegend.getTypeface();
-
-        if (tf != null) this.mLegendLabelPaint.setTypeface(tf);
-
-        this.mLegendLabelPaint.setTextSize(this.mLegend.getTextSize());
+        this.mLegendLabelPaint.setTypeface(this.mLegend.getTypeface());
         this.mLegendLabelPaint.setColor(this.mLegend.getTextColor());
 
         // calculate all dimensions of the this.mLegend
@@ -166,10 +159,7 @@ export class LegendRenderer extends Renderer {
     public renderLegend(c: Canvas) {
         if (!this.mLegend.isEnabled()) return;
 
-        const tf = this.mLegend.getTypeface();
-        if (tf != null) this.mLegendLabelPaint.setTypeface(tf);
-
-        this.mLegendLabelPaint.setTextSize(this.mLegend.getTextSize());
+        this.mLegendLabelPaint.setTypeface(this.mLegend.getTypeface());
         this.mLegendLabelPaint.setColor(this.mLegend.getTextColor());
 
         const labelLineHeight = Utils.getLineHeight(this.mLegendLabelPaint, this.legendFontMetrics);
@@ -402,7 +392,7 @@ export class LegendRenderer extends Renderer {
 
             case LegendForm.LINE:
                 {
-                    const formLineWidth = (isNaN(entry.formLineWidth) ? legend.getFormLineWidth() : entry.formLineWidth);
+                    const formLineWidth = isNaN(entry.formLineWidth) ? legend.getFormLineWidth() : entry.formLineWidth;
                     const formLineDashEffect = entry.formLineDashEffect == null ? legend.getFormLineDashEffect() : entry.formLineDashEffect;
                     this.mLegendFormPaint.setStyle(Style.STROKE);
                     this.mLegendFormPaint.setStrokeWidth(formLineWidth);

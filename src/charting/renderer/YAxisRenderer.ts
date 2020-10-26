@@ -29,7 +29,6 @@ export class YAxisRenderer extends AxisRenderer {
 
         if (this.mViewPortHandler != null) {
             this.mAxisLabelPaint.setColor('black');
-            this.mAxisLabelPaint.setTextSize(10);
             this.mAxisLabelPaint.setAntiAlias(true);
 
             this.mZeroLinePaint = new Paint();
@@ -52,7 +51,6 @@ export class YAxisRenderer extends AxisRenderer {
         const positions = this.getTransformedPositions();
 
         this.mAxisLabelPaint.setTypeface(this.mYAxis.getTypeface());
-        this.mAxisLabelPaint.setTextSize(this.mYAxis.getTextSize());
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
 
         const xoffset = this.mYAxis.getXOffset();
@@ -322,7 +320,6 @@ export class YAxisRenderer extends AxisRenderer {
                 this.mLimitLinePaint.setColor(l.getTextColor());
                 this.mLimitLinePaint.setTypeface(l.getTypeface());
                 this.mLimitLinePaint.setStrokeWidth(0.5);
-                this.mLimitLinePaint.setTextSize(l.getTextSize());
 
                 const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
                 const xOffset = 4 + l.getXOffset();

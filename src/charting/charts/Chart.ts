@@ -425,7 +425,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             const position = this.mDescription.getPosition();
 
             this.mDescPaint.setTypeface(this.mDescription.getTypeface());
-            this.mDescPaint.setTextSize(this.mDescription.getTextSize());
             this.mDescPaint.setColor(this.mDescription.getTextColor());
             this.mDescPaint.setTextAlign(this.mDescription.getTextAlign());
 

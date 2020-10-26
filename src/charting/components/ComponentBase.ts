@@ -1,6 +1,8 @@
 import { Utils } from '../utils/Utils';
 import { Font } from '@nativescript/core/ui/styling/font';
 
+const DEFAULT_FONT = Font.default.withFontSize(10);
+console.log('DEFAULT_FONT', DEFAULT_FONT);
 /**
  * This class encapsulates everything both Axis, Legend and LimitLines have in common.
  *
@@ -25,7 +27,7 @@ export abstract class ComponentBase {
     /**
      * the typeface used for the labels
      */
-    protected mTypeface: Font = Font.default;
+    protected mTypeface: Font = DEFAULT_FONT;
 
     /**
      * the text size of the labels
@@ -93,7 +95,10 @@ export abstract class ComponentBase {
      *
      * @param tf
      */
-    public setTypeface(tf) {
+    public setTypeface(tf: Font) {
+        if (!tf.fontSize) {
+            tf = tf.withFontSize(this.mTextSize);
+        }
         this.mTypeface = tf;
     }
 
@@ -108,6 +113,9 @@ export abstract class ComponentBase {
         if (size < 6) size = 6;
 
         this.mTextSize = size;
+        // this bit is important to make sure we dont create crazy amount of native fonts on render
+        console.log('setTextSize', size);
+        this.mTypeface = this.mTypeface.withFontSize(size);
     }
 
     /**

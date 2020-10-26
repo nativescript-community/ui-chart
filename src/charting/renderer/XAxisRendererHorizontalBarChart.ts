@@ -44,7 +44,6 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         const longest = this.mXAxis.getLongestLabel();
 
         this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
-        this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize());
 
         const labelSize = Utils.calcTextSize(this.mAxisLabelPaint, longest);
 
@@ -68,7 +67,6 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         const xOffset = this.mXAxis.getXOffset();
 
         this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
-        this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize());
         this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
 
@@ -231,7 +229,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
                 this.mLimitLinePaint.setPathEffect(null);
                 this.mLimitLinePaint.setColor(l.getTextColor());
                 this.mLimitLinePaint.setStrokeWidth(0.5);
-                this.mLimitLinePaint.setTextSize(l.getTextSize());
+                this.mLimitLinePaint.setTypeface(l.getTypeface());
 
                 const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
                 const xOffset = 4 + l.getXOffset();

@@ -20,7 +20,6 @@ export class XAxisRenderer extends AxisRenderer {
         this.mAxisLabelPaint.setColor('black');
         this.mAxisLabelPaint.setAntiAlias(true);
         this.mAxisLabelPaint.setTextAlign(Align.CENTER);
-        this.mAxisLabelPaint.setTextSize(10);
     }
 
     protected setupGridPaint() {
@@ -60,7 +59,6 @@ export class XAxisRenderer extends AxisRenderer {
     protected computeSize() {
         const axis = this.mXAxis;
         this.mAxisLabelPaint.setTypeface(axis.getTypeface());
-        this.mAxisLabelPaint.setTextSize(axis.getTextSize());
 
         const rotation = axis.getLabelRotationAngle();
         if (this.mForceLongestLabelComputation || rotation % 360 !== 0) {
@@ -92,7 +90,6 @@ export class XAxisRenderer extends AxisRenderer {
         const yoffset = axis.getYOffset();
 
         this.mAxisLabelPaint.setTypeface(axis.getTypeface());
-        this.mAxisLabelPaint.setTextSize(axis.getTextSize());
         this.mAxisLabelPaint.setTextAlign(axis.getLabelTextAlign());
         this.mAxisLabelPaint.setColor(axis.getTextColor());
         // const align = this.mAxisLabelPaint.getTextAlign();
@@ -375,11 +372,11 @@ export class XAxisRenderer extends AxisRenderer {
         if (label != null && label !== '') {
             const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
+            this.mLimitLinePaint.setTypeface(limitLine.getTypeface());
             this.mLimitLinePaint.setStyle(limitLine.getTextStyle());
             this.mLimitLinePaint.setPathEffect(null);
             this.mLimitLinePaint.setColor(limitLine.getTextColor());
             this.mLimitLinePaint.setStrokeWidth(0.5);
-            this.mLimitLinePaint.setTextSize(limitLine.getTextSize());
 
             const xOffset = limitLine.getLineWidth() + limitLine.getXOffset();
 

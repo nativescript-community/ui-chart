@@ -307,7 +307,7 @@ export class YAxis extends AxisBase {
      * @return
      */
     public getRequiredWidthSpace(p: Paint) {
-        p.setTextSize(this.mTextSize);
+        p.setTypeface(this.mTypeface);
 
         const label = this.getLongestLabel();
         let width = Utils.calcTextWidth(p, label) + this.getXOffset() * 2;
@@ -381,6 +381,13 @@ export class YAxis extends AxisBase {
     public calculate(dataMin, dataMax) {
         let min = dataMin;
         let max = dataMax;
+
+        if (this.mAxisSuggestedMinimum !== undefined) {
+            min = Math.min(min, this.mAxisSuggestedMinimum);
+        }
+        if (this.mAxisSuggestedMaximum !== undefined) {
+            max = Math.max(max, this.mAxisSuggestedMaximum);
+        }
 
         let range = Math.abs(max - min);
 

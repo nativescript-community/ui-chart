@@ -23,7 +23,6 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
         const drawLabelAnchor: MPPointF = { x: 0.5, y: 0.25 };
 
         this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
-        this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize());
         this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
 

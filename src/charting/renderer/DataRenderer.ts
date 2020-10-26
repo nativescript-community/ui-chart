@@ -105,11 +105,6 @@ export abstract class DataRenderer extends Renderer {
         if (typeface) {
             this.mValuePaint.setTypeface(typeface);
         }
-
-        const textSize = set.getValueTextSize();
-        if (textSize !== undefined) {
-            this.mValuePaint.setTextSize(textSize);
-        }
     }
 
     /**
