@@ -21,8 +21,7 @@ function getRandomColor() {
 
 function addEntry(chart) {
     // In case user leaves this page
-    if (!chart || !chart.nativeView)
-    {
+    if (!chart || !chart.nativeView) {
         stop();
         return;
     }
@@ -133,7 +132,7 @@ export function onChartLoaded(args) {
 
 export function start(args) {
     if (!timer) {
-        timer = setInterval(e => (addEntry(args.object.page.getViewById('chart'))), 25);
+        timer = setInterval((e) => addEntry(args.object.page.getViewById('chart')), 25);
     }
 }
 
