@@ -15,7 +15,7 @@
         "clean.demo.vue": "rimraf demo_vue/hooks demo_vue/node_modules demo_vue/platforms",
         "plugin.watch.tsc": "npm run tsc -- -w",
         "plugin.watch": "npm run plugin.watch.tsc",
-        "publish": "npm run build && lerna publish",
+        "publish": "npm run build && lerna publish --github-release",
         "commitmsg": "commitlint -e $GIT_PARAMS"
     },
     "keywords": [
@@ -40,7 +40,7 @@
         "@commitlint/config-conventional": "^11.0.0",
         "@nativescript-community/gesturehandler": "^0.1.26",
         "@nativescript-community/tween": "0.0.12",
-        "@nativescript-community/ui-canvas": "4.0.29",
+        "@nativescript-community/ui-canvas": "4.0.30",
         "@nativescript/core": "7.0.7",
         "@nativescript/types-android": "7.0.4",
         "@nativescript/types-ios": "7.0.4",
