@@ -99,8 +99,7 @@ export class LegendRenderer extends Renderer {
 
                     for (let j = 0; j < clrs.length && j < entryCount; j++) {
                         const label = pds.getEntryForIndex(j).label;
-                        if (label == null)
-                        {
+                        if (label == null) {
                             continue;
                         }
 
@@ -240,7 +239,7 @@ export class LegendRenderer extends Renderer {
                         break;
 
                     case LegendVerticalAlignment.BOTTOM:
-                        posY = this.mViewPortHandler.getChartHeight() - yoffset - this.mLegend.mNeededHeight;
+                        posY = this.mViewPortHandler.getChartHeight() - this.mLegend.mNeededHeight;
                         break;
 
                     case LegendVerticalAlignment.CENTER:

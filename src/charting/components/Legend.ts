@@ -148,7 +148,7 @@ export class Legend extends ComponentBase {
         super();
         this.mTextSize = 10;
         this.mXOffset = 5;
-        this.mYOffset = 3;
+        this.mYOffset = 5;
         if (entries) {
             this.mEntries = entries;
         }

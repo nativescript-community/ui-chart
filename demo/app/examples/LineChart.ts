@@ -2,6 +2,8 @@ import { Color } from '@nativescript/core';
 import { LineChart } from '@nativescript-community/ui-chart/charts';
 import { LineData } from '@nativescript-community/ui-chart/data/LineData';
 import { LineDataSet } from '@nativescript-community/ui-chart/data/LineDataSet';
+import { XAxisPosition } from '@nativescript-community/ui-chart/components/XAxis';
+import { LegendDirection, LegendHorizontalAlignment, LegendVerticalAlignment } from '@nativescript-community/ui-chart/components/Legend';
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -28,7 +30,7 @@ export function onChartLoaded(args) {
     chart.setDragEnabled(true);
     // chart.setHardwareAccelerationEnabled(true);
 
-    const data = new Array(1000).fill(0).map((v, i) => ({
+    const data = new Array(10).fill(0).map((v, i) => ({
         index: i,
         value: Math.random() * 1,
     }));
@@ -40,6 +42,13 @@ export function onChartLoaded(args) {
 
     // create a data object with the data sets
     const ld = new LineData(sets);
+    let xAxis = chart.getXAxis();
+    xAxis.setPosition(XAxisPosition.BOTTOM);
+    const legend = chart.getLegend();
+    // legend.setDirection(LegendDirection.LEFT_TO_RIGHT);
+    // legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER);
+    // legend.setVerticalAlignment(LegendVerticalAlignment.TOP)
+    legend.setYOffset(10);
 
     // set data
     chart.setData(ld);
