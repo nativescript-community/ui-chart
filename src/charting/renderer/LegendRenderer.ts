@@ -230,7 +230,7 @@ export class LegendRenderer extends Renderer {
                         break;
 
                     case LegendVerticalAlignment.BOTTOM:
-                        posY = this.mViewPortHandler.getChartHeight() - yoffset - this.mLegend.mNeededHeight;
+                        posY = this.mViewPortHandler.getChartHeight() - this.mLegend.mNeededHeight;
                         break;
 
                     case LegendVerticalAlignment.CENTER:
