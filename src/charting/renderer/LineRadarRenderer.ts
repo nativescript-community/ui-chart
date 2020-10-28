@@ -33,7 +33,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
             // drawable.draw(c);
             c.drawBitmap(
                 drawable,
-                new Rect(0,0, drawable.width, drawable.height),
+                new Rect(0, 0, drawable.width, drawable.height),
                 new Rect(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom()),
                 null
             );
