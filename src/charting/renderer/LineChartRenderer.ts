@@ -466,7 +466,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             return result;
         }
 
-        const colors = dataSet.getColors();
+        const colors = (dataSet.getColors() as any) as { color: string | Color; [k: string]: any }[];
         const nbColors = colors.length;
 
         const xKey = dataSet.xProperty;
@@ -493,7 +493,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             let lastDrawnIndex = 0,
                 nbItems;
             for (let index = 0; index < nbColors; index++) {
-                const color = colors[index];
+                const color = colors[index] as { color: string | Color; [k: string]: any };
                 let colorIndex = color[xKey || 'index'] as number;
                 // if filtered we need to get the real index
                 if ((dataSet as any).isFiltered()) {
@@ -528,7 +528,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     lastDrawnIndex += 1;
                 }
                 colorsToBeDrawn.push({
-                    color,
+                    color: color.color,
                     startIndex,
                     nbItems,
                 });
@@ -547,7 +547,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     this.drawFill(c, dataSet, this.fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color);
                 }
                 if (drawLine) {
-                    this.mRenderPaint.setColor(color);
+                    this.mRenderPaint.setColor(color.color);
                     this.drawPath(c, this.linePath, this.mRenderPaint);
                 }
             });
