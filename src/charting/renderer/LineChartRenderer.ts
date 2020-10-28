@@ -1,5 +1,5 @@
 import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, releaseImage } from '@nativescript-community/ui-canvas';
-import { ImageSource, profile } from '@nativescript/core';
+import { Color, ImageSource, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { LineChart } from '../charts';
 import { getEntryXValue } from '../data/BaseEntry';
@@ -124,6 +124,23 @@ export class LineChartRenderer extends LineRadarRenderer {
     protected linePath = new Path();
     protected fillPath = new Path();
 
+    /**
+     * cache for the circle bitmaps of all datasets
+     */
+    private mImageCaches = new Map<ILineDataSet, DataSetImageCache>();
+
+    /**
+     * buffer for drawing the circles
+     */
+    private mCirclesBuffer: [number, number];
+
+    private get circlesBuffer() {
+        if (!this.mCirclesBuffer) {
+            this.mCirclesBuffer = Utils.createNativeArray(2);
+        }
+        return this.mCirclesBuffer;
+    }
+
     constructor(chart: LineChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
@@ -137,7 +154,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.mCirclePaintInner.setColor('white');
     }
 
-    public initBuffers() { }
+    public initBuffers() {}
 
     @profile
     public drawData(c: Canvas) {
@@ -539,12 +556,23 @@ export class LineChartRenderer extends LineRadarRenderer {
                     lastDrawnIndex -= 1;
                 }
             }
+            let fillMin = drawFilled && useColorsForFill ? dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart) : undefined;
+            if (fillMin !== undefined) {
+                // to make things faster we wont transform the path again
+                // so we need get fillMin as pixel value
+                // let's use circlesBuffer for this
+                const circleBuffer = this.circlesBuffer;
+                circleBuffer[0] = 0;
+                circleBuffer[1] = fillMin;
+                trans.pointValuesToPixel(circleBuffer);
+                fillMin = circleBuffer[1];
+            }
             colorsToBeDrawn.forEach((color) => {
                 this.linePath.setLines(points, color.startIndex * 2, color.nbItems * 2);
                 if (drawFilled && useColorsForFill) {
                     this.fillPath.reset();
                     this.fillPath.addPath(this.linePath);
-                    this.drawFill(c, dataSet, this.fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color);
+                    this.drawFill(c, dataSet, this.fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color.color, fillMin);
                 }
                 if (drawLine) {
                     this.mRenderPaint.setColor(color.color);
@@ -565,9 +593,10 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?) {
-        const fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
-
+    protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?, fillMin?: number) {
+        if (fillMin === undefined) {
+            fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
+        }
         spline.lineTo(max, fillMin);
         spline.lineTo(min, fillMin);
         spline.close();
@@ -656,16 +685,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.drawCircles(c);
     }
 
-    /**
-     * cache for the circle bitmaps of all datasets
-     */
-    private mImageCaches = new Map<ILineDataSet, DataSetImageCache>();
-
-    /**
-     * buffer for drawing the circles
-     */
-    private mCirclesBuffer = Utils.createNativeArray(2);
-
     @profile
     protected drawCirclesForDataset(c: Canvas, dataSet: LineDataSet) {
         this.mCirclePaintInner.setColor(dataSet.getCircleHoleColor());
@@ -699,36 +718,41 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
 
         const boundsRangeCount = this.mXBounds.range + this.mXBounds.min;
-
+        const circleBuffer = this.circlesBuffer;
         for (let j = this.mXBounds.min; j <= boundsRangeCount; j++) {
             const e = dataSet.getEntryForIndex(j);
 
             if (e == null) continue;
 
-            this.mCirclesBuffer[0] = getEntryXValue(e, xKey, j);
-            this.mCirclesBuffer[1] = e[yKey] * phaseY;
+            circleBuffer[0] = getEntryXValue(e, xKey, j);
+            circleBuffer[1] = e[yKey] * phaseY;
 
-            trans.pointValuesToPixel(this.mCirclesBuffer);
+            trans.pointValuesToPixel(circleBuffer);
+            // native buffer access is slow
+            const cx = circleBuffer[0];
+            const cy = circleBuffer[1];
 
-            if (!this.mViewPortHandler.isInBoundsRight(this.mCirclesBuffer[0])) break;
+            if (!this.mViewPortHandler.isInBoundsRight(cx)) break;
 
-            if (!this.mViewPortHandler.isInBoundsLeft(this.mCirclesBuffer[0]) || !this.mViewPortHandler.isInBoundsY(this.mCirclesBuffer[1])) continue;
+            if (!this.mViewPortHandler.isInBoundsLeft(cx) || !this.mViewPortHandler.isInBoundsY(cy)) continue;
 
             const circleBitmap = imageCache.getBitmap(j);
 
             if (circleBitmap != null) {
-                c.drawBitmap(circleBitmap, this.mCirclesBuffer[0] - circleRadius, this.mCirclesBuffer[1] - circleRadius, null);
+                c.drawBitmap(circleBitmap, cx - circleRadius, cy - circleRadius, null);
             }
         }
     }
 
     protected drawCircles(c: Canvas) {
-        this.mRenderPaint.setStyle(Style.FILL);
-
-        this.mCirclesBuffer[0] = 0;
-        this.mCirclesBuffer[1] = 0;
-
         const dataSets = this.mChart.getLineData().getVisibleDataSets();
+        if (dataSets.some((d) => d.isDrawCirclesEnabled()) === false) {
+            return;
+        }
+        this.mRenderPaint.setStyle(Style.FILL);
+        const circleBuffer = this.circlesBuffer;
+        circleBuffer[0] = 0;
+        circleBuffer[1] = 0;
 
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
