@@ -7,9 +7,7 @@ import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
  *
  * @author Philipp Jahoda
  */
-export interface IFillFormatter
-{
-
+export interface IFillFormatter {
     /**
      * Returns the vertical (y-axis) position where the filled-line of the
      * LineDataSet should end.
@@ -18,5 +16,5 @@ export interface IFillFormatter
      * @param dataProvider
      * @return
      */
-    getFillLinePosition( dataSet: ILineDataSet,  dataProvider: LineDataProvider);
+    getFillLinePosition(dataSet: ILineDataSet, dataProvider: LineDataProvider);
 }

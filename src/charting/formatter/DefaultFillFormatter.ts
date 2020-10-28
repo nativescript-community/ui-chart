@@ -15,10 +15,16 @@ export class DefaultFillFormatter implements IFillFormatter {
         } else {
             let max, min;
 
-            if (data.getYMax() > 0) max = 0;
-            else max = chartMaxY;
-            if (data.getYMin() < 0) min = 0;
-            else min = chartMinY;
+            if (data.getYMax() > 0) {
+                max = 0;
+            } else {
+                max = chartMaxY;
+            }
+            if (data.getYMin() < 0) {
+                min = 0;
+            } else {
+                min = chartMinY;
+            }
 
             fillMin = dataSet.getYMin() >= 0 ? min : max;
         }
