@@ -2,7 +2,6 @@ import { Utils } from '../utils/Utils';
 import { Font } from '@nativescript/core/ui/styling/font';
 
 const DEFAULT_FONT = Font.default.withFontSize(10);
-console.log('DEFAULT_FONT', DEFAULT_FONT);
 /**
  * This class encapsulates everything both Axis, Legend and LimitLines have in common.
  *
@@ -114,7 +113,6 @@ export abstract class ComponentBase {
 
         this.mTextSize = size;
         // this bit is important to make sure we dont create crazy amount of native fonts on render
-        console.log('setTextSize', size);
         this.mTypeface = this.mTypeface.withFontSize(size);
     }
 
