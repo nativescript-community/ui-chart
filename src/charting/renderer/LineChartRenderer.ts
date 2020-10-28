@@ -170,7 +170,9 @@ export class LineChartRenderer extends LineRadarRenderer {
         if (dataSet.getEntryCount() < 1) return false;
         this.mRenderPaint.setStrokeWidth(dataSet.getLineWidth());
         this.mRenderPaint.setPathEffect(dataSet.getDashPathEffect());
-        this.mRenderPaint.setColor(dataSet.getColor());
+        if (dataSet.getNbColors() === 1) {
+            this.mRenderPaint.setColor(dataSet.getColor());
+        }
         this.mRenderPaint.setStyle(Style.STROKE);
 
         const scaleX = this.mViewPortHandler.getScaleX();

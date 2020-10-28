@@ -154,6 +154,10 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return this.mColors;
     }
 
+    public getNbColors() {
+        return this.mColors.length;
+    }
+
     public getValueColors() {
         return this.mValueColors;
     }
