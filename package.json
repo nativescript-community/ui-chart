@@ -15,7 +15,7 @@
         "clean.demo.vue": "rimraf demo_vue/hooks demo_vue/node_modules demo_vue/platforms",
         "plugin.watch.tsc": "npm run tsc -- -w",
         "plugin.watch": "npm run plugin.watch.tsc",
-        "publish": "npm run build && lerna publish --github-release",
+        "publish": "npm run build && lerna publish --create-release=github",
         "commitmsg": "commitlint -e $GIT_PARAMS"
     },
     "keywords": [
