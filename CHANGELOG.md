@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.8](https://github.com/Akylas/nativescript-chart/compare/v1.1.7...v1.1.8) (2020-10-30)
+
+
+### Bug Fixes
+
+* colors per x access ([311f6dc](https://github.com/Akylas/nativescript-chart/commit/311f6dc64587b5e6d50ab38c958c7ff3837f5e15))
+* correctly draw fill per x ([57e8a9b](https://github.com/Akylas/nativescript-chart/commit/57e8a9bb97dc2c40d156b288fc9968267f3db54e))
+* crash when using colors per x ([537a7c0](https://github.com/Akylas/nativescript-chart/commit/537a7c09ae7cf7a9770c649a09a56774ac2d52be))
+
+
+
+
+
 ## [1.1.7](https://github.com/Akylas/nativescript-chart/compare/v1.1.6...v1.1.7) (2020-10-28)
 
 
