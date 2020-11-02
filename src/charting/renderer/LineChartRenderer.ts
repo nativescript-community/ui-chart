@@ -518,7 +518,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     const entry = dataSet.getEntryForIndex(colorIndex);
                     (dataSet as any).setIgnoreFiltered(false);
                     if (entry !== null) {
-                        colorIndex = dataSet.getEntryIndexForXValue(entry.x, NaN, Rounding.DOWN);
+                        colorIndex = dataSet.getEntryIndexForXValue(getEntryXValue(entry, xKey, colorIndex), NaN, Rounding.DOWN);
                     }
                 }
                 if (colorIndex < firstIndex) {
