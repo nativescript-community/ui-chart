@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.9](https://github.com/Akylas/nativescript-chart/compare/v1.1.8...v1.1.9) (2020-11-02)
+
+
+### Bug Fixes
+
+* correct high index with filtered data ([c0b93ff](https://github.com/Akylas/nativescript-chart/commit/c0b93ff4b5f35899a739cf82e9adba4eef5c817a))
+* legendrender fix ([439ffa6](https://github.com/Akylas/nativescript-chart/commit/439ffa62c9d7cc93893cf8f97e3675385dc97723))
+* multi colors line chart with custom x key ([240946d](https://github.com/Akylas/nativescript-chart/commit/240946d7b70627c4de284a20c16632804eefb5e2))
+
+
+
+
+
 ## [1.1.8](https://github.com/Akylas/nativescript-chart/compare/v1.1.7...v1.1.8) (2020-10-30)
 
 
