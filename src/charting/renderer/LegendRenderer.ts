@@ -28,6 +28,10 @@ export class LegendRenderer extends Renderer {
      */
     protected mLegend: Legend;
 
+    protected legendFontMetrics = new FontMetrics();
+
+    protected computedEntries: LegendEntry[] = [];
+
     constructor(viewPortHandler: ViewPortHandler, legend: Legend) {
         super(viewPortHandler);
 
@@ -61,8 +65,6 @@ export class LegendRenderer extends Renderer {
         return this.mLegendFormPaint;
     }
 
-    protected computedEntries: LegendEntry[] = [];
-
     /**
      * Prepares the legend and calculates all needed forms, labels and colors.
      *
@@ -94,8 +96,8 @@ export class LegendRenderer extends Renderer {
                         // add the legend description label
                         this.computedEntries.push(new LegendEntry(dataSet.getLabel(), LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
                     }
-                } else if (dataSet instanceof PieDataSet) {
-                    const pds = dataSet;
+                } else if (dataSet.constructor.name === 'PieDataSet') {
+                    const pds = dataSet as PieDataSet;
 
                     for (let j = 0; j < clrs.length && j < entryCount; j++) {
                         const label = pds.getEntryForIndex(j).label;
@@ -110,15 +112,16 @@ export class LegendRenderer extends Renderer {
                         // add the legend description label
                         this.computedEntries.push(new LegendEntry(dataSet.getLabel(), LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
                     }
-                } else if (dataSet instanceof CandleDataSet && dataSet.getDecreasingColor() !== ColorTemplate.COLOR_NONE) {
-                    const decreasingColor = dataSet.getDecreasingColor();
-                    const increasingColor = dataSet.getIncreasingColor();
+                } else if (dataSet.constructor.name === 'CandleDataSet') {
+                    const dSet = dataSet as CandleDataSet;
+                    if (dSet.getDecreasingColor() !== ColorTemplate.COLOR_NONE) {
+                        const decreasingColor = dSet.getDecreasingColor();
+                        const increasingColor = dSet.getIncreasingColor();
 
-                    this.computedEntries.push(new LegendEntry(null, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), decreasingColor));
+                        this.computedEntries.push(new LegendEntry(null, dSet.getForm(), dSet.getFormSize(), dSet.getFormLineWidth(), dSet.getFormLineDashEffect(), decreasingColor));
 
-                    this.computedEntries.push(
-                        new LegendEntry(dataSet.getLabel(), dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), increasingColor)
-                    );
+                        this.computedEntries.push(new LegendEntry(dSet.getLabel(), dSet.getForm(), dSet.getFormSize(), dSet.getFormLineWidth(), dSet.getFormLineDashEffect(), increasingColor));
+                    }
                 } else {
                     // all others
 
@@ -147,13 +150,10 @@ export class LegendRenderer extends Renderer {
         }
 
         this.mLegendLabelPaint.setTypeface(this.mLegend.getTypeface());
-        this.mLegendLabelPaint.setColor(this.mLegend.getTextColor());
 
         // calculate all dimensions of the this.mLegend
         this.mLegend.calculateDimensions(this.mLegendLabelPaint, this.mViewPortHandler);
     }
-
-    protected legendFontMetrics = new FontMetrics();
 
     @profile
     public renderLegend(c: Canvas) {
