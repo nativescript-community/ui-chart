@@ -6,6 +6,7 @@ import { Rounding } from '../data/DataSet';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
 import { getEntryXValue } from '../data/BaseEntry';
+import { LineDataSet } from '../data/LineDataSet';
 
 export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> implements IHighlighter {
     /**
@@ -148,17 +149,22 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
                 entries = set.getEntriesAndIndexesForXValue(getEntryXValue(closest.entry, xKey, closest.index));
             }
         }
-
         if (entries.length === 0) return highlights;
 
         for (const r of entries) {
             const e = r.entry;
+            let index = r.index;
             const xVal = getEntryXValue(e, xKey, r.index);
             const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(xVal, e[yKey]);
+            if ((set as any).isFiltered && (set as LineDataSet).isFiltered()) {
+                (set as LineDataSet).setIgnoreFiltered(true);
+                index = set.getEntryIndexForXValue(xVal, NaN, Rounding.CLOSEST);
+                (set as LineDataSet).setIgnoreFiltered(false);
+            }
 
             highlights.push({
                 entry: e,
-                entryIndex: r.index,
+                entryIndex: index,
                 x: xVal,
                 y: e[yKey],
                 xPx: pixels.x,
