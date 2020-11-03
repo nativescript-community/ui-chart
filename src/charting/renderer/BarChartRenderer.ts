@@ -415,8 +415,9 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                     y2 = range[1];
                 }
             } else {
+                const minAxisValue = this.mChart.getAxis(set.getAxisDependency()).getAxisMinimum();
                 y1 = entry[yKey];
-                y2 = 0;
+                y2 = minAxisValue >= 0 ? minAxisValue : 0;
             }
             const x = getEntryXValue(entry, xKey, index);
             this.prepareBarHighlight(x, y1, y2, barData.getBarWidth() / 2, trans);
