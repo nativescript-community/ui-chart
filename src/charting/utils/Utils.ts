@@ -483,9 +483,6 @@ export namespace Utils {
         let drawOffsetX = 0;
         let drawOffsetY = 0;
 
-        const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
-        paint.getTextBounds(text, 0, text.length, mDrawTextRectBuffer);
-
         // Android sometimes has pre-padding
         //drawOffsetX -= mDrawTextRectBuffer.left;
 
@@ -499,6 +496,8 @@ export namespace Utils {
         // paint.setTextAlign(Align.LEFT);
 
         if (angleDegrees !== 0) {
+            const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
+            paint.getTextBounds(text, 0, text.length, mDrawTextRectBuffer);
             // Move the text drawing rect in a way that it always rotates around its center
             drawOffsetX -= mDrawTextRectBuffer.width() * 0.5;
             drawOffsetY -= lineHeight * 0.5;
@@ -523,13 +522,12 @@ export namespace Utils {
             c.restore();
         } else {
             if (anchor.x !== 0 || anchor.y !== 0) {
-                //drawOffsetX -= mDrawTextRectBuffer.width() * anchor.x;
+                const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
                 drawOffsetY -= lineHeight * anchor.y;
             }
 
             drawOffsetX += x;
             drawOffsetY += y;
-
             c.drawText(text, drawOffsetX, drawOffsetY, paint);
         }
         // paint.setTextAlign(originalTextAlign);
