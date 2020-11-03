@@ -11,5 +11,7 @@ module.exports = (env, params = {}) => {
         config.resolve.alias['@nativescript-community/ui-chart'] = srcPath;
         config.plugins.push(new webpack.ContextReplacementPlugin(new RegExp('@nativescript-community/ui-chart'), srcPath));
     }
+    const indexOfTsLoaderRule = config.module.rules.findIndex((r) => r.loader === 'ts-loader');
+    config.module.rules[indexOfTsLoaderRule].options.transpileOnly = true;
     return config;
 };
