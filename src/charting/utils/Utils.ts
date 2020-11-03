@@ -129,7 +129,6 @@ export namespace Utils {
     export function calcTextHeight(paint: Paint, demoText: string) {
         mCalcTextHeightRect.set(0, 0, 0, 0);
         paint.getTextBounds(demoText, 0, demoText.length, mCalcTextHeightRect);
-        // mCalcTextHeightRect = r;
         return mCalcTextHeightRect.height();
     }
 
