@@ -7,9 +7,10 @@
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
     "license": "MIT",
     "dependencies": {
+        "@nativescript-community/ui-canvas": "4.0.31",
         "@nativescript-community/ui-chart": "file:../plugin",
-        "@nativescript-community/ui-svg": "^0.0.2",
-        "@nativescript/core": "~7.0.7",
+        "@nativescript-community/ui-svg": "^0.0.3",
+        "@nativescript/core": "~7.0.13",
         "@nativescript/theme": "~2.3.3",
         "nativescript-perms": "^2.0.11",
         "nativescript-vue": "~2.8.1"
