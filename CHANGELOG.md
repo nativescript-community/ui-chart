@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.10](https://github.com/Akylas/nativescript-chart/compare/v1.1.9...v1.1.10) (2020-11-03)
+
+
+### Bug Fixes
+
+* dont calculate height if not necessary ([d811bab](https://github.com/Akylas/nativescript-chart/commit/d811babf0c0eb63c83ca3b63eacbb6be0d91c9e6))
+* no recompute lables on animations ([d4faaeb](https://github.com/Akylas/nativescript-chart/commit/d4faaeb538d77cab1eaa89b08c82ab5d831cf276))
+
+
+
+
+
 ## [1.1.9](https://github.com/Akylas/nativescript-chart/compare/v1.1.8...v1.1.9) (2020-11-02)
 
 
