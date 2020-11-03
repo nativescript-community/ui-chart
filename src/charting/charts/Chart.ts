@@ -149,6 +149,11 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     private mExtraBottomOffset = 0;
     private mExtraLeftOffset = 0;
 
+
+    /**
+     * let the drawer know it does not need to compute axis and legends
+     * (it can used the cached ones)
+     */
     /**
      * default constructor for initialization in code
      */
@@ -171,6 +176,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     protected init() {
         this.mAnimator = new ChartAnimator(() => {
+            // during animations we dont need to compute axis things
+            this.noComputeOnNextDraw = true;
             this.invalidate();
         });
 

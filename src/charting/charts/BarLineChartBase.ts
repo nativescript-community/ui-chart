@@ -172,13 +172,14 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public onDraw(canvas: Canvas) {
         const startTime = Date.now();
         super.onDraw(canvas);
-
+        const noComputeOnNextDraw = this.noComputeOnNextDraw;
+        this.noComputeOnNextDraw = false;
         if (this.mData === null) return;
 
         // execute all drawing commands
         this.drawGridBackground(canvas);
 
-        if (this.mAutoScaleMinMaxEnabled) {
+        if (!noComputeOnNextDraw && this.mAutoScaleMinMaxEnabled) {
             this.autoScale();
         }
         const leftEnabled = this.mAxisLeft.isEnabled();
@@ -188,11 +189,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         const rightLimitEnabled = rightEnabled && this.mAxisRight.isDrawLimitLinesEnabled();
         const xLimitEnabled = xEnabled && this.mXAxis.isDrawLimitLinesEnabled();
 
-        if (leftEnabled) this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
+        if (!noComputeOnNextDraw) {
+            if (leftEnabled) this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
 
-        if (rightEnabled) this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
+            if (rightEnabled) this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
 
-        if (xEnabled) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+            if (xEnabled) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+        }
 
         this.mXAxisRenderer.renderAxisLine(canvas);
         this.mAxisRendererLeft.renderAxisLine(canvas);
