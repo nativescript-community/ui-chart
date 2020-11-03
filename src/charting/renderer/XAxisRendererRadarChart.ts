@@ -22,7 +22,7 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
         const labelRotationAngleDegrees = this.mXAxis.getLabelRotationAngle();
         const drawLabelAnchor: MPPointF = { x: 0.5, y: 0.25 };
 
-        this.mAxisLabelPaint.setTypeface(this.mXAxis.getTypeface());
+        this.mAxisLabelPaint.setFont(this.mXAxis.getFont());
         this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
 

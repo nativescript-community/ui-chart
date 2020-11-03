@@ -83,9 +83,29 @@ export abstract class ComponentBase {
     /**
      * returns the Typeface used for the labels, returns null if none is set
      *
-     * @return
+     * @return {@link Font}
+     * @deprecated use getFont
      */
     public getTypeface() {
+        return this.getFont();
+    }
+
+    /**
+     * Îsets a specific Typeface for the labels
+     *
+     * @param tf: {@link Font}
+     * @deprecated use setFont
+     */
+    public setTypeface(tf: Font) {
+        this.setFont(tf);
+    }
+
+    /**
+     * returns the Typeface used for the labels, returns null if none is set
+     *
+     * @return {@link Font}
+     */
+    public getFont() {
         return this.mTypeface;
     }
 
@@ -94,7 +114,7 @@ export abstract class ComponentBase {
      *
      * @param tf
      */
-    public setTypeface(tf: Font) {
+    public setFont(tf: Font) {
         if (!tf.fontSize) {
             tf = tf.withFontSize(this.mTextSize);
         }

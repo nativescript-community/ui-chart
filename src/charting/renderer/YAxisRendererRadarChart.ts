@@ -132,7 +132,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
     public renderAxisLabels(c: Canvas) {
         if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled()) return;
 
-        this.mAxisLabelPaint.setTypeface(this.mYAxis.getTypeface());
+        this.mAxisLabelPaint.setFont(this.mYAxis.getFont());
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
 
         const center = this.mChart.getCenterOffsets();

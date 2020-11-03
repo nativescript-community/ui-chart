@@ -330,8 +330,6 @@ export class YAxis extends AxisBase {
      * @return
      */
     public getRequiredHeightSpace(p: Paint) {
-        p.setTextSize(this.mTextSize);
-
         const label = this.getLongestLabel();
         return Utils.calcTextHeight(p, label) + this.getYOffset() * 2;
     }

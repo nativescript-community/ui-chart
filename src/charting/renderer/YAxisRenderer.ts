@@ -50,7 +50,7 @@ export class YAxisRenderer extends AxisRenderer {
 
         const positions = this.getTransformedPositions();
 
-        this.mAxisLabelPaint.setTypeface(this.mYAxis.getTypeface());
+        this.mAxisLabelPaint.setFont(this.mYAxis.getFont());
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
 
         const xoffset = this.mYAxis.getXOffset();
@@ -318,7 +318,7 @@ export class YAxisRenderer extends AxisRenderer {
                 this.mLimitLinePaint.setStyle(l.getTextStyle());
                 this.mLimitLinePaint.setPathEffect(null);
                 this.mLimitLinePaint.setColor(l.getTextColor());
-                this.mLimitLinePaint.setTypeface(l.getTypeface());
+                this.mLimitLinePaint.setFont(l.getFont());
                 this.mLimitLinePaint.setStrokeWidth(0.5);
 
                 const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);

@@ -149,7 +149,7 @@ export class LegendRenderer extends Renderer {
             this.mLegend.setEntries(this.computedEntries);
         }
 
-        this.mLegendLabelPaint.setTypeface(this.mLegend.getTypeface());
+        this.mLegendLabelPaint.setFont(this.mLegend.getFont());
 
         // calculate all dimensions of the this.mLegend
         this.mLegend.calculateDimensions(this.mLegendLabelPaint, this.mViewPortHandler);
@@ -159,7 +159,7 @@ export class LegendRenderer extends Renderer {
     public renderLegend(c: Canvas) {
         if (!this.mLegend.isEnabled()) return;
 
-        this.mLegendLabelPaint.setTypeface(this.mLegend.getTypeface());
+        this.mLegendLabelPaint.setFont(this.mLegend.getFont());
         this.mLegendLabelPaint.setColor(this.mLegend.getTextColor());
 
         const labelLineHeight = Utils.getLineHeight(this.mLegendLabelPaint, this.legendFontMetrics);

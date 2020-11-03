@@ -55,7 +55,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
         const positions = this.getTransformedPositions();
 
-        this.mAxisLabelPaint.setTypeface(this.mYAxis.getTypeface());
+        this.mAxisLabelPaint.setFont(this.mYAxis.getFont());
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
         this.mAxisLabelPaint.setTextAlign(Align.CENTER);
 
@@ -109,7 +109,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      */
     @profile
     protected drawYLabels(c: Canvas, fixedPosition, positions, offset) {
-        this.mAxisLabelPaint.setTypeface(this.mYAxis.getTypeface());
+        this.mAxisLabelPaint.setFont(this.mYAxis.getFont());
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
 
         const from = this.mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
@@ -239,9 +239,9 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
                 this.mLimitLinePaint.setStyle(l.getTextStyle());
                 this.mLimitLinePaint.setPathEffect(null);
                 this.mLimitLinePaint.setColor(l.getTextColor());
-                this.mLimitLinePaint.setTypeface(l.getTypeface());
+                this.mLimitLinePaint.setFont(l.getFont());
                 this.mLimitLinePaint.setStrokeWidth(0.5);
-                this.mLimitLinePaint.setTypeface(l.getTypeface());
+                this.mLimitLinePaint.setFont(l.getFont());
 
                 const xOffset = l.getLineWidth() + l.getXOffset();
                 const yOffset = 2 + l.getYOffset();

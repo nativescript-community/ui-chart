@@ -10,7 +10,7 @@ import { profile } from '@nativescript/core';
 
 export class XAxisRenderer extends AxisRenderer {
     protected mXAxis: XAxis;
-    protected mForceLongestLabelComputation = false;
+    protected mForceLongestLabelComputation = true;
 
     constructor(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: Transformer) {
         super(viewPortHandler, trans, xAxis);
@@ -43,9 +43,6 @@ export class XAxisRenderer extends AxisRenderer {
                 min = p1.x;
                 max = p2.x;
             }
-
-            // MPPointD.recycleInstance(p1);
-            // MPPointD.recycleInstance(p2);
         }
 
         this.computeAxisValues(min, max);
@@ -58,16 +55,13 @@ export class XAxisRenderer extends AxisRenderer {
     }
     protected computeSize() {
         const axis = this.mXAxis;
-        this.mAxisLabelPaint.setTypeface(axis.getTypeface());
-
+        this.mAxisLabelPaint.setFont(axis.getFont());
         const rotation = axis.getLabelRotationAngle();
         if (this.mForceLongestLabelComputation || rotation % 360 !== 0) {
             const longest = axis.getLongestLabel();
             const labelSize = Utils.calcTextSize(this.mAxisLabelPaint, longest);
             const labelWidth = labelSize.width;
-            const labelHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q');
-            // const labelHeight = Utils.getLineHeight(this.mAxisLabelPaint);
-
+            const labelHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q') + axis.getYOffset() + 2;
             const labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(labelWidth, labelHeight, axis.getLabelRotationAngle());
 
             axis.mLabelWidth = Math.round(labelWidth);
@@ -88,10 +82,10 @@ export class XAxisRenderer extends AxisRenderer {
         if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) return;
 
         const yoffset = axis.getYOffset();
-
-        this.mAxisLabelPaint.setTypeface(axis.getTypeface());
-        this.mAxisLabelPaint.setTextAlign(axis.getLabelTextAlign());
-        this.mAxisLabelPaint.setColor(axis.getTextColor());
+        const paint = this.mAxisLabelPaint;
+        paint.setFont(axis.getFont());
+        paint.setTextAlign(axis.getLabelTextAlign());
+        paint.setColor(axis.getTextColor());
         // const align = this.mAxisLabelPaint.getTextAlign();
         // this.mAxisLabelPaint.setTextAlign(Align.CENTER);
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
@@ -372,7 +366,7 @@ export class XAxisRenderer extends AxisRenderer {
         if (label != null && label !== '') {
             const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
-            this.mLimitLinePaint.setTypeface(limitLine.getTypeface());
+            this.mLimitLinePaint.setFont(limitLine.getFont());
             this.mLimitLinePaint.setStyle(limitLine.getTextStyle());
             this.mLimitLinePaint.setPathEffect(null);
             this.mLimitLinePaint.setColor(limitLine.getTextColor());
