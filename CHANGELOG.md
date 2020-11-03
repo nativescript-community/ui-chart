@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.11](https://github.com/Akylas/nativescript-chart/compare/v1.1.10...v1.1.11) (2020-11-03)
+
+
+### Bug Fixes
+
+* wrong y offset for x labels in some cases ([94ac8e0](https://github.com/Akylas/nativescript-chart/commit/94ac8e0a2a87e258b13ed95fbeca772249efb430))
+
+
+
+
+
 ## [1.1.10](https://github.com/Akylas/nativescript-chart/compare/v1.1.9...v1.1.10) (2020-11-03)
 
 
