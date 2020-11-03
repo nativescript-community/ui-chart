@@ -27,18 +27,11 @@ export class ChartAnimator {
             .to({ value: 1 }, duration)
             .easing(easing)
             .onUpdate((obj) => {
-                // this.log('onUpdate', obj.value);
                 this.setPhaseX(obj.value);
                 if (listener) {
                     listener();
                 }
-                // ()=>this.onAnimationUpdate(this.animator)
             });
-        // ObjectAnimator animatorX = ObjectAnimator.ofFloat(this, "phaseX", 0, 1);
-        // animatorX.setInterpolator(easing);
-        // animatorX.setDuration(duration);
-
-        // return animatorX;
     }
 
     private yAnimator(duration, easing: EasingFunction = Easing.Linear.None, listener?: () => void) {
@@ -46,18 +39,11 @@ export class ChartAnimator {
             .to({ value: 1 }, duration)
             .easing(easing)
             .onUpdate((obj) => {
-                // this.log('onUpdate', obj.value);
                 this.setPhaseY(obj.value);
                 if (listener) {
                     listener();
                 }
-                // ()=>this.onAnimationUpdate(this.animator)
             });
-        // ObjectAnimator animatorY = ObjectAnimator.ofFloat(this, "phaseY", 0, 1);
-        // animatorY.setInterpolator(easing);
-        // animatorY.setDuration(duration);
-
-        // return animatorY;
     }
 
     /**
