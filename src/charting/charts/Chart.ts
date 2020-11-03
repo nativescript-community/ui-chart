@@ -149,11 +149,27 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     private mExtraBottomOffset = 0;
     private mExtraLeftOffset = 0;
 
+    /**
+     * flag that indicates if offsets calculation has already been done or not
+     */
+    protected mOffsetsCalculated = false;
 
     /**
      * let the drawer know it does not need to compute axis and legends
      * (it can used the cached ones)
      */
+    protected noComputeOnNextDraw = false;
+    /**
+     * array of Highlight objects that reference the highlighted slices in the
+     * chart
+     */
+    protected mIndicesToHighlight: Highlight[];
+
+    /**
+     * The maximum distance in dp away from an entry causing it to highlight.
+     */
+    protected mMaxHighlightDistance = 0;
+
     /**
      * default constructor for initialization in code
      */
@@ -181,8 +197,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             this.invalidate();
         });
 
-        // initialize the utils
-        // Utils.init(this._context);
         this.mMaxHighlightDistance = 500;
 
         // this.mDescription = new Description();
@@ -203,95 +217,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
         if (this.mLogEnabled) console.log('', 'Chart.init()');
     }
-
-    // public addEventListener(arg: string | GestureTypes, callback: (data: EventData) => void, thisArg?: any) {
-    //     if (typeof arg === "string") {
-    //         arg = getEventOrGestureName(arg);
-
-    //         let gesture = gestureFromString(arg);
-    //         if (gesture && !this._isEvent(arg)) {
-    //             this._observe(gesture, callback, thisArg);
-    //         } else {
-    //             let events = (arg).split(",");
-    //             if (events.length > 0) {
-    //                 for (let i = 0; i < events.length; i++) {
-    //                     let evt = events[i].trim();
-    //                     let gst = gestureFromString(evt);
-    //                     if (gst && !this._isEvent(arg)) {
-    //                         this._observe(gst, callback, thisArg);
-    //                     } else {
-    //                         super.addEventListener(evt, callback, thisArg);
-    //                     }
-    //                 }
-    //             } else {
-    //                 super.addEventListener(arg, callback, thisArg);
-    //             }
-    //         }
-    //     } else if (typeof arg === "number") {
-    //         this._observe(<GestureTypes>arg, callback, thisArg);
-    //     }
-    // }
-
-    // public removeEventListener(arg: string | GestureTypes, callback?: any, thisArg?: any) {
-    //     if (typeof arg === "string") {
-    //         let gesture = gestureFromString(arg);
-    //         if (gesture && !this._isEvent(arg)) {
-    //             this._disconnectGestureObservers(gesture);
-    //         } else {
-    //             let events = arg.split(",");
-    //             if (events.length > 0) {
-    //                 for (let i = 0; i < events.length; i++) {
-    //                     let evt = events[i].trim();
-    //                     let gst = gestureFromString(evt);
-    //                     if (gst && !this._isEvent(arg)) {
-    //                         this._disconnectGestureObservers(gst);
-    //                     } else {
-    //                         super.removeEventListener(evt, callback, thisArg);
-    //                     }
-    //                 }
-    //             } else {
-    //                 super.removeEventListener(arg, callback, thisArg);
-    //             }
-
-    //         }
-    //     } else if (typeof arg === "number") {
-    //         this._disconnectGestureObservers(<GestureTypes>arg);
-    //     }
-    // }
-
-    // public initWithDummyData() {
-    // ColorTemplate template = new ColorTemplate();
-    // template.addColorsForDataSets(ColorTemplate.COLORFUL_COLORS,
-    // getContext());
-    //
-    // setColorTemplate(template);
-    // setDrawYValues(false);
-    //
-    // ArrayList<String> xVals = new ArrayList<String>();
-    // Calendar calendar = Calendar.getInstance();
-    // for (i = 0; i < 12; i++) {
-    // xVals.add(calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT,
-    // Locale.getDefault()));
-    // }
-    //
-    // ArrayList<DataSet> dataSets = new ArrayList<DataSet>();
-    // for (i = 0; i < 3; i++) {
-    //
-    // ArrayList<Entry> yVals = new ArrayList<Entry>();
-    //
-    // for (j = 0; j < 12; j++) {
-    // let val =  (Math.random() * 100);
-    // yVals.add(new Entry(val, j));
-    // }
-    //
-    // DataSet set = new DataSet(yVals, "DataSet " + i);
-    // dataSets.add(set); // add the datasets
-    // }
-    // // create a data object with the datasets
-    // ChartData data = new ChartData(xVals, dataSets);
-    // setData(data);
-    // invalidate();
-    // }
 
     /**
      * Sets a new data object for the chart. The data object contains all values
@@ -338,11 +263,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.mData.clearValues();
         this.invalidate();
     }
-
-    // invalidate() {
-    //     console.log('invalidate', new Error().stack);
-    //     super.invalidate();
-    // }
 
     /**
      * Returns true if the chart is empty (meaning it's data object is either
@@ -397,11 +317,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.mDefaultValueFormatter.setup(digits);
     }
 
-    /**
-     * flag that indicates if offsets calculation has already been done or not
-     */
-    protected mOffsetsCalculated = false;
-
     public onDraw(canvas: Canvas) {
         // super.onDraw(canvas);
 
@@ -431,7 +346,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         if (this.mDescription != null && this.mDescription.isEnabled()) {
             const position = this.mDescription.getPosition();
 
-            this.mDescPaint.setTypeface(this.mDescription.getTypeface());
+            this.mDescPaint.setFont(this.mDescription.getFont());
             this.mDescPaint.setColor(this.mDescription.getTextColor());
             this.mDescPaint.setTextAlign(this.mDescription.getTextAlign());
 
@@ -455,17 +370,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * ################ ################ ################ ################
      */
     /** BELOW THIS CODE FOR HIGHLIGHTING */
-
-    /**
-     * array of Highlight objects that reference the highlighted slices in the
-     * chart
-     */
-    protected mIndicesToHighlight: Highlight[];
-
-    /**
-     * The maximum distance in dp away from an entry causing it to highlight.
-     */
-    protected mMaxHighlightDistance = 0;
 
     public getMaxHighlightDistance() {
         return this.mMaxHighlightDistance;
@@ -862,34 +766,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     public getDefaultValueFormatter() {
         return this.mDefaultValueFormatter;
     }
-
-    // /**
-    //  * set a selection listener for the chart
-    //  *
-    //  * @param l
-    //  */
-    // public setOnChartValueSelectedListener(OnChartValueSelectedListener l) {
-    //     this.mSelectionListener = l;
-    // }
-
-    // /**
-    //  * Sets a gesture-listener for the chart for custom callbacks when executing
-    //  * gestures on the chart surface.
-    //  *
-    //  * @param l
-    //  */
-    // public setOnChartGestureListener(OnChartGestureListener l) {
-    //     this.mGestureListener = l;
-    // }
-
-    // /**
-    //  * Returns the custom gesture listener.
-    //  *
-    //  * @return
-    //  */
-    // public OnChartGestureListener getOnChartGestureListener() {
-    //     return this.mGestureListener;
-    // }
 
     /**
      * returns the current y-max value across all DataSets
@@ -1519,37 +1395,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         return this.mJobs;
     }
 
-    // protected onLayout( changed, left, top, right, bottom) {
-
-    //     for (i = 0; i < getChildCount(); i++) {
-    //         getChildAt(i).layout(left, top, right, bottom);
-    //     }
-    // }
-
-    // protected onMeasure(widthMeasureSpec, heightMeasureSpec) {
-    //     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    //     let size =  (50);
-    //     setMeasuredDimension(
-    //             Math.max(getSuggestedMinimumWidth(),
-    //                     resolveSize(size,
-    //                             widthMeasureSpec)),
-    //             Math.max(getSuggestedMinimumHeight(),
-    //                     resolveSize(size,
-    //                             heightMeasureSpec)));
-    // }
-    // public onLayout(left: number, top: number, right: number, bottom: number) {
-    //     super.onLayout(left, top, right, bottom);
-    // }
-
-    // public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-    //     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    // }
-
-    // _raiseLayoutChangedEvent() {
-    //     super._raiseLayoutChangedEvent();
-    //     this.onSizeChanged(this.getMeasuredWidth(), this.getMeasuredHeight());
-    // }
-
     onSetWidthHeight(w: number, h: number) {
         const needsDataSetChanged = !this.mViewPortHandler.hasChartDimens();
         if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged);
@@ -1601,49 +1446,4 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     public setHardwareAccelerationEnabled(enabled) {
         this.hardwareAccelerated = enabled;
     }
-
-    // protected onDetachedFromWindow() {
-    //     super.onDetachedFromWindow();
-
-    //     //console.log(LOG_TAG, "Detaching...");
-
-    //     if (mUnbind)
-    //         unbindDrawables(this);
-    // }
-
-    /**
-     * unbind flag
-     */
-    // private mUnbind = false;
-
-    /**
-     * Unbind all drawables to avoid memory leaks.
-     * Link: http://stackoverflow.com/a/6779164/1590502
-     *
-     * @param view
-     */
-    // private void unbindDrawables(View view) {
-
-    //     if (view.getBackground() != null) {
-    //         view.getBackground().setCallback(null);
-    //     }
-    //     if (view instanceof ViewGroup) {
-    //         for (i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-    //             unbindDrawables(((ViewGroup) view).getChildAt(i));
-    //         }
-    //         ((ViewGroup) view).removeAllViews();
-    //     }
-    // }
-
-    /**
-     * Set this to true to enable "unbinding" of drawables. When a View is detached
-     * from a window. This helps avoid memory leaks.
-     * Default: false
-     * Link: http://stackoverflow.com/a/6779164/1590502
-     *
-     * @param enabled
-     */
-    // public setUnbindEnabled( enabled) {
-    //     this.mUnbind = enabled;
-    // }
 }

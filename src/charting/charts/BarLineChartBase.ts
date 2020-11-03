@@ -559,8 +559,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mViewPortHandler.zoomIn(center.x, -center.y, this.mZoomMatrixBuffer);
         this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
 
-        // MPPointF.recycleInstance(center);
-
         // Range might have changed, which means that Y-axis labels
         // could have changed in size, affecting Y-axis size.
         // So we need to recalculate offsets.
@@ -576,8 +574,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.mViewPortHandler.zoomOut(center.x, -center.y, this.mZoomMatrixBuffer);
         this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
-
-        // MPPointF.recycleInstance(center);
 
         // Range might have changed, which means that Y-axis labels
         // could have changed in size, affecting Y-axis size.
@@ -680,8 +676,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             duration
         );
         this.addViewportJob(job);
-
-        // MPPointD.recycleInstance(origin);
     }
 
     protected mFitScreenMatrixBuffer = new Matrix();
