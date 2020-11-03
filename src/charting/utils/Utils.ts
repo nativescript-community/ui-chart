@@ -491,10 +491,6 @@ export namespace Utils {
         // And we want to normalize it.
         drawOffsetY += -mFontMetricsBuffer.ascent;
 
-        // To have a consistent point of reference, we always draw left-aligned
-        // const originalTextAlign = paint.getTextAlign();
-        // paint.setTextAlign(Align.LEFT);
-
         if (angleDegrees !== 0) {
             const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
             paint.getTextBounds(text, 0, text.length, mDrawTextRectBuffer);
@@ -521,11 +517,10 @@ export namespace Utils {
 
             c.restore();
         } else {
-            if (anchor.x !== 0 || anchor.y !== 0) {
+            if (anchor.y !== 0) {
                 const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
                 drawOffsetY -= lineHeight * anchor.y;
             }
-
             drawOffsetX += x;
             drawOffsetY += y;
             c.drawText(text, drawOffsetX, drawOffsetY, paint);

@@ -61,7 +61,7 @@ export class XAxisRenderer extends AxisRenderer {
             const longest = axis.getLongestLabel();
             const labelSize = Utils.calcTextSize(this.mAxisLabelPaint, longest);
             const labelWidth = labelSize.width;
-            const labelHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q') + axis.getYOffset() + 2;
+            const labelHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q') + 2;
             const labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(labelWidth, labelHeight, axis.getLabelRotationAngle());
 
             axis.mLabelWidth = Math.round(labelWidth);
@@ -88,6 +88,12 @@ export class XAxisRenderer extends AxisRenderer {
         paint.setColor(axis.getTextColor());
         // const align = this.mAxisLabelPaint.getTextAlign();
         // this.mAxisLabelPaint.setTextAlign(Align.CENTER);
+
+        // TODO: fix this the right way.
+        // for now Utils.drawXAxisValue needs the font ascent
+        // but it is not calculated all the time (in the lightest of cases)
+        // we call this next line to ensure it is
+        const labelLineHeight = Utils.getLineHeight(paint);
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         const pointF = { x: 0, y: 0 };
         if (axis.getPosition() === XAxisPosition.TOP) {
