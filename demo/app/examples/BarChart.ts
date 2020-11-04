@@ -1,4 +1,4 @@
-import { Color } from '@nativescript/core';
+import { Color, ObservableArray } from '@nativescript/core';
 import { BarChart } from '@nativescript-community/ui-chart/charts';
 import { BarData } from '@nativescript-community/ui-chart/data/BarData';
 import { BarDataSet } from '@nativescript-community/ui-chart/data/BarDataSet';
@@ -39,9 +39,7 @@ export function onChartLoaded(args) {
 
     //const icon = ImageSource.fromFileOrResourceSync('~/assets/star.png');
 
-    const data = new Array(5).fill(0).map(function (v, i) {
-        return { index: i, value: Math.random() * 1 };
-    });
+    const data = new ObservableArray();
 
     const sets = [];
     const set = new BarDataSet(data, 'Dataset Label', 'index', 'value');
@@ -57,6 +55,12 @@ export function onChartLoaded(args) {
 
     // Set data
     chart.setData(bd);
+
+    // Add data anytime later
+    const temp = new Array(5).fill(0).map(function (v, i) {
+        return { index: i, value: Math.random() * 1 };
+    });
+    data.push(temp);
 }
 
 export function redraw(args) {
