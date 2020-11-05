@@ -21,7 +21,7 @@ import { ChartAnimator, EasingFunction } from '../animation/ChartAnimator';
 import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
 import { layout } from '@nativescript/core/utils/utils';
-import { ChangedData, EventData, ObservableArray } from '@nativescript/core';
+import { EventData } from '@nativescript/core';
 import { addWeakEventListener, removeWeakEventListener } from '@nativescript/core/ui/core/weak-event-listener';
 
 const LOG_TAG = 'NSChart';
@@ -227,14 +227,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param data
      */
     public setData(data: T) {
-        const oldData = this.mData;
         this.mData = data;
         this.mOffsetsCalculated = false;
-
-        // If data was replaced, clear old listeners
-        if (oldData && oldData !== data) {
-            this.clearObservableListeners(oldData);
-        }
 
         if (data == null) {
             return;
@@ -244,12 +238,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.setupDefaultFormatter(data.getYMin(), data.getYMax());
 
         for (const set of this.mData.getDataSets()) {
-            const values = set.getValues();
-            if (values instanceof ObservableArray) {
-                removeWeakEventListener(values, ObservableArray.changeEvent, this.onObservableDataSetChanged, this);
-                addWeakEventListener(values, ObservableArray.changeEvent, this.onObservableDataSetChanged, this);
-            }
-
             if (set.needsFormatter() || set.getValueFormatter() === this.mDefaultValueFormatter) {
                 set.setValueFormatter(this.mDefaultValueFormatter);
             }
@@ -259,22 +247,11 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.notifyDataSetChanged();
     }
 
-    protected clearObservableListeners(data: T) {
-        for (const set of data.getDataSets()) {
-            const values = set.getValues();
-            if (values instanceof ObservableArray) {
-                removeWeakEventListener(values, ObservableArray.changeEvent, this.onObservableDataSetChanged, this);
-            }
-        }
-    }
-
     /**
      * Clears the chart from all data (sets it to null) and refreshes it (by
      * calling invalidate()).
      */
     public clear() {
-        this.clearObservableListeners(this.mData);
-
         this.mData = null;
         this.mOffsetsCalculated = false;
         this.mIndicesToHighlight = null;
@@ -287,7 +264,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * chart by calling invalidate().
      */
     public clearValues() {
-        this.clearObservableListeners(this.mData);
         this.mData.clearValues();
         this.invalidate();
     }
@@ -303,40 +279,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         else {
             if (this.mData.getEntryCount() <= 0) return true;
             else return false;
-        }
-    }
-
-    protected onObservableDataSetChanged(args: ChangedData<any>) {
-        const observable = args.object;
-        const data = this.mData;
-
-        if (data) {
-            let changed = false;
-            // Observable may be used by multiple datasets
-            for (const set of data.getDataSets()) {
-                if (set.getValues() === observable) {
-                    if (!changed) {
-                        changed = true;
-                    }
-                    set.init();
-                }
-            }
-
-            // If datasets actually had changes, notify chart
-            if (changed) {
-                data.notifyDataChanged();
-                // Recalculate how many digits are needed
-                this.setupDefaultFormatter(data.getYMin(), data.getYMax());
-
-                // Update chart
-                this.notifyDataSetChanged();
-            } else {
-                // Observable is no longer used by any dataset of this chart, so remove listener
-                removeWeakEventListener(observable, ObservableArray.changeEvent, this.onObservableDataSetChanged, this);
-            }
-        } else {
-            // Observable is no longer used by any dataset of this chart, so remove listener
-            removeWeakEventListener(observable, ObservableArray.changeEvent, this.onObservableDataSetChanged, this);
         }
     }
 
