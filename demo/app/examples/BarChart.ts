@@ -39,9 +39,11 @@ export function onChartLoaded(args) {
 
     //const icon = ImageSource.fromFileOrResourceSync('~/assets/star.png');
 
-    const data = new ObservableArray(new Array(5).fill(0).map(function (v, i) {
-        return { index: i, value: Math.random() * 1 };
-    }));
+    const data = new ObservableArray(
+        new Array(5).fill(0).map(function (v, i) {
+            return { index: i, value: Math.random() * 1 };
+        })
+    );
 
     const sets = [];
     const set = new BarDataSet(data, 'Dataset Label', 'index', 'value');
