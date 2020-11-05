@@ -1,4 +1,4 @@
-import { Color, ImageSource } from '@nativescript/core';
+import { Color, ImageSource, ObservableArray } from '@nativescript/core';
 import { Screen } from '@nativescript/core/platform';
 import { Align, Canvas, FontMetrics, Paint, Rect, StaticLayout } from '@nativescript-community/ui-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
@@ -778,6 +778,10 @@ export namespace Utils {
         }
 
         return remainder;
+    }
+
+    export function getArrayItem(array: any[] | ObservableArray<any>, index: number) {
+        return array instanceof ObservableArray ? array.getItem(index) : array[index];
     }
 
     export function RGBToHSV(r, g, b) {

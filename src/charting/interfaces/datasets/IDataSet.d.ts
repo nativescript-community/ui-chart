@@ -1,4 +1,4 @@
-import { Color } from '@nativescript/core/color';
+import { Color, ObservableArray } from '@nativescript/core';
 import { Font } from '@nativescript/core/ui/styling/font';
 import { DashPathEffect } from '@nativescript-community/ui-canvas';
 import { Entry } from '../../data/Entry';
@@ -10,7 +10,6 @@ import { ValueFormatter } from '../../formatter/ValueFormatter';
 import { MPPointF } from '../../utils/MPPointF';
 import { LegendForm } from '../../components/Legend';
 
-
 /**
  * Created by Philipp Jahoda on 21/10/15.
  */
@@ -18,6 +17,11 @@ export interface IDataSet<T extends Entry> {
     xProperty: string;
     yProperty: string;
     /** ###### ###### DATA RELATED METHODS ###### ###### */
+
+    /**
+     * Initializes DataSet chart data.
+     */
+    init();
 
     /**
      * returns the minimum y-value this DataSet holds
@@ -54,6 +58,13 @@ export interface IDataSet<T extends Entry> {
      * @return
      */
     getEntryCount(): number;
+
+    /**
+     * Returns the values that belong to DataSet.
+     *
+     * @return
+     */
+    getValues(): T[] | ObservableArray<T>;
 
     /**
      * Calculates the minimum and maximum x and y values (mXMin, this.mXMax, this.mYMin, this.mYMax).
@@ -114,7 +125,7 @@ export interface IDataSet<T extends Entry> {
      * @param xValue
      * @return
      */
-    getEntriesForXValue(xValue: number): T[];
+    getEntriesForXValue(xValue: number): T[] | ObservableArray<T>;
 
     /**
      * Returns all Entry objects found at the given x-value with binary

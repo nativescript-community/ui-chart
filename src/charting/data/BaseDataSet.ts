@@ -1,3 +1,4 @@
+import { ObservableArray } from '@nativescript/core';
 import { Entry } from './Entry';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { LegendForm } from '../components/Legend';
@@ -14,12 +15,13 @@ import { Rounding } from './DataSet';
  * provided by the IDataSet interface.
  */
 export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
+    abstract init();
     abstract getYMin(): number;
     abstract getYMax(): number;
     abstract getXMin(): number;
     abstract getXMax(): number;
     abstract calcMinMaxYRange(fromX: number, toX: number);
-    abstract getEntriesForXValue(xValue: number): T[];
+    abstract getEntriesForXValue(xValue: number): T[] | ObservableArray<T>;
     abstract getEntriesAndIndexesForXValue(xValue: number): { entry: T; index: number }[];
     abstract getEntryIndexForXValue(xValue: number, closestToY: number, rounding?: Rounding): number;
     abstract getEntryIndex(e: T): number;
@@ -27,6 +29,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     abstract addEntryOrdered(e: T);
     abstract clear();
     abstract getEntryCount(): number;
+    abstract getValues(): T[] | ObservableArray<T>;
     abstract getEntryForIndex(index: number): T;
     abstract getEntryForXValue(xValue: number, closestToY: number, rounding?: Rounding): T;
     abstract getEntryAndIndexForXValue(xValue: number, closestToY: number, rounding?: Rounding): { entry: T; index: number };
