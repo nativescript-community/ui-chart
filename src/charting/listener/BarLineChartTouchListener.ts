@@ -21,8 +21,8 @@ const LOG_TAG = 'BarLineChartTouchListener';
 
 let TAP_HANDLER_TAG = 12450000;
 let DOUBLE_TAP_HANDLER_TAG = 12451000;
-let PINCH_HANDLER_TAG = 12451000;
-let PAN_HANDLER_TAG = 12451000;
+let PINCH_HANDLER_TAG = 12452000;
+let PAN_HANDLER_TAG = 12453000;
 
 /**
  * TouchListener for Bar-, Line-, Scatter- and CandleStickChart with handles all
@@ -139,6 +139,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             this.pinchGestureHandler = manager
                 .createGestureHandler(HandlerType.PINCH, this.PINCH_HANDLER_TAG, {
                     minSpan: 20,
+                    // simultaneousHandlers: [this.PAN_HANDLER_TAG],
                     shouldCancelWhenOutside: false,
                 })
                 .on(GestureHandlerStateEvent, this.onPinchGestureState, this)
@@ -152,8 +153,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (this.mChart.isLogEnabled()) console.log(LOG_TAG, 'creating pan gestures');
             this.panGestureHandler = manager
                 .createGestureHandler(HandlerType.PAN, this.PAN_HANDLER_TAG, {
+                    // simultaneousHandlers: [this.PINCH_HANDLER_TAG],
                     minPointers: 1,
-                    maxPointers: 1,
+                    maxPointers: 2,
                     shouldCancelWhenOutside: false,
                 })
                 .on(GestureHandlerStateEvent, this.onPanGestureState, this)
