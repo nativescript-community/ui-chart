@@ -51,11 +51,13 @@ export abstract class AxisRenderer extends Renderer {
             this.mGridPaint = new Paint();
             this.mGridPaint.setColor('gray');
             this.mGridPaint.setStrokeWidth(1);
+            this.mGridPaint.setAntiAlias(true);
             this.mGridPaint.setStyle(Style.STROKE);
             this.mGridPaint.setAlpha(90);
 
             this.mAxisLinePaint = new Paint();
             this.mAxisLinePaint.setColor('black');
+            this.mAxisLinePaint.setAntiAlias(true);
             this.mAxisLinePaint.setStrokeWidth(1);
             this.mAxisLinePaint.setStyle(Style.STROKE);
 
