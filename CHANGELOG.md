@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.12](https://github.com/Akylas/nativescript-chart/compare/v1.1.11...v1.1.12) (2020-11-06)
+
+
+### Bug Fixes
+
+* Bar chart highlight rectangles had inaccurate starting y position. ([0d8c546](https://github.com/Akylas/nativescript-chart/commit/0d8c546e474775f0aaa206cdebe1acb64aad246b))
+* dont calculate axis when not enabled ([1ff487d](https://github.com/Akylas/nativescript-chart/commit/1ff487dbd3d246e24f6ccc2a02a04a7473d718b5))
+* draw axis lines anti aliased ([334c8cb](https://github.com/Akylas/nativescript-chart/commit/334c8cbeeb645277af6b42f8fabf28625a5b560c))
+* round chart sizes ([6baa035](https://github.com/Akylas/nativescript-chart/commit/6baa0352b856be715f00cb00a4f58d09ddfd1bca))
+
+
+### Features
+
+* Added support for Nativescript ObservableArray. ([eeb52e7](https://github.com/Akylas/nativescript-chart/commit/eeb52e76779ac03d15079f37f26e73ac57f109e8))
+
+
+
+
+
 ## [1.1.11](https://github.com/Akylas/nativescript-chart/compare/v1.1.10...v1.1.11) (2020-11-03)
 
 
