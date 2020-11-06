@@ -1,4 +1,5 @@
 import { IDataSet } from '../interfaces/datasets/IDataSet';
+import { DataSet } from '../data/DataSet';
 import { Entry } from '../data/Entry';
 import { ChartData } from '../data/ChartData';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
@@ -21,6 +22,7 @@ import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
 import { layout } from '@nativescript/core/utils/utils';
 import { EventData } from '@nativescript/core';
+import { addWeakEventListener, removeWeakEventListener } from '@nativescript/core/ui/core/weak-event-listener';
 
 const LOG_TAG = 'NSChart';
 
@@ -232,11 +234,13 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             return;
         }
 
-        // calculate how many digits are needed
+        // Calculate how many digits are needed
         this.setupDefaultFormatter(data.getYMin(), data.getYMax());
 
         for (const set of this.mData.getDataSets()) {
-            if (set.needsFormatter() || set.getValueFormatter() === this.mDefaultValueFormatter) set.setValueFormatter(this.mDefaultValueFormatter);
+            if (set.needsFormatter() || set.getValueFormatter() === this.mDefaultValueFormatter) {
+                set.setValueFormatter(this.mDefaultValueFormatter);
+            }
         }
 
         // let the chart know there is new data
