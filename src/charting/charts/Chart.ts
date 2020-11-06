@@ -1427,13 +1427,13 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         super.onLayout(left, top, right, bottom);
 
         if (global.isIOS) {
-            this.onSetWidthHeight(layout.toDeviceIndependentPixels(right - left), layout.toDeviceIndependentPixels(bottom - top));
+            this.onSetWidthHeight(Math.round(layout.toDeviceIndependentPixels(right - left)), Math.round(layout.toDeviceIndependentPixels(bottom - top)));
         }
     }
     public onSizeChanged(w: number, h: number, oldw: number, oldh: number): void {
         super.onSizeChanged(w, h, oldw, oldh);
         if (global.isAndroid) {
-            this.onSetWidthHeight(w, h);
+            this.onSetWidthHeight(Math.round(w), Math.round(h));
         }
     }
 
