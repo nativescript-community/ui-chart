@@ -59,8 +59,12 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         }
 
         // calculate axis range (min / max) according to provided data
-        this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
-        this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
+        if (this.mAxisLeft.isEnabled()) {
+            this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
+        }
+        if (this.mAxisRight.isEnabled()) {
+            this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
+        }
     }
 
     /**
