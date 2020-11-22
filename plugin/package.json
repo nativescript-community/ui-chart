@@ -2,12 +2,13 @@
     "name": "@nativescript-community/ui-chart",
     "version": "1.1.12",
     "sideEffects": false,
-    "description": "Nativescript Chart plugin.",
+    "description": "A powerful chart / graph plugin, supporting line, bar, pie, radar, bubble, and candlestick charts as well as scaling, panning and animations.",
     "keywords": [
         "NativeScript",
         "JavaScript",
         "Android",
-        "iOS"
+        "iOS",
+        "Vue"
     ],
     "nativescript": {
         "platforms": {
@@ -22,8 +23,11 @@
     "bugs": {
         "url": "https://github.com/nativescript-community/ui-chart/issues"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nativescript-community/ui-chart"
+    },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/nativescript-community/ui-chart",
     "readmeFilename": "README.md",
     "main": "charts/index.js",
     "typings": "charts/index.d.ts",
