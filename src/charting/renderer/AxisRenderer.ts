@@ -195,12 +195,16 @@ export abstract class AxisRenderer extends Renderer {
 
             // no forced count
         } else {
-            let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
+            // if we use  Math.ceil(yMin / interval) * interval and the min value is 20
+            // then we will see 0 as axis first when it should be 20
+            // let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
+            let first = interval === 0 ? 0 : yMin;
             if (this.mAxis.isCenterAxisLabelsEnabled()) {
                 first -= interval;
             }
-
-            const last = interval === 0 ? 0 : Utils.nextUp(Math.floor(yMax / interval) * interval);
+            // use Math.floor(yMax / interval) + 1 instead of
+            // Math.floor(yMax / interval) to make sure the axis is showed "above" the higghest value
+            const last = interval === 0 ? 0 : Utils.nextUp((Math.floor(yMax / interval) + 1) * interval);
 
             let f;
             let i;
