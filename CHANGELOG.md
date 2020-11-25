@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.16](https://github.com/Akylas/nativescript-chart/compare/v1.1.15...v1.1.16) (2020-11-25)
+
+
+### Bug Fixes
+
+* correct bar animations when “bottom” is > 0 ([95a3664](https://github.com/Akylas/nativescript-chart/commit/95a3664dc56ff30b13fbeff5cf93a26b03bdf2a3))
+
+
+
+
+
 ## [1.1.15](https://github.com/Akylas/nativescript-chart/compare/v1.1.14...v1.1.15) (2020-11-24)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
