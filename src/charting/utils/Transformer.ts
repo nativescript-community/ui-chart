@@ -320,36 +320,23 @@ export class Transformer {
      */
     public rectToPixelPhase(r: Rect, phaseY) {
         // multiply the height of the rect with the phase
-        r.top *= phaseY;
-        r.bottom *= phaseY;
+        if (r.top > 0) {
+            r.top = r.bottom + phaseY * (r.top - r.bottom);
+        } else {
+            r.bottom = r.top + phaseY * (r.bottom - r.top);
+        }
         this.rectValueToPixel(r);
-
-        // this.mMatrixValueToPx.mapRect(r);
-        // this.mViewPortHandler.getMatrixTouch().mapRect(r);
-        // this.mMatrixOffset.mapRect(r);
     }
 
     public rectToPixelPhaseHorizontal(r: Rect, phaseY) {
         // multiply the height of the rect with the phase
-        r.left *= phaseY;
-        r.right *= phaseY;
+        if (r.left > 0) {
+            r.left = r.right + phaseY * (r.left - r.right);
+        } else {
+            r.right = r.left + phaseY * (r.right - r.left);
+        }
         this.rectValueToPixel(r);
-
-        // this.mMatrixValueToPx.mapRect(r);
-        // this.mViewPortHandler.getMatrixTouch().mapRect(r);
-        // this.mMatrixOffset.mapRect(r);
     }
-
-    /**
-     * Transform a rectangle with all matrices with potential animation phases.
-     *
-     * @param r
-     */
-    // public rectValueToPixelHorizontal(r: Rect) {
-    //     this.mMatrixValueToPx.mapRect(r);
-    //     this.mViewPortHandler.getMatrixTouch().mapRect(r);
-    //     this.mMatrixOffset.mapRect(r);
-    // }
 
     /**
      * Transform a rectangle with all matrices with potential animation phases.
@@ -364,10 +351,6 @@ export class Transformer {
             r.right *= phaseY;
         }
         this.rectValueToPixel(r);
-
-        // this.mMatrixValueToPx.mapRect(r);
-        // this.mViewPortHandler.getMatrixTouch().mapRect(r);
-        // this.mMatrixOffset.mapRect(r);
     }
 
     /**

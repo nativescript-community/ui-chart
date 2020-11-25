@@ -77,9 +77,9 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
                 // multiply the height of the rect with the phase
                 if (top > 0) {
-                    top *= this.phaseY;
+                    top = bottom + this.phaseY * (top - bottom);
                 } else {
-                    bottom *= this.phaseY;
+                    bottom = top + this.phaseY * (bottom - top);
                 }
 
                 this.addBar(left, top, right, bottom);
@@ -119,8 +119,11 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                     }
 
                     // multiply the height of the rect with the phase
-                    top *= this.phaseY;
-                    bottom *= this.phaseY;
+                    if (top > 0) {
+                        top = bottom + this.phaseY * (top - bottom);
+                    } else {
+                        bottom = top + this.phaseY * (bottom - top);
+                    }
 
                     this.addBar(left, top, right, bottom);
                 }

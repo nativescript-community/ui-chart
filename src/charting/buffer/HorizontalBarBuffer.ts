@@ -36,9 +36,9 @@ export class HorizontalBarBuffer extends BarBuffer {
 
                 // multiply the height of the rect with the phase
                 if (right > 0) {
-                    right *= this.phaseY;
+                    right = left + this.phaseY * (right - left);
                 } else {
-                    left *= this.phaseY;
+                    left = right + this.phaseY * (left - right);
                 }
                 this.addBar(left, top, right, bottom);
             } else {
@@ -72,8 +72,11 @@ export class HorizontalBarBuffer extends BarBuffer {
                     }
 
                     // multiply the height of the rect with the phase
-                    right *= this.phaseY;
-                    left *= this.phaseY;
+                    if (right > 0) {
+                        right = left + this.phaseY * (right - left);
+                    } else {
+                        left = right + this.phaseY * (left - right);
+                    }
 
                     this.addBar(left, top, right, bottom);
                 }
