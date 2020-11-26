@@ -1,4 +1,4 @@
-import { EventData, Observable } from '@nativescript/core';
+import { EventData, Observable, Trace } from '@nativescript/core';
 import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
 import { GestureTypes } from '@nativescript/core/ui/gestures';
 import { BarLineChartBase } from './BarLineChartBase';
@@ -10,7 +10,7 @@ import { Entry } from '../data/Entry';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { PieRadarChartTouchListener } from '../listener/PieRadarChartTouchListener';
 import { MPPointF } from '../utils/MPPointF';
-import { Utils } from '../utils/Utils';
+import { CLog, CLogTypes, Utils } from '../utils/Utils';
 
 const LOG_TAG = 'PieRadarChartBase';
 
@@ -199,8 +199,8 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
         this.mViewPortHandler.restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom);
 
         if (Trace.isEnabled()) {
-    CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
-}
+            CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
+        }
     }
 
     /**
