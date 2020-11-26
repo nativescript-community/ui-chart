@@ -126,11 +126,7 @@ export abstract class AxisRenderer extends Renderer {
                 min = p1.y;
                 max = p2.y;
             }
-
-            // MPPointD.recycleInstance(p1);
-            // MPPointD.recycleInstance(p2);
         }
-
         this.computeAxisValues(min, max);
     }
 
@@ -205,7 +201,6 @@ export abstract class AxisRenderer extends Renderer {
             // use Math.floor(yMax / interval) + 1 instead of
             // Math.floor(yMax / interval) to make sure the axis is showed "above" the higghest value
             const last = interval === 0 ? 0 : Utils.nextUp((Math.floor(yMax / interval) + 1) * interval);
-
             let f;
             let i;
 
