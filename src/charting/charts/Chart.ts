@@ -460,6 +460,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.setLastHighlighted(highs);
 
         // redraw the chart
+        this.noComputeOnNextDraw = true;
         this.invalidate();
     }
 
@@ -547,6 +548,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         }
 
         // redraw the chart
+        this.noComputeOnNextDraw = true;
         this.invalidate();
     }
 
