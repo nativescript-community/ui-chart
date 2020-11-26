@@ -161,7 +161,6 @@ export class XAxisRenderer extends AxisRenderer {
         const centeringEnabled = axis.isCenterAxisLabelsEnabled();
         const length = axis.mEntryCount * 2;
         const positions = Utils.createNativeArray(length);
-
         for (let i = 0; i < length; i += 2) {
             // only fill x values
             if (centeringEnabled) {
@@ -180,7 +179,7 @@ export class XAxisRenderer extends AxisRenderer {
         } else {
             offsetRight = this.mViewPortHandler.offsetRight();
         }
-        for (let i = 0; i < positions.length; i += 2) {
+        for (let i = 0; i < length; i += 2) {
             let x = positions[i];
 
             if (this.mViewPortHandler.isInBoundsX(x)) {
