@@ -1,5 +1,5 @@
 import { Canvas, Matrix, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
-import { EventData, Observable, profile } from '@nativescript/core';
+import { EventData, Observable, Trace, profile } from '@nativescript/core';
 import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
 import { GestureTypes } from '@nativescript/core/ui/gestures';
 import { LegendHorizontalAlignment, LegendOrientation, LegendVerticalAlignment } from '../components/Legend';
@@ -18,7 +18,7 @@ import { BarLineChartTouchListener } from '../listener/BarLineChartTouchListener
 import { XAxisRenderer } from '../renderer/XAxisRenderer';
 import { YAxisRenderer } from '../renderer/YAxisRenderer';
 import { Transformer } from '../utils/Transformer';
-import { Utils } from '../utils/Utils';
+import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { Chart } from './Chart';
 
 const LOG_TAG = 'BarLineChartBase';
@@ -263,12 +263,12 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.drawMarkers(canvas);
 
         this.notify({ eventName: 'drawn', object: this });
-        if (this.mLogEnabled) {
+        if (Trace.isEnabled()) {
             const drawtime = Date.now() - startTime;
             this.totalTime += drawtime;
             this.drawCycles += 1;
             const average = this.totalTime / this.drawCycles;
-            console.log(this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
+            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
         }
     }
 
@@ -281,8 +281,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     }
 
     protected prepareValuePxMatrix() {
-        if (this.mLogEnabled) {
-            console.log(LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.mXAxis.mAxisMinimum + ', xmax: ' + this.mXAxis.mAxisMaximum + ', xdelta: ' + this.mXAxis.mAxisRange);
+        if (Trace.isEnabled()) {
+            CLog(CLogTypes.info, LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.mXAxis.mAxisMinimum + ', xmax: ' + this.mXAxis.mAxisMaximum + ', xdelta: ' + this.mXAxis.mAxisRange);
         }
         if (this.mAxisRight.isEnabled()) {
             this.mRightAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
@@ -303,18 +303,18 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     public notifyDataSetChanged() {
         if (this.mData == null) {
-            if (this.mLogEnabled) {
-                console.log(LOG_TAG, 'Preparing... DATA NOT SET.');
+            if (Trace.isEnabled()) {
+                CLog(CLogTypes.info, LOG_TAG, 'Preparing... DATA NOT SET.');
             }
             return;
         } else if (!this.mViewPortHandler.hasChartDimens()) {
-            if (this.mLogEnabled) {
-                console.log(LOG_TAG, 'Preparing... NOT SIZED YET.');
+            if (Trace.isEnabled()) {
+                CLog(CLogTypes.info, LOG_TAG, 'Preparing... NOT SIZED YET.');
             }
             return;
         } else {
-            if (this.mLogEnabled) {
-                console.log(LOG_TAG, 'Preparing...');
+            if (Trace.isEnabled()) {
+                CLog(CLogTypes.info, LOG_TAG, 'Preparing...');
             }
         }
 
@@ -480,8 +480,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
             this.mViewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
 
-            if (this.mLogEnabled) {
-                console.log(LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
+            if (Trace.isEnabled()) {
+                CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
                 console.log(LOG_TAG, 'Content: ' + this.mViewPortHandler.getContentRect().toString());
             }
         }

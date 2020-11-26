@@ -13,9 +13,10 @@ import { YAxisRendererHorizontalBarChart } from '../renderer/YAxisRendererHorizo
 import { XAxisRendererHorizontalBarChart } from '../renderer/XAxisRendererHorizontalBarChart';
 import { HorizontalViewPortHandler } from '../utils/HorizontalViewPortHandler';
 import { TransformerHorizontalBarChart } from '../utils/TransformerHorizontalBarChart';
-import { Utils } from '../utils/Utils';
+import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { RectF } from '@nativescript-community/ui-canvas';
 import { getEntryXValue } from '../data/BaseEntry';
+import { Trace } from '@nativescript/core';
 
 const LOG_TAG = 'HorizontalBarChart';
 
@@ -84,8 +85,8 @@ export class HorizontalBarChart extends BarChart {
 
         this.mViewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
 
-        if (this.mLogEnabled) {
-            console.log(LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
+        if (Trace.isEnabled()) {
+            CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
             console.log(LOG_TAG, 'Content: ' + this.mViewPortHandler.getContentRect().toString());
         }
 
@@ -179,8 +180,8 @@ export class HorizontalBarChart extends BarChart {
 
     public getHighlightByTouchPoint(x, y): Highlight {
         if (this.mData == null) {
-            if (this.mLogEnabled) {
-                console.error(LOG_TAG, "Can't select by touch. No data set.");
+            if (Trace.isEnabled()) {
+                CLog(CLogTypes.error, LOG_TAG, "Can't select by touch. No data set.");
             }
             return null;
         }

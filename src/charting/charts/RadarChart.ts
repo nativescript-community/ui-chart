@@ -1,5 +1,5 @@
 import { Canvas, Paint } from '@nativescript-community/ui-canvas';
-import { Color } from '@nativescript/core';
+import { Color, Trace } from '@nativescript/core';
 import { PieRadarChartBase } from './PieRadarChartBase';
 import { AxisDependency, YAxis } from '../components/YAxis';
 import { RadarData } from '../data/RadarData';
@@ -9,7 +9,7 @@ import { RadarHighlighter } from '../highlight/RadarHighlighter';
 import { RadarChartRenderer } from '../renderer/RadarChartRenderer';
 import { XAxisRendererRadarChart } from '../renderer/XAxisRendererRadarChart';
 import { YAxisRendererRadarChart } from '../renderer/YAxisRendererRadarChart';
-import { Utils } from '../utils/Utils';
+import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { Highlight } from '../highlight/Highlight';
 
 const LOG_TAG = 'RadarChart';
@@ -113,7 +113,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
         if (this.mXAxis.isEnabled()) {
             this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
             this.mXAxisRenderer.renderAxisLabels(c);
-        };
+        }
 
         if (this.mDrawWeb) this.mRenderer.drawExtras(c);
 
@@ -123,7 +123,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         if (this.valuesToHighlight()) this.mRenderer.drawHighlighted(c, this.mIndicesToHighlight);
 
-        if (this.mYAxis.isEnabled() && !this.mYAxis.isDrawLimitLinesBehindDataEnabled()){
+        if (this.mYAxis.isEnabled() && !this.mYAxis.isDrawLimitLinesBehindDataEnabled()) {
             this.mYAxisRenderer.renderLimitLines(c);
             this.mYAxisRenderer.renderAxisLabels(c);
         }
@@ -137,12 +137,12 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
         this.drawMarkers(c);
 
         this.notify({ eventName: 'drawn', object: this });
-        if (this.mLogEnabled) {
+        if (Trace.isEnabled()) {
             const drawtime = Date.now() - startTime;
             this.totalTime += drawtime;
             this.drawCycles += 1;
             const average = this.totalTime / this.drawCycles;
-            console.log(this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
+            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
         }
     }
 

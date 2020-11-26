@@ -7,9 +7,10 @@ import { PieHighlighter } from '../highlight/PieHighlighter';
 import { Highlight } from '../highlight/Highlight';
 import { PieChartRenderer } from '../renderer/PieChartRenderer';
 import { MPPointF } from '../utils/MPPointF';
-import { Utils } from '../utils/Utils';
+import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { Font } from '@nativescript/core/ui/styling/font';
 import { Canvas, Paint, Path, RectF } from '@nativescript-community/ui-canvas';
+import { Trace } from '@nativescript/core';
 
 const LOG_TAG = 'PieChart';
 
@@ -132,12 +133,12 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
         this.drawDescription(canvas);
         this.drawMarkers(canvas);
         this.notify({ eventName: 'drawn', object: this });
-        if (this.mLogEnabled) {
+        if (Trace.isEnabled()) {
             const drawtime = Date.now() - startTime;
             this.totalTime += drawtime;
             this.drawCycles += 1;
             const average = this.totalTime / this.drawCycles;
-            console.log(this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
+            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
         }
     }
 

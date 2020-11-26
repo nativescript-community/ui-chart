@@ -1,10 +1,23 @@
-import { Color, ImageSource, ObservableArray } from '@nativescript/core';
+import { Color, ImageSource, ObservableArray, Trace } from '@nativescript/core';
 import { Screen } from '@nativescript/core/platform';
 import { Align, Canvas, FontMetrics, Paint, Rect, StaticLayout } from '@nativescript-community/ui-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { ValueFormatter } from '../formatter/ValueFormatter';
 import Shape from '@nativescript-community/ui-canvas/shapes/shape';
 import { Chart } from '../charts/Chart';
+
+export const ChartTraceCategory = 'NativescriptChart';
+
+export enum CLogTypes {
+    log = Trace.messageType.log,
+    info = Trace.messageType.info,
+    warning = Trace.messageType.warn,
+    error = Trace.messageType.error,
+}
+
+export const CLog = (type: CLogTypes, ...args) => {
+    Trace.write(args.join(' '), ChartTraceCategory, type);
+};
 
 export type FloatArray = Float32Array | Float64Array;
 export let FloatConstructor: typeof Float32Array | typeof Float64Array;

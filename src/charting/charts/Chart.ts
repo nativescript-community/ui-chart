@@ -5,7 +5,7 @@ import { ChartData } from '../data/ChartData';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
 import { Align, Canvas, CanvasView, Paint } from '@nativescript-community/ui-canvas';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
-import { Utils } from '../utils/Utils';
+import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { Color } from '@nativescript/core/color';
 import { Highlight } from '../highlight/Highlight';
 import { Legend } from '../components/Legend';
@@ -21,7 +21,7 @@ import { ChartAnimator, EasingFunction } from '../animation/ChartAnimator';
 import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
 import { layout } from '@nativescript/core/utils/utils';
-import { EventData } from '@nativescript/core';
+import { EventData, Trace } from '@nativescript/core';
 import { addWeakEventListener, removeWeakEventListener } from '@nativescript/core/ui/core/weak-event-listener';
 
 const LOG_TAG = 'NSChart';
@@ -217,7 +217,9 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.mInfoPaint.setTextAlign(Align.CENTER);
         this.mInfoPaint.setTextSize(12);
 
-        if (this.mLogEnabled) console.log('', 'Chart.init()');
+        if (Trace.isEnabled()) {
+            CLog(CLogTypes.log, this.constructor.name, 'init()');
+        }
     }
 
     /**
@@ -528,8 +530,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         if (high == null) {
             this.mIndicesToHighlight = null;
         } else {
-            // if (this.mLogEnabled) console.log(LOG_TAG, 'Highlighted', high);
-
             e = this.mData.getEntryForHighlight(high);
             if (e == null) {
                 this.mIndicesToHighlight = null;
@@ -901,6 +901,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * Set this to true to enable logcat outputs for the chart. Beware that
      * logcat output decreases rendering performance. Default: disabled.
      *
+     * @deprecated use Nativescript Trace with ChartTraceCategory
      * @param enabled
      */
     public setLogEnabled(enabled) {
@@ -910,6 +911,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * Returns true if log-output is enabled for the chart, fals if not.
      *
+     * @deprecated use Nativescript Trace with ChartTraceCategory
      * @return
      */
     public isLogEnabled() {
@@ -1403,13 +1405,19 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     onSetWidthHeight(w: number, h: number) {
         const needsDataSetChanged = !this.mViewPortHandler.hasChartDimens();
-        if (this.mLogEnabled) console.log(LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged);
+        if (Trace.isEnabled()) {
+            CLog(CLogTypes.info, LOG_TAG, 'OnSizeChanged', w, h, needsDataSetChanged);
+        }
 
         if (w > 0 && h > 0 && h < 10000 && h < 10000) {
-            if (this.mLogEnabled) console.log(LOG_TAG, 'Setting chart dimens, width: ' + w + ', height: ' + h);
+            if (Trace.isEnabled()) {
+                CLog(CLogTypes.info, LOG_TAG, 'Setting chart dimens, width: ' + w + ', height: ' + h);
+            }
             this.mViewPortHandler.setChartDimens(w, h);
         } else {
-            console.warn(LOG_TAG, '*Avoiding* setting chart dimens! width: ' + w + ', height: ' + h);
+            if (Trace.isEnabled()) {
+                CLog(CLogTypes.warning, LOG_TAG, '*Avoiding* setting chart dimens! width: ' + w + ', height: ' + h);
+            }
         }
 
         // This may cause the chart view to mutate properties affecting the view port --

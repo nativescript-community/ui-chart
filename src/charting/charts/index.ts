@@ -9,6 +9,7 @@ export { CandleStickChart } from './CandleStickChart';
 export { CombinedChart } from './CombinedChart';
 import { install as installGestures } from '@nativescript-community/gesturehandler';
 
+export { ChartTraceCategory } from '../utils/utils';
 export function install() {
     installGestures();
 }

@@ -198,7 +198,9 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
 
         this.mViewPortHandler.restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom);
 
-        if (this.mLogEnabled) console.log(LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
+        if (Trace.isEnabled()) {
+    CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
+}
     }
 
     /**
