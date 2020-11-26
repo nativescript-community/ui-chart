@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.17](https://github.com/Akylas/nativescript-chart/compare/v1.1.16...v1.1.17) (2020-11-26)
+
+
+### Bug Fixes
+
+* handling extra space was “decaling” axis lines ([20e2322](https://github.com/Akylas/nativescript-chart/commit/20e2322b1f96cdd986465ac4601970b6979ad04f))
+* new log system using Trace so that it can removed in production ([713abda](https://github.com/Akylas/nativescript-chart/commit/713abdaa21e5cb70caaae5b7a1914474b4f60341))
+* no need to compute axis on highlight ([c2b59f3](https://github.com/Akylas/nativescript-chart/commit/c2b59f3432c19665ffdcf16a04319425310c087d))
+
+
+
+
+
 ## [1.1.16](https://github.com/Akylas/nativescript-chart/compare/v1.1.15...v1.1.16) (2020-11-25)
 
 
