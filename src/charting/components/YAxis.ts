@@ -398,10 +398,17 @@ export class YAxis extends AxisBase {
         // recalculate
         range = Math.abs(max - min);
 
-        // calc extra spacing
-        this.mAxisMinimum = this.mCustomAxisMin ? this.mAxisMinimum : min - (range / 100) * this.getSpaceBottom();
-        this.mAxisMaximum = this.mCustomAxisMax ? this.mAxisMaximum : max + (range / 100) * this.getSpaceTop();
-
-        this.mAxisRange = Math.abs(this.mAxisMinimum - this.mAxisMaximum);
+        // calc extra spacing only for range.
+        // using it for mAxisMinimum and mAxisMaximum would make the axis use decaled "values"
+        let delta = 0;
+        if (!this.mCustomAxisMin) {
+            this.mAxisMinimum = min;
+            delta += (range / 100) * this.getSpaceBottom();
+        }
+        if (!this.mCustomAxisMax) {
+            this.mAxisMaximum = max;
+            delta += (range / 100) * this.getSpaceTop();
+        }
+        this.mAxisRange = Math.abs(this.mAxisMinimum - this.mAxisMaximum) + delta;
     }
 }
