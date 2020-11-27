@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.18](https://github.com/Akylas/nativescript-chart/compare/v1.1.17...v1.1.18) (2020-11-27)
+
+
+### Bug Fixes
+
+* ensure non infinite values ([85cce94](https://github.com/Akylas/nativescript-chart/commit/85cce94aa53c704819e425e1088cc09617f7a684))
+* refactoring for better axis computation ([da5de39](https://github.com/Akylas/nativescript-chart/commit/da5de3950c864174cf6a94582af46df93843b0b4))
+
+
+
+
+
 ## [1.1.17](https://github.com/Akylas/nativescript-chart/compare/v1.1.16...v1.1.17) (2020-11-26)
 
 
