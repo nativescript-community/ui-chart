@@ -136,16 +136,18 @@ export abstract class AxisRenderer extends Renderer {
      * @return
      */
     protected computeAxisValues(min, max) {
+        const axis = this.mAxis;
         const yMin = min;
         const yMax = max;
 
-        const labelCount = this.mAxis.getLabelCount();
+        const labelCount = axis.getLabelCount();
         const range = Math.abs(yMax - yMin);
 
         if (labelCount === 0 || range <= 0 || !Number.isFinite(range)) {
-            this.mAxis.mEntries = [];
-            this.mAxis.mCenteredEntries = [];
-            this.mAxis.mEntryCount = 0;
+            axis.mEntries = [];
+            axis.mLabels = [];
+            axis.mCenteredEntries = [];
+            axis.mEntryCount = 0;
             return;
         }
 
@@ -155,8 +157,8 @@ export abstract class AxisRenderer extends Renderer {
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
-        if (this.mAxis.isGranularityEnabled()) {
-            interval = interval < this.mAxis.getGranularity() ? this.mAxis.getGranularity() : interval;
+        if (axis.isGranularityEnabled()) {
+            interval = interval < axis.getGranularity() ? axis.getGranularity() : interval;
         }
 
         // Normalize interval
@@ -168,22 +170,25 @@ export abstract class AxisRenderer extends Renderer {
             interval = Math.floor(10 * intervalMagnitude);
         }
 
-        let n = this.mAxis.isCenterAxisLabelsEnabled() ? 1 : 0;
+        let n = axis.isCenterAxisLabelsEnabled() ? 1 : 0;
 
+        const formatter = axis.getValueFormatter();
         // force label count
-        if (this.mAxis.isForceLabelsEnabled()) {
+        if (axis.isForceLabelsEnabled()) {
             interval = range / (labelCount - 1);
-            this.mAxis.mEntryCount = labelCount;
+            axis.mEntryCount = labelCount;
 
-            if (this.mAxis.mEntries.length < labelCount) {
+            if (axis.mEntries.length < labelCount) {
                 // Ensure stops contains at least numStops elements.
-                this.mAxis.mEntries = [];
+                axis.mEntries = [];
+                axis.mLabels = [];
             }
 
             let v = min;
 
             for (let i = 0; i < labelCount; i++) {
-                this.mAxis.mEntries[i] = v;
+                axis.mEntries[i] = v;
+                axis.mLabels[i] = formatter.getAxisLabel(v, axis);
                 v += interval;
             }
             n = labelCount;
@@ -194,7 +199,7 @@ export abstract class AxisRenderer extends Renderer {
             // then we will see 0 as axis first when it should be 20
             // let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
             let first = interval === 0 ? 0 : yMin;
-            if (this.mAxis.isCenterAxisLabelsEnabled()) {
+            if (axis.isCenterAxisLabelsEnabled()) {
                 first -= interval;
             }
             // use Math.floor(yMax / interval) + 1 instead of
@@ -209,11 +214,12 @@ export abstract class AxisRenderer extends Renderer {
                 }
             }
 
-            this.mAxis.mEntryCount = n;
+            axis.mEntryCount = n;
 
-            if (this.mAxis.mEntries.length < n) {
+            if (axis.mEntries.length < n) {
                 // Ensure stops contains at least numStops elements.
-                this.mAxis.mEntries = [];
+                axis.mEntries = [];
+                axis.mLabels = [];
             }
 
             for (f = first, i = 0; i < n; f += interval, ++i) {
@@ -222,26 +228,27 @@ export abstract class AxisRenderer extends Renderer {
                     f = 0.0;
                 }
 
-                this.mAxis.mEntries[i] = f;
+                axis.mEntries[i] = f;
+                axis.mLabels[i] = formatter.getAxisLabel(f, axis);
             }
         }
 
         // set decimals
         if (interval < 1) {
-            this.mAxis.mDecimals = Math.ceil(-Math.log10(interval));
+            axis.mDecimals = Math.ceil(-Math.log10(interval));
         } else {
-            this.mAxis.mDecimals = 0;
+            axis.mDecimals = 0;
         }
 
-        if (this.mAxis.isCenterAxisLabelsEnabled()) {
-            if (this.mAxis.mCenteredEntries.length < n) {
-                this.mAxis.mCenteredEntries = [];
+        if (axis.isCenterAxisLabelsEnabled()) {
+            if (axis.mCenteredEntries.length < n) {
+                axis.mCenteredEntries = [];
             }
 
             const offset = interval / 2;
 
             for (let i = 0; i < n; i++) {
-                this.mAxis.mCenteredEntries[i] = this.mAxis.mEntries[i] + offset;
+                axis.mCenteredEntries[i] = axis.mEntries[i] + offset;
             }
         }
     }

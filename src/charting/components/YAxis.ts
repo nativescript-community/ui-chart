@@ -414,7 +414,6 @@ export class YAxis extends AxisBase {
         if (!this.mCustomAxisMax) {
             delta += (range / 100) * this.getSpaceTop();
         }
-        console.log('calculate', dataMin, dataMax, min, max, delta, range);
         this.mAxisRange = range + delta;
     }
 }

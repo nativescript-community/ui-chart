@@ -25,9 +25,10 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      * @param yMax - the maximum y-value in the data object for this axis
      */
     public computeAxis(yMin, yMax, inverted) {
+        const axis = this.mYAxis;
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        const rect = axis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         if (rect.height() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
             const p2 = this.mTrans.getValuesByTouchPoint(rect.right, rect.top);
@@ -49,21 +50,22 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      */
     @profile
     public renderAxisLabels(c: Canvas) {
-        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled()) {
+        const axis = this.mYAxis;
+        if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) {
             return;
         }
 
         const positions = this.getTransformedPositions();
 
-        this.mAxisLabelPaint.setFont(this.mYAxis.getFont());
-        this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
+        this.mAxisLabelPaint.setFont(axis.getFont());
+        this.mAxisLabelPaint.setColor(axis.getTextColor());
         this.mAxisLabelPaint.setTextAlign(Align.CENTER);
 
         const baseYOffset = 2.5;
         const textHeight = Utils.calcTextHeight(this.mAxisLabelPaint, 'Q');
 
-        const dependency = this.mYAxis.getAxisDependency();
-        const labelPosition = this.mYAxis.getLabelPosition();
+        const dependency = axis.getAxisDependency();
+        const labelPosition = axis.getLabelPosition();
 
         let yPos = 0;
 
@@ -82,19 +84,20 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
             }
         }
 
-        this.drawYLabels(c, yPos, positions, this.mYAxis.getYOffset());
+        this.drawYLabels(c, yPos, positions, axis.getYOffset());
     }
 
     public renderAxisLine(c: Canvas) {
-        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawAxisLineEnabled()) {
+        const axis = this.mYAxis;
+        if (!axis.isEnabled() || !axis.isDrawAxisLineEnabled()) {
             return;
         }
 
-        this.mAxisLinePaint.setColor(this.mYAxis.getAxisLineColor());
-        this.mAxisLinePaint.setStrokeWidth(this.mYAxis.getAxisLineWidth());
+        this.mAxisLinePaint.setColor(axis.getAxisLineColor());
+        this.mAxisLinePaint.setStrokeWidth(axis.getAxisLineWidth());
 
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        if (this.mYAxis.getAxisDependency() === AxisDependency.LEFT) {
+        if (axis.getAxisDependency() === AxisDependency.LEFT) {
             c.drawLine(rect.left, rect.top, rect.right, rect.top, this.mAxisLinePaint);
         } else {
             c.drawLine(rect.left, rect.bottom, rect.right, rect.bottom, this.mAxisLinePaint);
@@ -109,21 +112,23 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      */
     @profile
     protected drawYLabels(c: Canvas, fixedPosition, positions, offset) {
-        this.mAxisLabelPaint.setFont(this.mYAxis.getFont());
-        this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
+        const axis = this.mYAxis;
+        this.mAxisLabelPaint.setFont(axis.getFont());
+        this.mAxisLabelPaint.setColor(axis.getTextColor());
 
-        const from = this.mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
-        const to = this.mYAxis.isDrawTopYLabelEntryEnabled() ? this.mYAxis.mEntryCount : this.mYAxis.mEntryCount - 1;
+        const from = axis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
+        const to = axis.isDrawTopYLabelEntryEnabled() ? axis.mEntryCount : axis.mEntryCount - 1;
 
         for (let i = from; i < to; i++) {
-            const text = this.mYAxis.getFormattedLabel(i);
+            const text = axis.getFormattedLabel(i);
 
             c.drawText(text, positions[i * 2], fixedPosition - offset, this.mAxisLabelPaint);
         }
     }
 
     protected getTransformedPositions() {
-        const length = this.mYAxis.mEntryCount * 2;
+        const axis = this.mYAxis;
+        const length = axis.mEntryCount * 2;
         if (this.mGetTransformedPositionsBuffer.length !== length) {
             this.mGetTransformedPositionsBuffer = Utils.createArrayBuffer(length);
         }
@@ -131,7 +136,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         const positions = this.mGetTransformedPositionsBuffer;
         for (let i = 0; i < length; i += 2) {
             // only fill x values, y values are not needed for x-labels
-            positions[i] = this.mYAxis.mEntries[i / 2];
+            positions[i] = axis.mEntries[i / 2];
         }
 
         const result = Utils.pointsFromBuffer(positions);
@@ -154,17 +159,18 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
     // }
 
     protected drawZeroLine(c: Canvas) {
+        const axis = this.mYAxis;
         const clipRestoreCount = c.save();
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         this.mZeroLineClippingRect.set(rect);
-        this.mZeroLineClippingRect.inset(-this.mYAxis.getZeroLineWidth(), 0);
+        this.mZeroLineClippingRect.inset(-axis.getZeroLineWidth(), 0);
         c.clipRect(this.mLimitLineClippingRect);
 
         // draw zero line
         const pos = this.mTrans.getPixelForValues(0, 0);
 
-        this.mZeroLinePaint.setColor(this.mYAxis.getZeroLineColor());
-        this.mZeroLinePaint.setStrokeWidth(this.mYAxis.getZeroLineWidth());
+        this.mZeroLinePaint.setColor(axis.getZeroLineColor());
+        this.mZeroLinePaint.setStrokeWidth(axis.getZeroLineWidth());
 
         const zeroLinePath = this.mDrawZeroLinePathBuffer;
         zeroLinePath.reset();

@@ -87,7 +87,7 @@ export class HorizontalBarChart extends BarChart {
 
         if (Trace.isEnabled()) {
             CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
-            console.log(LOG_TAG, 'Content: ' + this.mViewPortHandler.getContentRect().toString());
+            CLog(CLogTypes.info, LOG_TAG, 'Content: ' + this.mViewPortHandler.getContentRect().toString());
         }
 
         this.prepareOffsetMatrix();

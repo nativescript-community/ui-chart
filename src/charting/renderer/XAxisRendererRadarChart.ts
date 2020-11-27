@@ -17,31 +17,33 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
     }
 
     public renderAxisLabels(c: Canvas) {
-        if (!this.mXAxis.isEnabled() || !this.mXAxis.isDrawLabelsEnabled()) return;
+        const axis = this.mXAxis;
+        const chart = this.mChart;
+        if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) return;
 
-        const labelRotationAngleDegrees = this.mXAxis.getLabelRotationAngle();
+        const labelRotationAngleDegrees = axis.getLabelRotationAngle();
         const drawLabelAnchor: MPPointF = { x: 0.5, y: 0.25 };
 
-        this.mAxisLabelPaint.setFont(this.mXAxis.getFont());
-        this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
-        this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
+        this.mAxisLabelPaint.setFont(axis.getFont());
+        this.mAxisLabelPaint.setTextAlign(axis.getLabelTextAlign());
+        this.mAxisLabelPaint.setColor(axis.getTextColor());
 
-        const sliceangle = this.mChart.getSliceAngle();
+        const sliceangle = chart.getSliceAngle();
 
         // calculate the factor that is needed for transforming the value to
         // pixels
-        const factor = this.mChart.getFactor();
+        const factor = chart.getFactor();
 
-        const center = this.mChart.getCenterOffsets();
+        const center = chart.getCenterOffsets();
         const pOut: MPPointF = { x: 0, y: 0 };
-        for (let i = 0; i < this.mChart.getData().getMaxEntryCountSet().getEntryCount(); i++) {
-            const label = this.mXAxis.getValueFormatter().getAxisLabel(i, this.mXAxis);
+        const labels = axis.mLabels;
+        for (let i = 0; i < chart.getData().getMaxEntryCountSet().getEntryCount(); i++) {
+            const label = labels[i];
+            const angle = (sliceangle * i + chart.getRotationAngle()) % 360;
 
-            const angle = (sliceangle * i + this.mChart.getRotationAngle()) % 360;
+            Utils.getPosition(center, chart.getYRange() * factor + axis.mLabelRotatedWidth / 2, angle, pOut);
 
-            Utils.getPosition(center, this.mChart.getYRange() * factor + this.mXAxis.mLabelRotatedWidth / 2, angle, pOut);
-
-            this.drawLabel(c, label, pOut.x, pOut.y - this.mXAxis.mLabelRotatedHeight / 2, drawLabelAnchor, labelRotationAngleDegrees);
+            this.drawLabel(c, label, pOut.x, pOut.y - axis.mLabelRotatedHeight / 2, drawLabelAnchor, labelRotationAngleDegrees);
         }
 
         // MPPointF.recycleInstance(center);

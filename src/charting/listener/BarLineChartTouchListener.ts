@@ -174,8 +174,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     }
 
     setDoubleTap(enabled: boolean) {
+        const chart = this.mChart;
         if (enabled) {
-            this.getOrCreateDoubleTapGestureHandler().attachToView(this.mChart);
+            this.getOrCreateDoubleTapGestureHandler().attachToView(chart);
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'enabling double tap gestures');
             }
@@ -183,25 +184,27 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'disabling double tap gestures');
             }
-            this.doubleTapGestureHandler.detachFromView(this.mChart);
+            this.doubleTapGestureHandler.detachFromView(chart);
         }
     }
     setTap(enabled: boolean) {
+        const chart = this.mChart;
         if (enabled) {
-            this.getOrCreateTapGestureHandler().attachToView(this.mChart);
+            this.getOrCreateTapGestureHandler().attachToView(chart);
             if (Trace.isEnabled()) {
-                CLog(CLogTypes.log, LOG_TAG, 'enabling tap gestures', this.mChart, this.mChart && this.mChart.nativeViewProtected);
+                CLog(CLogTypes.log, LOG_TAG, 'enabling tap gestures', chart, chart && chart.nativeViewProtected);
             }
         } else if (this.tapGestureHandler) {
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'disabling tap gestures');
             }
-            this.tapGestureHandler.detachFromView(this.mChart);
+            this.tapGestureHandler.detachFromView(chart);
         }
     }
     setPinch(enabled: boolean) {
+        const chart = this.mChart;
         if (enabled) {
-            this.getOrCreatePinchGestureHandler().attachToView(this.mChart);
+            this.getOrCreatePinchGestureHandler().attachToView(chart);
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'enabling pinch gestures');
             }
@@ -209,12 +212,13 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'disabling pinch gestures');
             }
-            this.pinchGestureHandler.detachFromView(this.mChart);
+            this.pinchGestureHandler.detachFromView(chart);
         }
     }
     setPan(enabled: boolean) {
+        const chart = this.mChart;
         if (enabled) {
-            this.getOrCreatePanGestureHandler().attachToView(this.mChart);
+            this.getOrCreatePanGestureHandler().attachToView(chart);
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'enabling pan gestures');
             }
@@ -222,7 +226,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'disabling pan gestures');
             }
-            this.panGestureHandler.detachFromView(this.mChart);
+            this.panGestureHandler.detachFromView(chart);
         }
     }
     dispose() {
@@ -239,31 +243,26 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     }
     init() {
         super.init();
+        const chart = this.mChart;
 
-        if (this.mChart.isDoubleTapToZoomEnabled()) {
+        if (chart.isDoubleTapToZoomEnabled()) {
             this.setDoubleTap(true);
         }
-        if (this.mChart.isHighlightPerTapEnabled()) {
+        if (chart.isHighlightPerTapEnabled()) {
             this.setTap(true);
         }
-        if (this.mChart.isHighlightPerDragEnabled() || this.mChart.isDragEnabled()) {
+        if (chart.isHighlightPerDragEnabled() || chart.isDragEnabled()) {
             this.setPan(true);
         }
-        if (this.mChart.isPinchZoomEnabled()) {
+        if (chart.isPinchZoomEnabled()) {
             this.setPinch(true);
         }
-        // this.longpressGestureHandler.attachToView(chart);
     }
     onPanGestureState(event: GestureStateEventData) {
         const chart = this.mChart;
-        // console.log('onPanGestureState', event.data.state, event.data.prevState, event.data.extraData);
         if (!chart.isHighlightPerDragEnabled() && !chart.isDragEnabled()) return;
         const state = event.data.state;
         switch (state) {
-            // case GestureState.BEGAN:
-            // this.stopDeceleration();
-            // this.saveTouchStart(event);
-
             // break;
             case GestureState.ACTIVE:
                 this.stopDeceleration();
@@ -289,7 +288,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 }
                 break;
         }
-        // this.mMatrix = this.mChart.getViewPortHandler().refresh(this.mMatrix, this.mChart, true);
     }
     onPanGestureTouch(event: GestureTouchEventData) {
         const chart = this.mChart;
@@ -335,14 +333,13 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         }
     }
     onPinchGestureState(event: GestureStateEventData) {
-        // console.log('onPinchGestureState', event.data.state, event.data.prevState, event.data.extraData, this.mTouchMode);
-        if (!this.mChart.isScaleXEnabled() && !this.mChart.isScaleYEnabled()) return;
+        const chart = this.mChart;
+        if (!chart.isScaleXEnabled() && !chart.isScaleYEnabled()) return;
         const state = event.data.state;
         switch (state) {
             case GestureState.ACTIVE:
-                // console.log('starting Pinch', (event.object as any).minSpan);
                 // if (event.data.extraData.numberOfPointers >= 2) {
-                // this.mChart.disableScroll();
+                // chart.disableScroll();
 
                 this.saveTouchStart(event);
                 // this.mSavedScale = event.data.extraData.scale;
@@ -352,11 +349,11 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 // get the distance between the pointers on the y-axis
                 this.mSavedYDist = BarLineChartTouchListener.getYDist(event);
 
-                if (this.mChart.isPinchZoomEnabled()) {
+                if (chart.isPinchZoomEnabled()) {
                     this.mTouchMode = ChartTouchListener.PINCH_ZOOM;
                 } else {
-                    if (this.mChart.isScaleXEnabled() !== this.mChart.isScaleYEnabled()) {
-                        this.mTouchMode = this.mChart.isScaleXEnabled() ? ChartTouchListener.X_ZOOM : ChartTouchListener.Y_ZOOM;
+                    if (chart.isScaleXEnabled() !== chart.isScaleYEnabled()) {
+                        this.mTouchMode = chart.isScaleXEnabled() ? ChartTouchListener.X_ZOOM : ChartTouchListener.Y_ZOOM;
                     } else {
                         this.mTouchMode = this.mSavedXDist > this.mSavedYDist ? ChartTouchListener.X_ZOOM : ChartTouchListener.Y_ZOOM;
                     }
@@ -379,17 +376,15 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     // Range might have changed, which means that Y-axis labels
                     // could have changed in size, affecting Y-axis size.
                     // So we need to recalculate offsets.
-                    this.mChart.calculateOffsets();
-                    this.mChart.invalidate();
+                    chart.calculateOffsets();
+                    chart.invalidate();
                 }
                 break;
         }
-        // this.mMatrix = this.mChart.getViewPortHandler().refresh(this.mMatrix, this.mChart, true);
     }
     onPinchGestureTouch(event: GestureTouchEventData) {
         const chart = this.mChart;
 
-        // console.log('onPinchGestureTouch', event.data.state, event.data.extraData, this.mChart.isScaleXEnabled(), this.mChart.isScaleYEnabled(), this.mTouchMode);
         if (!chart.isScaleXEnabled() && !chart.isScaleYEnabled()) return;
 
         if (event.data.state !== GestureState.ACTIVE) {
@@ -401,9 +396,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         }
 
         if (this.mTouchMode === ChartTouchListener.X_ZOOM || this.mTouchMode === ChartTouchListener.Y_ZOOM || this.mTouchMode === ChartTouchListener.PINCH_ZOOM) {
-            // this.mChart.disableScroll();
+            // chart.disableScroll();
 
-            // if (this.mChart.isScaleXEnabled() || this.mChart.isScaleYEnabled()) {
+            // if (chart.isScaleXEnabled() || chart.isScaleYEnabled()) {
             // if (event.data.extraData.numberOfPointers >= 2) {
             if (this.mTouchMode === ChartTouchListener.PINCH_ZOOM) {
                 this.mLastGesture = ChartGesture.PINCH_ZOOM;
@@ -411,14 +406,14 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
                 const scale = event.data.extraData.scale;
                 const isZoomingOut = scale < 1;
-                const h = this.mChart.getViewPortHandler();
+                const h = chart.getViewPortHandler();
 
                 const canZoomMoreX = isZoomingOut ? h.canZoomOutMoreX() : h.canZoomInMoreX();
 
                 const canZoomMoreY = isZoomingOut ? h.canZoomOutMoreY() : h.canZoomInMoreY();
 
-                const scaleX = this.mChart.isScaleXEnabled() ? scale : 1;
-                const scaleY = this.mChart.isScaleYEnabled() ? scale : 1;
+                const scaleX = chart.isScaleXEnabled() ? scale : 1;
+                const scaleY = chart.isScaleYEnabled() ? scale : 1;
 
                 if (canZoomMoreY || canZoomMoreX) {
                     this.mMatrix.set(this.mSavedMatrix);
@@ -427,13 +422,13 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     // if (l != null)
                     // l.onChartScale(event, scaleX, scaleY);
                 }
-            } else if (this.mTouchMode === ChartTouchListener.X_ZOOM && this.mChart.isScaleXEnabled()) {
+            } else if (this.mTouchMode === ChartTouchListener.X_ZOOM && chart.isScaleXEnabled()) {
                 this.mLastGesture = ChartGesture.X_ZOOM;
                 const t = this.getTrans(this.mTouchPointCenter.x, this.mTouchPointCenter.y);
 
                 // let xDist = getXDist(event);
                 const scaleX = event.data.extraData.scale;
-                const h = this.mChart.getViewPortHandler();
+                const h = chart.getViewPortHandler();
                 // let scaleX = xDist / this.mSavedXDist; // x-axis scale
 
                 const isZoomingOut = scaleX < 1;
@@ -446,14 +441,14 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     // if (l != null)
                     // l.onChartScale(event, scaleX, 1);
                 }
-            } else if (this.mTouchMode === ChartTouchListener.Y_ZOOM && this.mChart.isScaleYEnabled()) {
+            } else if (this.mTouchMode === ChartTouchListener.Y_ZOOM && chart.isScaleYEnabled()) {
                 this.mLastGesture = ChartGesture.Y_ZOOM;
                 const t = this.getTrans(this.mTouchPointCenter.x, this.mTouchPointCenter.y);
 
                 // let yDist = getYDist(event);
                 // let scaleY = yDist / this.mSavedYDist; // y-axis scale
                 const scaleY = event.data.extraData.scale;
-                const h = this.mChart.getViewPortHandler();
+                const h = chart.getViewPortHandler();
 
                 const isZoomingOut = scaleY < 1;
                 const canZoomMoreY = isZoomingOut ? h.canZoomOutMoreY() : h.canZoomInMoreY();
@@ -467,7 +462,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 }
                 // }
             }
-            this.mMatrix = this.mChart.getViewPortHandler().refresh(this.mMatrix, this.mChart, true);
+            this.mMatrix = chart.getViewPortHandler().refresh(this.mMatrix, chart, true);
             // }
         }
     }
@@ -524,7 +519,6 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @param e
      */
     private performHighlightDrag(event: GestureTouchEventData) {
-        // console.log('performHighlightDrag', event);
         const h = this.mChart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
 
         if (h != null && h !== this.mLastHighlighted) {
@@ -661,9 +655,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
                 chart.zoom(chart.isScaleXEnabled() ? 1.4 : 1, chart.isScaleYEnabled() ? 1.4 : 1, trans.x, trans.y);
 
-                if (chart.isLogEnabled()) console.log('BarlineChartTouch', 'Double-Tap, Zooming In, x: ' + trans.x + ', y: ' + trans.y);
-
-                // MPPointF.recycleInstance(trans);
+                if (Trace.isEnabled()) {
+                    CLog(CLogTypes.info, LOG_TAG, 'Double-Tap, Zooming In, x: ' + trans.x + ', y: ' + trans.y);
+                }
             }
         }
     }

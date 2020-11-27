@@ -104,7 +104,6 @@ export class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
     /** GESTURE RECOGNITION BELOW */
 
     public onRotationGesture(event: GestureStateEventData) {
-        // console.log('onRotationGesture', event.data.extraData);
         if (event.data.state === GestureState.BEGAN || event.data.state === GestureState.ACTIVE) {
             this.mLastGesture = ChartGesture.ROTATE;
             const chart = this.mChart;
@@ -118,7 +117,6 @@ export class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
     }
 
     public onTapGesture(event: GestureStateEventData) {
-        // console.log('onTapGesture', event.data.extraData);
         if (event.data.state === GestureState.END && event.data.prevState === GestureState.ACTIVE) {
             this.mLastGesture = ChartGesture.SINGLE_TAP;
             const chart = this.mChart;

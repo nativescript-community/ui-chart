@@ -46,17 +46,18 @@ export class YAxisRenderer extends AxisRenderer {
      */
     @profile
     public renderAxisLabels(c: Canvas) {
-        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled()) return;
+        const axis = this.mYAxis;
+        if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) return;
 
         const positions = this.getTransformedPositions();
 
-        this.mAxisLabelPaint.setFont(this.mYAxis.getFont());
-        this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
+        this.mAxisLabelPaint.setFont(axis.getFont());
+        this.mAxisLabelPaint.setColor(axis.getTextColor());
 
-        const xoffset = this.mYAxis.getXOffset();
-        const yoffset = Utils.calcTextHeight(this.mAxisLabelPaint, 'A') / 2.5 + this.mYAxis.getYOffset();
-        const dependency = this.mYAxis.getAxisDependency();
-        const labelPosition = this.mYAxis.getLabelPosition();
+        const xoffset = axis.getXOffset();
+        const yoffset = Utils.calcTextHeight(this.mAxisLabelPaint, 'A') / 2.5 + axis.getYOffset();
+        const dependency = axis.getAxisDependency();
+        const labelPosition = axis.getLabelPosition();
 
         let xPos = 0;
         let offsetLeft = 0;
@@ -94,13 +95,14 @@ export class YAxisRenderer extends AxisRenderer {
     }
 
     public renderAxisLine(c: Canvas) {
-        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawAxisLineEnabled() || this.mYAxis.getAxisLineWidth() === 0 || this.mYAxis.mEntryCount === 0) return;
+        const axis = this.mYAxis;
+        if (!axis.isEnabled() || !axis.isDrawAxisLineEnabled() || axis.getAxisLineWidth() === 0 || axis.mEntryCount === 0) return;
 
-        this.mAxisLinePaint.setColor(this.mYAxis.getAxisLineColor());
-        this.mAxisLinePaint.setStrokeWidth(this.mYAxis.getAxisLineWidth());
+        this.mAxisLinePaint.setColor(axis.getAxisLineColor());
+        this.mAxisLinePaint.setStrokeWidth(axis.getAxisLineWidth());
 
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        if (this.mYAxis.getAxisDependency() === AxisDependency.LEFT) {
+        if (axis.getAxisDependency() === AxisDependency.LEFT) {
             c.drawLine(rect.left, rect.top, rect.left, rect.bottom, this.mAxisLinePaint);
         } else {
             c.drawLine(rect.right, rect.top, rect.right, rect.bottom, this.mAxisLinePaint);
@@ -150,9 +152,10 @@ export class YAxisRenderer extends AxisRenderer {
     // protected mRenderGridLinesPath = new Path();
 
     public renderGridLines(c: Canvas) {
-        if (!this.mYAxis.isEnabled()) return;
+        const axis = this.mYAxis;
+        if (!axis.isEnabled()) return;
 
-        if (this.mYAxis.isDrawGridLinesEnabled()) {
+        if (axis.isDrawGridLinesEnabled()) {
             let offsetLeft = 0;
             let rect: RectF;
             if (this.mAxis.isIgnoringOffsets()) {
@@ -166,9 +169,9 @@ export class YAxisRenderer extends AxisRenderer {
 
             const positions = this.getTransformedPositions();
 
-            this.mGridPaint.setColor(this.mYAxis.getGridColor());
-            this.mGridPaint.setStrokeWidth(this.mYAxis.getGridLineWidth());
-            this.mGridPaint.setPathEffect(this.mYAxis.getGridDashPathEffect());
+            this.mGridPaint.setColor(axis.getGridColor());
+            this.mGridPaint.setStrokeWidth(axis.getGridLineWidth());
+            this.mGridPaint.setPathEffect(axis.getGridDashPathEffect());
 
             // const gridLinePath = this.mRenderGridLinesPath;
             // gridLinePath.reset();
@@ -184,7 +187,7 @@ export class YAxisRenderer extends AxisRenderer {
             c.restoreToCount(clipRestoreCount);
         }
 
-        if (this.mYAxis.isDrawZeroLineEnabled()) {
+        if (axis.isDrawZeroLineEnabled()) {
             this.drawZeroLine(c);
         }
     }
@@ -219,7 +222,8 @@ export class YAxisRenderer extends AxisRenderer {
      * @return
      */
     protected getTransformedPositions() {
-        const length = this.mYAxis.mEntryCount * 2;
+        const axis = this.mYAxis;
+        const length = axis.mEntryCount * 2;
         if (this.mGetTransformedPositionsBuffer.length !== length) {
             this.mGetTransformedPositionsBuffer = Utils.createArrayBuffer(length);
         }
@@ -227,7 +231,7 @@ export class YAxisRenderer extends AxisRenderer {
         for (let i = 0; i < length; i += 2) {
             // only fill y values, x values are not needed for y-labels
             positions[i] = 0;
-            positions[i + 1] = this.mYAxis.mEntries[i / 2];
+            positions[i + 1] = axis.mEntries[i / 2];
         }
         const result = Utils.pointsFromBuffer(positions);
         this.mTrans.pointValuesToPixel(result);
@@ -238,17 +242,18 @@ export class YAxisRenderer extends AxisRenderer {
      * Draws the zero line.
      */
     protected drawZeroLine(c: Canvas) {
+        const axis = this.mYAxis;
         const clipRestoreCount = c.save();
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         this.mZeroLineClippingRect.set(rect);
-        this.mZeroLineClippingRect.inset(0, -this.mYAxis.getZeroLineWidth());
+        this.mZeroLineClippingRect.inset(0, -axis.getZeroLineWidth());
         c.clipRect(this.mZeroLineClippingRect);
 
         // draw zero line
         const pos = this.mTrans.getPixelForValues(0, 0);
 
-        this.mZeroLinePaint.setColor(this.mYAxis.getZeroLineColor());
-        this.mZeroLinePaint.setStrokeWidth(this.mYAxis.getZeroLineWidth());
+        this.mZeroLinePaint.setColor(axis.getZeroLineColor());
+        this.mZeroLinePaint.setStrokeWidth(axis.getZeroLineWidth());
 
         const zeroLinePath = this.mDrawZeroLinePath;
         zeroLinePath.reset();

@@ -16,16 +16,18 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
     }
 
     protected computeAxisValues(min: number, max: number) {
+        const axis = this.mAxis;
         const yMin = min;
         const yMax = max;
 
-        const labelCount = this.mAxis.getLabelCount();
+        const labelCount = axis.getLabelCount();
         const range = Math.abs(yMax - yMin);
 
         if (labelCount === 0 || range <= 0 || !Number.isFinite(range)) {
-            this.mAxis.mEntries = [];
-            this.mAxis.mCenteredEntries = [];
-            this.mAxis.mEntryCount = 0;
+            axis.mEntries = [];
+            axis.mLabels = [];
+            axis.mCenteredEntries = [];
+            axis.mEntryCount = 0;
             return;
         }
 
@@ -35,7 +37,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
-        if (this.mAxis.isGranularityEnabled()) interval = interval < this.mAxis.getGranularity() ? this.mAxis.getGranularity() : interval;
+        if (axis.isGranularityEnabled()) interval = interval < axis.getGranularity() ? axis.getGranularity() : interval;
 
         // Normalize interval
         const intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10, Math.log10(interval)));
@@ -46,23 +48,26 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
             interval = Math.floor(10 * intervalMagnitude);
         }
 
-        const centeringEnabled = this.mAxis.isCenterAxisLabelsEnabled();
+        const centeringEnabled = axis.isCenterAxisLabelsEnabled();
         let n = centeringEnabled ? 1 : 0;
 
+        const formatter = axis.getValueFormatter();
         // force label count
-        if (this.mAxis.isForceLabelsEnabled()) {
+        if (axis.isForceLabelsEnabled()) {
             const step = range / (labelCount - 1);
-            this.mAxis.mEntryCount = labelCount;
+            axis.mEntryCount = labelCount;
 
-            if (this.mAxis.mEntries.length < labelCount) {
-                // Ensure stops contains at least numStops elements.
-                this.mAxis.mEntries = new Array(labelCount);
-            }
+            // if (this.mAxis.mEntries.length < labelCount) {
+            //     // Ensure stops contains at least numStops elements.
+            //     this.mAxis.mEntries = new Array(labelCount);
+            //     this.mAxis.mLabels = new Array(labelCount);
+            // }
 
             let v = min;
 
             for (let i = 0; i < labelCount; i++) {
-                this.mAxis.mEntries[i] = v;
+                axis.mEntries[i] = v;
+                axis.mLabels[i] = formatter.getAxisLabel(v, axis);
                 v += step;
             }
 
@@ -88,12 +93,13 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
             n++;
 
-            this.mAxis.mEntryCount = n;
+            axis.mEntryCount = n;
 
-            if (this.mAxis.mEntries.length < n) {
-                // Ensure stops contains at least numStops elements.
-                this.mAxis.mEntries = new Array(n);
-            }
+            // if (this.mAxis.mEntries.length < n) {
+            //     // Ensure stops contains at least numStops elements.
+            //     this.mAxis.mEntries = new Array(n);
+            //     this.mAxis.mLabels = new Array(n);
+            // }
 
             for (f = first, i = 0; i < n; f += interval, ++i) {
                 if (f === 0.0) {
@@ -101,7 +107,8 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
                     f = 0.0;
                 }
 
-                this.mAxis.mEntries[i] = f;
+                axis.mEntries[i] = f;
+                axis.mLabels[i] = formatter.getAxisLabel(f, axis);
             }
         }
 

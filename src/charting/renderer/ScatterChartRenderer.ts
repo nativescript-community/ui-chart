@@ -3,12 +3,13 @@ import { LineScatterCandleRadarRenderer } from './LineScatterCandleRadarRenderer
 import { ScatterDataProvider } from '../interfaces/dataprovider/ScatterDataProvider';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Canvas } from '@nativescript-community/ui-canvas';
-import { Utils } from '../utils/Utils';
+import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { IScatterDataSet } from '../interfaces/datasets/IScatterDataSet';
 import { getEntryXValue } from '../data/BaseEntry';
 import { Highlight } from '../highlight/Highlight';
 import { Entry } from '../data/Entry';
 import { ScatterChart } from '../charts';
+import { Trace } from '@nativescript/core';
 
 export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     mChart: ScatterChart;
@@ -42,7 +43,9 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
         const renderer = dataSet.getShapeRenderer();
         if (renderer == null) {
-            console.log('MISSING', "There's no IShapeRenderer specified for ScatterDataSet");
+            if (Trace.isEnabled()) {
+                CLog(CLogTypes.warning, "There's no IShapeRenderer specified for ScatterDataSet");
+            }
             return;
         }
 

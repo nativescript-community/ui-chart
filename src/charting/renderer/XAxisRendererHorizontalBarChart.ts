@@ -41,51 +41,53 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     protected computeSize() {
-        const longest = this.mXAxis.getLongestLabel();
+        const axis = this.mXAxis;
+        const longest = axis.getLongestLabel();
 
-        this.mAxisLabelPaint.setFont(this.mXAxis.getFont());
+        this.mAxisLabelPaint.setFont(axis.getFont());
 
         const labelSize = Utils.calcTextSize(this.mAxisLabelPaint, longest);
 
-        const labelWidth = labelSize.width + this.mXAxis.getXOffset() * 3.5;
+        const labelWidth = labelSize.width + axis.getXOffset() * 3.5;
         const labelHeight = labelSize.height;
 
-        const labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(labelSize.width, labelHeight, this.mXAxis.getLabelRotationAngle());
+        const labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(labelSize.width, labelHeight, axis.getLabelRotationAngle());
 
-        this.mXAxis.mLabelWidth = Math.round(labelWidth);
-        this.mXAxis.mLabelHeight = Math.round(labelHeight);
-        this.mXAxis.mLabelRotatedWidth = labelRotatedSize.width + this.mXAxis.getXOffset() * 3.5;
-        this.mXAxis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
+        axis.mLabelWidth = Math.round(labelWidth);
+        axis.mLabelHeight = Math.round(labelHeight);
+        axis.mLabelRotatedWidth = labelRotatedSize.width + axis.getXOffset() * 3.5;
+        axis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
     }
 
     @profile
     public renderAxisLabels(c: Canvas) {
-        if (!this.mXAxis.isEnabled() || !this.mXAxis.isDrawLabelsEnabled()) {
+        const axis = this.mXAxis;
+        if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) {
             return;
         }
 
-        const xOffset = this.mXAxis.getXOffset();
+        const xOffset = axis.getXOffset();
 
-        this.mAxisLabelPaint.setFont(this.mXAxis.getFont());
-        this.mAxisLabelPaint.setTextAlign(this.mXAxis.getLabelTextAlign());
-        this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor());
+        this.mAxisLabelPaint.setFont(axis.getFont());
+        this.mAxisLabelPaint.setTextAlign(axis.getLabelTextAlign());
+        this.mAxisLabelPaint.setColor(axis.getTextColor());
 
         const pointF = { x: 0, y: 0 };
 
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
+        if (axis.getPosition() === XAxisPosition.TOP) {
             pointF.x = 0.0;
             pointF.y = 0.5;
             this.drawLabels(c, rect.right + xOffset, pointF);
-        } else if (this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE) {
+        } else if (axis.getPosition() === XAxisPosition.TOP_INSIDE) {
             pointF.x = 1.0;
             pointF.y = 0.5;
             this.drawLabels(c, rect.right - xOffset, pointF);
-        } else if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
+        } else if (axis.getPosition() === XAxisPosition.BOTTOM) {
             pointF.x = 1.0;
             pointF.y = 0.5;
             this.drawLabels(c, rect.left - xOffset, pointF);
-        } else if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE) {
+        } else if (axis.getPosition() === XAxisPosition.BOTTOM_INSIDE) {
             pointF.x = 1.0;
             pointF.y = 0.5;
             this.drawLabels(c, rect.left + xOffset, pointF);
@@ -107,27 +109,27 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
      */
     @profile
     protected drawLabels(c: Canvas, pos, anchor: MPPointF) {
-        const labelRotationAngleDegrees = this.mXAxis.getLabelRotationAngle();
-        const centeringEnabled = this.mXAxis.isCenterAxisLabelsEnabled();
+        const axis = this.mXAxis;
+        const labelRotationAngleDegrees = axis.getLabelRotationAngle();
+        const centeringEnabled = axis.isCenterAxisLabelsEnabled();
 
-        const positions = Utils.createNativeArray(this.mXAxis.mEntryCount * 2);
+        const positions = Utils.createNativeArray(axis.mEntryCount * 2);
 
         for (let i = 0; i < positions.length; i += 2) {
             // only fill x values
             if (centeringEnabled) {
-                positions[i + 1] = this.mXAxis.mCenteredEntries[i / 2];
+                positions[i + 1] = axis.mCenteredEntries[i / 2];
             } else {
-                positions[i + 1] = this.mXAxis.mEntries[i / 2];
+                positions[i + 1] = axis.mEntries[i / 2];
             }
         }
 
         this.mTrans.pointValuesToPixel(positions);
-
+        const labels = axis.mLabels;
         for (let i = 0; i < positions.length; i += 2) {
             const y = positions[i + 1];
             if (this.mViewPortHandler.isInBoundsY(y)) {
-                const label = this.mXAxis.getValueFormatter().getAxisLabel(this.mXAxis.mEntries[i / 2], this.mXAxis);
-                this.drawLabel(c, label, pos, y, anchor, labelRotationAngleDegrees);
+                this.drawLabel(c, labels[i / 2], pos, y, anchor, labelRotationAngleDegrees);
             }
         }
     }
@@ -151,19 +153,20 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     public renderAxisLine(c: Canvas) {
-        if (!this.mXAxis.isDrawAxisLineEnabled() || !this.mXAxis.isEnabled()) {
+        const axis = this.mXAxis;
+        if (!axis.isDrawAxisLineEnabled() || !axis.isEnabled()) {
             return;
         }
 
-        this.mAxisLinePaint.setColor(this.mXAxis.getAxisLineColor());
-        this.mAxisLinePaint.setStrokeWidth(this.mXAxis.getAxisLineWidth());
+        this.mAxisLinePaint.setColor(axis.getAxisLineColor());
+        this.mAxisLinePaint.setStrokeWidth(axis.getAxisLineWidth());
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
-        if (this.mXAxis.getPosition() === XAxisPosition.TOP || this.mXAxis.getPosition() === XAxisPosition.TOP_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
+        if (axis.getPosition() === XAxisPosition.TOP || axis.getPosition() === XAxisPosition.TOP_INSIDE || axis.getPosition() === XAxisPosition.BOTH_SIDED) {
             c.drawLine(rect.right, rect.top, rect.right, rect.bottom, this.mAxisLinePaint);
         }
 
-        if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM || this.mXAxis.getPosition() === XAxisPosition.BOTTOM_INSIDE || this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
+        if (axis.getPosition() === XAxisPosition.BOTTOM || axis.getPosition() === XAxisPosition.BOTTOM_INSIDE || axis.getPosition() === XAxisPosition.BOTH_SIDED) {
             c.drawLine(rect.left, rect.top, rect.left, rect.bottom, this.mAxisLinePaint);
         }
     }

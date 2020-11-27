@@ -159,7 +159,8 @@ export class XAxisRenderer extends AxisRenderer {
         const axis = this.mXAxis;
         const labelRotationAngleDegrees = axis.getLabelRotationAngle();
         const centeringEnabled = axis.isCenterAxisLabelsEnabled();
-        const length = axis.mEntryCount * 2;
+        const entryCount = axis.mEntryCount;
+        const length = entryCount * 2;
         const positions = Utils.createNativeArray(length);
         for (let i = 0; i < length; i += 2) {
             // only fill x values
@@ -179,14 +180,15 @@ export class XAxisRenderer extends AxisRenderer {
         } else {
             offsetRight = this.mViewPortHandler.offsetRight();
         }
+        const labels = axis.mLabels;
         for (let i = 0; i < length; i += 2) {
             let x = positions[i];
 
             if (this.mViewPortHandler.isInBoundsX(x)) {
-                const label = axis.getValueFormatter().getAxisLabel(axis.mEntries[i / 2], axis);
+                const label = labels[i / 2];
                 if (axis.isAvoidFirstLastClippingEnabled()) {
                     // avoid clipping of the last
-                    if (i / 2 === axis.mEntryCount - 1 && axis.mEntryCount > 1) {
+                    if (i / 2 === entryCount - 1 && entryCount > 1) {
                         const width = Utils.calcTextWidth(this.mAxisLabelPaint, label);
 
                         if (width > offsetRight * 2 && x + width > chartWidth) {

@@ -28,6 +28,7 @@ export abstract class AxisBase extends ComponentBase {
      * the actual array of entries
      */
     public mEntries: number[] = [];
+    public mLabels: string[] = [];
 
     /**
      * axis label entries only used for centered labels
@@ -522,8 +523,9 @@ export abstract class AxisBase extends ComponentBase {
      */
     public getLongestLabel() {
         let longest = '';
+        const labels = this.mLabels;
         for (let i = 0; i < this.mEntries.length; i++) {
-            const text = this.getValueFormatter().getAxisLabel(this.mEntries[i], this);
+            const text = labels[i];
 
             if (text != null && longest.length < text.length) {
                 longest = text;
@@ -535,7 +537,7 @@ export abstract class AxisBase extends ComponentBase {
 
     public getFormattedLabel(index) {
         if (index < 0 || index >= this.mEntries.length) return '';
-        else return this.getValueFormatter().getAxisLabel(this.mEntries[index], this);
+        else return this.mLabels[index];
     }
 
     /**
