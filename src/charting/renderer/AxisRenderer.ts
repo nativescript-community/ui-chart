@@ -186,7 +186,6 @@ export abstract class AxisRenderer extends Renderer {
                 this.mAxis.mEntries[i] = v;
                 v += interval;
             }
-
             n = labelCount;
 
             // no forced count
@@ -200,7 +199,7 @@ export abstract class AxisRenderer extends Renderer {
             }
             // use Math.floor(yMax / interval) + 1 instead of
             // Math.floor(yMax / interval) to make sure the axis is showed "above" the higghest value
-            const last = interval === 0 ? 0 : Utils.nextUp((Math.floor(yMax / interval) + 1) * interval);
+            const last = interval === 0 ? 0 : Utils.nextUp(Math.floor(yMax / interval) * interval);
             let f;
             let i;
 

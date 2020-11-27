@@ -377,9 +377,8 @@ export class YAxis extends AxisBase {
     }
 
     public calculate(dataMin, dataMax) {
-        let min = dataMin;
-        let max = dataMax;
-
+        let min = this.mCustomAxisMin ? this.mAxisMinimum : dataMin - this.mSpaceMin;
+        let max = this.mCustomAxisMax ? this.mAxisMaximum : dataMax + this.mSpaceMax;
         if (this.mAxisSuggestedMinimum !== undefined) {
             min = Math.min(min, this.mAxisSuggestedMinimum);
         }
@@ -403,17 +402,19 @@ export class YAxis extends AxisBase {
         // recalculate
         range = Math.abs(max - min);
 
+        this.mAxisMinimum = min;
+        this.mAxisMaximum = max;
+
         // calc extra spacing only for range.
         // using it for mAxisMinimum and mAxisMaximum would make the axis use decaled "values"
         let delta = 0;
         if (!this.mCustomAxisMin) {
-            this.mAxisMinimum = min;
             delta += (range / 100) * this.getSpaceBottom();
         }
         if (!this.mCustomAxisMax) {
-            this.mAxisMaximum = max;
             delta += (range / 100) * this.getSpaceTop();
         }
-        this.mAxisRange = Math.abs(this.mAxisMinimum - this.mAxisMaximum) + delta;
+        console.log('calculate', dataMin, dataMax, min, max, delta, range);
+        this.mAxisRange = range + delta;
     }
 }

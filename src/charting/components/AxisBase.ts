@@ -796,7 +796,7 @@ export abstract class AxisBase extends ComponentBase {
             max = Math.max(max, this.mAxisSuggestedMaximum);
         }
         // temporary range (before calculations)
-        const range = Math.abs(max - min);
+        let range = Math.abs(max - min);
 
         // in case all values are equal
         if (range === 0) {
@@ -809,12 +809,14 @@ export abstract class AxisBase extends ComponentBase {
         if (!Number.isFinite(max)) {
             max = 0;
         }
+        // recalculate
+        range = Math.abs(max - min);
 
         this.mAxisMinimum = min;
         this.mAxisMaximum = max;
 
         // actual range
-        this.mAxisRange = Math.abs(max - min);
+        this.mAxisRange = range;
     }
 
     /**
