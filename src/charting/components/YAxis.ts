@@ -386,7 +386,7 @@ export class YAxis extends AxisBase {
         if (this.mAxisSuggestedMaximum !== undefined) {
             max = Math.max(max, this.mAxisSuggestedMaximum);
         }
-
+        // temporary range (before calculations)
         let range = Math.abs(max - min);
 
         // in case all values are equal
@@ -394,7 +394,12 @@ export class YAxis extends AxisBase {
             max = max + 1;
             min = min - 1;
         }
-
+        if (!Number.isFinite(min)) {
+            min = 0;
+        }
+        if (!Number.isFinite(max)) {
+            max = 0;
+        }
         // recalculate
         range = Math.abs(max - min);
 
