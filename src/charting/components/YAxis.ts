@@ -109,6 +109,7 @@ export class YAxis extends AxisBase {
         super();
         this.mAxisDependency = position;
         this.mYOffset = 0;
+        this.allowLastLabelAboveMax = true;
     }
 
     public getAxisDependency() {

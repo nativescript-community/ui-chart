@@ -204,7 +204,10 @@ export abstract class AxisRenderer extends Renderer {
             }
             // use Math.floor(yMax / interval) + 1 instead of
             // Math.floor(yMax / interval) to make sure the axis is showed "above" the higghest value
-            const last = interval === 0 ? 0 : Utils.nextUp(Math.floor(yMax / interval) * interval);
+            let last = interval === 0 ? 0 : Utils.nextUp(Math.floor(yMax / interval) * interval);
+            if (axis.ensureLastLabel && last < max) {
+                last = Math.min(max, last + interval);
+            }
             let f;
             let i;
 
@@ -212,6 +215,9 @@ export abstract class AxisRenderer extends Renderer {
                 for (f = first; f <= last; f += interval) {
                     ++n;
                 }
+            }
+            if (axis.ensureLastLabel && (n - 1) * interval < last) {
+                n++;
             }
 
             axis.mEntryCount = n;
@@ -222,10 +228,12 @@ export abstract class AxisRenderer extends Renderer {
                 axis.mLabels = [];
             }
 
-            for (f = first, i = 0; i < n; f += interval, ++i) {
+            for (f = first, i = 0; i <= n; f += interval, ++i) {
                 if (f === 0.0) {
                     // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
                     f = 0.0;
+                } else if (!axis.allowLastLabelAboveMax && f > max) {
+                    f = max;
                 }
 
                 axis.mEntries[i] = f;

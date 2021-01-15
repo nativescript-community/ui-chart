@@ -90,6 +90,10 @@ export abstract class AxisBase extends ComponentBase {
 
     protected mCenterAxisLabels = false;
 
+    public ensureLastLabel = false;
+
+    public allowLastLabelAboveMax = false;
+
     /**
      * the path effect of the axis line that makes dashed lines possible
      */
