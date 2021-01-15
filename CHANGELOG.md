@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.19](https://github.com/Akylas/nativescript-chart/compare/v1.1.18...v1.1.19) (2021-01-15)
+
+
+### Features
+
+* added axis.ensureLastLabel and axis.allowLastLabelAboveMax for custom rendering ([c320127](https://github.com/Akylas/nativescript-chart/commit/c320127cadf2986dec38013aea241453cb5a95da))
+
+
+
+
+
 ## [1.1.18](https://github.com/Akylas/nativescript-chart/compare/v1.1.17...v1.1.18) (2020-11-27)
 
 
