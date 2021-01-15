@@ -16,7 +16,7 @@ export enum CLogTypes {
 }
 
 export const CLog = (type: CLogTypes, ...args) => {
-    Trace.write(args.join(' '), ChartTraceCategory, type);
+    Trace.write(args.map(a=>(a && typeof a === 'object'? JSON.stringify(a) :a)).join(' '), ChartTraceCategory, type);
 };
 
 export type FloatArray = Float32Array | Float64Array;
