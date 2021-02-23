@@ -3,8 +3,12 @@ module.exports = {
     plugins: ['prettier', '@typescript-eslint'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        createDefaultProgram: true,
-        project: './tsconfig.json',
+        ecmaVersion: 2019,
+        sourceType: 'module',
+        parser: '@typescript-eslint/parser',
+        project: 'tsconfig.eslint.json',
+        warnOnUnsupportedTypeScriptVersion: false,
+        tsconfigRootDir: __dirname
     },
     rules: {
         'prettier/prettier': 'warn',
@@ -20,21 +24,21 @@ module.exports = {
         '@typescript-eslint/explicit-member-accessibility': [
             'off',
             {
-                accessibility: 'explicit',
-            },
+                accessibility: 'explicit'
+            }
         ],
         '@typescript-eslint/indent': [
             'error',
             4,
             {
                 FunctionDeclaration: {
-                    parameters: 'first',
+                    parameters: 'first'
                 },
                 FunctionExpression: {
-                    parameters: 'first',
+                    parameters: 'first'
                 },
-                SwitchCase: 1,
-            },
+                SwitchCase: 1
+            }
         ],
         '@typescript-eslint/interface-name-prefix': 'off',
         '@typescript-eslint/member-delimiter-style': 'error',
@@ -59,8 +63,8 @@ module.exports = {
             'error',
             'single',
             {
-                avoidEscape: true,
-            },
+                avoidEscape: true
+            }
         ],
         '@typescript-eslint/semi': ['error'],
         '@typescript-eslint/space-within-parens': ['off', 'never'],
@@ -86,8 +90,8 @@ module.exports = {
                 ignoreCase: false,
                 ignoreDeclarationSort: true,
                 ignoreMemberSort: false,
-                memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-            },
+                memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single']
+            }
         ],
         'linebreak-style': 'off',
         'max-classes-per-file': 'off',
@@ -95,8 +99,8 @@ module.exports = {
             'off',
             {
                 ignorePattern: '^import |^export {(.*?)}',
-                code: 200,
-            },
+                code: 200
+            }
         ],
         'new-parens': 'off',
         'newline-per-chained-call': 'off',
@@ -126,9 +130,9 @@ module.exports = {
                     'profile',
                     'profileEnd',
                     'timeStamp',
-                    'context',
-                ],
-            },
+                    'context'
+                ]
+            }
         ],
         'no-constant-condition': 'error',
         'no-control-regex': 'off',
@@ -149,8 +153,8 @@ module.exports = {
         'no-shadow': [
             'off',
             {
-                hoist: 'all',
-            },
+                hoist: 'all'
+            }
         ],
         'no-throw-literal': 'error',
         'no-trailing-spaces': 'error',
@@ -161,8 +165,8 @@ module.exports = {
             'error',
             {
                 allowTaggedTemplates: true,
-                allowShortCircuit: true,
-            },
+                allowShortCircuit: true
+            }
         ],
         'no-unused-labels': 'error',
         'no-var': 'error',
@@ -174,6 +178,6 @@ module.exports = {
         radix: 'error',
         'space-before-function-paren': 'off',
         'use-isnan': 'error',
-        'valid-typeof': 'off',
-    },
+        'valid-typeof': 'off'
+    }
 };

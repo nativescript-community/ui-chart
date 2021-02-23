@@ -12,7 +12,7 @@ export enum CLogTypes {
     log = Trace.messageType.log,
     info = Trace.messageType.info,
     warning = Trace.messageType.warn,
-    error = Trace.messageType.error,
+    error = Trace.messageType.error
 }
 
 export const CLog = (type: CLogTypes, ...args) => {
@@ -169,7 +169,7 @@ export namespace Utils {
         paint.getTextBounds(demoText, 0, demoText.length, r);
         return {
             width: r.width(),
-            height: r.height(),
+            height: r.height()
         };
     }
 
@@ -399,7 +399,7 @@ export namespace Utils {
         }
         return {
             x: center.x + dist * Math.cos(toRadians(angle)),
-            y: center.y + dist * Math.sin(toRadians(angle)),
+            y: center.y + dist * Math.sin(toRadians(angle))
         };
     }
 
@@ -637,7 +637,7 @@ export namespace Utils {
     export function getSizeOfRotatedRectangleByRadians(rectangleWidth, rectangleHeight, radians) {
         return {
             width: Math.abs(rectangleWidth * Math.cos(radians)) + Math.abs(rectangleHeight * Math.sin(radians)),
-            height: Math.abs(rectangleWidth * Math.sin(radians)) + Math.abs(rectangleHeight * Math.cos(radians)),
+            height: Math.abs(rectangleWidth * Math.sin(radians)) + Math.abs(rectangleHeight * Math.cos(radians))
         };
     }
 

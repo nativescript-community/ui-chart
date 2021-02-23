@@ -14,7 +14,7 @@ import {
     Manager,
     PanGestureHandler,
     PinchGestureHandler,
-    TapGestureHandler,
+    TapGestureHandler
 } from '@nativescript-community/gesturehandler';
 import { Trace } from '@nativescript/core';
 
@@ -147,7 +147,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 .createGestureHandler(HandlerType.PINCH, this.PINCH_HANDLER_TAG, {
                     minSpan: 20,
                     // simultaneousHandlers: [this.PAN_HANDLER_TAG],
-                    shouldCancelWhenOutside: false,
+                    shouldCancelWhenOutside: false
                 })
                 .on(GestureHandlerStateEvent, this.onPinchGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPinchGestureTouch, this);
@@ -165,7 +165,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     // simultaneousHandlers: [this.PINCH_HANDLER_TAG],
                     minPointers: 1,
                     maxPointers: 2,
-                    shouldCancelWhenOutside: false,
+                    shouldCancelWhenOutside: false
                 })
                 .on(GestureHandlerStateEvent, this.onPanGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPanGestureTouch, this);
