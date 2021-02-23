@@ -192,7 +192,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         if (enabled) {
             this.getOrCreateTapGestureHandler().attachToView(chart);
             if (Trace.isEnabled()) {
-                CLog(CLogTypes.log, LOG_TAG, 'enabling tap gestures', chart, chart && chart.nativeViewProtected);
+                CLog(CLogTypes.log, LOG_TAG, 'enabling tap gestures');
             }
         } else if (this.tapGestureHandler) {
             if (Trace.isEnabled()) {
