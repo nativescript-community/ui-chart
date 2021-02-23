@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.20](https://github.com/Akylas/nativescript-chart/compare/v1.1.19...v1.1.20) (2021-02-23)
+
+
+### Bug Fixes
+
+* prevent crash with Trace enabled ([93839a6](https://github.com/Akylas/nativescript-chart/commit/93839a6aaef4b02ee83a46272d1aaa14d3c245bb))
+
+
+
+
+
 ## [1.1.19](https://github.com/Akylas/nativescript-chart/compare/v1.1.18...v1.1.19) (2021-01-15)
 
 
