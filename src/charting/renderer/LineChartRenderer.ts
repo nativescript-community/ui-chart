@@ -185,7 +185,6 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     protected drawDataSet(c: Canvas, dataSet: LineDataSet): boolean {
         if (dataSet.getEntryCount() < 1) return false;
-        console.log('drawDataSet', dataSet.getLineWidth());
         this.mRenderPaint.setStrokeWidth(dataSet.getLineWidth());
         this.mRenderPaint.setPathEffect(dataSet.getDashPathEffect());
         if (dataSet.getNbColors() === 1) {
