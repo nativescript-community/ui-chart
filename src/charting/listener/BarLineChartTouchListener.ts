@@ -508,7 +508,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             // }
         }
         this.mMatrix.postTranslate(distanceX, distanceY);
-
+        this.mChart.notify({ eventName: 'translate', object: this.mChart, distanceX, distanceY });
         // if (l != null)
         // l.onChartTranslate(event, distanceX, distanceY);
     }

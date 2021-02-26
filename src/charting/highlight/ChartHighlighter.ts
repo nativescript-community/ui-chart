@@ -26,7 +26,6 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     public getHighlight(x, y) {
         const pos = this.getValsForTouch(x, y);
         const xVal = pos.x;
-        // MPPointD.recycleInstance(pos);
 
         const high = this.getHighlightForX(xVal, x, y);
         return high;
@@ -107,7 +106,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * @param xVal the transformed x-value of the x-touch position
      * @return
      */
-    protected getHighlightsAtXValue(xVal, x, y) {
+    public getHighlightsAtXValue(xVal, x?, y?) {
         this.mHighlightBuffer = [];
 
         const data = this.getData();
@@ -170,7 +169,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex,
-                axis: set.getAxisDependency(),
+                axis: set.getAxisDependency()
             });
         }
 

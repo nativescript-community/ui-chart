@@ -4,6 +4,7 @@ import { LimitLine } from './LimitLine';
 import { DefaultAxisValueFormatter } from '../formatter/DefaultAxisValueFormatter';
 import { IAxisValueFormatter } from '../formatter/IAxisValueFormatter';
 import { ValueFormatter } from '../formatter/ValueFormatter';
+import { CustomRenderer } from '../renderer/AxisRenderer';
 
 /**
  * Base-class of all axes (previously called labels).
@@ -67,6 +68,9 @@ export abstract class AxisBase extends ComponentBase {
      * If using granularity this could be aed by having fewer axis values visible.
      */
     protected mGranularityEnabled = false;
+
+    protected mForcedIntervalEnabled = false;
+    protected mForcedInterval = -1;
 
     /**
      * if true, the set number of y-labels will be forced
@@ -180,6 +184,8 @@ export abstract class AxisBase extends ComponentBase {
      * the total range of values this axis covers
      */
     public mIgnoreOffsets = false;
+
+    protected mCustomRenderer: CustomRenderer;
 
     /**
      * default constructor
@@ -378,6 +384,29 @@ export abstract class AxisBase extends ComponentBase {
      */
     public getLabelCount() {
         return this.mLabelCount;
+    }
+
+    /**
+     * @return true if granularity is enabled
+     */
+    public isForceIntervalEnabled() {
+        return this.mForcedIntervalEnabled;
+    }
+    /**
+     * Set a forced interval.
+     *
+     * @param interval
+     */
+    public setForcedInterval(interval) {
+        this.mForcedInterval = interval;
+        // set this to true if it was disabled, as it makes no sense to call this method with forcedInterval disabled
+        this.mForcedIntervalEnabled = true;
+    }
+    /**
+     * @return the force interval
+     */
+    public getForcedInterval() {
+        return this.mForcedInterval;
     }
 
     /**
@@ -868,5 +897,18 @@ export abstract class AxisBase extends ComponentBase {
      */
     public setLabelTextAlign(value: Align) {
         this.mLabelTextAlign = value;
+    }
+
+    /**
+     * set a custom line renderer
+     */
+    public setCustomRenderer(renderer: CustomRenderer) {
+        this.mCustomRenderer = renderer;
+    }
+    /**
+     * get the custom line renderer
+     */
+    public getCustomRenderer() {
+        return this.mCustomRenderer;
     }
 }

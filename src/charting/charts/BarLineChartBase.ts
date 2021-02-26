@@ -262,7 +262,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.drawMarkers(canvas);
 
-        this.notify({ eventName: 'drawn', object: this });
+        this.notify({ eventName: 'postDraw', canvas, object: this });
         if (Trace.isEnabled()) {
             const drawtime = Date.now() - startTime;
             this.totalTime += drawtime;
@@ -610,7 +610,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mViewPortHandler.zoomAtPosition(scaleX, scaleY, x, y, this.mZoomMatrixBuffer);
         this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
 
-        // Range might have changed, which means that Y-axis labels
+        // Range might have changed, which  means that Y-axis labels
         // could have changed in size, affecting Y-axis size.
         // So we need to recalculate offsets.
         this.calculateOffsets();
@@ -640,7 +640,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public zoomToCenter(scaleX, scaleY) {
         const center = this.getCenterOffsets();
-
         const save = this.mZoomMatrixBuffer;
         this.mViewPortHandler.zoomAtPosition(scaleX, scaleY, center.x, -center.y, save);
         this.mViewPortHandler.refresh(save, this, false);
@@ -676,6 +675,38 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             duration
         );
         this.addViewportJob(job);
+    }
+
+    /**
+     * Zooms by the specified scale factor to the specified values on the specified axis.
+     *
+     * @param scaleX
+     * @param scaleY
+     * @param xValue
+     * @param yValue
+     * @param axis
+     */
+    public zoomAndCenter(scaleX, scaleY, xValue, yValue, axis) {
+        const origin = this.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), axis);
+
+        const job = AnimatedZoomJob.getInstance(
+            this.mViewPortHandler,
+            this,
+            this.getTransformer(axis),
+            this.getAxis(axis),
+            this.mXAxis.mAxisRange,
+            scaleX,
+            scaleY,
+            this.mViewPortHandler.getScaleX(),
+            this.mViewPortHandler.getScaleY(),
+            xValue,
+            yValue,
+            origin.x,
+            origin.y,
+            0
+        );
+        job.setPhase(1);
+        job.onAnimationUpdate(0);
     }
 
     protected mFitScreenMatrixBuffer = new Matrix();

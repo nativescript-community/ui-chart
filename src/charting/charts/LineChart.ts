@@ -8,8 +8,8 @@ import { Highlight } from '../highlight/Highlight';
 import { Canvas, Paint, Path } from '@nativescript-community/ui-canvas';
 
 export interface CustomRenderer {
-    drawLine: (c: Canvas, line: Path, paint: Paint) => void;
-    drawHighlight: (c: Canvas, e: Highlight, set: LineDataSet, paint: Paint) => void;
+    drawLine?: (c: Canvas, line: Path, paint: Paint) => void;
+    drawHighlight?: (c: Canvas, e: Highlight, set: LineDataSet, paint: Paint) => void;
 }
 
 export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {

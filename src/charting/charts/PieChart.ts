@@ -140,6 +140,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
             const average = this.totalTime / this.drawCycles;
             CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
         }
+        this.notify({ eventName: 'postDraw', object: this, canvas });
     }
 
     public calculateOffsets() {

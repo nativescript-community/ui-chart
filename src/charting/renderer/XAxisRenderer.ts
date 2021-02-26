@@ -1,8 +1,8 @@
-import { AxisRenderer } from './AxisRenderer';
+import { AxisRenderer, CustomRenderer, CustomRendererGridLineFunction } from './AxisRenderer';
 import { XAxis, XAxisPosition } from '../components/XAxis';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, Path, RectF, Style } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Paint, Path, RectF, Style } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 import { MPPointF } from '../utils/MPPointF';
 import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
@@ -186,6 +186,9 @@ export class XAxisRenderer extends AxisRenderer {
 
             if (this.mViewPortHandler.isInBoundsX(x)) {
                 const label = labels[i / 2];
+                if (!label) {
+                    continue;
+                }
                 if (axis.isAvoidFirstLastClippingEnabled()) {
                     // avoid clipping of the last
                     if (i / 2 === entryCount - 1 && entryCount > 1) {
@@ -238,9 +241,8 @@ export class XAxisRenderer extends AxisRenderer {
         }
     }
 
-    protected mRenderGridLinesPath = new Path();
+    // protected mRenderGridLinesPath = new Path();
     protected mRenderGridLinesBuffer = [];
-
     public renderGridLines(c: Canvas) {
         const axis = this.mXAxis;
         if (!axis.isDrawGridLinesEnabled() || !axis.isEnabled()) return;
@@ -263,11 +265,16 @@ export class XAxisRenderer extends AxisRenderer {
 
         this.setupGridPaint();
 
-        const gridLinePath = this.mRenderGridLinesPath;
-        gridLinePath.reset();
+        // const gridLinePath = this.mRenderGridLinesPath;
+        // gridLinePath.reset();
 
+        const customRender = axis.getCustomRenderer();
+        const customRenderFunction = customRender && customRender.drawGridLine;
+        const paint = this.mGridPaint;
+        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         for (let i = 0; i < positions.length; i += 2) {
-            this.drawGridLine(c, positions[i], positions[i + 1], gridLinePath);
+            const x = positions[i];
+            this.drawGridLine(c, rect, positions[i], positions[i + 1], axis.mEntries[i / 2], paint, customRenderFunction);
         }
 
         c.restoreToCount(clipRestoreCount);
@@ -286,19 +293,17 @@ export class XAxisRenderer extends AxisRenderer {
      * Draws the grid line at the specified position using the provided path.
      *
      * @param c
+     * @param rect
      * @param x
      * @param y
-     * @param gridLinePath
+     * @param axisValue
      */
-    protected drawGridLine(c: Canvas, x, y, gridLinePath: Path) {
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        gridLinePath.moveTo(x, rect.bottom);
-        gridLinePath.lineTo(x, rect.top);
-
-        // draw a path because lines don't support dashing on lower android versions
-        c.drawPath(gridLinePath, this.mGridPaint);
-
-        gridLinePath.reset();
+    protected drawGridLine(c: Canvas, rect: RectF, x, y, axisValue, paint: Paint, customRendererFunc: CustomRendererGridLineFunction) {
+        if (customRendererFunc) {
+            customRendererFunc(c, this, rect, x, y, axisValue, paint);
+        } else {
+            c.drawLine(x, rect.bottom, x, rect.top, paint);
+        }
     }
 
     protected mRenderLimitLinesBuffer = Utils.createNativeArray(2);
@@ -370,7 +375,7 @@ export class XAxisRenderer extends AxisRenderer {
     public renderLimitLineLabel(c: Canvas, limitLine: LimitLine, position, yOffset) {
         const label = limitLine.getLabel();
         // if drawing the limit-value label is enabled
-        if (label != null && label !== '') {
+        if (label && label !== '') {
             const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
             this.mLimitLinePaint.setFont(limitLine.getFont());

@@ -39,6 +39,9 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
         const labels = axis.mLabels;
         for (let i = 0; i < chart.getData().getMaxEntryCountSet().getEntryCount(); i++) {
             const label = labels[i];
+            if (!label) {
+                continue;
+            }
             const angle = (sliceangle * i + chart.getRotationAngle()) % 360;
 
             Utils.getPosition(center, chart.getYRange() * factor + axis.mLabelRotatedWidth / 2, angle, pOut);

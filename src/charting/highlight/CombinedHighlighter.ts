@@ -21,7 +21,7 @@ export class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
         this.barHighlighter = barChart.getBarData() == null ? null : new BarHighlighter(barChart);
     }
 
-    protected getHighlightsAtXValue(xVal, x, y) {
+    public getHighlightsAtXValue(xVal, x?, y?) {
         this.mHighlightBuffer = [];
 
         const dataObjects = this.mChart.getCombinedData().getAllData();
@@ -30,7 +30,7 @@ export class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
             const dataObject = dataObjects[i];
 
             // in case of BarData, let the BarHighlighter take over
-            if (this.barHighlighter != null && dataObject instanceof BarData) {
+            if (this.barHighlighter != null && dataObject instanceof BarData && x !== undefined) {
                 const high = this.barHighlighter.getHighlight(x, y);
 
                 if (high != null) {

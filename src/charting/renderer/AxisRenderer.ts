@@ -1,10 +1,15 @@
 import { Renderer } from './Renderer';
 import { AxisBase } from '../components/AxisBase';
-import { Align, Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Paint, Path, RectF, Style } from '@nativescript-community/ui-canvas';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
-import { profile } from '@nativescript/core/profiling';
+
+export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
+export interface CustomRenderer {
+    drawGridLine?: CustomRendererGridLineFunction;
+}
+
 /**
  * Baseclass of all axis renderers.
  *
@@ -153,7 +158,7 @@ export abstract class AxisRenderer extends Renderer {
 
         // Find out how much spacing (in y value space) between axis values
         const rawInterval = range / labelCount;
-        let interval = Utils.roundToNextSignificant(rawInterval);
+        let interval = axis.isForceIntervalEnabled() ? axis.getForcedInterval() : Utils.roundToNextSignificant(rawInterval);
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
@@ -198,7 +203,7 @@ export abstract class AxisRenderer extends Renderer {
             // if we use  Math.ceil(yMin / interval) * interval and the min value is 20
             // then we will see 0 as axis first when it should be 20
             // let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
-            let first = interval === 0 ? 0 : yMin;
+            let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
             if (axis.isCenterAxisLabelsEnabled()) {
                 first -= interval;
             }

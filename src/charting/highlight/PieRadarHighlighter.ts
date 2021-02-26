@@ -17,6 +17,10 @@ export abstract class PieRadarHighlighter<E extends Entry, D extends DataSet<E>,
     constructor(chart: T) {
         this.mChart = chart;
     }
+    getHighlightsAtXValue(xVal, x?, y?): Highlight[] {
+        // not implemented
+        return null;
+    }
 
     public getHighlight(x: number, y: number): Highlight {
         const touchDistanceToCenter = this.mChart.distanceToCenter(x, y);

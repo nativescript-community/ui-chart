@@ -73,11 +73,9 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
 
         this.mRenderPaint.setStyle(Style.FILL);
 
+        this.mRenderPaint.setColor(color);
         if (shader) {
-            this.mRenderPaint.setColor('black');
             this.mRenderPaint.setShader(shader);
-        } else {
-            this.mRenderPaint.setColor(color);
         }
 
         if (this.clipPathSupported()) {

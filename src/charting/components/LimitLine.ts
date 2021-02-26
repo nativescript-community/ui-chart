@@ -67,9 +67,7 @@ export class LimitLine extends ComponentBase {
      * @param width
      */
     public setLineWidth(width) {
-        // if (width < 0.2) width = 0.2;
-        // if (width > 12.0) width = 12.0;
-        this.mLineWidth = (width);
+        this.mLineWidth = width;
     }
 
     /**

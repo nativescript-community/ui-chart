@@ -3,11 +3,12 @@ import { BarChart } from '../charts/BarChart';
 import { XAxis, XAxisPosition } from '../components/XAxis';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, Path, RectF, Style } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Paint, Path, RectF, Style } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 import { MPPointF } from '../utils/MPPointF';
 import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
 import { profile } from '@nativescript/core';
+import { CustomRendererGridLineFunction } from './AxisRenderer';
 
 export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     protected mChart: BarChart;
@@ -128,8 +129,12 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         const labels = axis.mLabels;
         for (let i = 0; i < positions.length; i += 2) {
             const y = positions[i + 1];
+            const label = labels[i / 2];
+            if (!label) {
+                continue;
+            }
             if (this.mViewPortHandler.isInBoundsY(y)) {
-                this.drawLabel(c, labels[i / 2], pos, y, anchor, labelRotationAngleDegrees);
+                this.drawLabel(c, label, pos, y, anchor, labelRotationAngleDegrees);
             }
         }
     }
@@ -140,16 +145,12 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         this.mGridClippingRect.inset(0, -this.mAxis.getGridLineWidth());
         return this.mGridClippingRect;
     }
-
-    protected drawGridLine(c: Canvas, x: number, y: number, gridLinePath: Path) {
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        gridLinePath.moveTo(rect.right, y);
-        gridLinePath.lineTo(rect.left, y);
-
-        // draw a path because lines don't support dashing on lower android versions
-        c.drawPath(gridLinePath, this.mGridPaint);
-
-        gridLinePath.reset();
+    protected drawGridLine(c: Canvas, rect: RectF, x, y, axisValue, paint: Paint, customRendererFunc: CustomRendererGridLineFunction) {
+        if (customRendererFunc) {
+            customRendererFunc(c, this, rect, x, y, axisValue, paint);
+        } else {
+            c.drawLine(rect.right, y, rect.left, y, paint);
+        }
     }
 
     public renderAxisLine(c: Canvas) {

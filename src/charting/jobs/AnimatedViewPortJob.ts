@@ -23,15 +23,10 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
     protected xOrigin;
     protected yOrigin;
 
-    constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, duration) {
+    constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, private duration) {
         super(viewPortHandler, xValue, yValue, trans, v);
         this.xOrigin = xOrigin;
         this.yOrigin = yOrigin;
-        this.createAnimator(duration);
-        // this.animator = ObjectAnimator.ofFloat(this, "phase", 0, 1);
-        // animator.setDuration(duration);
-        // animator.addUpdateListener(this);
-        // animator.addListener(this);
     }
 
     createAnimator(duration) {
@@ -47,6 +42,9 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
     }
 
     public run() {
+        if (!this.animator) {
+            this.createAnimator(this.duration);
+        }
         this.animator.start();
     }
 

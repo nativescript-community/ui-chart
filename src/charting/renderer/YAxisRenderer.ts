@@ -1,4 +1,4 @@
-import { AxisRenderer } from './AxisRenderer';
+import { AxisRenderer, CustomRendererGridLineFunction } from './AxisRenderer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { AxisDependency, YAxis, YAxisLabelPosition } from '../components/YAxis';
 import { Transformer } from '../utils/Transformer';
@@ -150,20 +150,27 @@ export class YAxisRenderer extends AxisRenderer {
     }
 
     // protected mRenderGridLinesPath = new Path();
-
+    /**
+     * Draws the grid line at the specified position using the provided path.
+     *
+     * @param c
+     * @param rect
+     * @param x
+     * @param y
+     * @param axisValue
+     */
+    protected drawGridLine(c: Canvas, rect: RectF, x, y, axisValue, paint: Paint, customRendererFunc: CustomRendererGridLineFunction) {
+        if (customRendererFunc) {
+            customRendererFunc(c, this, rect, x, y, axisValue, paint);
+        } else {
+            c.drawLine(rect.left, y, rect.right, y, paint);
+        }
+    }
     public renderGridLines(c: Canvas) {
         const axis = this.mYAxis;
         if (!axis.isEnabled()) return;
 
         if (axis.isDrawGridLinesEnabled()) {
-            let offsetLeft = 0;
-            let rect: RectF;
-            if (this.mAxis.isIgnoringOffsets()) {
-                rect = this.mViewPortHandler.getChartRect();
-            } else {
-                rect = this.mViewPortHandler.getContentRect();
-                offsetLeft = this.mViewPortHandler.offsetLeft();
-            }
             const clipRestoreCount = c.save();
             c.clipRect(this.getGridClippingRect());
 
@@ -173,15 +180,12 @@ export class YAxisRenderer extends AxisRenderer {
             this.mGridPaint.setStrokeWidth(axis.getGridLineWidth());
             this.mGridPaint.setPathEffect(axis.getGridDashPathEffect());
 
-            // const gridLinePath = this.mRenderGridLinesPath;
-            // gridLinePath.reset();
-
-            // draw the grid
+            const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+            const paint = this.mGridPaint;
+            const customRender = axis.getCustomRenderer();
+            const customRenderFunction = customRender && customRender.drawGridLine;
             for (let i = 0; i < positions.length; i += 2) {
-                // draw a path because lines don't support dashing on lower android versions
-                c.drawLine(offsetLeft, positions[i + 1], rect.right, positions[i + 1], this.mGridPaint);
-                // c.drawPath(this.linePath(gridLinePath, i, positions), this.mGridPaint);
-                // gridLinePath.reset();
+                this.drawGridLine(c, rect, positions[i], positions[i + 1], axis.mEntries[i / 2], paint, customRenderFunction);
             }
 
             c.restoreToCount(clipRestoreCount);
@@ -319,7 +323,7 @@ export class YAxisRenderer extends AxisRenderer {
             const label = l.getLabel();
 
             // if drawing the limit-value label is enabled
-            if (label != null && label !== '') {
+            if (label && label !== '') {
                 this.mLimitLinePaint.setStyle(l.getTextStyle());
                 this.mLimitLinePaint.setPathEffect(null);
                 this.mLimitLinePaint.setColor(l.getTextColor());

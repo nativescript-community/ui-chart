@@ -324,7 +324,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     }
 
     public onDraw(canvas: Canvas) {
-        // super.onDraw(canvas);
+        super.onDraw(canvas);
 
         if (this.mData === null) {
             const hasText = this.mNoDataText && this.mNoDataText.length > 0;
@@ -336,6 +336,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
             return;
         }
+        this.notify({ eventName: 'postDraw', object: this, canvas });
 
         // if (!this.mOffsetsCalculated) {
         this.calculateOffsets(false);
@@ -566,6 +567,22 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             console.error(LOG_TAG, "Can't select by touch. No data set.");
             return null;
         } else return this.getHighlighter().getHighlight(x, y);
+    }
+    /**
+     * Returns the Highlight object (contains x-index and DataSet index) of the
+     * selected value at the given touch polet inside the Line-, Scatter-, or
+     * CandleStick-Chart.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public getHighlightByXValue(xValue) {
+        if (this.mData == null) {
+            return null;
+        } else {
+            return this.getHighlighter().getHighlightsAtXValue(xValue);
+        }
     }
 
     // /**
@@ -1436,6 +1453,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         }
 
         this.mJobs = [];
+        this.notify({ eventName: 'sizeChanged', object: this });
     }
     public onLayout(left: number, top: number, right: number, bottom: number) {
         super.onLayout(left, top, right, bottom);
