@@ -105,22 +105,15 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     pinchGestureHandler: PinchGestureHandler;
     tapGestureHandler: TapGestureHandler;
     doubleTapGestureHandler: TapGestureHandler;
-    // longpressGestureHandler: LongPressGestureHandler;
-
-    // abstract onPanGestureState(event: GestureStateEventData);
-    // abstract onPanGestureTouch(event: GestureTouchEventData);
-    // abstract onPinchGestureState(event: GestureStateEventData);
-    // abstract onPinchGestureTouch(event: GestureTouchEventData);
-    // abstract onTapGesture(event: GestureStateEventData);
-    // abstract onDoubleTapGesture(event: GestureStateEventData);
-
     getOrCreateDoubleTapGestureHandler() {
         if (!this.doubleTapGestureHandler) {
             const manager = Manager.getInstance();
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'creating double tap gesture');
             }
-            this.doubleTapGestureHandler = manager.createGestureHandler(HandlerType.TAP, this.DOUBLE_TAP_HANDLER_TAG, { numberOfTaps: 2 }).on(GestureHandlerStateEvent, this.onDoubleTapGesture, this);
+            this.doubleTapGestureHandler = manager
+                .createGestureHandler(HandlerType.TAP, this.DOUBLE_TAP_HANDLER_TAG, { numberOfTaps: 2, ...(this.mChart.doubleTapGestureOptions || {}) })
+                .on(GestureHandlerStateEvent, this.onDoubleTapGesture, this);
         }
         return this.doubleTapGestureHandler;
     }
@@ -131,7 +124,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             }
             const manager = Manager.getInstance();
             this.tapGestureHandler = manager
-                .createGestureHandler(HandlerType.TAP, this.TAP_HANDLER_TAG, { waitFor: [this.DOUBLE_TAP_HANDLER_TAG] })
+                .createGestureHandler(HandlerType.TAP, this.TAP_HANDLER_TAG, { waitFor: [this.DOUBLE_TAP_HANDLER_TAG], ...(this.mChart.tapGestureOptions || {}) })
                 .on(GestureHandlerStateEvent, this.onTapGesture, this);
         }
         return this.tapGestureHandler;
@@ -147,7 +140,8 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 .createGestureHandler(HandlerType.PINCH, this.PINCH_HANDLER_TAG, {
                     minSpan: 20,
                     // simultaneousHandlers: [this.PAN_HANDLER_TAG],
-                    shouldCancelWhenOutside: false
+                    shouldCancelWhenOutside: false,
+                    ...(this.mChart.pinchGestureOptions || {})
                 })
                 .on(GestureHandlerStateEvent, this.onPinchGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPinchGestureTouch, this);
@@ -165,7 +159,8 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     // simultaneousHandlers: [this.PINCH_HANDLER_TAG],
                     minPointers: 1,
                     maxPointers: 2,
-                    shouldCancelWhenOutside: false
+                    shouldCancelWhenOutside: false,
+                    ...(this.mChart.panGestureOptions || {})
                 })
                 .on(GestureHandlerStateEvent, this.onPanGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPanGestureTouch, this);

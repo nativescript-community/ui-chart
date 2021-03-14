@@ -23,6 +23,7 @@ import { ChartTouchListener } from '../listener/ChartTouchListener';
 import { layout } from '@nativescript/core/utils/utils';
 import { EventData, Trace } from '@nativescript/core';
 import { addWeakEventListener, removeWeakEventListener } from '@nativescript/core/ui/core/weak-event-listener';
+import { PanGestureHandlerOptions, PinchGestureHandlerOptions, TapGestureHandlerOptions } from '@nativescript-community/gesturehandler';
 
 const LOG_TAG = 'NSChart';
 
@@ -222,6 +223,10 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         }
     }
 
+    public panGestureOptions: PanGestureHandlerOptions;
+    public tapGestureOptions: TapGestureHandlerOptions;
+    public doubleTapGestureOptions: TapGestureHandlerOptions;
+    public pinchGestureOptions: PinchGestureHandlerOptions;
     /**
      * Sets a new data object for the chart. The data object contains all values
      * and information needed for displaying.
