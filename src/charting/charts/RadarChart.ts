@@ -130,7 +130,9 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         this.mRenderer.drawValues(c);
 
-        this.mLegendRenderer.renderLegend(c);
+        if (this.mLegendRenderer) {
+            this.mLegendRenderer.renderLegend(c);
+        }
 
         this.drawDescription(c);
 

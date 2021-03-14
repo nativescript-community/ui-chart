@@ -128,7 +128,9 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
 
         this.mRenderer.drawValues(canvas);
 
-        this.mLegendRenderer.renderLegend(canvas);
+        if (this.mLegendRenderer) {
+            this.mLegendRenderer.renderLegend(canvas);
+        }
 
         this.drawDescription(canvas);
         this.drawMarkers(canvas);

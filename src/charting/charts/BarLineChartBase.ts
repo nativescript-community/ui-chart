@@ -255,8 +255,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         } else {
             this.mRenderer.drawValues(canvas);
         }
-
-        this.mLegendRenderer.renderLegend(canvas);
+        if (this.mLegendRenderer) {
+            this.mLegendRenderer.renderLegend(canvas);
+        }
 
         this.drawDescription(canvas);
 

@@ -171,7 +171,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * The maximum distance in dp away from an entry causing it to highlight.
      */
-    protected mMaxHighlightDistance = 0;
+    protected mMaxHighlightDistance = 500;
 
     /**
      * default constructor for initialization in code
@@ -200,33 +200,36 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             this.invalidate();
         });
 
-        this.mMaxHighlightDistance = 500;
-
-        // this.mDescription = new Description();
-        this.mLegend = new Legend();
-
-        this.mLegendRenderer = new LegendRenderer(this.mViewPortHandler, this.mLegend);
-
         this.mXAxis = new XAxis();
-
-        this.mDescPaint = new Paint();
-        this.mDescPaint.setAntiAlias(true);
-
-        this.mInfoPaint = new Paint();
-        this.mInfoPaint.setAntiAlias(true);
-        this.mInfoPaint.setColor('#F7BD33'); // orange
-        this.mInfoPaint.setTextAlign(Align.CENTER);
-        this.mInfoPaint.setTextSize(12);
 
         if (Trace.isEnabled()) {
             CLog(CLogTypes.log, this.constructor.name, 'init()');
         }
     }
 
+    get infoPaint() {
+        if (!this.mInfoPaint) {
+            this.mInfoPaint = new Paint();
+            this.mInfoPaint.setAntiAlias(true);
+            this.mInfoPaint.setColor('#F7BD33'); // orange
+            this.mInfoPaint.setTextAlign(Align.CENTER);
+            this.mInfoPaint.setTextSize(12);
+        }
+        return this.mInfoPaint;
+    }
+    get descPaint() {
+        if (!this.mDescPaint) {
+            this.mDescPaint = new Paint();
+            this.mDescPaint.setAntiAlias(true);
+        }
+        return this.mDescPaint;
+    }
+
     public panGestureOptions: PanGestureHandlerOptions;
     public tapGestureOptions: TapGestureHandlerOptions;
     public doubleTapGestureOptions: TapGestureHandlerOptions;
     public pinchGestureOptions: PinchGestureHandlerOptions;
+
     /**
      * Sets a new data object for the chart. The data object contains all values
      * and information needed for displaying.
@@ -336,7 +339,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
             if (hasText) {
                 const c = this.getCenter();
-                canvas.drawText(this.mNoDataText, c.x, c.y, this.mInfoPaint);
+                canvas.drawText(this.mNoDataText, c.x, c.y, this.infoPaint);
             }
 
             return;
@@ -357,10 +360,10 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         // check if description should be drawn
         if (this.mDescription != null && this.mDescription.isEnabled()) {
             const position = this.mDescription.getPosition();
-
-            this.mDescPaint.setFont(this.mDescription.getFont());
-            this.mDescPaint.setColor(this.mDescription.getTextColor());
-            this.mDescPaint.setTextAlign(this.mDescription.getTextAlign());
+            const paint = this.descPaint;
+            paint.setFont(this.mDescription.getFont());
+            paint.setColor(this.mDescription.getTextColor());
+            paint.setTextAlign(this.mDescription.getTextAlign());
 
             let x, y;
 
@@ -374,7 +377,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
                 y = position.y;
             }
 
-            c.drawText(this.mDescription.getText(), x, y, this.mDescPaint);
+            c.drawText(this.mDescription.getText(), x, y, paint);
         }
     }
 
@@ -956,7 +959,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param color
      */
     public setNoDataTextColor(color) {
-        this.mInfoPaint.setColor(color);
+        this.infoPaint.setColor(color);
     }
 
     /**
@@ -965,7 +968,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param tf
      */
     public setNoDataTextTypeface(tf) {
-        this.mInfoPaint.setTypeface(tf);
+        this.infoPaint.setTypeface(tf);
     }
 
     /**
@@ -1021,6 +1024,9 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @return
      */
     public getDescription() {
+        if (!this.mDescription) {
+            this.mDescription = new Description();
+        }
         return this.mDescription;
     }
 
@@ -1032,6 +1038,10 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @return
      */
     public getLegend() {
+        if (!this.mLegend) {
+            this.mLegend = new Legend();
+            this.mLegendRenderer = new LegendRenderer(this.mViewPortHandler, this.mLegend);
+        }
         return this.mLegend;
     }
 
@@ -1133,9 +1143,9 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     public getPaint(which) {
         switch (which) {
             case Chart.PAINT_INFO:
-                return this.mInfoPaint;
+                return this.infoPaint;
             case Chart.PAINT_DESCRIPTION:
-                return this.mDescPaint;
+                return this.descPaint;
         }
 
         return null;
