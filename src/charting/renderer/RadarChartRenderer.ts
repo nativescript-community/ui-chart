@@ -40,9 +40,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
     constructor(chart: RadarChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
-
-        this.mHighlightCirclePaint = new Paint();
-        this.mHighlightCirclePaint.setAntiAlias(true);
     }
 
     public get highlightPaint() {
