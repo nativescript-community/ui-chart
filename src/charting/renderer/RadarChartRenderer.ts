@@ -19,31 +19,48 @@ export class RadarChartRenderer extends LineRadarRenderer {
     protected mWebPaint: Paint;
     protected mHighlightCirclePaint: Paint;
 
-    protected mDrawDataSetSurfacePathBuffer = new Path();
+    protected mDrawDataSetSurfacePathBuffer: Path;
+    protected get drawDataSetSurfacePathBuffer() {
+        if (!this.mDrawDataSetSurfacePathBuffer) {
+            this.mDrawDataSetSurfacePathBuffer = new Path();
+        }
+        return this.mDrawDataSetSurfacePathBuffer;
+    }
 
     private mLineBuffer: number[];
 
-    protected mDrawHighlightCirclePathBuffer = new Path();
+    protected mDrawHighlightCirclePathBuffer: Path;
+    protected get drawHighlightCirclePathBuffer() {
+        if (!this.mDrawHighlightCirclePathBuffer) {
+            this.mDrawHighlightCirclePathBuffer = new Path();
+        }
+        return this.mDrawHighlightCirclePathBuffer;
+    }
 
     constructor(chart: RadarChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
 
-        this.mHighlightPaint = new Paint();
-        this.mHighlightPaint.setAntiAlias(true);
-        this.mHighlightPaint.setStyle(Style.STROKE);
-        this.mHighlightPaint.setStrokeWidth(2);
-        this.mHighlightPaint.setColor(new Color(255, 255, 187, 115));
-
-        this.mWebPaint = new Paint();
-        this.mWebPaint.setAntiAlias(true);
-        this.mWebPaint.setStyle(Style.STROKE);
-
         this.mHighlightCirclePaint = new Paint();
         this.mHighlightCirclePaint.setAntiAlias(true);
     }
 
-    public getWebPaint() {
+    public get highlightPaint() {
+        if (!this.mHighlightPaint) {
+            this.mHighlightPaint = new Paint();
+            this.mHighlightPaint.setAntiAlias(true);
+            this.mHighlightPaint.setStyle(Style.STROKE);
+            this.mHighlightPaint.setStrokeWidth(2);
+            this.mHighlightPaint.setColor(new Color(255, 255, 187, 115));
+        }
+        return this.mHighlightPaint;
+    }
+    public get webPaint() {
+        if (!this.mWebPaint) {
+            this.mWebPaint = new Paint();
+            this.mWebPaint.setAntiAlias(true);
+            this.mWebPaint.setStyle(Style.STROKE);
+        }
         return this.mWebPaint;
     }
 
@@ -81,7 +98,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
 
         const center = this.mChart.getCenterOffsets();
         const pOut: MPPointF = { x: 0, y: 0 };
-        const surface = this.mDrawDataSetSurfacePathBuffer;
+        const surface = this.drawDataSetSurfacePathBuffer;
         surface.reset();
 
         let hasMovedToPoint = false;
@@ -136,10 +153,11 @@ export class RadarChartRenderer extends LineRadarRenderer {
         // draw the line (only if filled is disabled or alpha is below 255)
         const lineWidth = dataSet.getLineWidth();
         if ((!dataSet.isDrawFilledEnabled() || dataSet.getFillAlpha() < 255) && lineWidth > 0) {
-            this.mRenderPaint.setColor(dataSet.getColor());
-            this.mRenderPaint.setStrokeWidth(lineWidth);
-            this.mRenderPaint.setStyle(Style.STROKE);
-            c.drawPath(surface, this.mRenderPaint);
+            const renderPaint = this.renderPaint;
+            renderPaint.setColor(dataSet.getColor());
+            renderPaint.setStrokeWidth(lineWidth);
+            renderPaint.setStyle(Style.STROKE);
+            c.drawPath(surface, renderPaint);
         }
         // MPPointF.recycleInstance(center);
         // MPPointF.recycleInstance(pOut);
@@ -184,14 +202,14 @@ export class RadarChartRenderer extends LineRadarRenderer {
             const formatter = dataSet.getValueFormatter();
 
             const iconsOffset = dataSet.getIconsOffset();
-
+            const paint = this.valuePaint;
             for (let j = 0; j < dataSet.getEntryCount(); j++) {
                 const entry = dataSet.getEntryForIndex(j);
 
                 Utils.getPosition(center, (entry[yProperty] - this.mChart.getYChartMin()) * factor * phaseY, sliceangle * j * phaseX + this.mChart.getRotationAngle(), pOut);
 
                 if (drawValues) {
-                    this.drawValue(c, formatter.getRadarLabel(entry[yProperty], entry), pOut.x, pOut.y - yoffset, dataSet.getValueTextColor(j));
+                    this.drawValue(c, formatter.getRadarLabel(entry[yProperty], entry), pOut.x, pOut.y - yoffset, dataSet.getValueTextColor(j), paint);
                 }
 
                 if (drawIcons && entry.icon != null) {
@@ -214,9 +232,9 @@ export class RadarChartRenderer extends LineRadarRenderer {
         // MPPointF.recycleInstance(pIcon);
     }
 
-    public drawValue(c: Canvas, valueText, x, y, color) {
-        this.mValuePaint.setColor(color);
-        c.drawText(valueText, x, y, this.mValuePaint);
+    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
+        paint.setColor(color);
+        c.drawText(valueText, x, y, paint);
     }
 
     public drawExtras(c: Canvas) {
@@ -236,9 +254,10 @@ export class RadarChartRenderer extends LineRadarRenderer {
         // draw the web lines that come from the center
         const lineWidth = this.mChart.getWebLineWidth();
         if (lineWidth > 0) {
-            this.mWebPaint.setStrokeWidth(this.mChart.getWebLineWidth());
-            this.mWebPaint.setColor(this.mChart.getWebColor());
-            this.mWebPaint.setAlpha(this.mChart.getWebAlpha());
+            const paint = this.webPaint;
+            paint.setStrokeWidth(this.mChart.getWebLineWidth());
+            paint.setColor(this.mChart.getWebColor());
+            paint.setAlpha(this.mChart.getWebAlpha());
 
             const xIncrements = 1 + this.mChart.getSkipWebLineCount();
             const maxEntryCount = this.mChart.getData().getMaxEntryCountSet().getEntryCount();
@@ -247,7 +266,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
             for (let i = 0; i < maxEntryCount; i += xIncrements) {
                 Utils.getPosition(center, this.mChart.getYRange() * factor, sliceangle * i + rotationangle, p);
 
-                c.drawLine(center.x, center.y, p.x, p.y, this.mWebPaint);
+                c.drawLine(center.x, center.y, p.x, p.y, paint);
             }
         }
 
@@ -256,9 +275,10 @@ export class RadarChartRenderer extends LineRadarRenderer {
         // draw the inner-web
         const innerWidth = this.mChart.getWebLineWidthInner();
         if (innerWidth > 0) {
-            this.mWebPaint.setStrokeWidth(this.mChart.getWebLineWidthInner());
-            this.mWebPaint.setColor(this.mChart.getWebColorInner());
-            this.mWebPaint.setAlpha(this.mChart.getWebAlpha());
+            const paint = this.webPaint;
+            paint.setStrokeWidth(this.mChart.getWebLineWidthInner());
+            paint.setColor(this.mChart.getWebColorInner());
+            paint.setAlpha(this.mChart.getWebAlpha());
 
             const labelCount = this.mChart.getYAxis().mEntryCount;
 
@@ -347,7 +367,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
         innerRadius = innerRadius;
 
         if (fillColor && fillColor !== ColorTemplate.COLOR_NONE) {
-            const p = this.mDrawHighlightCirclePathBuffer;
+            const p = this.drawHighlightCirclePathBuffer;
             p.reset();
             p.addCircle(point.x, point.y, outerRadius, Direction.CW);
             if (innerRadius > 0) {

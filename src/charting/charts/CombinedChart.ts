@@ -17,7 +17,7 @@ export enum DrawOrder {
     BUBBLE,
     LINE,
     CANDLE,
-    SCATTER,
+    SCATTER
 }
 /**
  * This chart class allows the combination of lines, bars, scatter and candle
@@ -67,7 +67,7 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
     public setData(data: CombinedData) {
         super.setData(data);
         this.setHighlighter(new CombinedHighlighter(this, this));
-        (this.mRenderer).createRenderers();
+        this.mRenderer.createRenderers();
         this.mRenderer.initBuffers();
     }
 

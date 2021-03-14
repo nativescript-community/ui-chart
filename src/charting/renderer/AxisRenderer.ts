@@ -47,48 +47,6 @@ export abstract class AxisRenderer extends Renderer {
 
         this.mTrans = trans;
         this.mAxis = axis;
-
-        if (this.mViewPortHandler != null) {
-            this.mAxisLabelPaint = new Paint();
-            this.mAxisLabelPaint.setAntiAlias(true);
-            this.mAxisLabelPaint.setTextAlign(Align.LEFT);
-
-            this.mGridPaint = new Paint();
-            this.mGridPaint.setColor('gray');
-            this.mGridPaint.setStrokeWidth(1);
-            this.mGridPaint.setAntiAlias(true);
-            this.mGridPaint.setStyle(Style.STROKE);
-            this.mGridPaint.setAlpha(90);
-
-            this.mAxisLinePaint = new Paint();
-            this.mAxisLinePaint.setColor('black');
-            this.mAxisLinePaint.setAntiAlias(true);
-            this.mAxisLinePaint.setStrokeWidth(1);
-            this.mAxisLinePaint.setStyle(Style.STROKE);
-
-            this.mLimitLinePaint = new Paint();
-            this.mLimitLinePaint.setAntiAlias(true);
-            this.mLimitLinePaint.setStyle(Style.STROKE);
-        }
-    }
-
-    /**
-     * Returns the Paint object used for drawing the axis (labels).
-     *
-     * @return
-     */
-    public getPaintAxisLabels() {
-        return this.mAxisLabelPaint;
-    }
-
-    /**
-     * Returns the Paint object that is used for drawing the grid-lines of the
-     * axis.
-     *
-     * @return
-     */
-    public getPaintGrid() {
-        return this.mGridPaint;
     }
 
     /**
@@ -97,8 +55,62 @@ export abstract class AxisRenderer extends Renderer {
      *
      * @return
      */
-    public getPaintAxisLine() {
+    get axisLinePaint() {
+        if (!this.mAxisLinePaint) {
+            this.mAxisLinePaint = new Paint();
+            this.mAxisLinePaint.setColor('black');
+            this.mAxisLinePaint.setAntiAlias(true);
+            this.mAxisLinePaint.setStrokeWidth(1);
+            this.mAxisLinePaint.setStyle(Style.STROKE);
+        }
         return this.mAxisLinePaint;
+    }
+
+    get limitLinePaint() {
+        if (!this.mLimitLinePaint) {
+            this.mLimitLinePaint = new Paint();
+            this.mLimitLinePaint.setAntiAlias(true);
+            this.mLimitLinePaint.setStyle(Style.STROKE);
+        }
+        return this.mLimitLinePaint;
+    }
+
+    /**
+     * Returns the Paint object used for drawing the axis (labels).
+     *
+     * @return
+     */
+    get axisLabelsPaint() {
+        if (!this.mAxisLabelPaint) {
+            this.mAxisLabelPaint = this.createAxisLabelsPaint();
+        }
+        return this.mAxisLabelPaint;
+    }
+
+    protected createAxisLabelsPaint() {
+        const paint = new Paint();
+        paint.setColor('black');
+        paint.setAntiAlias(true);
+        paint.setTextAlign(Align.LEFT);
+        return paint;
+    }
+
+    /**
+     * Returns the Paint object that is used for drawing the grid-lines of the
+     * axis.
+     *
+     * @return
+     */
+    public get gridPaint() {
+        if (!this.mGridPaint) {
+            this.mGridPaint = new Paint();
+            this.mGridPaint.setColor('gray');
+            this.mGridPaint.setStrokeWidth(1);
+            this.mGridPaint.setAntiAlias(true);
+            this.mGridPaint.setStyle(Style.STROKE);
+            this.mGridPaint.setAlpha(90);
+        }
+        return this.mGridPaint;
     }
 
     /**

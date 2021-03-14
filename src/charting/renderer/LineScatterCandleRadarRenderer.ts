@@ -12,7 +12,13 @@ export abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandl
     /**
      * path that is used for drawing highlight-lines (drawLines(...) cannot be used because of dashes)
      */
-    private mHighlightLinePath = new Path();
+    private mHighlightLinePath: Path;
+    protected get highlightLinePath() {
+        if (!this.mHighlightLinePath) {
+            this.mHighlightLinePath = new Path();
+        }
+        return this.mHighlightLinePath;
+    }
 
     constructor(animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
@@ -27,31 +33,32 @@ export abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandl
      * @param set the currently drawn dataset
      */
     protected drawHighlightLines(c: Canvas, x, y, set: ILineScatterCandleRadarDataSet<any>) {
+        const paint = this.highlightPaint;
         // set color and stroke-width
-        this.mHighlightPaint.setColor(set.getHighLightColor());
-        this.mHighlightPaint.setStrokeWidth(set.getHighlightLineWidth());
+        paint.setColor(set.getHighLightColor());
+        paint.setStrokeWidth(set.getHighlightLineWidth());
 
         // draw highlighted lines (if enabled)
-        this.mHighlightPaint.setPathEffect(set.getDashPathEffectHighlight());
-
+        paint.setPathEffect(set.getDashPathEffectHighlight());
+        const path = this.highlightLinePath;
         // draw vertical highlight lines
         if (set.isVerticalHighlightIndicatorEnabled()) {
             // create vertical path
-            this.mHighlightLinePath.reset();
-            this.mHighlightLinePath.moveTo(x, this.mViewPortHandler.contentTop());
-            this.mHighlightLinePath.lineTo(x, this.mViewPortHandler.contentBottom());
+            path.reset();
+            path.moveTo(x, this.mViewPortHandler.contentTop());
+            path.lineTo(x, this.mViewPortHandler.contentBottom());
 
-            c.drawPath(this.mHighlightLinePath, this.mHighlightPaint);
+            c.drawPath(path, paint);
         }
 
         // draw horizontal highlight lines
         if (set.isHorizontalHighlightIndicatorEnabled()) {
             // create horizontal path
-            this.mHighlightLinePath.reset();
-            this.mHighlightLinePath.moveTo(this.mViewPortHandler.contentLeft(), y);
-            this.mHighlightLinePath.lineTo(this.mViewPortHandler.contentRight(), y);
+            path.reset();
+            path.moveTo(this.mViewPortHandler.contentLeft(), y);
+            path.lineTo(this.mViewPortHandler.contentRight(), y);
 
-            c.drawPath(this.mHighlightLinePath, this.mHighlightPaint);
+            c.drawPath(path, paint);
         }
     }
 }

@@ -1,13 +1,10 @@
-import { Renderer } from './Renderer';
-import { Align, Canvas, Cap, Join, Paint, Style } from '@nativescript-community/ui-canvas';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { Align, Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { Color } from '@nativescript/core/color';
-import { Utils } from '../utils/Utils';
+import { Highlight } from '../highlight/Highlight';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
-import { Highlight } from '../highlight/Highlight';
-import { isAndroid } from '@nativescript/core/platform';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { Renderer } from './Renderer';
 
 /**
  * Superclass of all render classes for the different data types (line, bar, ...).
@@ -30,8 +27,6 @@ export abstract class DataRenderer extends Renderer {
      */
     protected mHighlightPaint: Paint;
 
-    protected mDrawPaint: Paint;
-
     /**
      * palet object for drawing values (text representing values of chart
      * entries)
@@ -41,57 +36,41 @@ export abstract class DataRenderer extends Renderer {
     constructor(animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(viewPortHandler);
         this.mAnimator = animator;
+    }
 
-        this.mRenderPaint = new Paint();
-        this.mRenderPaint.setAntiAlias(true);
-        this.mRenderPaint.setStyle(Style.FILL);
+    public get renderPaint() {
+        if (!this.mRenderPaint) {
+            this.mRenderPaint = new Paint();
+            this.mRenderPaint.setAntiAlias(true);
+            this.mRenderPaint.setStyle(Style.FILL);
+        }
+        return this.mHighlightPaint;
+    }
 
-        this.mDrawPaint = new Paint();
-        this.mDrawPaint.setDither(true);
-        this.mValuePaint = new Paint();
-        this.mValuePaint.setAntiAlias(true);
-        this.mValuePaint.setColor('#3F3F3F');
-        this.mValuePaint.setTextAlign(Align.CENTER);
-        this.mValuePaint.setTextSize(9);
+    public get highlightPaint() {
+        if (!this.mHighlightPaint) {
+            this.mHighlightPaint = new Paint();
+            this.mHighlightPaint.setAntiAlias(true);
+            this.mHighlightPaint.setStyle(Style.STROKE);
+            this.mHighlightPaint.setStrokeWidth(2);
+            this.mHighlightPaint.setColor('#FFBB73');
+        }
+        return this.mHighlightPaint;
+    }
 
-        this.mHighlightPaint = new Paint();
-        this.mHighlightPaint.setAntiAlias(true);
-        this.mHighlightPaint.setStyle(Style.STROKE);
-        this.mHighlightPaint.setStrokeWidth(2);
-        this.mHighlightPaint.setColor('#FFBB73');
+    public get valuePaint() {
+        if (!this.mValuePaint) {
+            this.mValuePaint = new Paint();
+            this.mValuePaint.setAntiAlias(true);
+            this.mValuePaint.setColor('#3F3F3F');
+            this.mValuePaint.setTextAlign(Align.CENTER);
+            this.mValuePaint.setTextSize(9);
+        }
+        return this.mValuePaint;
     }
 
     protected isDrawingValuesAllowed(chart: ChartInterface) {
         return chart.getData().getEntryCount() < chart.getMaxVisibleCount() * this.mViewPortHandler.getScaleX();
-    }
-
-    /**
-     * Returns the Paint object this renderer uses for drawing the values
-     * (value-text).
-     *
-     * @return
-     */
-    public getPaintValues() {
-        return this.mValuePaint;
-    }
-
-    /**
-     * Returns the Paint object this renderer uses for drawing highlight
-     * indicators.
-     *
-     * @return
-     */
-    public getPaintHighlight() {
-        return this.mHighlightPaint;
-    }
-
-    /**
-     * Returns the Paint object used for rendering.
-     *
-     * @return
-     */
-    public getPaintRender() {
-        return this.mRenderPaint;
     }
 
     /**
@@ -136,8 +115,9 @@ export abstract class DataRenderer extends Renderer {
      * @param x         position
      * @param y         position
      * @param color
+     * @param paint
      */
-    public abstract drawValue(c: Canvas, valueText, x, y, color);
+    public abstract drawValue(c: Canvas, valueText, x, y, color, paint: Paint);
 
     /**
      * Draws any kind of additional information (e.g. line-circles).

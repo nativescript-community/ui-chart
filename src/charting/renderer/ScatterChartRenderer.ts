@@ -2,7 +2,7 @@ import { ChartAnimator } from '../animation/ChartAnimator';
 import { LineScatterCandleRadarRenderer } from './LineScatterCandleRadarRenderer';
 import { ScatterDataProvider } from '../interfaces/dataprovider/ScatterDataProvider';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { Canvas } from '@nativescript-community/ui-canvas';
+import { Canvas, Paint } from '@nativescript-community/ui-canvas';
 import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { IScatterDataSet } from '../interfaces/datasets/IScatterDataSet';
 import { getEntryXValue } from '../data/BaseEntry';
@@ -13,7 +13,13 @@ import { Trace } from '@nativescript/core';
 
 export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     mChart: ScatterChart;
-    mPixelBuffer = Utils.createNativeArray(2);
+    mPixelBuffer;
+    protected get pixelBuffer() {
+        if (!this.mPixelBuffer) {
+            this.mPixelBuffer = Utils.createNativeArray(2);
+        }
+        return this.mPixelBuffer;
+    }
 
     constructor(chart: ScatterChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
@@ -53,23 +59,25 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         const xKey = dataSet.xProperty;
         const yKey = dataSet.yProperty;
         const customRender = this.mChart.getCustomRenderer();
+        const renderPaint = this.renderPaint;
+        const pixelBuffer = this.pixelBuffer;
         for (let i = 0; i < max; i++) {
             const e = dataSet.getEntryForIndex(i);
 
-            this.mPixelBuffer[0] = getEntryXValue(e, xKey, i);
-            this.mPixelBuffer[1] = e[yKey] * phaseY;
+            pixelBuffer[0] = getEntryXValue(e, xKey, i);
+            pixelBuffer[1] = e[yKey] * phaseY;
 
-            trans.pointValuesToPixel(this.mPixelBuffer);
+            trans.pointValuesToPixel(pixelBuffer);
 
-            if (!viewPortHandler.isInBoundsRight(this.mPixelBuffer[0])) break;
+            if (!viewPortHandler.isInBoundsRight(pixelBuffer[0])) break;
 
-            if (!viewPortHandler.isInBoundsLeft(this.mPixelBuffer[0]) || !viewPortHandler.isInBoundsY(this.mPixelBuffer[1])) continue;
+            if (!viewPortHandler.isInBoundsLeft(pixelBuffer[0]) || !viewPortHandler.isInBoundsY(pixelBuffer[1])) continue;
 
-            this.mRenderPaint.setColor(dataSet.getColor(i / 2));
+            renderPaint.setColor(dataSet.getColor(i / 2));
             if (customRender && customRender.drawShape) {
-                customRender.drawShape(c, e, dataSet, this.mViewPortHandler, this.mPixelBuffer[0], this.mPixelBuffer[1], this.mRenderPaint);
+                customRender.drawShape(c, e, dataSet, this.mViewPortHandler, pixelBuffer[0], pixelBuffer[1], renderPaint);
             } else {
-                renderer.renderShape(c, dataSet, this.mViewPortHandler, this.mPixelBuffer[0], this.mPixelBuffer[1], this.mRenderPaint);
+                renderer.renderShape(c, dataSet, this.mViewPortHandler, pixelBuffer[0], pixelBuffer[1], renderPaint);
             }
         }
     }
@@ -104,6 +112,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
             const iconsOffset = dataSet.getIconsOffset();
             const drawValues = dataSet.isDrawValuesEnabled();
             const drawIcons = dataSet.isDrawIconsEnabled();
+            const paint = this.valuePaint;
             for (let j = 0; j < count; j += 2) {
                 if (!this.mViewPortHandler.isInBoundsRight(points[j])) break;
 
@@ -113,7 +122,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                 const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
                 if (drawValues) {
-                    this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), points[j], points[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min));
+                    this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), points[j], points[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min), paint);
                 }
 
                 if (drawIcons && entry.icon) {
@@ -123,9 +132,9 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         }
     }
 
-    public drawValue(c: Canvas, valueText, x, y, color) {
-        this.mValuePaint.setColor(color);
-        c.drawText(valueText, x, y, this.mValuePaint);
+    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
+        paint.setColor(color);
+        c.drawText(valueText, x, y, paint);
     }
 
     public drawExtras(c: Canvas) {}
@@ -135,6 +144,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
         let entry: Entry, index: number;
         const customRender = this.mChart.getCustomRenderer();
+        const paint = this.highlightPaint;
         for (const high of indices) {
             const set = scatterData.getDataSetByIndex(high.dataSetIndex);
             const xKey = set.xProperty;
@@ -159,7 +169,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
             high.y = pix.y;
 
             if (customRender && customRender.drawHighlight) {
-                customRender.drawHighlight(c, high, set, this.mHighlightPaint);
+                customRender.drawHighlight(c, high, set, paint);
             } else {
                 this.drawHighlightLines(c, pix.x, pix.y, set);
             }

@@ -16,7 +16,13 @@ import { LineRadarRenderer } from './LineRadarRenderer';
 // fix drawing "too" thin paths on iOS
 
 export class DataSetImageCache {
-    private mCirclePathBuffer = new Path();
+    private mCirclePathBuffer: Path;
+    protected get circlePathBuffer() {
+        if (!this.mCirclePathBuffer) {
+            this.mCirclePathBuffer = new Path();
+        }
+        return this.mCirclePathBuffer;
+    }
 
     private circleBitmaps: any[];
 
@@ -48,7 +54,7 @@ export class DataSetImageCache {
      * @param drawCircleHole
      * @param drawTransparentCircleHole
      */
-    fill(set: ILineDataSet, mRenderPaint, mCirclePaintInner, drawCircleHole: boolean, drawTransparentCircleHole: boolean) {
+    fill(set: ILineDataSet, renderPaint: Paint, circlePaintInner: Paint, drawCircleHole: boolean, drawTransparentCircleHole: boolean) {
         const colorCount = set.getCircleColorCount();
         const circleRadius = set.getCircleRadius();
         const circleHoleRadius = set.getCircleHoleRadius();
@@ -57,26 +63,27 @@ export class DataSetImageCache {
             const circleBitmap = createImage({ width: circleRadius * 2.1, height: circleRadius * 2.1, scale: 1 });
 
             const canvas = new Canvas(circleBitmap);
-            mRenderPaint.setColor(set.getCircleColor(i));
+            renderPaint.setColor(set.getCircleColor(i));
 
             if (drawTransparentCircleHole) {
+                const circlePathBuffer = this.circlePathBuffer;
                 // Begin path for circle with hole
-                this.mCirclePathBuffer.reset();
-                const oldType = this.mCirclePathBuffer.getFillType();
-                this.mCirclePathBuffer.setFillType(FillType.EVEN_ODD);
-                this.mCirclePathBuffer.addCircle(circleRadius, circleRadius, circleRadius, Direction.CW);
+                circlePathBuffer.reset();
+                // const oldType = circlePathBuffer.getFillType();
+                circlePathBuffer.setFillType(FillType.EVEN_ODD);
+                circlePathBuffer.addCircle(circleRadius, circleRadius, circleRadius, Direction.CW);
 
                 // Cut hole in path
-                this.mCirclePathBuffer.addCircle(circleRadius, circleRadius, circleHoleRadius, Direction.CW);
+                circlePathBuffer.addCircle(circleRadius, circleRadius, circleHoleRadius, Direction.CW);
 
                 // Fill in-between
-                canvas.drawPath(this.mCirclePathBuffer, mRenderPaint);
-                this.mCirclePathBuffer.setFillType(oldType);
+                canvas.drawPath(circlePathBuffer, renderPaint);
+                // circlePathBuffer.setFillType(oldType);
             } else {
-                canvas.drawCircle(circleRadius, circleRadius, circleRadius, mRenderPaint);
+                canvas.drawCircle(circleRadius, circleRadius, circleRadius, renderPaint);
 
                 if (drawCircleHole) {
-                    canvas.drawCircle(circleRadius, circleRadius, circleHoleRadius, mCirclePaintInner);
+                    canvas.drawCircle(circleRadius, circleRadius, circleHoleRadius, circlePaintInner);
                 }
             }
             this.circleBitmaps[i] = canvas.getImage();
@@ -117,12 +124,25 @@ export class LineChartRenderer extends LineRadarRenderer {
     /**
      * the bitmap configuration to be used
      */
-    protected mBitmapConfig;
+    // protected mBitmapConfig;
 
     // protected cubicPath = new Path();
     // protected cubicFillPath = new Path();
-    protected linePath = new Path();
-    protected fillPath = new Path();
+    protected mLinePath: Path;
+
+    protected get linePath() {
+        if (!this.mLinePath) {
+            this.mLinePath = new Path();
+        }
+        return this.mLinePath;
+    }
+    protected mFillPath: Path;
+    protected get fillPath() {
+        if (!this.mFillPath) {
+            this.mFillPath = new Path();
+        }
+        return this.mFillPath;
+    }
 
     /**
      * cache for the circle bitmaps of all datasets
@@ -144,14 +164,19 @@ export class LineChartRenderer extends LineRadarRenderer {
     constructor(chart: LineChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
-        if (global.isAndroid) {
-            this.mBitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
-        }
+        // if (global.isAndroid) {
+        //     this.mBitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+        // }
+    }
 
-        this.mCirclePaintInner = new Paint();
-        this.mCirclePaintInner.setAntiAlias(true);
-        this.mCirclePaintInner.setStyle(Style.FILL);
-        this.mCirclePaintInner.setColor('white');
+    get circlePaintInner() {
+        if (!this.mCirclePaintInner) {
+            this.mCirclePaintInner = new Paint();
+            this.mCirclePaintInner.setAntiAlias(true);
+            this.mCirclePaintInner.setStyle(Style.FILL);
+            this.mCirclePaintInner.setColor('white');
+        }
+        return this.mCirclePaintInner;
     }
 
     public initBuffers() {}
@@ -179,18 +204,20 @@ export class LineChartRenderer extends LineRadarRenderer {
             needsBitmapDrawing = this.drawDataSet(c, set) || needsBitmapDrawing;
         }
         if (needsBitmapDrawing) {
-            c.drawBitmap(drawBitmap, 0, 0, this.mRenderPaint);
+            const renderPaint = this.renderPaint;
+            c.drawBitmap(drawBitmap, 0, 0, renderPaint);
         }
     }
 
     protected drawDataSet(c: Canvas, dataSet: LineDataSet): boolean {
         if (dataSet.getEntryCount() < 1) return false;
-        this.mRenderPaint.setStrokeWidth(dataSet.getLineWidth());
-        this.mRenderPaint.setPathEffect(dataSet.getDashPathEffect());
+        const renderPaint = this.renderPaint;
+        renderPaint.setStrokeWidth(dataSet.getLineWidth());
+        renderPaint.setPathEffect(dataSet.getDashPathEffect());
         if (dataSet.getNbColors() === 1) {
-            this.mRenderPaint.setColor(dataSet.getColor());
+            renderPaint.setColor(dataSet.getColor());
         }
-        this.mRenderPaint.setStyle(Style.STROKE);
+        renderPaint.setStyle(Style.STROKE);
 
         const scaleX = this.mViewPortHandler.getScaleX();
         dataSet.applyFiltering(scaleX);
@@ -212,7 +239,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 break;
         }
 
-        this.mRenderPaint.setPathEffect(null);
+        renderPaint.setPathEffect(null);
         return result;
     }
 
@@ -409,29 +436,32 @@ export class LineChartRenderer extends LineRadarRenderer {
     protected drawCubicBezier(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+        const linePath = this.linePath;
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-        this.generateCubicPath(dataSet, this.linePath);
+        this.generateCubicPath(dataSet, linePath);
 
         // if filled is enabled, close the path
         const xKey = dataSet.xProperty;
         if (dataSet.isDrawFilledEnabled()) {
-            this.fillPath.reset();
-            this.fillPath.addPath(this.linePath);
+            const fillPath = this.fillPath;
+            fillPath.reset();
+            fillPath.addPath(linePath);
             const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
             const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
-            this.drawFill(c, dataSet, this.fillPath, trans, minEntryValue, maxEntryValue);
+            this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
             // result = true; // this would be to draw on a bitmap cache
         }
 
         if (dataSet.getLineWidth() > 0) {
-            trans.pathValueToPixel(this.linePath);
+            trans.pathValueToPixel(linePath);
             const customRender = this.mChart.getCustomRenderer();
+            const renderPaint = this.renderPaint;
             if (customRender && customRender.drawLine) {
-                customRender.drawLine(c, this.linePath, this.mRenderPaint);
+                customRender.drawLine(c, linePath, renderPaint);
             } else {
-                this.drawPath(c, this.linePath, this.mRenderPaint);
+                this.drawPath(c, linePath, renderPaint);
             }
         }
 
@@ -444,23 +474,25 @@ export class LineChartRenderer extends LineRadarRenderer {
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
-
-        this.generateHorizontalBezierPath(dataSet, this.linePath);
+        const linePath = this.linePath;
+        this.generateHorizontalBezierPath(dataSet, linePath);
 
         // if filled is enabled, close the path
         const xKey = dataSet.xProperty;
         if (dataSet.isDrawFilledEnabled()) {
-            this.fillPath.reset();
-            this.fillPath.addPath(this.linePath);
+            const fillPath = this.fillPath;
+            fillPath.reset();
+            fillPath.addPath(linePath);
             const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
             const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
-            this.drawFill(c, dataSet, this.fillPath, trans, minEntryValue, maxEntryValue);
+            this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
             // result = true; // this would be to draw on a bitmap cache
         }
 
         if (dataSet.getLineWidth() > 0) {
-            trans.pathValueToPixel(this.linePath);
-            this.drawPath(c, this.linePath, this.mRenderPaint);
+            trans.pathValueToPixel(linePath);
+            const renderPaint = this.renderPaint;
+            this.drawPath(c, linePath, renderPaint);
         }
 
         return result;
@@ -475,10 +507,11 @@ export class LineChartRenderer extends LineRadarRenderer {
             return result;
         }
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+        const linePath = this.linePath;
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
 
-        const [points, index] = this.generateLinearPath(dataSet, this.linePath);
+        const [points, index] = this.generateLinearPath(dataSet, linePath);
         if (!points) {
             return result;
         }
@@ -489,18 +522,20 @@ export class LineChartRenderer extends LineRadarRenderer {
         const xKey = dataSet.xProperty;
         const useColorsForFill = dataSet.getUseColorsForFill();
         if (drawFilled && (nbColors === 1 || !useColorsForFill)) {
-            this.fillPath.reset();
-            this.fillPath.addPath(this.linePath);
+            const fillPath = this.fillPath;
+            fillPath.reset();
+            fillPath.addPath(linePath);
             const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
             const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
-            this.drawFill(c, dataSet, this.fillPath, trans, minEntryValue, maxEntryValue);
+            this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
         }
+        const renderPaint = this.renderPaint;
         if (nbColors === 1) {
             if (drawLine) {
                 // trans.pointValuesToPixel(points);
-                // this.drawLines(c, points, 0,index, this.mRenderPaint);
-                trans.pathValueToPixel(this.linePath);
-                this.drawPath(c, this.linePath, this.mRenderPaint);
+                // this.drawLines(c, points, 0,index, renderPaint);
+                trans.pathValueToPixel(linePath);
+                this.drawPath(c, linePath, renderPaint);
             }
         } else {
             trans.pointValuesToPixel(points);
@@ -568,15 +603,16 @@ export class LineChartRenderer extends LineRadarRenderer {
                 fillMin = circleBuffer[1];
             }
             colorsToBeDrawn.forEach((color) => {
-                this.linePath.setLines(points, color.startIndex * 2, color.nbItems * 2);
+                linePath.setLines(points, color.startIndex * 2, color.nbItems * 2);
                 if (drawFilled && useColorsForFill) {
-                    this.fillPath.reset();
-                    this.fillPath.addPath(this.linePath);
-                    this.drawFill(c, dataSet, this.fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color.color, fillMin);
+                    const fillPath = this.fillPath;
+                    fillPath.reset();
+                    fillPath.addPath(linePath);
+                    this.drawFill(c, dataSet, fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color.color, fillMin);
                 }
                 if (drawLine) {
-                    this.mRenderPaint.setColor(color.color);
-                    this.drawPath(c, this.linePath, this.mRenderPaint);
+                    renderPaint.setColor(color.color);
+                    this.drawPath(c, linePath, renderPaint);
                 }
             });
         }
@@ -636,6 +672,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         const drawIcons = dataSet.isDrawIconsEnabled();
         const drawValues = dataSet.isDrawValuesEnabled();
         const length = count;
+        const paint = this.valuePaint;
         for (let j = 0; j < length; j += 2) {
             const x = points[j];
             const y = points[j + 1];
@@ -649,7 +686,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (!entry) continue;
 
             if (drawValues) {
-                this.drawValue(c, formatter.getFormattedValue(entry[yKey], entry), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2));
+                this.drawValue(c, formatter.getFormattedValue(entry[yKey], entry), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2), paint);
             }
 
             if (drawIcons && entry.icon != null) {
@@ -674,10 +711,10 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    public drawValue(c: Canvas, valueText, x, y, color) {
+    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
         if (valueText) {
-            this.mValuePaint.setColor(color);
-            c.drawText(valueText, x, y, this.mValuePaint);
+            paint.setColor(color);
+            c.drawText(valueText, x, y, paint);
         }
     }
 
@@ -687,7 +724,8 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     @profile
     protected drawCirclesForDataset(c: Canvas, dataSet: LineDataSet) {
-        this.mCirclePaintInner.setColor(dataSet.getCircleHoleColor());
+        const paint = this.circlePaintInner;
+        paint.setColor(dataSet.getCircleHoleColor());
         const phaseY = this.mAnimator.getPhaseY();
 
         const xKey = dataSet.xProperty;
@@ -714,7 +752,8 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         // only fill the cache with new bitmaps if a change is required
         if (changeRequired) {
-            imageCache.fill(dataSet, this.mRenderPaint, this.mCirclePaintInner, drawCircleHole, drawTransparentCircleHole);
+            const renderPaint = this.renderPaint;
+            imageCache.fill(dataSet, renderPaint, paint, drawCircleHole, drawTransparentCircleHole);
         }
 
         const boundsRangeCount = this.mXBounds.range + this.mXBounds.min;
@@ -749,7 +788,8 @@ export class LineChartRenderer extends LineRadarRenderer {
         if (dataSets.some((d) => d.isDrawCirclesEnabled()) === false) {
             return;
         }
-        this.mRenderPaint.setStyle(Style.FILL);
+        const renderPaint = this.renderPaint;
+        renderPaint.setStyle(Style.FILL);
         const circleBuffer = this.circlesBuffer;
         circleBuffer[0] = 0;
         circleBuffer[1] = 0;
@@ -766,6 +806,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         const lineData = this.mChart.getLineData();
 
         const customRender = this.mChart.getCustomRenderer();
+        const paint = this.highlightPaint;
         for (const high of indices) {
             const set = lineData.getDataSetByIndex(high.dataSetIndex);
 
@@ -787,7 +828,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 continue;
             }
             if (customRender && customRender.drawHighlight) {
-                customRender.drawHighlight(c, high, set, this.mHighlightPaint);
+                customRender.drawHighlight(c, high, set, paint);
             } else {
                 this.drawHighlightLines(c, pix.x, pix.y, set);
             }
@@ -801,19 +842,19 @@ export class LineChartRenderer extends LineRadarRenderer {
      *
      * @param config
      */
-    public setBitmapConfig(config) {
-        this.mBitmapConfig = config;
-        this.releaseBitmap();
-    }
+    // public setBitmapConfig(config) {
+    //     this.mBitmapConfig = config;
+    //     this.releaseBitmap();
+    // }
 
     /**
      * Returns the Bitmap.Config that is used by this renderer.
      *
      * @return
      */
-    public getBitmapConfig() {
-        return this.mBitmapConfig;
-    }
+    // public getBitmapConfig() {
+    //     return this.mBitmapConfig;
+    // }
 
     /**
      * Releases the drawing bitmap. This should be called when {@link LineChart#onDetachedFromWindow()}.

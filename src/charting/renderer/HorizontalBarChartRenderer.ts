@@ -8,13 +8,19 @@ import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { Align, Canvas, RectF } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
 import { getEntryXValue } from '../data/BaseEntry';
 
 export class HorizontalBarChartRenderer extends BarChartRenderer {
-    constructor(chart: BarChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
-        super(chart, animator, viewPortHandler);
-        this.mValuePaint.setTextAlign(Align.LEFT);
+    public get valuePaint() {
+        if (!this.mValuePaint) {
+            this.mValuePaint = new Paint();
+            this.mValuePaint.setAntiAlias(true);
+            this.mValuePaint.setColor('#3F3F3F');
+            this.mValuePaint.setTextAlign(Align.LEFT);
+            this.mValuePaint.setTextSize(9);
+        }
+        return this.mValuePaint;
     }
 
     public initBuffers() {
@@ -31,17 +37,21 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         const xKey = dataSet.xProperty;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
-        this.mBarBorderPaint.setColor(dataSet.getBarBorderColor());
-        this.mBarBorderPaint.setStrokeWidth(dataSet.getBarBorderWidth());
-
         const drawBorder = dataSet.getBarBorderWidth() > 0;
+        let borderPaint: Paint;
+        if (drawBorder) {
+            borderPaint = this.barBorderPaint;
+            borderPaint.setColor(dataSet.getBarBorderColor());
+            borderPaint.setStrokeWidth(dataSet.getBarBorderWidth());
+        }
 
         const phaseX = this.mAnimator.getPhaseX();
         const phaseY = this.mAnimator.getPhaseY();
 
         // draw the bar shadow before the values
         if (this.mChart.isDrawBarShadowEnabled()) {
-            this.mShadowPaint.setColor(dataSet.getBarShadowColor());
+            const paint = this.shadowPaint;
+            paint.setColor(dataSet.getBarShadowColor());
 
             const barData = this.mChart.getBarData();
 
@@ -49,27 +59,28 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             const barWidthHalf = barWidth / 2;
             let x;
 
+            const barShadowRectBuffer = this.barShadowRectBuffer;
             for (let i = 0, count = Math.min(Math.ceil(dataSet.getEntryCount() * phaseX), dataSet.getEntryCount()); i < count; i++) {
                 const e = dataSet.getEntryForIndex(i);
                 x = getEntryXValue(e, xKey, i);
 
-                this.mBarShadowRectBuffer.top = x - barWidthHalf;
-                this.mBarShadowRectBuffer.bottom = x + barWidthHalf;
+                barShadowRectBuffer.top = x - barWidthHalf;
+                barShadowRectBuffer.bottom = x + barWidthHalf;
 
-                trans.rectValueToPixel(this.mBarShadowRectBuffer);
+                trans.rectValueToPixel(barShadowRectBuffer);
 
-                if (!this.mViewPortHandler.isInBoundsTop(this.mBarShadowRectBuffer.bottom)) {
+                if (!this.mViewPortHandler.isInBoundsTop(barShadowRectBuffer.bottom)) {
                     continue;
                 }
 
-                if (!this.mViewPortHandler.isInBoundsBottom(this.mBarShadowRectBuffer.top)) {
+                if (!this.mViewPortHandler.isInBoundsBottom(barShadowRectBuffer.top)) {
                     break;
                 }
 
-                this.mBarShadowRectBuffer.left = this.mViewPortHandler.contentLeft();
-                this.mBarShadowRectBuffer.right = this.mViewPortHandler.contentRight();
+                barShadowRectBuffer.left = this.mViewPortHandler.contentLeft();
+                barShadowRectBuffer.right = this.mViewPortHandler.contentRight();
 
-                c.drawRect(this.mBarShadowRectBuffer, this.mShadowPaint);
+                c.drawRect(barShadowRectBuffer, paint);
             }
         }
 
@@ -88,9 +99,10 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
         const isSingleColor = dataSet.getColors().length === 1;
         const isInverted = this.mChart.isInverted(dataSet.getAxisDependency());
+        const renderPaint = this.renderPaint;
 
         if (isSingleColor) {
-            this.mRenderPaint.setColor(dataSet.getColor());
+            renderPaint.setColor(dataSet.getColor());
         }
 
         const customRender = this.mChart.getCustomRenderer();
@@ -105,16 +117,16 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             if (!isSingleColor) {
                 // Set the color for the currently drawn value. If the index
                 // is out of bounds, reuse colors.
-                this.mRenderPaint.setColor(dataSet.getColor(j / 4));
+                renderPaint.setColor(dataSet.getColor(j / 4));
             }
             if (customRender && customRender.drawBar) {
                 const e = dataSet.getEntryForIndex(j / 4);
-                customRender.drawBar(c, e, dataSet, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
+                customRender.drawBar(c, e, dataSet, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], renderPaint);
             } else {
-                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mRenderPaint);
+                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], renderPaint);
 
                 if (drawBorder) {
-                    c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], this.mBarBorderPaint);
+                    c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], borderPaint);
                 }
             }
         }
@@ -135,6 +147,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         let negOffset = 0;
         const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
 
+        const paint = this.valuePaint;
         for (let i = 0; i < this.mChart.getBarData().getDataSetCount(); i++) {
             const dataSet = dataSets[i];
             if (!this.shouldDrawValues(dataSet)) {
@@ -146,7 +159,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
             // apply the text-styling defined by the DataSet
             this.applyValueTextStyle(dataSet);
-            const halfTextHeight = Utils.calcTextHeight(this.mValuePaint, '10') / 2;
+            const halfTextHeight = Utils.calcTextHeight(paint, '10') / 2;
 
             const formatter = dataSet.getValueFormatter();
 
@@ -182,7 +195,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                     const formattedValue = formatter.getBarLabel(val, entry);
 
                     // calculate the correct offset depending on the draw position of the value
-                    const valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
+                    const valueTextWidth = Utils.calcTextWidth(paint, formattedValue);
                     posOffset = drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus);
                     negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus;
 
@@ -192,7 +205,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                     }
 
                     if (isDrawValuesEnabled) {
-                        this.drawValue(c, formattedValue, val >= 0 ? buffer.buffer[j + 2] + posOffset : buffer.buffer[j + 0] + negOffset, y + halfTextHeight, dataSet.getValueTextColor(j / 2));
+                        this.drawValue(c, formattedValue, val >= 0 ? buffer.buffer[j + 2] + posOffset : buffer.buffer[j + 0] + negOffset, y + halfTextHeight, dataSet.getValueTextColor(j / 2), paint);
                     }
 
                     if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
@@ -239,7 +252,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                         const formattedValue = formatter.getBarLabel(entry[yKey], entry);
 
                         // calculate the correct offset depending on the draw position of the value
-                        const valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
+                        const valueTextWidth = Utils.calcTextWidth(paint, formattedValue);
                         posOffset = drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus);
                         negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus;
 
@@ -254,7 +267,8 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                                 formattedValue,
                                 entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 2] + posOffset : buffer.buffer[bufferIndex + 0] + negOffset,
                                 buffer.buffer[bufferIndex + 1] + halfTextHeight,
-                                color
+                                color,
+                                paint
                             );
                         }
 
@@ -301,7 +315,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             const formattedValue = formatter.getBarStackedLabel(val, entry);
 
                             // calculate the correct offset depending on the draw position of the value
-                            const valueTextWidth = Utils.calcTextWidth(this.mValuePaint, formattedValue);
+                            const valueTextWidth = Utils.calcTextWidth(paint, formattedValue);
                             posOffset = drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus);
                             negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus;
 
@@ -327,7 +341,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             }
 
                             if (isDrawValuesEnabled) {
-                                this.drawValue(c, formattedValue, x, y + halfTextHeight, color);
+                                this.drawValue(c, formattedValue, x, y + halfTextHeight, color, paint);
                             }
 
                             if (isDrawIconsEnabled && entry.icon != null) {
@@ -344,10 +358,10 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         }
     }
 
-    public drawValue(c: Canvas, valueText, x, y, color) {
+    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
         if (valueText) {
-            this.mValuePaint.setColor(color);
-            c.drawText(valueText, x, y, this.mValuePaint);
+            paint.setColor(color);
+            c.drawText(valueText, x, y, paint);
         }
     }
 
@@ -356,10 +370,11 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         const bottom = x + barWidthHalf;
         const left = y1;
         const right = y2;
+        const barRect = this.barRect;
 
-        this.mBarRect.set(left, top, right, bottom);
+        barRect.set(left, top, right, bottom);
 
-        trans.rectToPixelPhaseHorizontal(this.mBarRect, this.mAnimator.getPhaseY());
+        trans.rectToPixelPhaseHorizontal(barRect, this.mAnimator.getPhaseY());
     }
 
     /**

@@ -117,7 +117,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         if (this.mDrawWeb) this.mRenderer.drawExtras(c);
 
-        if (this.mYAxis.isEnabled() && this.mYAxis.isDrawLimitLinesBehindDataEnabled()) this.mYAxisRenderer.renderLimitLines(c);
+        if (this.mYAxis && this.mYAxis.isEnabled() && this.mYAxis.isDrawLimitLinesBehindDataEnabled()) this.mYAxisRenderer.renderLimitLines(c);
 
         this.mRenderer.drawData(c);
 
@@ -304,7 +304,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
     }
 
     protected getRequiredLegendOffset() {
-        return this.mLegendRenderer.getLabelPaint().getTextSize() * 4;
+        return this.mLegendRenderer.labelPaint.getTextSize() * 4;
     }
 
     protected getRequiredBaseOffset() {

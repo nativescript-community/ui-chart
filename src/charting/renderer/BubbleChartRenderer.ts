@@ -2,7 +2,7 @@ import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubble
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { BubbleChart } from '../charts/BubbleChart';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { Canvas, Style } from '@nativescript-community/ui-canvas';
+import { Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 import { IBubbleDataSet } from '../interfaces/datasets/IBubbleDataSet';
 import { Color } from '@nativescript/core';
@@ -24,11 +24,19 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
     constructor(chart: BubbleChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
+    }
 
-        this.mRenderPaint.setStyle(Style.FILL);
-
-        this.mHighlightPaint.setStyle(Style.STROKE);
-        this.mHighlightPaint.setStrokeWidth(1.5);
+    public get highlightPaint() {
+        if (!this.mHighlightPaint) {
+            this.mHighlightPaint = new Paint();
+            this.mHighlightPaint.setAntiAlias(true);
+            this.mHighlightPaint.setStyle(Style.STROKE);
+            this.mHighlightPaint.setColor('black');
+            // set alpha after color
+            this.mHighlightPaint.setAlpha(120);
+            this.mHighlightPaint.setStrokeWidth(1.5);
+        }
+        return this.mHighlightPaint;
     }
 
     public initBuffers() {}
@@ -72,6 +80,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const referenceSize = Math.min(maxBubbleHeight, maxBubbleWidth);
         const maxSize = dataSet.getMaxSize();
         const customRender = this.mChart.getCustomRenderer();
+        const renderPaint = this.renderPaint;
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             const entry = dataSet.getEntryForIndex(j);
             const xValue = getEntryXValue(entry, xKey, j);
@@ -88,11 +97,11 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             if (!this.mViewPortHandler.isInBoundsRight(this.pointBuffer[0] - shapeHalf)) break;
 
             const color = dataSet.getColor(xValue);
-            this.mRenderPaint.setColor(color);
+            renderPaint.setColor(color);
             if (customRender && customRender.drawBubble) {
-                customRender.drawBubble(c, entry, this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mRenderPaint);
+                customRender.drawBubble(c, entry, this.pointBuffer[0], this.pointBuffer[1], shapeHalf, renderPaint);
             } else {
-                c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mRenderPaint);
+                c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, renderPaint);
             }
         }
     }
@@ -106,7 +115,8 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
         // if values are drawn
 
-        const lineHeight = Utils.calcTextHeight(this.mValuePaint, '1');
+        const paint = this.valuePaint;
+        const lineHeight = Utils.calcTextHeight(paint, '1');
 
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
@@ -148,7 +158,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
                 if (isDrawValuesEnabled) {
-                    this.drawValue(c, formatter.getBubbleLabel(entry[dataSet.sizeProperty], entry), x, y + 0.5 * lineHeight, valueTextColor);
+                    this.drawValue(c, formatter.getBubbleLabel(entry[dataSet.sizeProperty], entry), x, y + 0.5 * lineHeight, valueTextColor, paint);
                 }
 
                 if (entry.icon && isDrawIconsEnabled) {
@@ -158,9 +168,9 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         }
     }
 
-    public drawValue(c: Canvas, valueText, x, y, color) {
-        this.mValuePaint.setColor(color);
-        c.drawText(valueText, x, y, this.mValuePaint);
+    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
+        paint.setColor(color);
+        c.drawText(valueText, x, y, paint);
     }
 
     public drawExtras(c: Canvas) {}
@@ -232,13 +242,14 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             _hsvBuffer[2] *= 0.5;
             const color = Utils.HSVToColor(originalColor.a, ..._hsvBuffer);
 
-            this.mHighlightPaint.setColor(color);
-            this.mHighlightPaint.setStrokeWidth(set.getHighlightCircleWidth());
+            const paint = this.highlightPaint;
+            paint.setColor(color);
+            paint.setStrokeWidth(set.getHighlightCircleWidth());
 
             if (customRender && customRender.drawHighlight) {
-                customRender.drawHighlight(c, high, this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mHighlightPaint);
+                customRender.drawHighlight(c, high, this.pointBuffer[0], this.pointBuffer[1], shapeHalf, paint);
             } else {
-                c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, this.mHighlightPaint);
+                c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, paint);
             }
         }
     }

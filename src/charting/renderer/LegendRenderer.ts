@@ -36,33 +36,24 @@ export class LegendRenderer extends Renderer {
         super(viewPortHandler);
 
         this.mLegend = legend;
-
-        this.mLegendLabelPaint = new Paint();
-        this.mLegendLabelPaint.setTextSize(9);
-        this.mLegendLabelPaint.setAntiAlias(true);
-        this.mLegendLabelPaint.setTextAlign(Align.LEFT);
-
-        this.mLegendFormPaint = new Paint();
-        this.mLegendFormPaint.setAntiAlias(true);
-        this.mLegendFormPaint.setStyle(Style.FILL);
     }
 
-    /**
-     * Returns the Paint object used for drawing the Legend labels.
-     *
-     * @return
-     */
-    public getLabelPaint() {
-        return this.mLegendLabelPaint;
-    }
-
-    /**
-     * Returns the Paint object used for drawing the Legend forms.
-     *
-     * @return
-     */
-    public getFormPaint() {
+    get formPaint() {
+        if (!this.mLegendFormPaint) {
+            this.mLegendFormPaint = new Paint();
+            this.mLegendFormPaint.setAntiAlias(true);
+            this.mLegendFormPaint.setStyle(Style.FILL);
+        }
         return this.mLegendFormPaint;
+    }
+    get labelPaint() {
+        if (!this.mLegendLabelPaint) {
+            this.mLegendLabelPaint = new Paint();
+            this.mLegendLabelPaint.setTextSize(9);
+            this.mLegendLabelPaint.setAntiAlias(true);
+            this.mLegendLabelPaint.setTextAlign(Align.LEFT);
+        }
+        return this.mLegendLabelPaint;
     }
 
     /**
@@ -148,23 +139,24 @@ export class LegendRenderer extends Renderer {
 
             this.mLegend.setEntries(this.computedEntries);
         }
-
-        this.mLegendLabelPaint.setFont(this.mLegend.getFont());
+        const paint = this.labelPaint;
+        paint.setFont(this.mLegend.getFont());
 
         // calculate all dimensions of the this.mLegend
-        this.mLegend.calculateDimensions(this.mLegendLabelPaint, this.mViewPortHandler);
+        this.mLegend.calculateDimensions(paint, this.mViewPortHandler);
     }
 
     @profile
     public renderLegend(c: Canvas) {
         if (!this.mLegend.isEnabled()) return;
+        const paint = this.labelPaint;
 
-        this.mLegendLabelPaint.setFont(this.mLegend.getFont());
-        this.mLegendLabelPaint.setColor(this.mLegend.getTextColor());
+        paint.setFont(this.mLegend.getFont());
+        paint.setColor(this.mLegend.getTextColor());
 
-        const labelLineHeight = Utils.getLineHeight(this.mLegendLabelPaint, this.legendFontMetrics);
-        const labelLineSpacing = Utils.getLineSpacing(this.mLegendLabelPaint, this.legendFontMetrics) + this.mLegend.getYEntrySpace();
-        const formYOffset = labelLineHeight - Utils.calcTextHeight(this.mLegendLabelPaint, 'ABC') / 2;
+        const labelLineHeight = Utils.getLineHeight(paint, this.legendFontMetrics);
+        const labelLineSpacing = Utils.getLineSpacing(paint, this.legendFontMetrics) + this.mLegend.getYEntrySpace();
+        const formYOffset = labelLineHeight - Utils.calcTextHeight(paint, 'ABC') / 2;
 
         const entries = this.mLegend.getEntries();
 
@@ -260,7 +252,7 @@ export class LegendRenderer extends Renderer {
                     if (drawingForm) {
                         if (direction === LegendDirection.RIGHT_TO_LEFT) posX -= formSize;
 
-                        this.drawForm(c, posX, posY + formYOffset, e, this.mLegend);
+                        this.drawForm(c, posX, posY + formYOffset, e, this.mLegend, this.formPaint);
 
                         if (direction === LegendDirection.LEFT_TO_RIGHT) posX += formSize;
                     }
@@ -270,7 +262,7 @@ export class LegendRenderer extends Renderer {
 
                         if (direction === LegendDirection.RIGHT_TO_LEFT) posX -= calculatedLabelSizes[i].width;
 
-                        this.drawLabel(c, posX, posY + labelLineHeight, e.label);
+                        this.drawLabel(c, posX, posY + labelLineHeight, e.label, paint);
 
                         if (direction === LegendDirection.LEFT_TO_RIGHT) posX += calculatedLabelSizes[i].width;
 
@@ -314,7 +306,7 @@ export class LegendRenderer extends Renderer {
                         if (direction === LegendDirection.LEFT_TO_RIGHT) posX += stack;
                         else posX -= formSize - stack;
 
-                        this.drawForm(c, posX, posY + formYOffset, e, this.mLegend);
+                        this.drawForm(c, posX, posY + formYOffset, e, this.mLegend, this.formPaint);
 
                         if (direction === LegendDirection.LEFT_TO_RIGHT) posX += formSize;
                     }
@@ -323,13 +315,13 @@ export class LegendRenderer extends Renderer {
                         if (drawingForm && !wasStacked) posX += direction === LegendDirection.LEFT_TO_RIGHT ? formToTextSpace : -formToTextSpace;
                         else if (wasStacked) posX = originPosX;
 
-                        if (direction === LegendDirection.RIGHT_TO_LEFT) posX -= Utils.calcTextWidth(this.mLegendLabelPaint, e.label);
+                        if (direction === LegendDirection.RIGHT_TO_LEFT) posX -= Utils.calcTextWidth(paint, e.label);
 
                         if (!wasStacked) {
-                            this.drawLabel(c, posX, posY + labelLineHeight, e.label);
+                            this.drawLabel(c, posX, posY + labelLineHeight, e.label, paint);
                         } else {
                             posY += labelLineHeight + labelLineSpacing;
-                            this.drawLabel(c, posX, posY + labelLineHeight, e.label);
+                            this.drawLabel(c, posX, posY + labelLineHeight, e.label, paint);
                         }
 
                         // make a step down
@@ -358,14 +350,14 @@ export class LegendRenderer extends Renderer {
      * @param entry  the entry to render
      * @param legend the legend context
      */
-    protected drawForm(c: Canvas, x, y, entry: LegendEntry, legend: Legend) {
+    protected drawForm(c: Canvas, x, y, entry: LegendEntry, legend: Legend, paint: Paint) {
         if (entry.formColor === ColorTemplate.COLOR_SKIP || entry.formColor === ColorTemplate.COLOR_NONE || entry.formColor === null) return;
 
         const restoreCount = c.save();
 
         let form = entry.form;
         if (form === LegendForm.DEFAULT) form = legend.getForm();
-        this.mLegendFormPaint.setColor(entry.formColor);
+        paint.setColor(entry.formColor);
 
         const formSize = isNaN(entry.formSize) ? legend.getFormSize() : entry.formSize;
         const half = formSize / 2;
@@ -381,27 +373,27 @@ export class LegendRenderer extends Renderer {
 
             case LegendForm.DEFAULT:
             case LegendForm.CIRCLE:
-                this.mLegendFormPaint.setStyle(Style.FILL);
-                c.drawCircle(x + half, y, half, this.mLegendFormPaint);
+                paint.setStyle(Style.FILL);
+                c.drawCircle(x + half, y, half, paint);
                 break;
 
             case LegendForm.SQUARE:
-                this.mLegendFormPaint.setStyle(Style.FILL);
-                c.drawRect(x, y - half, x + formSize, y + half, this.mLegendFormPaint);
+                paint.setStyle(Style.FILL);
+                c.drawRect(x, y - half, x + formSize, y + half, paint);
                 break;
 
             case LegendForm.LINE:
                 {
                     const formLineWidth = isNaN(entry.formLineWidth) ? legend.getFormLineWidth() : entry.formLineWidth;
                     const formLineDashEffect = entry.formLineDashEffect == null ? legend.getFormLineDashEffect() : entry.formLineDashEffect;
-                    this.mLegendFormPaint.setStyle(Style.STROKE);
-                    this.mLegendFormPaint.setStrokeWidth(formLineWidth);
-                    this.mLegendFormPaint.setPathEffect(formLineDashEffect);
+                    paint.setStyle(Style.STROKE);
+                    paint.setStrokeWidth(formLineWidth);
+                    paint.setPathEffect(formLineDashEffect);
 
                     this.mLineFormPath.reset();
                     this.mLineFormPath.moveTo(x, y);
                     this.mLineFormPath.lineTo(x + formSize, y);
-                    c.drawPath(this.mLineFormPath, this.mLegendFormPaint);
+                    c.drawPath(this.mLineFormPath, paint);
                 }
                 break;
         }
@@ -417,7 +409,7 @@ export class LegendRenderer extends Renderer {
      * @param y
      * @param label the label to draw
      */
-    protected drawLabel(c: Canvas, x, y, label) {
-        c.drawText(label, x, y, this.mLegendLabelPaint);
+    protected drawLabel(c: Canvas, x, y, label, paint: Paint) {
+        c.drawText(label, x, y, paint);
     }
 }

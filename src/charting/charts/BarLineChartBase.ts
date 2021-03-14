@@ -128,30 +128,32 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         super.init();
 
         this.mAxisLeft = new YAxis(AxisDependency.LEFT);
-        this.mAxisRight = new YAxis(AxisDependency.RIGHT);
 
         this.mLeftAxisTransformer = new Transformer(this.mViewPortHandler);
-        this.mRightAxisTransformer = new Transformer(this.mViewPortHandler);
 
         this.mAxisRendererLeft = new YAxisRenderer(this.mViewPortHandler, this.mAxisLeft, this.mLeftAxisTransformer);
-        this.mAxisRendererRight = new YAxisRenderer(this.mViewPortHandler, this.mAxisRight, this.mRightAxisTransformer);
 
         this.mXAxisRenderer = new XAxisRenderer(this.mViewPortHandler, this.mXAxis, this.mLeftAxisTransformer);
 
         this.setHighlighter(new ChartHighlighter(this));
+    }
 
-        // this.mChartTouchListener = new BarLineChartTouchListener(this, this.mViewPortHandler.getMatrixTouch(), 3);
-
-        this.mGridBackgroundPaint = new Paint();
-        this.mGridBackgroundPaint.setStyle(Style.FILL);
-        // this.mGridBackgroundPaint.setColor(Color.WHITE);
-        this.mGridBackgroundPaint.setColor('#F0F0F0'); // light
-        // grey
-
-        this.mBorderPaint = new Paint();
-        this.mBorderPaint.setStyle(Style.STROKE);
-        this.mBorderPaint.setColor('black');
-        this.mBorderPaint.setStrokeWidth(1);
+    get gridBackgroundPaint() {
+        if (!this.mGridBackgroundPaint) {
+            this.mGridBackgroundPaint = new Paint();
+            this.mGridBackgroundPaint.setStyle(Style.FILL);
+            this.mGridBackgroundPaint.setColor('#F0F0F0'); // light
+        }
+        return this.mGridBackgroundPaint;
+    }
+    get borderPaint() {
+        if (!this.mBorderPaint) {
+            this.mBorderPaint = new Paint();
+            this.mBorderPaint.setStyle(Style.STROKE);
+            this.mBorderPaint.setColor('black');
+            this.mBorderPaint.setStrokeWidth(1);
+        }
+        return this.mBorderPaint;
     }
 
     getOrCreateBarTouchListener() {
@@ -183,7 +185,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             this.autoScale();
         }
         const leftEnabled = this.mAxisLeft.isEnabled();
-        const rightEnabled = this.mAxisRight.isEnabled();
+        const rightEnabled = this.mAxisRight && this.mAxisRight.isEnabled();
         const xEnabled = this.mXAxis.isEnabled();
         const leftLimitEnabled = leftEnabled && this.mAxisLeft.isDrawLimitLinesEnabled();
         const rightLimitEnabled = rightEnabled && this.mAxisRight.isDrawLimitLinesEnabled();
@@ -197,21 +199,21 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             if (xEnabled) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
         }
 
-        this.mXAxisRenderer.renderAxisLine(canvas);
-        this.mAxisRendererLeft.renderAxisLine(canvas);
-        this.mAxisRendererRight.renderAxisLine(canvas);
+        if (xEnabled) this.mXAxisRenderer.renderAxisLine(canvas);
+        if (leftEnabled) this.mAxisRendererLeft.renderAxisLine(canvas);
+        if (rightEnabled) this.mAxisRendererRight.renderAxisLine(canvas);
 
-        if (this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
-        if (this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
-        if (this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
+        if (xEnabled && this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
+        if (leftEnabled && this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
+        if (rightEnabled && this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
 
         if (xLimitEnabled && this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
         if (leftLimitEnabled && this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
         if (rightLimitEnabled && this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
 
-        if (this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
-        if (this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
-        if (this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
+        if (xEnabled && this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
+        if (leftEnabled && this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
+        if (rightEnabled && this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
 
         // make sure the data cannot be drawn outside the content-rect
         if (this.isClipDataToContentEnabled()) {
@@ -222,9 +224,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             this.mRenderer.drawData(canvas);
         }
 
-        if (!this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
-        if (!this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
-        if (!this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
+        if (xEnabled && !this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
+        if (leftEnabled && !this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
+        if (rightEnabled && !this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
 
         if (this.valuesToHighlight()) {
             this.mRenderer.drawHighlighted(canvas, this.mIndicesToHighlight, this.isDrawHighlightEnabled());
@@ -241,9 +243,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (leftLimitEnabled && !this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
         if (rightLimitEnabled && !this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
 
-        if (!this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
-        if (!this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
-        if (!this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
+        if (xEnabled && !this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
+        if (leftEnabled && !this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
+        if (rightEnabled && !this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
 
         if (this.isClipValuesToContentEnabled()) {
             canvas.save();
@@ -285,19 +287,19 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (Trace.isEnabled()) {
             CLog(CLogTypes.info, LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.mXAxis.mAxisMinimum + ', xmax: ' + this.mXAxis.mAxisMaximum + ', xdelta: ' + this.mXAxis.mAxisRange);
         }
-        if (this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
             this.mRightAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
         }
-        if (this.mAxisLeft.isEnabled() || this.mXAxis.isEnabled()) {
+        if ((this.mAxisLeft && this.mAxisLeft.isEnabled()) || this.mXAxis.isEnabled()) {
             this.mLeftAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
         }
     }
 
     protected prepareOffsetMatrix() {
-        if (this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
             this.mRightAxisTransformer.prepareMatrixOffset(this.mAxisRight.isInverted());
         }
-        if (this.mAxisLeft.isEnabled() || this.mXAxis.isEnabled()) {
+        if ((this.mAxisLeft && this.mAxisLeft.isEnabled()) || this.mXAxis.isEnabled()) {
             this.mLeftAxisTransformer.prepareMatrixOffset(this.mAxisLeft.isInverted());
         }
     }
@@ -323,10 +325,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.calcMinMax();
 
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
             this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
         }
-        if (this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
             this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
         }
         if (this.mXAxis.isEnabled()) {
@@ -354,11 +356,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         // calculate axis range (min / max) according to provided data
 
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
             this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         }
 
-        if (this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
             this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
         }
 
@@ -369,10 +371,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mXAxis.calculate(this.mData.getXMin(), this.mData.getXMax());
 
         // calculate axis range (min / max) according to provided data
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
             this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         }
-        if (this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
             this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
         }
     }
@@ -450,12 +452,12 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             offsetBottom += this.mOffsetsBuffer.bottom;
 
             // offsets for y-labels
-            if (this.mAxisLeft.needsOffset()) {
-                offsetLeft += this.mAxisLeft.getRequiredWidthSpace(this.mAxisRendererLeft.getPaintAxisLabels());
+            if (this.mAxisLeft && this.mAxisLeft.needsOffset()) {
+                offsetLeft += this.mAxisLeft.getRequiredWidthSpace(this.mAxisRendererLeft.axisLabelsPaint);
             }
 
-            if (this.mAxisRight.needsOffset()) {
-                offsetRight += this.mAxisRight.getRequiredWidthSpace(this.mAxisRendererRight.getPaintAxisLabels());
+            if (this.mAxisRight && this.mAxisRight.needsOffset()) {
+                offsetRight += this.mAxisRight.getRequiredWidthSpace(this.mAxisRendererRight.axisLabelsPaint);
             }
 
             if (this.mXAxis.isEnabled() && this.mXAxis.isDrawLabelsEnabled()) {
@@ -495,13 +497,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * draws the grid background
      */
     protected drawGridBackground(c: Canvas) {
-        if (this.mDrawGridBackground && this.mGridBackgroundPaint.color) {
+        if (this.mDrawGridBackground) {
             // draw the grid background
-            c.drawRect(this.mViewPortHandler.getContentRect(), this.mGridBackgroundPaint);
+            c.drawRect(this.mViewPortHandler.getContentRect(), this.gridBackgroundPaint);
         }
 
-        if (this.mDrawBorders && this.mBorderPaint.color) {
-            c.drawRect(this.mViewPortHandler.getContentRect(), this.mBorderPaint);
+        if (this.mDrawBorders) {
+            c.drawRect(this.mViewPortHandler.getContentRect(), this.borderPaint);
         }
     }
 
@@ -970,7 +972,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     protected getAxisRange(axis) {
         if (axis === AxisDependency.LEFT) return this.mAxisLeft.mAxisRange;
-        else return this.mAxisRight.mAxisRange;
+        else return this.mAxisRight && this.mAxisRight.mAxisRange;
     }
 
     /**
@@ -1052,7 +1054,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param color
      */
     public setGridBackgroundColor(color) {
-        this.mGridBackgroundPaint.setColor(color);
+        this.gridBackgroundPaint.setColor(color);
     }
 
     /**
@@ -1274,7 +1276,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param width
      */
     public setBorderWidth(width) {
-        this.mBorderPaint.setStrokeWidth(width);
+        this.borderPaint.setStrokeWidth(width);
     }
 
     /**
@@ -1283,7 +1285,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param color
      */
     public setBorderColor(color) {
-        this.mBorderPaint.setColor(color);
+        this.borderPaint.setColor(color);
     }
 
     /**
@@ -1455,7 +1457,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @return
      */
-    public getAxisLeft() {
+    public get axisLeft() {
         return this.mAxisLeft;
     }
 
@@ -1465,8 +1467,33 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @return
      */
-    public getAxisRight() {
+    public get axisRight() {
+        if (!this.mAxisRight) {
+            this.mAxisRight = new YAxis(AxisDependency.RIGHT);
+            this.mAxisRendererRight = new YAxisRenderer(this.mViewPortHandler, this.mAxisRight, this.mRightAxisTransformer);
+            this.mRightAxisTransformer = new Transformer(this.mViewPortHandler);
+        }
         return this.mAxisRight;
+    }
+
+    /**
+     * Returns the left y-axis object. In the horizontal bar-chart, this is the
+     * top axis.
+     *
+     * @return
+     */
+    public getAxisLeft() {
+        return this.axisLeft;
+    }
+
+    /**
+     * Returns the right y-axis object. In the horizontal bar-chart, this is the
+     * bottom axis.
+     *
+     * @return
+     */
+    public getAxisRight() {
+        return this.axisRight;
     }
 
     /**
@@ -1646,7 +1673,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         switch (which) {
             case Chart.PAINT_GRID_BACKGROUND:
-                return this.mGridBackgroundPaint;
+                return this.gridBackgroundPaint;
         }
 
         return null;

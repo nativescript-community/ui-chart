@@ -13,11 +13,16 @@ import { CustomRendererGridLineFunction } from './AxisRenderer';
 export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     protected mChart: BarChart;
     mForceLongestLabelComputation = true;
-    protected mRenderLimitLinesPathBuffer: Path = new Path();
+    protected mRenderLimitLinesPathBuffer: Path;
+    protected get renderLimitLinesPathBuffer() {
+        if (!this.mRenderLimitLinesPathBuffer) {
+            this.mRenderLimitLinesPathBuffer = new Path();
+        }
+        return this.mRenderLimitLinesPathBuffer;
+    }
 
     constructor(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: Transformer, chart: BarChart) {
         super(viewPortHandler, xAxis, trans);
-
         this.mChart = chart;
     }
 
@@ -44,10 +49,10 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     protected computeSize() {
         const axis = this.mXAxis;
         const longest = axis.getLongestLabel();
+        const paint = this.axisLabelsPaint;
+        paint.setFont(axis.getFont());
 
-        this.mAxisLabelPaint.setFont(axis.getFont());
-
-        const labelSize = Utils.calcTextSize(this.mAxisLabelPaint, longest);
+        const labelSize = Utils.calcTextSize(paint, longest);
 
         const labelWidth = labelSize.width + axis.getXOffset() * 3.5;
         const labelHeight = labelSize.height;
@@ -69,9 +74,10 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         const xOffset = axis.getXOffset();
 
-        this.mAxisLabelPaint.setFont(axis.getFont());
-        this.mAxisLabelPaint.setTextAlign(axis.getLabelTextAlign());
-        this.mAxisLabelPaint.setColor(axis.getTextColor());
+        const paint = this.axisLabelsPaint;
+        paint.setFont(axis.getFont());
+        paint.setTextAlign(axis.getLabelTextAlign());
+        paint.setColor(axis.getTextColor());
 
         const pointF = { x: 0, y: 0 };
 
@@ -127,6 +133,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         this.mTrans.pointValuesToPixel(positions);
         const labels = axis.mLabels;
+        const paint = this.axisLabelsPaint;
         for (let i = 0; i < positions.length; i += 2) {
             const y = positions[i + 1];
             const label = labels[i / 2];
@@ -134,7 +141,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
                 continue;
             }
             if (this.mViewPortHandler.isInBoundsY(y)) {
-                this.drawLabel(c, label, pos, y, anchor, labelRotationAngleDegrees);
+                this.drawLabel(c, label, pos, y, anchor, labelRotationAngleDegrees, paint);
             }
         }
     }
@@ -158,17 +165,18 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         if (!axis.isDrawAxisLineEnabled() || !axis.isEnabled()) {
             return;
         }
+        const paint = this.axisLinePaint;
 
-        this.mAxisLinePaint.setColor(axis.getAxisLineColor());
-        this.mAxisLinePaint.setStrokeWidth(axis.getAxisLineWidth());
+        paint.setColor(axis.getAxisLineColor());
+        paint.setStrokeWidth(axis.getAxisLineWidth());
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
 
         if (axis.getPosition() === XAxisPosition.TOP || axis.getPosition() === XAxisPosition.TOP_INSIDE || axis.getPosition() === XAxisPosition.BOTH_SIDED) {
-            c.drawLine(rect.right, rect.top, rect.right, rect.bottom, this.mAxisLinePaint);
+            c.drawLine(rect.right, rect.top, rect.right, rect.bottom, paint);
         }
 
         if (axis.getPosition() === XAxisPosition.BOTTOM || axis.getPosition() === XAxisPosition.BOTTOM_INSIDE || axis.getPosition() === XAxisPosition.BOTH_SIDED) {
-            c.drawLine(rect.left, rect.top, rect.left, rect.bottom, this.mAxisLinePaint);
+            c.drawLine(rect.left, rect.top, rect.left, rect.bottom, paint);
         }
     }
 
@@ -184,11 +192,11 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         if (limitLines == null || limitLines.length <= 0) return;
 
-        const pts = this.mRenderLimitLinesBuffer;
+        const pts = this.renderLimitLinesBuffer;
         pts[0] = 0;
         pts[1] = 0;
 
-        const limitLinePath = this.mRenderLimitLinesPathBuffer;
+        const limitLinePath = this.renderLimitLinesPathBuffer;
         limitLinePath.reset();
         let offsetLeft = 0;
         let rect: RectF;
@@ -210,10 +218,11 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
             this.mLimitLineClippingRect.inset(0, -l.getLineWidth());
             c.clipRect(this.mLimitLineClippingRect);
 
-            this.mLimitLinePaint.setStyle(Style.STROKE);
-            this.mLimitLinePaint.setColor(l.getLineColor());
-            this.mLimitLinePaint.setStrokeWidth(l.getLineWidth());
-            this.mLimitLinePaint.setPathEffect(l.getDashPathEffect());
+            const paint = this.limitLinePaint;
+            paint.setStyle(Style.STROKE);
+            paint.setColor(l.getLineColor());
+            paint.setStrokeWidth(l.getLineWidth());
+            paint.setPathEffect(l.getDashPathEffect());
 
             pts[1] = l.getLimit();
 
@@ -222,37 +231,37 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
             limitLinePath.moveTo(rect.left, pts[1]);
             limitLinePath.lineTo(rect.right, pts[1]);
 
-            c.drawPath(limitLinePath, this.mLimitLinePaint);
+            c.drawPath(limitLinePath, paint);
             limitLinePath.reset();
 
             const label = l.getLabel();
 
             // if drawing the limit-value label is enabled
             if (label != null && label !== '') {
-                this.mLimitLinePaint.setStyle(l.getTextStyle());
-                this.mLimitLinePaint.setPathEffect(null);
-                this.mLimitLinePaint.setColor(l.getTextColor());
-                this.mLimitLinePaint.setStrokeWidth(0.5);
-                this.mLimitLinePaint.setFont(l.getFont());
+                paint.setStyle(l.getTextStyle());
+                paint.setPathEffect(null);
+                paint.setColor(l.getTextColor());
+                paint.setStrokeWidth(0.5);
+                paint.setFont(l.getFont());
 
-                const labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label);
+                const labelLineHeight = Utils.calcTextHeight(paint, label);
                 const xOffset = 4 + l.getXOffset();
                 const yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset();
 
                 const position = l.getLabelPosition();
 
                 if (position === LimitLabelPosition.RIGHT_TOP) {
-                    this.mLimitLinePaint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, rect.right - xOffset, pts[1] - yOffset + labelLineHeight, this.mLimitLinePaint);
+                    paint.setTextAlign(Align.RIGHT);
+                    c.drawText(label, rect.right - xOffset, pts[1] - yOffset + labelLineHeight, paint);
                 } else if (position === LimitLabelPosition.RIGHT_BOTTOM) {
-                    this.mLimitLinePaint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, rect.right - xOffset, pts[1] + yOffset, this.mLimitLinePaint);
+                    paint.setTextAlign(Align.RIGHT);
+                    c.drawText(label, rect.right - xOffset, pts[1] + yOffset, paint);
                 } else if (position === LimitLabelPosition.LEFT_TOP) {
-                    this.mLimitLinePaint.setTextAlign(Align.LEFT);
-                    c.drawText(label, rect.left + xOffset, pts[1] - yOffset + labelLineHeight, this.mLimitLinePaint);
+                    paint.setTextAlign(Align.LEFT);
+                    c.drawText(label, rect.left + xOffset, pts[1] - yOffset + labelLineHeight, paint);
                 } else {
-                    this.mLimitLinePaint.setTextAlign(Align.LEFT);
-                    c.drawText(label, offsetLeft + xOffset, pts[1] + yOffset, this.mLimitLinePaint);
+                    paint.setTextAlign(Align.LEFT);
+                    c.drawText(label, offsetLeft + xOffset, pts[1] + yOffset, paint);
                 }
             }
 

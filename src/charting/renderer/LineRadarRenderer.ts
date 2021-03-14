@@ -65,31 +65,32 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
             fillColor = fillColor instanceof Color ? fillColor : new Color(fillColor);
             color = new Color(fillAlpha, fillColor.r, fillColor.g, fillColor.b);
         }
+        const renderPaint = this.renderPaint;
 
         // save
-        const previous = this.mRenderPaint.getStyle();
-        const previousColor = this.mRenderPaint.getColor();
-        const previousShader = this.mRenderPaint.getShader();
+        const previous = renderPaint.getStyle();
+        const previousColor = renderPaint.getColor();
+        const previousShader = renderPaint.getShader();
 
-        this.mRenderPaint.setStyle(Style.FILL);
+        renderPaint.setStyle(Style.FILL);
 
-        this.mRenderPaint.setColor(color);
+        renderPaint.setColor(color);
         if (shader) {
-            this.mRenderPaint.setShader(shader);
+            renderPaint.setShader(shader);
         }
 
         if (this.clipPathSupported()) {
             const save = c.save();
             c.clipPath(filledPath);
-            c.drawPaint(this.mRenderPaint);
+            c.drawPaint(renderPaint);
             c.restoreToCount(save);
         } else {
-            this.drawPath(c, filledPath, this.mRenderPaint);
+            this.drawPath(c, filledPath, renderPaint);
         }
         // restore
-        this.mRenderPaint.setColor(previousColor);
-        this.mRenderPaint.setShader(previousShader);
-        this.mRenderPaint.setStyle(previous);
+        renderPaint.setColor(previousColor);
+        renderPaint.setShader(previousShader);
+        renderPaint.setStyle(previous);
     }
 
     /**

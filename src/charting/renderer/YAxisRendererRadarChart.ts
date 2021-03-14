@@ -11,7 +11,6 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
     constructor(viewPortHandler: ViewPortHandler, yAxis: YAxis, chart: RadarChart) {
         super(viewPortHandler, yAxis, null);
-
         this.mChart = chart;
     }
 
@@ -139,8 +138,9 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
     public renderAxisLabels(c: Canvas) {
         if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled()) return;
 
-        this.mAxisLabelPaint.setFont(this.mYAxis.getFont());
-        this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor());
+        const paint = this.axisLabelsPaint;
+        paint.setFont(this.mYAxis.getFont());
+        paint.setColor(this.mYAxis.getTextColor());
 
         const center = this.mChart.getCenterOffsets();
         const pOut: MPPointF = { x: 0, y: 0 };
@@ -156,13 +156,19 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
             const label = this.mYAxis.getFormattedLabel(j);
 
-            c.drawText(label, pOut.x + 10, pOut.y, this.mAxisLabelPaint);
+            c.drawText(label, pOut.x + 10, pOut.y, paint);
         }
         // MPPointF.recycleInstance(center);
         // MPPointF.recycleInstance(pOut);
     }
 
-    private mRenderLimitLinesPathBuffer = new Path();
+    private mRenderLimitLinesPathBuffer: Path;
+    protected get renderLimitLinesPathBuffer() {
+        if (!this.mRenderLimitLinesPathBuffer) {
+            this.mRenderLimitLinesPathBuffer = new Path();
+        }
+        return this.mRenderLimitLinesPathBuffer;
+    }
 
     public renderLimitLines(c: Canvas) {
         const limitLines = this.mYAxis.getLimitLines();
@@ -182,13 +188,14 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
             if (!l.isEnabled()) continue;
 
-            this.mLimitLinePaint.setColor(l.getLineColor());
-            this.mLimitLinePaint.setPathEffect(l.getDashPathEffect());
-            this.mLimitLinePaint.setStrokeWidth(l.getLineWidth());
+            const paint = this.limitLinePaint;
+            paint.setColor(l.getLineColor());
+            paint.setPathEffect(l.getDashPathEffect());
+            paint.setStrokeWidth(l.getLineWidth());
 
             const r = (l.getLimit() - this.mChart.getYChartMin()) * factor;
 
-            const limitPath = this.mRenderLimitLinesPathBuffer;
+            const limitPath = this.renderLimitLinesPathBuffer;
             limitPath.reset();
 
             for (let j = 0; j < this.mChart.getData().getMaxEntryCountSet().getEntryCount(); j++) {
@@ -199,7 +206,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
             }
             limitPath.close();
 
-            c.drawPath(limitPath, this.mLimitLinePaint);
+            c.drawPath(limitPath, paint);
         }
         // MPPointF.recycleInstance(center);
         // MPPointF.recycleInstance(pOut);

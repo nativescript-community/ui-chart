@@ -30,14 +30,20 @@ export class HorizontalBarChart extends BarChart {
         super.init();
 
         this.mLeftAxisTransformer = new TransformerHorizontalBarChart(this.mViewPortHandler);
-        this.mRightAxisTransformer = new TransformerHorizontalBarChart(this.mViewPortHandler);
 
         this.mRenderer = new HorizontalBarChartRenderer(this, this.mAnimator, this.mViewPortHandler);
         this.setHighlighter(new HorizontalBarHighlighter(this));
 
         this.mAxisRendererLeft = new YAxisRendererHorizontalBarChart(this.mViewPortHandler, this.mAxisLeft, this.mLeftAxisTransformer);
-        this.mAxisRendererRight = new YAxisRendererHorizontalBarChart(this.mViewPortHandler, this.mAxisRight, this.mRightAxisTransformer);
-        this.mXAxisRenderer = new XAxisRendererHorizontalBarChart(this.mViewPortHandler, this.mXAxis, this.mLeftAxisTransformer, this);
+    }
+
+    public get axisRight() {
+        if (!this.mAxisRight) {
+            this.mAxisRendererRight = new YAxisRendererHorizontalBarChart(this.mViewPortHandler, this.mAxisRight, this.mRightAxisTransformer);
+            this.mXAxisRenderer = new XAxisRendererHorizontalBarChart(this.mViewPortHandler, this.mXAxis, this.mLeftAxisTransformer, this);
+            this.mRightAxisTransformer = new TransformerHorizontalBarChart(this.mViewPortHandler);
+        }
+        return this.mAxisRight;
     }
 
     public calculateOffsets() {
@@ -54,12 +60,12 @@ export class HorizontalBarChart extends BarChart {
         offsetBottom += this.mOffsetsBuffer.bottom;
 
         // offsets for y-labels
-        if (this.mAxisLeft.needsOffset()) {
-            offsetTop += this.mAxisLeft.getRequiredHeightSpace(this.mAxisRendererLeft.getPaintAxisLabels());
+        if (this.mAxisLeft && this.mAxisLeft.needsOffset()) {
+            offsetTop += this.mAxisLeft.getRequiredHeightSpace(this.mAxisRendererLeft.axisLabelsPaint);
         }
 
-        if (this.mAxisRight.needsOffset()) {
-            offsetBottom += this.mAxisRight.getRequiredHeightSpace(this.mAxisRendererRight.getPaintAxisLabels());
+        if (this.mAxisRight && this.mAxisRight.needsOffset()) {
+            offsetBottom += this.mAxisRight.getRequiredHeightSpace(this.mAxisRendererRight.axisLabelsPaint);
         }
 
         const xlabelWidth = this.mXAxis.mLabelRotatedWidth;

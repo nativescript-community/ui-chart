@@ -12,7 +12,6 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
 
     constructor(viewPortHandler: ViewPortHandler, xAxis: XAxis, chart: RadarChart) {
         super(viewPortHandler, xAxis, null);
-
         this.mChart = chart;
     }
 
@@ -23,10 +22,11 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
 
         const labelRotationAngleDegrees = axis.getLabelRotationAngle();
         const drawLabelAnchor: MPPointF = { x: 0.5, y: 0.25 };
+        const paint = this.axisLabelsPaint;
 
-        this.mAxisLabelPaint.setFont(axis.getFont());
-        this.mAxisLabelPaint.setTextAlign(axis.getLabelTextAlign());
-        this.mAxisLabelPaint.setColor(axis.getTextColor());
+        paint.setFont(axis.getFont());
+        paint.setTextAlign(axis.getLabelTextAlign());
+        paint.setColor(axis.getTextColor());
 
         const sliceangle = chart.getSliceAngle();
 
@@ -46,7 +46,7 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
 
             Utils.getPosition(center, chart.getYRange() * factor + axis.mLabelRotatedWidth / 2, angle, pOut);
 
-            this.drawLabel(c, label, pOut.x, pOut.y - axis.mLabelRotatedHeight / 2, drawLabelAnchor, labelRotationAngleDegrees);
+            this.drawLabel(c, label, pOut.x, pOut.y - axis.mLabelRotatedHeight / 2, drawLabelAnchor, labelRotationAngleDegrees, paint);
         }
 
         // MPPointF.recycleInstance(center);
