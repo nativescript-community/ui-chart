@@ -547,7 +547,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 colorsToBeDrawn.push({
                     color: color.color,
                     startIndex,
-                    nbItems,
+                    nbItems
                 });
 
                 if (isLast) {
