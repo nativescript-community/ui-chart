@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.23](https://github.com/Akylas/nativescript-chart/compare/v1.1.22...v1.1.23) (2021-03-14)
+
+
+### Bug Fixes
+
+* Paint , Path … are now created only on demand ([7cc68f9](https://github.com/Akylas/nativescript-chart/commit/7cc68f9d4f5abd83a2574b95dbdac9234d4f86c1))
+
+
+### Features
+
+* allow custom gesture params ([1d3d945](https://github.com/Akylas/nativescript-chart/commit/1d3d9453a4885787ab77a8b562d282e2a39ce3f8))
+
+
+
+
+
 ## [1.1.22](https://github.com/Akylas/nativescript-chart/compare/v1.1.21...v1.1.22) (2021-02-26)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
