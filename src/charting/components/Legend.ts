@@ -33,29 +33,29 @@ export enum LegendForm {
     /**
      * Draw a horizontal line
      */
-    LINE,
+    LINE
 }
 
 export enum LegendHorizontalAlignment {
     LEFT,
     CENTER,
-    RIGHT,
+    RIGHT
 }
 
 export enum LegendVerticalAlignment {
     TOP,
     CENTER,
-    BOTTOM,
+    BOTTOM
 }
 
 export enum LegendOrientation {
     HORIZONTAL,
-    VERTICAL,
+    VERTICAL
 }
 
 export enum LegendDirection {
     LEFT_TO_RIGHT,
-    RIGHT_TO_LEFT,
+    RIGHT_TO_LEFT
 }
 /**
  * Class representing the legend of the chart. The legend will contain one entry
@@ -146,6 +146,7 @@ export class Legend extends ComponentBase {
      */
     constructor(entries?: LegendEntry[]) {
         super();
+        this.mEnabled = false;
         this.mTextSize = 10;
         this.mXOffset = 5;
         this.mYOffset = 5;
