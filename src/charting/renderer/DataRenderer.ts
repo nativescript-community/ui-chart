@@ -44,7 +44,7 @@ export abstract class DataRenderer extends Renderer {
             this.mRenderPaint.setAntiAlias(true);
             this.mRenderPaint.setStyle(Style.FILL);
         }
-        return this.mHighlightPaint;
+        return this.mRenderPaint;
     }
 
     public get highlightPaint() {
