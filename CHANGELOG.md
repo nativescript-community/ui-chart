@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.24](https://github.com/Akylas/nativescript-chart/compare/v1.1.23...v1.1.24) (2021-03-15)
+
+
+### Bug Fixes
+
+* allow negative dragOffset ([a48db74](https://github.com/Akylas/nativescript-chart/commit/a48db74784e5de515c94a0c9f801462344347f4c))
+* wrong paint object used ([045f5cd](https://github.com/Akylas/nativescript-chart/commit/045f5cdcf2896db335ebb49d17e4db0d385842b0))
+
+
+
+
+
 ## [1.1.23](https://github.com/Akylas/nativescript-chart/compare/v1.1.22...v1.1.23) (2021-03-14)
 
 
