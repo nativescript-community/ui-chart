@@ -659,7 +659,7 @@ export class ViewPortHandler {
      * @return
      */
     public hasNoDragOffset() {
-        return this.mTransOffsetX !== 0 && this.mTransOffsetY !== 0;
+        return this.mTransOffsetX === 0 && this.mTransOffsetY === 0;
     }
 
     /**
