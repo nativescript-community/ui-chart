@@ -1470,8 +1470,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public get axisRight() {
         if (!this.mAxisRight) {
             this.mAxisRight = new YAxis(AxisDependency.RIGHT);
-            this.mAxisRendererRight = new YAxisRenderer(this.mViewPortHandler, this.mAxisRight, this.mRightAxisTransformer);
             this.mRightAxisTransformer = new Transformer(this.mViewPortHandler);
+            this.mAxisRendererRight = new YAxisRenderer(this.mViewPortHandler, this.mAxisRight, this.mRightAxisTransformer);
         }
         return this.mAxisRight;
     }
