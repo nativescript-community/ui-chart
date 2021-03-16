@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.25](https://github.com/Akylas/nativescript-chart/compare/v1.1.24...v1.1.25) (2021-03-16)
+
+
+### Bug Fixes
+
+* broken pan gestures ([800eab8](https://github.com/Akylas/nativescript-chart/commit/800eab8e55c2261d7a1a589fe10852d5e073b858))
+* ensure we create objects in the right order ([c80dc0c](https://github.com/Akylas/nativescript-chart/commit/c80dc0ccf14c754b9ec52da1059b4c4cafa3424c))
+
+
+
+
+
 ## [1.1.24](https://github.com/Akylas/nativescript-chart/compare/v1.1.23...v1.1.24) (2021-03-15)
 
 
