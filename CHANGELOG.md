@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.26](https://github.com/Akylas/nativescript-chart/compare/v1.1.25...v1.1.26) (2021-03-18)
+
+
+### Bug Fixes
+
+* barchart values offst ([4e6e46b](https://github.com/Akylas/nativescript-chart/commit/4e6e46b551b2918db12f428a349f1febedba6aee))
+* support DataSet “setFillShader” for all charts ([90591f9](https://github.com/Akylas/nativescript-chart/commit/90591f9225d98954ddd1127337777ebe63bb0070))
+* valuesOffset support for all charts ([8fb538f](https://github.com/Akylas/nativescript-chart/commit/8fb538fd256ae12c630b9a357d806cca201ff958))
+
+
+
+
+
 ## [1.1.25](https://github.com/Akylas/nativescript-chart/compare/v1.1.24...v1.1.25) (2021-03-16)
 
 
