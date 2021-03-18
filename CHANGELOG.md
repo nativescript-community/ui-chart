@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.27](https://github.com/Akylas/nativescript-chart/compare/v1.1.26...v1.1.27) (2021-03-18)
+
+
+### Bug Fixes
+
+* customRenderer methods are optional ([4163f68](https://github.com/Akylas/nativescript-chart/commit/4163f680e33cf64a3ffdc4258520995b748ff02c))
+
+
+
+
+
 ## [1.1.26](https://github.com/Akylas/nativescript-chart/compare/v1.1.25...v1.1.26) (2021-03-18)
 
 
