@@ -61,6 +61,11 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         const customRender = this.mChart.getCustomRenderer();
         const renderPaint = this.renderPaint;
         const pixelBuffer = this.pixelBuffer;
+        const previousShader = renderPaint.getShader();
+        const shader = dataSet.getFillShader();
+        if (shader) {
+            renderPaint.setShader(shader);
+        }
         for (let i = 0; i < max; i++) {
             const e = dataSet.getEntryForIndex(i);
 
@@ -80,6 +85,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                 renderer.renderShape(c, dataSet, this.mViewPortHandler, pixelBuffer[0], pixelBuffer[1], renderPaint);
             }
         }
+        renderPaint.setShader(previousShader);
     }
 
     public drawValues(c: Canvas) {

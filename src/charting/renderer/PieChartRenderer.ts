@@ -266,6 +266,11 @@ export class PieChartRenderer extends DataRenderer {
         const customRender = this.mChart.getCustomRenderer();
         const renderPaint = this.renderPaint;
         const pathBuffer = this.pathBuffer;
+        const previousShader = renderPaint.getShader();
+        const shader = dataSet.getFillShader();
+        if (shader) {
+            renderPaint.setShader(shader);
+        }
         for (let j = 0; j < entryCount; j++) {
             const sliceAngle = drawAngles[j];
             let innerRadius = userInnerRadius;
@@ -380,6 +385,7 @@ export class PieChartRenderer extends DataRenderer {
 
             angle += sliceAngle * phaseX;
         }
+        renderPaint.setShader(previousShader);
 
         return result;
     }

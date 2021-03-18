@@ -299,21 +299,6 @@ export interface IDataSet<T extends Entry> {
     getColors(): (string | Color)[];
 
     /**
-     * Returns the Gradient colors
-     *
-     * @return
-     */
-    getGradientColors(): GradientColor[];
-
-    /**
-     * Returns the Gradient colors
-     *
-     * @param index
-     * @return
-     */
-    getGradientColor(index?: number): GradientColor;
-
-    /**
      * Returns the color at the given index of the DataSet's color array.
      * Performs a IndexOutOfBounds check by modulus.
      *
@@ -504,4 +489,11 @@ export interface IDataSet<T extends Entry> {
      * @return
      */
     isVisible(): boolean;
+
+    /**
+     * Returns the shader used for filling the area below the line.
+     *
+     * @return
+     */
+    getFillShader();
 }

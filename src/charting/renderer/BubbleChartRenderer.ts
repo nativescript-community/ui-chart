@@ -81,6 +81,11 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const maxSize = dataSet.getMaxSize();
         const customRender = this.mChart.getCustomRenderer();
         const renderPaint = this.renderPaint;
+        const previousShader = renderPaint.getShader();
+        const shader = dataSet.getFillShader();
+        if (shader) {
+            renderPaint.setShader(shader);
+        }
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             const entry = dataSet.getEntryForIndex(j);
             const xValue = getEntryXValue(entry, xKey, j);
@@ -104,6 +109,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 c.drawCircle(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, renderPaint);
             }
         }
+        renderPaint.setShader(previousShader);
     }
 
     public drawValues(c: Canvas) {

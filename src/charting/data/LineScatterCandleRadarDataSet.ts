@@ -75,7 +75,7 @@ export abstract class LineScatterCandleRadarDataSet<T extends Entry> extends Bar
      * @param phase offset, in degrees (normally, use 0)
      */
     public enableDashedHighlightLine(lineLength, spaceLength, phase) {
-        this.mHighlightDashPathEffect = new DashPathEffect([lineLength,spaceLength],phase);
+        this.mHighlightDashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
     }
 
     /**

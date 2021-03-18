@@ -12,7 +12,7 @@ import { Utils } from '../utils/Utils';
 export enum Rounding {
     UP,
     DOWN,
-    CLOSEST,
+    CLOSEST
 }
 /**
  * The DataSet class represents one group or type of entries (Entry) in the

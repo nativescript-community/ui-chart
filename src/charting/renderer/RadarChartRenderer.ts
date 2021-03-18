@@ -139,12 +139,19 @@ export class RadarChartRenderer extends LineRadarRenderer {
         // surface.close();
 
         if (dataSet.isDrawFilledEnabled()) {
+            const renderPaint = this.renderPaint;
+            const previousShader = renderPaint.getShader();
+            const shader = dataSet.getFillShader();
+            if (shader) {
+                renderPaint.setShader(shader);
+            }
             const drawable = dataSet.getFillDrawable();
             if (drawable != null) {
                 this.drawFilledPathBitmap(c, surface, drawable, dataSet.getFillShader());
             } else {
                 this.drawFilledPath(c, surface, dataSet.getFillColor(), dataSet.getFillAlpha());
             }
+            renderPaint.setShader(previousShader);
         }
 
         // draw the line (only if filled is disabled or alpha is below 255)

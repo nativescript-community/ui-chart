@@ -161,8 +161,13 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         trans.pointValuesToPixel(buffer.buffer);
 
         const isSingleColor = dataSet.getColors().length === 1;
-        const isInverted = this.mChart.isInverted(dataSet.getAxisDependency());
+        // const isInverted = this.mChart.isInverted(dataSet.getAxisDependency());
         const renderPaint = this.renderPaint;
+        const previousShader = renderPaint.getShader();
+        const shader = dataSet.getFillShader();
+        if (shader) {
+            renderPaint.setShader(shader);
+        }
         if (isSingleColor) {
             renderPaint.setColor(dataSet.getColor());
         }
@@ -192,6 +197,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 }
             }
         }
+        renderPaint.setShader(previousShader);
 
         return true;
     }

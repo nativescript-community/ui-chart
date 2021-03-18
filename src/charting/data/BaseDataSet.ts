@@ -53,10 +53,6 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     private mColorDefault = '#8CEAFF';
 
-    protected mGradientColor = null;
-
-    protected mGradientColors: GradientColor[] = null;
-
     /**
      * List representing all colors that are used for drawing the actual values for this DataSet
      */
@@ -172,17 +168,6 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return this.mColors[Math.floor(index) % this.mColors.length];
     }
 
-    public getGradientColors() {
-        return this.mGradientColors;
-    }
-
-    public getGradientColor(index?: number) {
-        if (!this.mGradientColors || index === undefined) {
-            return this.mGradientColor;
-        }
-        return this.mGradientColors[index % this.mGradientColors.length];
-    }
-
     // /**
     //  * Sets the colors that should be used fore this DataSet. Colors are reused
     //  * as soon as the number of Entries the DataSet represents is higher than
@@ -204,25 +189,6 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     public addColor(value: string | Color) {
         if (this.mColors == null) this.mColors = [];
         this.mColors.push(value);
-    }
-
-    /**
-     * Sets the start and end color for gradient color, ONLY color that should be used for this DataSet.
-     *
-     * @param startColor
-     * @param endColor
-     */
-    public setGradientColor(startColor, endColor) {
-        this.mGradientColor = new GradientColor(startColor, endColor);
-    }
-
-    /**
-     * Sets the start and end color for gradient colors, ONLY color that should be used for this DataSet.
-     *
-     * @param gradientColors
-     */
-    public setGradientColors(gradientColors: GradientColor[]) {
-        this.mGradientColors = gradientColors;
     }
 
     /**
@@ -404,6 +370,22 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     public setAxisDependency(dependency) {
         this.mAxisDependency = dependency;
+    }
+
+    /**
+     * the shader to be used for filling the line surface
+     */
+    protected mFillShader;
+    /**
+     * Sets the shader that is used for filling the area below the line
+     *
+     * @param shader
+     */
+    public setFillShader(shader) {
+        this.mFillShader = shader;
+    }
+    public getFillShader() {
+        return this.mFillShader;
     }
 
     /**

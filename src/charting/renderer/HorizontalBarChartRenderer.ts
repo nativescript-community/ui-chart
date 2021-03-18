@@ -100,6 +100,11 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         const isSingleColor = dataSet.getColors().length === 1;
         const isInverted = this.mChart.isInverted(dataSet.getAxisDependency());
         const renderPaint = this.renderPaint;
+        const previousShader = renderPaint.getShader();
+        const shader = dataSet.getFillShader();
+        if (shader) {
+            renderPaint.setShader(shader);
+        }
 
         if (isSingleColor) {
             renderPaint.setColor(dataSet.getColor());
@@ -130,6 +135,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                 }
             }
         }
+        renderPaint.setShader(previousShader);
 
         return true;
     }

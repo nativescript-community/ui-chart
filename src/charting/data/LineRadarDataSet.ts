@@ -22,11 +22,6 @@ export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
     protected mFillDrawable: ImageSource;
 
     /**
-     * the shader to be used for filling the line surface
-     */
-    protected mFillShader;
-
-    /**
      * transparency used for filling line surface
      */
     private mFillAlpha = 85;
@@ -55,18 +50,6 @@ export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
         this.mFillColor = color;
         this.mFillDrawable = null;
     }
-    /**
-     * Sets the shader that is used for filling the area below the line
-     *
-     * @param shader
-     */
-    public setFillShader(shader) {
-        this.mFillShader = shader;
-    }
-    public getFillShader() {
-        return this.mFillShader;
-    }
-
 
     public getFillDrawable() {
         return this.mFillDrawable;
