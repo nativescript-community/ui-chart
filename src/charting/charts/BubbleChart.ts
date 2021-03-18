@@ -9,8 +9,8 @@ import { BaseCustomRenderer } from '../renderer/DataRenderer';
 import { BarLineChartBase } from './BarLineChartBase';
 
 export interface CustomRenderer extends BaseCustomRenderer {
-    drawBubble: (c: Canvas, e: BubbleEntry, cx: number, cy: number, radius: number, paint: Paint) => void;
-    drawHighlight: (c: Canvas, e: Highlight, cx: number, cy: number, radius: number, paint: Paint) => void;
+    drawBubble?: (c: Canvas, e: BubbleEntry, cx: number, cy: number, radius: number, paint: Paint) => void;
+    drawHighlight?: (c: Canvas, e: Highlight, cx: number, cy: number, radius: number, paint: Paint) => void;
 }
 
 /**

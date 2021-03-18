@@ -8,7 +8,7 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Renderer } from './Renderer';
 
 export interface BaseCustomRenderer {
-    drawValue: (c: Canvas, valueText: string, x: number, y: number, color: Color, paint: Paint) => void;
+    drawValue?: (c: Canvas, valueText: string, x: number, y: number, color: Color, paint: Paint) => void;
 }
 
 /**

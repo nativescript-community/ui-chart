@@ -16,8 +16,8 @@ import { BaseCustomRenderer } from '../renderer/DataRenderer';
 const LOG_TAG = 'PieChart';
 
 export interface CustomRenderer extends BaseCustomRenderer {
-    drawSlice: (c: Canvas, e: Entry, slice: Path, paint: Paint) => void;
-    drawHighlight: (c: Canvas, e: Highlight, slice: Path, paint: Paint) => void;
+    drawSlice?: (c: Canvas, e: Entry, slice: Path, paint: Paint) => void;
+    drawHighlight?: (c: Canvas, e: Highlight, slice: Path, paint: Paint) => void;
 }
 /**
  * View that represents a pie chart. Draws cake like slices.

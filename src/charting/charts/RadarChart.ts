@@ -15,8 +15,8 @@ import { BaseCustomRenderer } from '../renderer/DataRenderer';
 
 const LOG_TAG = 'RadarChart';
 export interface CustomRenderer extends BaseCustomRenderer {
-    drawRadar: (c: Canvas, e: Entry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
-    drawHighlight: (c: Canvas, e: Highlight, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+    drawRadar?: (c: Canvas, e: Entry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+    drawHighlight?: (c: Canvas, e: Highlight, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
 }
 /**
  * Implementation of the RadarChart, a "spidernet"-like chart. It works best

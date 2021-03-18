@@ -11,8 +11,8 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { BaseCustomRenderer } from '../renderer/DataRenderer';
 
 export interface CustomRenderer extends BaseCustomRenderer {
-    drawShape: (c: Canvas, e: Entry, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler, x: number, y: number, paint: Paint) => void;
-    drawHighlight: (c: Canvas, e: Highlight, set: IScatterDataSet, paint: Paint) => void;
+    drawShape?: (c: Canvas, e: Entry, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler, x: number, y: number, paint: Paint) => void;
+    drawHighlight?: (c: Canvas, e: Highlight, set: IScatterDataSet, paint: Paint) => void;
 }
 
 export enum ScatterShape {

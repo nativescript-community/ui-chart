@@ -17,8 +17,8 @@ import { BaseCustomRenderer } from '../renderer/DataRenderer';
 const LOG_TAG = 'BarChart';
 
 export interface CustomRenderer extends BaseCustomRenderer {
-    drawBar: (c: Canvas, e: BarEntry, dataSet: IBarDataSet, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
-    drawHighlight: (c: Canvas, e: Highlight, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+    drawBar?: (c: Canvas, e: BarEntry, dataSet: IBarDataSet, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
+    drawHighlight?: (c: Canvas, e: Highlight, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
 }
 
 export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider {
