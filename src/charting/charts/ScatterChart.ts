@@ -8,8 +8,9 @@ import { ScatterChartRenderer } from '../renderer/ScatterChartRenderer';
 import { Canvas, Paint } from '@nativescript-community/ui-canvas';
 import { Highlight } from '../highlight/Highlight';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { BaseCustomRenderer } from '../renderer/DataRenderer';
 
-export interface CustomRenderer {
+export interface CustomRenderer extends BaseCustomRenderer {
     drawShape: (c: Canvas, e: Entry, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler, x: number, y: number, paint: Paint) => void;
     drawHighlight: (c: Canvas, e: Highlight, set: IScatterDataSet, paint: Paint) => void;
 }
@@ -21,7 +22,7 @@ export enum ScatterShape {
     CROSS = 'CROSS',
     X = 'X',
     CHEVRON_UP = 'CHEVRON_UP',
-    CHEVRON_DOWN = 'CHEVRON_DOWN',
+    CHEVRON_DOWN = 'CHEVRON_DOWN'
 }
 /**
  * The ScatterChart. Draws dots, triangles, squares and custom shapes into the

@@ -148,6 +148,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
 
         const paint = this.valuePaint;
+        const customRender = this.mChart.getCustomRenderer();
         for (let i = 0; i < this.mChart.getBarData().getDataSetCount(); i++) {
             const dataSet = dataSets[i];
             if (!this.shouldDrawValues(dataSet)) {
@@ -169,6 +170,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             const phaseY = this.mAnimator.getPhaseY();
 
             const iconsOffset = dataSet.getIconsOffset();
+            const valuesOffset = dataSet.getValuesOffset();
 
             const isDrawValuesEnabled = dataSet.isDrawValuesEnabled();
             const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
@@ -196,8 +198,8 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
                     // calculate the correct offset depending on the draw position of the value
                     const valueTextWidth = Utils.calcTextWidth(paint, formattedValue);
-                    posOffset = drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus);
-                    negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus;
+                    posOffset = drawValueAboveBar ? valueOffsetPlus + valuesOffset.x : -(valueTextWidth + valueOffsetPlus + valuesOffset.x);
+                    negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus + valuesOffset.x) : valueOffsetPlus + valuesOffset.x;
 
                     if (isInverted) {
                         posOffset = -posOffset - valueTextWidth;
@@ -205,7 +207,15 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                     }
 
                     if (isDrawValuesEnabled) {
-                        this.drawValue(c, formattedValue, val >= 0 ? buffer.buffer[j + 2] + posOffset : buffer.buffer[j + 0] + negOffset, y + halfTextHeight, dataSet.getValueTextColor(j / 2), paint);
+                        this.drawValue(
+                            c,
+                            formattedValue,
+                            val >= 0 ? buffer.buffer[j + 2] + posOffset : buffer.buffer[j + 0] + negOffset,
+                            y + valuesOffset.y + halfTextHeight,
+                            dataSet.getValueTextColor(j / 2),
+                            paint,
+                            customRender
+                        );
                     }
 
                     if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
@@ -266,9 +276,10 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                                 c,
                                 formattedValue,
                                 entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 2] + posOffset : buffer.buffer[bufferIndex + 0] + negOffset,
-                                buffer.buffer[bufferIndex + 1] + halfTextHeight,
+                                buffer.buffer[bufferIndex + 1] + halfTextHeight + valuesOffset.y,
                                 color,
-                                paint
+                                paint,
+                                customRender
                             );
                         }
 
@@ -316,8 +327,8 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
                             // calculate the correct offset depending on the draw position of the value
                             const valueTextWidth = Utils.calcTextWidth(paint, formattedValue);
-                            posOffset = drawValueAboveBar ? valueOffsetPlus : -(valueTextWidth + valueOffsetPlus);
-                            negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus) : valueOffsetPlus;
+                            posOffset = drawValueAboveBar ? valueOffsetPlus + valuesOffset.x : -(valueTextWidth + valueOffsetPlus + valuesOffset.x);
+                            negOffset = drawValueAboveBar ? -(valueTextWidth + valueOffsetPlus + valuesOffset.x) : valueOffsetPlus + valuesOffset.x;
 
                             if (isInverted) {
                                 posOffset = -posOffset - valueTextWidth;
@@ -341,7 +352,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             }
 
                             if (isDrawValuesEnabled) {
-                                this.drawValue(c, formattedValue, x, y + halfTextHeight, color, paint);
+                                this.drawValue(c, formattedValue, x, y + halfTextHeight + valuesOffset.y, color, paint, customRender);
                             }
 
                             if (isDrawIconsEnabled && entry.icon != null) {
@@ -355,13 +366,6 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                     index++;
                 }
             }
-        }
-    }
-
-    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
-        if (valueText) {
-            paint.setColor(color);
-            c.drawText(valueText, x, y, paint);
         }
     }
 

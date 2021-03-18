@@ -11,10 +11,12 @@ import { BarChartRenderer } from '../renderer/BarChartRenderer';
 import { Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
 import { getEntryXValue } from '../data/BaseEntry';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
+import { Color } from '@nativescript/core';
+import { BaseCustomRenderer } from '../renderer/DataRenderer';
 
 const LOG_TAG = 'BarChart';
 
-export interface CustomRenderer {
+export interface CustomRenderer extends BaseCustomRenderer {
     drawBar: (c: Canvas, e: BarEntry, dataSet: IBarDataSet, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
     drawHighlight: (c: Canvas, e: Highlight, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
 }
@@ -62,7 +64,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         if (this.mAxisLeft.isEnabled()) {
             this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         }
-        if (this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
             this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
         }
     }

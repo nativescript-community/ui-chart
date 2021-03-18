@@ -118,6 +118,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const paint = this.valuePaint;
         const lineHeight = Utils.calcTextHeight(paint, '1');
 
+        const customRender = this.mChart.getCustomRenderer();
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
             if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
@@ -137,6 +138,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const formatter = dataSet.getValueFormatter();
 
             const iconsOffset = dataSet.getIconsOffset();
+            const valuesOffset = dataSet.getValuesOffset();
             const isDrawValuesEnabled = dataSet.isDrawValuesEnabled();
             const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
             for (let j = 0; j < count; j += 2) {
@@ -158,7 +160,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
                 if (isDrawValuesEnabled) {
-                    this.drawValue(c, formatter.getBubbleLabel(entry[dataSet.sizeProperty], entry), x, y + 0.5 * lineHeight, valueTextColor, paint);
+                    this.drawValue(c, formatter.getBubbleLabel(entry[dataSet.sizeProperty], entry), x + valuesOffset.x, y + valuesOffset.y + 0.5 * lineHeight, valueTextColor, paint, customRender);
                 }
 
                 if (entry.icon && isDrawIconsEnabled) {
@@ -166,11 +168,6 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 }
             }
         }
-    }
-
-    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
-        paint.setColor(color);
-        c.drawText(valueText, x, y, paint);
     }
 
     public drawExtras(c: Canvas) {}

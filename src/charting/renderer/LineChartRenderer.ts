@@ -2,6 +2,7 @@ import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, r
 import { Color, ImageSource, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { LineChart } from '../charts';
+import { CustomRenderer } from '../charts/LineChart';
 import { getEntryXValue } from '../data/BaseEntry';
 import { Rounding } from '../data/DataSet';
 import { LineDataSet, Mode } from '../data/LineDataSet';
@@ -673,6 +674,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         const drawValues = dataSet.isDrawValuesEnabled();
         const length = count;
         const paint = this.valuePaint;
+        const customRender = this.mChart.getCustomRenderer();
         for (let j = 0; j < length; j += 2) {
             const x = points[j];
             const y = points[j + 1];
@@ -686,7 +688,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (!entry) continue;
 
             if (drawValues) {
-                this.drawValue(c, formatter.getFormattedValue(entry[yKey], entry), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2), paint);
+                this.drawValue(c, formatter.getFormattedValue(entry[yKey], entry), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2), paint, customRender);
             }
 
             if (drawIcons && entry.icon != null) {
@@ -708,13 +710,6 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
             this.drawValuesForDataset(c, dataSet, i);
-        }
-    }
-
-    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
-        if (valueText) {
-            paint.setColor(color);
-            c.drawText(valueText, x, y, paint);
         }
     }
 

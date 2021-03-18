@@ -71,10 +71,6 @@ export class CombinedChartRenderer extends DataRenderer {
         for (const renderer of this.mRenderers) renderer.drawData(c);
     }
 
-    public drawValue(c: Canvas, valueText, x, y, color) {
-        console.error('MPAndroidChart', 'Erroneous call to drawValue() in CombinedChartRenderer!');
-    }
-
     public drawValues(c: Canvas) {
         for (const renderer of this.mRenderers) renderer.drawValues(c);
     }

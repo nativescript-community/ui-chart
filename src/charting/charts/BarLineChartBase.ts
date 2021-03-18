@@ -1609,7 +1609,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mAxisLeft.isEnabled()) {
             max = Math.max(this.mAxisLeft.mAxisMaximum, max);
         }
-        if (this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
             max = Math.max(this.mAxisRight.mAxisMaximum, max);
         }
         return max;
@@ -1620,7 +1620,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.mAxisLeft.isEnabled()) {
             min = Math.min(this.mAxisLeft.mAxisMinimum, min);
         }
-        if (this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
             min = Math.min(this.mAxisRight.mAxisMinimum, min);
         }
         return min;
@@ -1633,7 +1633,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public isAnyAxisInverted() {
         if (this.mAxisLeft.isEnabled() && this.mAxisLeft.isInverted()) return true;
-        if (this.mAxisRight.isEnabled() && this.mAxisRight.isInverted()) return true;
+        if (this.mAxisRight && this.mAxisRight.isEnabled() && this.mAxisRight.isInverted()) return true;
         return false;
     }
 

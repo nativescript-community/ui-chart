@@ -11,10 +11,11 @@ import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { Font } from '@nativescript/core/ui/styling/font';
 import { Canvas, Paint, Path, RectF } from '@nativescript-community/ui-canvas';
 import { Trace } from '@nativescript/core';
+import { BaseCustomRenderer } from '../renderer/DataRenderer';
 
 const LOG_TAG = 'PieChart';
 
-export interface CustomRenderer {
+export interface CustomRenderer extends BaseCustomRenderer {
     drawSlice: (c: Canvas, e: Entry, slice: Path, paint: Paint) => void;
     drawHighlight: (c: Canvas, e: Highlight, slice: Path, paint: Paint) => void;
 }

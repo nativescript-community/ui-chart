@@ -218,6 +218,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         }
         // if values are drawn
 
+        const customRender = this.mChart.getCustomRenderer();
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
 
@@ -237,6 +238,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
             const formatter = dataSet.getValueFormatter();
 
             const iconsOffset = dataSet.getIconsOffset();
+            const valuesOffset = dataSet.getValuesOffset();
 
             const paint = this.valuePaint;
             for (let j = 0; j < count; j += 2) {
@@ -250,7 +252,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
                 if (dataSet.isDrawValuesEnabled()) {
-                    this.drawValue(c, formatter.getCandleLabel(entry.high, entry), x, y - yOffset, dataSet.getValueTextColor(j / 2), paint);
+                    this.drawValue(c, formatter.getCandleLabel(entry.high, entry), x + valuesOffset.x, y - yOffset + valuesOffset.y, dataSet.getValueTextColor(j / 2), paint, customRender);
                 }
 
                 if (entry.icon && dataSet.isDrawIconsEnabled()) {
@@ -258,11 +260,6 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 }
             }
         }
-    }
-
-    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
-        paint.setColor(color);
-        c.drawText(valueText, x, y, paint);
     }
 
     public drawExtras(c: Canvas) {}

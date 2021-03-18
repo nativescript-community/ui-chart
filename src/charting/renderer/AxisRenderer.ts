@@ -4,9 +4,10 @@ import { Align, Canvas, Paint, Path, RectF, Style } from '@nativescript-communit
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
+import { BaseCustomRenderer } from './DataRenderer';
 
 export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
-export interface CustomRenderer {
+export interface CustomRenderer extends BaseCustomRenderer {
     drawGridLine?: CustomRendererGridLineFunction;
 }
 

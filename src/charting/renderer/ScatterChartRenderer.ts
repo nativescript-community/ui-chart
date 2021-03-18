@@ -90,6 +90,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         }
         // if values are drawn
 
+        const customRender = this.mChart.getCustomRenderer();
         for (let i = 0; i < this.mChart.getScatterData().getDataSetCount(); i++) {
             const dataSet = dataSets[i];
             const yKey = dataSet.yProperty;
@@ -110,6 +111,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
             const formatter = dataSet.getValueFormatter();
 
             const iconsOffset = dataSet.getIconsOffset();
+            const valuesOffset = dataSet.getValuesOffset();
             const drawValues = dataSet.isDrawValuesEnabled();
             const drawIcons = dataSet.isDrawIconsEnabled();
             const paint = this.valuePaint;
@@ -122,7 +124,15 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                 const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
 
                 if (drawValues) {
-                    this.drawValue(c, formatter.getPointLabel(entry[yKey], entry), points[j], points[j + 1] - shapeSize, dataSet.getValueTextColor(j / 2 + this.mXBounds.min), paint);
+                    this.drawValue(
+                        c,
+                        formatter.getPointLabel(entry[yKey], entry),
+                        points[j] + valuesOffset.x,
+                        points[j + 1] + valuesOffset.y - shapeSize,
+                        dataSet.getValueTextColor(j / 2 + this.mXBounds.min),
+                        paint,
+                        customRender
+                    );
                 }
 
                 if (drawIcons && entry.icon) {
@@ -130,11 +140,6 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                 }
             }
         }
-    }
-
-    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
-        paint.setColor(color);
-        c.drawText(valueText, x, y, paint);
     }
 
     public drawExtras(c: Canvas) {}

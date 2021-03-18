@@ -7,6 +7,8 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Entry } from '../data/Entry';
 import { BarLineScatterCandleBubbleDataSet } from '../data/BarLineScatterCandleBubbleDataSet';
+import { Canvas, Paint } from '@nativescript-community/ui-canvas';
+import { Color } from '@nativescript/core';
 
 /**
  * Class representing the bounds of the current viewport in terms of indices in the values array of a DataSet.

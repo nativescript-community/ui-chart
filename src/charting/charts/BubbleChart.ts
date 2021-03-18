@@ -5,9 +5,10 @@ import { Highlight } from '../highlight/Highlight';
 import { BubbleDataProvider } from '../interfaces/dataprovider/BubbleDataProvider';
 import { IBubbleDataSet } from '../interfaces/datasets/IBubbleDataSet';
 import { BubbleChartRenderer } from '../renderer/BubbleChartRenderer';
+import { BaseCustomRenderer } from '../renderer/DataRenderer';
 import { BarLineChartBase } from './BarLineChartBase';
 
-export interface CustomRenderer {
+export interface CustomRenderer extends BaseCustomRenderer {
     drawBubble: (c: Canvas, e: BubbleEntry, cx: number, cy: number, radius: number, paint: Paint) => void;
     drawHighlight: (c: Canvas, e: Highlight, cx: number, cy: number, radius: number, paint: Paint) => void;
 }

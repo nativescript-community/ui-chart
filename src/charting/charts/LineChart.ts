@@ -6,8 +6,10 @@ import { LineDataSet } from '../data/LineDataSet';
 import { LineChartRenderer } from '../renderer/LineChartRenderer';
 import { Highlight } from '../highlight/Highlight';
 import { Canvas, Paint, Path } from '@nativescript-community/ui-canvas';
+import { Color } from '@nativescript/core';
+import { BaseCustomRenderer } from '../renderer/DataRenderer';
 
-export interface CustomRenderer {
+export interface CustomRenderer extends BaseCustomRenderer {
     drawLine?: (c: Canvas, line: Path, paint: Paint) => void;
     drawHighlight?: (c: Canvas, e: Highlight, set: LineDataSet, paint: Paint) => void;
 }

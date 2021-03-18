@@ -1,7 +1,7 @@
 import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubbleRenderer';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { BarBuffer } from '../buffer/BarBuffer';
-import { BarChart } from '../charts/BarChart';
+import { BarChart, CustomRenderer } from '../charts/BarChart';
 import { Highlight } from '../highlight/Highlight';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 import { Transformer } from '../utils/Transformer';
@@ -220,6 +220,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         let negOffset = 0;
         const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
         const paint = this.valuePaint;
+        const customRender = this.mChart.getCustomRenderer();
         for (let i = 0; i < this.mChart.getBarData().getDataSetCount(); i++) {
             const dataSet = dataSets[i];
             if (!this.shouldDrawValues(dataSet)) {
@@ -238,7 +239,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const valueTextHeight = Utils.calcTextHeight(paint, '8');
             const valuesOffset = dataSet.getValuesOffset();
             posOffset = drawValueAboveBar ? -(valueOffsetPlus + valuesOffset.y) : valueTextHeight + (valueOffsetPlus + valuesOffset.y);
-            negOffset = drawValueAboveBar ? valueTextHeight + valueOffsetPlus : -valueOffsetPlus;
+            negOffset = drawValueAboveBar ? valueTextHeight + (valueOffsetPlus + valuesOffset.y) : -(valueOffsetPlus + valuesOffset.y);
 
             if (isInverted) {
                 posOffset = -posOffset - valueTextHeight;
@@ -276,10 +277,11 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         this.drawValue(
                             c,
                             formatter.getBarLabel(val, entry),
-                            x,
+                            x + valuesOffset.x,
                             val >= 0 ? buffer.buffer[j + 1] + posOffset : buffer.buffer[j + 3] + negOffset,
                             dataSet.getValueTextColor(j / 4),
-                            paint
+                            paint,
+                            customRender
                         );
                     }
 
@@ -329,7 +331,8 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                                 x,
                                 entry[yKey] >= 0 ? buffer.buffer[bufferIndex + 1] + posOffset : buffer.buffer[bufferIndex + 3] + negOffset,
                                 color,
-                                paint
+                                paint,
+                                customRender
                             );
                         }
 
@@ -385,7 +388,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             }
 
                             if (dataSet.isDrawValuesEnabled()) {
-                                this.drawValue(c, formatter.getBarStackedLabel(val, entry), x, y, color, paint);
+                                this.drawValue(c, formatter.getBarStackedLabel(val, entry), x, y, color, paint, customRender);
                             }
 
                             if (entry.icon != null && dataSet.isDrawIconsEnabled()) {
@@ -399,13 +402,6 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                     index++;
                 }
             }
-        }
-    }
-
-    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
-        if (valueText) {
-            paint.setColor(color);
-            c.drawText(valueText, x, y, paint);
         }
     }
 

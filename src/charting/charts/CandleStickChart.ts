@@ -5,9 +5,10 @@ import { Highlight } from '../highlight/Highlight';
 import { CandleDataProvider } from '../interfaces/dataprovider/CandleDataProvider';
 import { ICandleDataSet } from '../interfaces/datasets/ICandleDataSet';
 import { CandleStickChartRenderer } from '../renderer/CandleStickChartRenderer';
+import { BaseCustomRenderer } from '../renderer/DataRenderer';
 import { BarLineChartBase } from './BarLineChartBase';
 
-export interface CustomRenderer {
+export interface CustomRenderer extends BaseCustomRenderer {
     drawShadows: (c: Canvas, e: CandleEntry, lines: number[], paint: Paint) => void;
     drawOpened: (c: Canvas, e: CandleEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
     drawClosed: (c: Canvas, e: CandleEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;

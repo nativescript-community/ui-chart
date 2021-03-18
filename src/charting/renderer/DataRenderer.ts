@@ -1,10 +1,15 @@
 import { Align, Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
+import { Color } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { Highlight } from '../highlight/Highlight';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Renderer } from './Renderer';
+
+export interface BaseCustomRenderer {
+    drawValue: (c: Canvas, valueText: string, x: number, y: number, color: Color, paint: Paint) => void;
+}
 
 /**
  * Superclass of all render classes for the different data types (line, bar, ...).
@@ -117,7 +122,16 @@ export abstract class DataRenderer extends Renderer {
      * @param color
      * @param paint
      */
-    public abstract drawValue(c: Canvas, valueText, x, y, color, paint: Paint);
+    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint, customRender?: BaseCustomRenderer) {
+        if (valueText) {
+            if (customRender && customRender.drawValue) {
+                customRender.drawValue(c, valueText, x, y, color, paint);
+            } else {
+                paint.setColor(color);
+                c.drawText(valueText, x, y, paint);
+            }
+        }
+    }
 
     /**
      * Draws any kind of additional information (e.g. line-circles).

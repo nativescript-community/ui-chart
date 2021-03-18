@@ -180,6 +180,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const pIcon: MPPointF = { x: 0, y: 0 };
 
         const yoffset = 5;
+        const customRender = this.mChart.getCustomRenderer();
         for (let i = 0; i < data.getDataSetCount(); i++) {
             const dataSet = data.getDataSetByIndex(i);
             if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
@@ -199,6 +200,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
             const formatter = dataSet.getValueFormatter();
 
             const iconsOffset = dataSet.getIconsOffset();
+            const valuesOffset = dataSet.getValuesOffset();
             const paint = this.valuePaint;
             for (let j = 0; j < dataSet.getEntryCount(); j++) {
                 const entry = dataSet.getEntryForIndex(j);
@@ -206,7 +208,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
                 Utils.getPosition(center, (entry[yProperty] - this.mChart.getYChartMin()) * factor * phaseY, sliceangle * j * phaseX + this.mChart.getRotationAngle(), pOut);
 
                 if (drawValues) {
-                    this.drawValue(c, formatter.getRadarLabel(entry[yProperty], entry), pOut.x, pOut.y - yoffset, dataSet.getValueTextColor(j), paint);
+                    this.drawValue(c, formatter.getRadarLabel(entry[yProperty], entry), pOut.x + valuesOffset.x, pOut.y + valuesOffset.y - yoffset, dataSet.getValueTextColor(j), paint, customRender);
                 }
 
                 if (drawIcons && entry.icon != null) {
@@ -227,11 +229,6 @@ export class RadarChartRenderer extends LineRadarRenderer {
         // MPPointF.recycleInstance(center);
         // MPPointF.recycleInstance(pOut);
         // MPPointF.recycleInstance(pIcon);
-    }
-
-    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
-        paint.setColor(color);
-        c.drawText(valueText, x, y, paint);
     }
 
     public drawExtras(c: Canvas) {

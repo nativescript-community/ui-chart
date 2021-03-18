@@ -428,6 +428,7 @@ export class PieChartRenderer extends DataRenderer {
 
         const paint = this.valuePaint;
         const entryLabelsPaint: Paint = drawEntryLabels ? this.entryLabelsPaint : undefined;
+        const customRender = this.mChart.getCustomRenderer();
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
             const drawValues = dataSet.isDrawValuesEnabled();
@@ -455,6 +456,7 @@ export class PieChartRenderer extends DataRenderer {
             const sliceSpace = this.getSliceSpace(dataSet);
 
             const iconsOffset = dataSet.getIconsOffset();
+            const valuesOffset = dataSet.getValuesOffset();
 
             const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
             for (let j = 0; j < entryCount; j++) {
@@ -548,7 +550,7 @@ export class PieChartRenderer extends DataRenderer {
 
                     // draw everything, depending on settings
                     if (drawXOutside && drawYOutside) {
-                        this.drawValue(c, formattedValue, labelPtx, labelPty, dataSet.getValueTextColor(j), paint);
+                        this.drawValue(c, formattedValue, labelPtx + valuesOffset.x, labelPty + valuesOffset.y, dataSet.getValueTextColor(j), paint, customRender);
 
                         if (j < data.getEntryCount() && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight, entryLabelsPaint);
@@ -558,7 +560,7 @@ export class PieChartRenderer extends DataRenderer {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight / 2, entryLabelsPaint);
                         }
                     } else if (drawYOutside) {
-                        this.drawValue(c, formattedValue, labelPtx, labelPty + lineHeight / 2, dataSet.getValueTextColor(j), paint);
+                        this.drawValue(c, formattedValue, labelPtx + valuesOffset.x, labelPty + valuesOffset.y + lineHeight / 2, dataSet.getValueTextColor(j), paint, customRender);
                     }
                 }
 
@@ -571,7 +573,7 @@ export class PieChartRenderer extends DataRenderer {
 
                     // draw everything, depending on settings
                     if (drawXInside && drawYInside) {
-                        this.drawValue(c, formattedValue, x, y, dataSet.getValueTextColor(j), paint);
+                        this.drawValue(c, formattedValue, x + valuesOffset.x, y + valuesOffset.y, dataSet.getValueTextColor(j), paint, customRender);
 
                         if (j < data.getEntryCount() && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight, entryLabelsPaint);
@@ -581,7 +583,7 @@ export class PieChartRenderer extends DataRenderer {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight / 2, entryLabelsPaint);
                         }
                     } else if (drawYInside) {
-                        this.drawValue(c, formattedValue, x, y + lineHeight / 2, dataSet.getValueTextColor(j), paint);
+                        this.drawValue(c, formattedValue, x + valuesOffset.x, y + valuesOffset.y + lineHeight / 2, dataSet.getValueTextColor(j), paint, customRender);
                     }
                 }
 
@@ -599,11 +601,6 @@ export class PieChartRenderer extends DataRenderer {
             }
         }
         c.restore();
-    }
-
-    public drawValue(c: Canvas, valueText, x, y, color, paint: Paint) {
-        paint.setColor(color);
-        c.drawText(valueText, x, y, paint);
     }
 
     /**
