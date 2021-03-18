@@ -236,7 +236,8 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             // calculate the correct offset depending on the draw position of
             // the value
             const valueTextHeight = Utils.calcTextHeight(paint, '8');
-            posOffset = drawValueAboveBar ? -valueOffsetPlus : valueTextHeight + valueOffsetPlus;
+            const valuesOffset = dataSet.getValuesOffset();
+            posOffset = drawValueAboveBar ? -(valueOffsetPlus + valuesOffset.y) : valueTextHeight + (valueOffsetPlus + valuesOffset.y);
             negOffset = drawValueAboveBar ? valueTextHeight + valueOffsetPlus : -valueOffsetPlus;
 
             if (isInverted) {
