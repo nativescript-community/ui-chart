@@ -89,6 +89,7 @@ export abstract class DataRenderer extends Renderer {
         if (typeface) {
             this.mValuePaint.setTypeface(typeface);
         }
+        this.mValuePaint.setTextSize(set.getValueTextSize());
     }
 
     /**
