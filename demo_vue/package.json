@@ -7,27 +7,27 @@
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
     "license": "MIT",
     "dependencies": {
-        "@nativescript-community/ui-canvas": "4.0.31",
+        "@nativescript-community/ui-canvas": "4.0.49",
         "@nativescript-community/ui-chart": "file:../plugin",
-        "@nativescript-community/ui-svg": "^0.0.3",
-        "@nativescript/core": "~7.0.13",
-        "@nativescript/theme": "~2.3.3",
+        "@nativescript-community/ui-svg": "^0.0.8",
+        "@nativescript/core": "~7.3.0",
+        "@nativescript/theme": "~3.0.1",
         "nativescript-perms": "^2.0.11",
-        "nativescript-vue": "~2.8.1"
+        "nativescript-vue": "~2.8.4"
     },
     "devDependencies": {
-        "@babel/core": "~7.11.6",
-        "@babel/preset-env": "~7.11.5",
-        "@nativescript/android": "7.0.0",
-        "@nativescript/ios": "7.0.0",
-        "@nativescript/types": "^7.0.4",
-        "@nativescript/webpack": "~3.0.5",
-        "babel-loader": "~8.1.0",
-        "nativescript-vue-template-compiler": "~2.8.1",
-        "node-sass": "^4.14.1",
-        "typescript": "^4.0.2",
+        "@babel/core": "~7.13.10",
+        "@babel/preset-env": "~7.13.10",
+        "@nativescript/android": "7.0.1",
+        "@nativescript/ios": "7.2.0",
+        "@nativescript/types": "^7.3.0",
+        "@nativescript/webpack": "~4.1.0",
+        "babel-loader": "~8.2.2",
+        "nativescript-vue-template-compiler": "~2.8.4",
+        "sass": "^1.32.8",
+        "typescript": "^4.2.3",
         "vue": "^2.6.12",
-        "vue-class-component": "^7.2.5",
-        "vue-loader": "~15.9.3"
+        "vue-class-component": "^7.2.6",
+        "vue-loader": "~15.9.6"
     }
 }
