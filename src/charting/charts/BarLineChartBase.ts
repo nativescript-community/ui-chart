@@ -80,9 +80,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected mDrawBorders = false;
 
-    protected mClipValuesToContent = false;
+    protected mClipValuesToContent = true;
 
-    protected mClipDataToContent = false;
+    protected mClipDataToContent = true;
 
     protected mDrawHighlight = true;
 
