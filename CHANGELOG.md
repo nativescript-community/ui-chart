@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.29](https://github.com/Akylas/nativescript-chart/compare/v1.1.28...v1.1.29) (2021-03-22)
+
+
+### Bug Fixes
+
+* applyValueTextStyle fix ([80c1ca4](https://github.com/Akylas/nativescript-chart/commit/80c1ca431d5b74fb7b32e8f69d719ea827bcae5d))
+* clip default fixes ([fcbbe69](https://github.com/Akylas/nativescript-chart/commit/fcbbe69580b328d97f23f59483f84a9d43b11851))
+* limitlines fix ([56bd451](https://github.com/Akylas/nativescript-chart/commit/56bd451d021cb03df04496de068f49b09d21ab46))
+* pinch/pan gestures fix + allow to customize everything about gestures ([5aab748](https://github.com/Akylas/nativescript-chart/commit/5aab74855f0921f5eac2833134de054fec251b14))
+
+
+
+
+
 ## [1.1.28](https://github.com/Akylas/nativescript-chart/compare/v1.1.27...v1.1.28) (2021-03-19)
 
 
