@@ -225,10 +225,10 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         return this.mDescPaint;
     }
 
-    public panGestureOptions: PanGestureHandlerOptions;
-    public tapGestureOptions: TapGestureHandlerOptions;
-    public doubleTapGestureOptions: TapGestureHandlerOptions;
-    public pinchGestureOptions: PinchGestureHandlerOptions;
+    public panGestureOptions: PanGestureHandlerOptions & { gestureTag?: number };
+    public tapGestureOptions: TapGestureHandlerOptions & { gestureTag?: number };
+    public doubleTapGestureOptions: TapGestureHandlerOptions & { gestureTag?: number };
+    public pinchGestureOptions: PinchGestureHandlerOptions & { gestureTag?: number };
 
     /**
      * Sets a new data object for the chart. The data object contains all values

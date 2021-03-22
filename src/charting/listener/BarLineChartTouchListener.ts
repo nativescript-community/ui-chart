@@ -105,14 +105,28 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     pinchGestureHandler: PinchGestureHandler;
     tapGestureHandler: TapGestureHandler;
     doubleTapGestureHandler: TapGestureHandler;
+
+    getPanGestureOptions() {
+        return { gestureTag: this.PAN_HANDLER_TAG, ...(this.mChart.panGestureOptions || {}) };
+    }
+    getPinchGestureOptions() {
+        return { gestureTag: this.PINCH_HANDLER_TAG, ...(this.mChart.pinchGestureOptions || {}) };
+    }
+    getTapGestureOptions() {
+        return { gestureTag: this.TAP_HANDLER_TAG, ...(this.mChart.tapGestureOptions || {}) };
+    }
+    getDoubleTapGestureOptions() {
+        return { gestureTag: this.DOUBLE_TAP_HANDLER_TAG, ...(this.mChart.doubleTapGestureOptions || {}) };
+    }
     getOrCreateDoubleTapGestureHandler() {
         if (!this.doubleTapGestureHandler) {
             const manager = Manager.getInstance();
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'creating double tap gesture');
             }
+            const options = this.getDoubleTapGestureOptions();
             this.doubleTapGestureHandler = manager
-                .createGestureHandler(HandlerType.TAP, this.DOUBLE_TAP_HANDLER_TAG, { numberOfTaps: 2, ...(this.mChart.doubleTapGestureOptions || {}) })
+                .createGestureHandler(HandlerType.TAP, options.gestureTag, { numberOfTaps: 2, ...options })
                 .on(GestureHandlerStateEvent, this.onDoubleTapGesture, this);
         }
         return this.doubleTapGestureHandler;
@@ -123,8 +137,10 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 CLog(CLogTypes.log, LOG_TAG, 'creating tap gesture');
             }
             const manager = Manager.getInstance();
+            const options = this.getTapGestureOptions();
+            const doubleTapOptions = this.getDoubleTapGestureOptions();
             this.tapGestureHandler = manager
-                .createGestureHandler(HandlerType.TAP, this.TAP_HANDLER_TAG, { waitFor: [this.DOUBLE_TAP_HANDLER_TAG], ...(this.mChart.tapGestureOptions || {}) })
+                .createGestureHandler(HandlerType.TAP, options.gestureTag, { waitFor: [doubleTapOptions.gestureTag], ...options })
                 .on(GestureHandlerStateEvent, this.onTapGesture, this);
         }
         return this.tapGestureHandler;
@@ -136,12 +152,14 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'creating pinch gesture');
             }
+            const panOptions = this.getPanGestureOptions();
+            const pinchOptions = this.getPinchGestureOptions();
             this.pinchGestureHandler = manager
-                .createGestureHandler(HandlerType.PINCH, this.PINCH_HANDLER_TAG, {
+                .createGestureHandler(HandlerType.PINCH, pinchOptions.gestureTag, {
                     minSpan: 20,
-                    // simultaneousHandlers: [this.PAN_HANDLER_TAG],
+                    simultaneousHandlers: [panOptions.gestureTag],
                     shouldCancelWhenOutside: false,
-                    ...(this.mChart.pinchGestureOptions || {})
+                    ...pinchOptions
                 })
                 .on(GestureHandlerStateEvent, this.onPinchGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPinchGestureTouch, this);
@@ -154,13 +172,15 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.log, LOG_TAG, 'creating pan gestures');
             }
+            const panOptions = this.getPanGestureOptions();
+            const pinchOptions = this.getPinchGestureOptions();
             this.panGestureHandler = manager
-                .createGestureHandler(HandlerType.PAN, this.PAN_HANDLER_TAG, {
-                    // simultaneousHandlers: [this.PINCH_HANDLER_TAG],
+                .createGestureHandler(HandlerType.PAN, panOptions.gestureTag, {
+                    simultaneousHandlers: [pinchOptions.gestureTag],
                     minPointers: 1,
                     maxPointers: 2,
                     shouldCancelWhenOutside: false,
-                    ...(this.mChart.panGestureOptions || {})
+                    ...panOptions
                 })
                 .on(GestureHandlerStateEvent, this.onPanGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPanGestureTouch, this);
