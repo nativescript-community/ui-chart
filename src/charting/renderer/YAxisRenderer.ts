@@ -41,7 +41,7 @@ export class YAxisRenderer extends AxisRenderer {
         if (!this.mRenderLimitLinesPath) {
             this.mRenderLimitLinesPath = new Path();
         }
-        return this.mRenderLimitLinesBuffer;
+        return this.mRenderLimitLinesPath;
     }
     protected mRenderLimitLinesBuffer;
     protected get renderLimitLinesBuffer() {
