@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.30](https://github.com/Akylas/nativescript-chart/compare/v1.1.29...v1.1.30) (2021-03-23)
+
+
+### Features
+
+* clipHighlightToContent chart option ([8dde83f](https://github.com/Akylas/nativescript-chart/commit/8dde83fdb1d2ec7c90abaaa15048993e562143b5))
+
+
+
+
+
 ## [1.1.29](https://github.com/Akylas/nativescript-chart/compare/v1.1.28...v1.1.29) (2021-03-22)
 
 
