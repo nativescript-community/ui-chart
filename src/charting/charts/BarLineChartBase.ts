@@ -228,12 +228,16 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (leftEnabled && !this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
         if (rightEnabled && !this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
 
+        if (!this.clipHighlightToContent && this.isClipDataToContentEnabled()) {
+            // restore before drawing highlight
+            canvas.restore();
+        }
         if (this.valuesToHighlight()) {
             this.mRenderer.drawHighlighted(canvas, this.mIndicesToHighlight, this.isDrawHighlightEnabled());
         }
 
         // Removes clipping rectangle
-        if (this.isClipDataToContentEnabled()) {
+        if (this.clipHighlightToContent && this.isClipDataToContentEnabled()) {
             canvas.restore();
         }
 
@@ -1261,6 +1265,12 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public isClipDataToContentEnabled() {
         return this.mClipDataToContent;
     }
+
+    /**
+     * wheter to highlight drawing will be clipped to contentRect,
+     * otherwise they can bleed outside the content rect.
+     */
+    clipHighlightToContent = true;
 
     public setDrawHighlight(enabled) {
         this.mDrawHighlight = enabled;
