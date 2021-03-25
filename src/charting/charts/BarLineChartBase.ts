@@ -254,9 +254,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (this.isClipValuesToContentEnabled()) {
             canvas.save();
             canvas.clipRect(this.mViewPortHandler.getContentRect());
-
             this.mRenderer.drawValues(canvas);
-
             canvas.restore();
         } else {
             this.mRenderer.drawValues(canvas);
