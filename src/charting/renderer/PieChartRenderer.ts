@@ -142,7 +142,7 @@ export class PieChartRenderer extends DataRenderer {
         if (!this.mValuePaint) {
             this.mValuePaint = new Paint();
             this.mValuePaint.setAntiAlias(true);
-            this.mValueLinePaint.setStyle(Style.STROKE);
+            this.mValuePaint.setStyle(Style.STROKE);
             this.mValuePaint.setColor('white');
             this.mValuePaint.setTextAlign(Align.CENTER);
             this.mValuePaint.setTextSize(13);
