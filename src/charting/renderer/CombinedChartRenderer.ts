@@ -1,5 +1,4 @@
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { Chart } from '../charts/Chart';
 import { CombinedChart, DrawOrder } from '../charts/CombinedChart';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { DataRenderer } from './DataRenderer';
@@ -8,11 +7,8 @@ import { BarChartRenderer } from './BarChartRenderer';
 import { BubbleChartRenderer } from './BubbleChartRenderer';
 import { CandleStickChartRenderer } from './CandleStickChartRenderer';
 import { ScatterChartRenderer } from './ScatterChartRenderer';
-import { BarLineChartBase } from '../charts/BarLineChartBase';
-import { Entry } from '../data/Entry';
 import { Canvas } from '@nativescript-community/ui-canvas';
 import { Highlight } from '../highlight/Highlight';
-import { CombinedData } from '../data/CombinedData';
 /**
  * Renderer class that is responsible for rendering multiple different data-types.
  */

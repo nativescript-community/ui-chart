@@ -7,6 +7,13 @@ import { CombinedDataProvider } from '../interfaces/dataprovider/CombinedDataPro
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { BarLineChartBase } from './BarLineChartBase';
 import { CombinedChartRenderer } from '../renderer/CombinedChartRenderer';
+import { CustomRenderer as BBCustomRenderer } from './BubbleChart';
+import { CustomRenderer as CSCustomRenderer } from './CandleStickChart';
+import { CustomRenderer as BCustomRenderer } from './BarChart';
+import { CustomRenderer as LCustomRenderer } from './LineChart';
+import { CustomRenderer as SCustomRenderer } from './ScatterChart';
+
+export type CustomRenderer = BBCustomRenderer & CSCustomRenderer & BCustomRenderer & LCustomRenderer & SCustomRenderer;
 
 /**
  * enum that allows to specify the order in which the different data objects
@@ -218,5 +225,19 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
             // draw the marker
             this.mMarker.draw(c, pos[0], pos[1]);
         }
+    }
+
+    mCustomRenderer: CustomRenderer;
+    /**
+     * set a custom line renderer
+     */
+    public setCustomRenderer(renderer: CustomRenderer) {
+        this.mCustomRenderer = renderer;
+    }
+    /**
+     * get the custom line renderer
+     */
+    public getCustomRenderer() {
+        return this.mCustomRenderer;
     }
 }
