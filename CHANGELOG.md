@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.32](https://github.com/Akylas/nativescript-chart/compare/v1.1.31...v1.1.32) (2021-04-12)
+
+
+### Bug Fixes
+
+* CombinedChart supports custom renderer ([9392d3a](https://github.com/Akylas/nativescript-chart/commit/9392d3a6801c4cbda79045992fbaa0e87c0006ce))
+
+
+### Features
+
+* LimitLine custom renderer and more options ([b2c0e2a](https://github.com/Akylas/nativescript-chart/commit/b2c0e2a61ad44da72e658f9057f40849fe6b39a8))
+
+
+
+
+
 ## [1.1.31](https://github.com/Akylas/nativescript-chart/compare/v1.1.30...v1.1.31) (2021-04-05)
 
 
