@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.33](https://github.com/Akylas/nativescript-chart/compare/v1.1.32...v1.1.33) (2021-04-12)
+
+
+### Bug Fixes
+
+* crash with PieChart and value rendering ([39c027b](https://github.com/Akylas/nativescript-chart/commit/39c027bb7adfd620d00c05fd07fb0f4609d61708))
+
+
+
+
+
 ## [1.1.32](https://github.com/Akylas/nativescript-chart/compare/v1.1.31...v1.1.32) (2021-04-12)
 
 
