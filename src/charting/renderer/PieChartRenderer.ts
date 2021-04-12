@@ -21,6 +21,14 @@ export class PieChartRenderer extends DataRenderer {
     protected mHolePaint: Paint;
     protected mTransparentCirclePaint: Paint;
     protected mValueLinePaint: Paint;
+    public get valueLinePaint() {
+        if (!this.mValueLinePaint) {
+            this.mValueLinePaint = new Paint();
+            this.mValueLinePaint.setAntiAlias(true);
+            this.mValueLinePaint.setStyle(Style.STROKE);
+        }
+        return this.mValueLinePaint;
+    }
 
     /**
      * Bitmap for drawing the center hole
@@ -456,8 +464,8 @@ export class PieChartRenderer extends DataRenderer {
 
             const entryCount = dataSet.getEntryCount();
 
-            this.mValueLinePaint.setColor(dataSet.getValueLineColor());
-            this.mValueLinePaint.setStrokeWidth(dataSet.getValueLineWidth());
+            this.valueLinePaint.setColor(dataSet.getValueLineColor());
+            this.valueLinePaint.setStrokeWidth(dataSet.getValueLineWidth());
 
             const sliceSpace = this.getSliceSpace(dataSet);
 
@@ -547,11 +555,11 @@ export class PieChartRenderer extends DataRenderer {
 
                     if (dataSet.getValueLineColor() !== ColorTemplate.COLOR_NONE) {
                         if (dataSet.isUsingSliceColorAsValueLineColor()) {
-                            this.mValueLinePaint.setColor(dataSet.getColor(j));
+                            this.valueLinePaint.setColor(dataSet.getColor(j));
                         }
 
-                        c.drawLine(pt0x, pt0y, pt1x, pt1y, this.mValueLinePaint);
-                        c.drawLine(pt1x, pt1y, pt2x, pt2y, this.mValueLinePaint);
+                        c.drawLine(pt0x, pt0y, pt1x, pt1y, this.valueLinePaint);
+                        c.drawLine(pt1x, pt1y, pt2x, pt2y, this.valueLinePaint);
                     }
 
                     // draw everything, depending on settings
