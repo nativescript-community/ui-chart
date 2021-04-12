@@ -1,11 +1,14 @@
 import { ComponentBase } from './ComponentBase';
 import { DashPathEffect, Paint, Style, parseDashEffect } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
+import { Color } from '@nativescript/core';
 
 /** enum that indicates the position of the LimitLine label */
 export enum LimitLabelPosition {
     LEFT_TOP,
     LEFT_BOTTOM,
+    CENTER_TOP,
+    CENTER_BOTTOM,
     RIGHT_TOP,
     RIGHT_BOTTOM
 }
@@ -24,7 +27,7 @@ export class LimitLine extends ComponentBase {
     private mLineWidth = 2;
 
     /** the color of the limit line */
-    private mLineColor = '#ED5B5B';
+    private mLineColor: Color | string = '#ED5B5B';
 
     /** the style of the label text */
     private mTextStyle = Style.FILL_AND_STROKE;

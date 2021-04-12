@@ -9,7 +9,7 @@ export enum XAxisPosition {
     BOTTOM,
     BOTH_SIDED,
     TOP_INSIDE,
-    BOTTOM_INSIDE,
+    BOTTOM_INSIDE
 }
 
 /**

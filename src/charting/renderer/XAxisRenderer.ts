@@ -1,4 +1,4 @@
-import { AxisRenderer, CustomRenderer, CustomRendererGridLineFunction } from './AxisRenderer';
+import { AxisRenderer, CustomRenderer, CustomRendererGridLineFunction, CustomRendererLimitLineFunction } from './AxisRenderer';
 import { XAxis, XAxisPosition } from '../components/XAxis';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
@@ -316,8 +316,13 @@ export class XAxisRenderer extends AxisRenderer {
         return this.mRenderLimitLinesBuffer;
     }
 
-    protected mLimitLineClippingRect = new RectF(0, 0, 0, 0);
-
+    protected mLimitLineClippingRect: RectF;
+    protected get limitLineClippingRect() {
+        if (!this.mLimitLineClippingRect) {
+            this.mLimitLineClippingRect = new RectF(0, 0, 0, 0);
+        }
+        return this.mLimitLineClippingRect;
+    }
     /**
      * Draws the LimitLines associated with this axis to the screen.
      *
@@ -325,7 +330,8 @@ export class XAxisRenderer extends AxisRenderer {
      */
 
     public renderLimitLines(c: Canvas) {
-        const limitLines = this.mXAxis.getLimitLines();
+        const axis = this.mXAxis;
+        const limitLines = axis.getLimitLines();
 
         if (limitLines == null || limitLines.length <= 0) return;
 
@@ -333,17 +339,22 @@ export class XAxisRenderer extends AxisRenderer {
         position[0] = 0;
         position[1] = 0;
 
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        const rect = axis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        const clipToContent = axis.clipLimitLinesToContent;
+        const customRender = axis.getCustomRenderer();
+        const customRenderFunction = customRender && customRender.drawLimitLine;
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
             if (!l.isEnabled()) continue;
             const lineWidth = l.getLineWidth();
-
-            const clipRestoreCount = c.save();
-            this.mLimitLineClippingRect.set(rect);
-            this.mLimitLineClippingRect.inset(-lineWidth, 0);
-            c.clipRect(this.mLimitLineClippingRect);
+            if (clipToContent) {
+                c.save();
+                const clipRect = this.limitLineClippingRect;
+                clipRect.set(rect);
+                clipRect.inset(0, -lineWidth);
+                c.clipRect(clipRect);
+            }
 
             position[0] = l.getLimit();
             position[1] = 0;
@@ -351,35 +362,39 @@ export class XAxisRenderer extends AxisRenderer {
             this.mTrans.pointValuesToPixel(position);
 
             if (lineWidth > 0) {
-                this.renderLimitLineLine(c, l, position);
+                this.renderLimitLineLine(c, l, rect, position[0], customRenderFunction);
             }
             this.renderLimitLineLabel(c, l, position, 2 + l.getYOffset());
 
-            c.restoreToCount(clipRestoreCount);
+            if (clipToContent) {
+                c.restore();
+            }
         }
     }
 
-    private mLimitLineSegmentsBuffer = [];
-    private mLimitLinePath = new Path();
+    // private mLimitLineSegmentsBuffer = [];
+    // private mLimitLinePath = new Path();
 
-    public renderLimitLineLine(c: Canvas, limitLine: LimitLine, position) {
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        this.mLimitLineSegmentsBuffer[0] = position[0];
-        this.mLimitLineSegmentsBuffer[1] = rect.top;
-        this.mLimitLineSegmentsBuffer[2] = position[0];
-        this.mLimitLineSegmentsBuffer[3] = rect.bottom;
+    public renderLimitLineLine(c: Canvas, limitLine: LimitLine, rect: RectF, x: number, customRendererFunc?: CustomRendererLimitLineFunction) {
+        // this.mLimitLineSegmentsBuffer[0] = position[0];
+        // this.mLimitLineSegmentsBuffer[1] = rect.top;
+        // this.mLimitLineSegmentsBuffer[2] = position[0];
+        // this.mLimitLineSegmentsBuffer[3] = rect.bottom;
 
-        this.mLimitLinePath.reset();
-        this.mLimitLinePath.moveTo(this.mLimitLineSegmentsBuffer[0], this.mLimitLineSegmentsBuffer[1]);
-        this.mLimitLinePath.lineTo(this.mLimitLineSegmentsBuffer[2], this.mLimitLineSegmentsBuffer[3]);
+        // this.mLimitLinePath.reset();
+        // this.mLimitLinePath.moveTo(this.mLimitLineSegmentsBuffer[0], this.mLimitLineSegmentsBuffer[1]);
+        // this.mLimitLinePath.lineTo(this.mLimitLineSegmentsBuffer[2], this.mLimitLineSegmentsBuffer[3]);
 
         const paint = this.limitLinePaint;
-        paint.setStyle(Style.STROKE);
+        // paint.setStyle(Style.STROKE);
         paint.setColor(limitLine.getLineColor());
         paint.setStrokeWidth(limitLine.getLineWidth());
         paint.setPathEffect(limitLine.getDashPathEffect());
-
-        c.drawPath(this.mLimitLinePath, paint);
+        if (customRendererFunc) {
+            customRendererFunc(c, this, limitLine, rect, x, paint);
+        } else {
+            c.drawLine(x, rect.bottom, x, rect.top, paint);
+        }
     }
 
     public renderLimitLineLabel(c: Canvas, limitLine: LimitLine, position, yOffset) {
@@ -399,20 +414,40 @@ export class XAxisRenderer extends AxisRenderer {
 
             const labelPosition = limitLine.getLabelPosition();
 
-            if (labelPosition === LimitLabelPosition.RIGHT_TOP) {
-                const labelLineHeight = Utils.calcTextHeight(paint, label);
-                paint.setTextAlign(Align.LEFT);
-                c.drawText(label, position[0] + xOffset, rect.top + yOffset + labelLineHeight, paint);
-            } else if (labelPosition === LimitLabelPosition.RIGHT_BOTTOM) {
-                paint.setTextAlign(Align.LEFT);
-                c.drawText(label, position[0] + xOffset, rect.bottom - yOffset, paint);
-            } else if (labelPosition === LimitLabelPosition.LEFT_TOP) {
-                paint.setTextAlign(Align.RIGHT);
-                const labelLineHeight = Utils.calcTextHeight(paint, label);
-                c.drawText(label, position[0] - xOffset, rect.top + yOffset + labelLineHeight, paint);
-            } else {
-                paint.setTextAlign(Align.RIGHT);
-                c.drawText(label, position[0] - xOffset, rect.bottom - yOffset, paint);
+            switch (labelPosition) {
+                case LimitLabelPosition.CENTER_TOP: {
+                    const labelLineHeight = Utils.calcTextHeight(paint, label);
+                    paint.setTextAlign(Align.CENTER);
+                    c.drawText(label, position[0], rect.top + yOffset + labelLineHeight, paint);
+                    break;
+                }
+                case LimitLabelPosition.CENTER_BOTTOM: {
+                    paint.setTextAlign(Align.CENTER);
+                    c.drawText(label, position[0], rect.bottom - yOffset, paint);
+                    break;
+                }
+                case LimitLabelPosition.RIGHT_TOP: {
+                    const labelLineHeight = Utils.calcTextHeight(paint, label);
+                    paint.setTextAlign(Align.LEFT);
+                    c.drawText(label, position[0] + xOffset, rect.top + yOffset + labelLineHeight, paint);
+                    break;
+                }
+                case LimitLabelPosition.RIGHT_BOTTOM: {
+                    paint.setTextAlign(Align.LEFT);
+                    c.drawText(label, position[0] + xOffset, rect.bottom - yOffset, paint);
+                    break;
+                }
+                case LimitLabelPosition.LEFT_TOP: {
+                    paint.setTextAlign(Align.RIGHT);
+                    const labelLineHeight = Utils.calcTextHeight(paint, label);
+                    c.drawText(label, position[0] - xOffset, rect.top + yOffset + labelLineHeight, paint);
+                    break;
+                }
+                case LimitLabelPosition.LEFT_BOTTOM: {
+                    paint.setTextAlign(Align.RIGHT);
+                    c.drawText(label, position[0] - xOffset, rect.bottom - yOffset, paint);
+                    break;
+                }
             }
         }
     }

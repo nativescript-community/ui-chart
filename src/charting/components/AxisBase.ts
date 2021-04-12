@@ -121,6 +121,13 @@ export abstract class AxisBase extends ComponentBase {
      * flag indicating the limit lines layer depth
      */
     protected mDrawLimitLineBehindData = false;
+
+    /**
+     * When enabled, the limitlines will be clipped to contentRect,
+     * otherwise they can bleed outside the content rect.
+     */
+    public clipLimitLinesToContent = true;
+
     /**
      * flag indicating the labels layer depth
      */

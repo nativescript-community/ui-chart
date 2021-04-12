@@ -5,10 +5,13 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { BaseCustomRenderer } from './DataRenderer';
+import { LimitLine } from '../components/LimitLine';
 
 export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
+export type CustomRendererLimitLineFunction = (c: Canvas, renderer: AxisRenderer, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
 export interface CustomRenderer extends BaseCustomRenderer {
     drawGridLine?: CustomRendererGridLineFunction;
+    drawLimitLine?: CustomRendererLimitLineFunction;
 }
 
 /**

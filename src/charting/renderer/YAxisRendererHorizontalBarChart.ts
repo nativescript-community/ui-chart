@@ -17,7 +17,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
     }
     protected get renderLimitLinesBuffer() {
         if (!this.mRenderLimitLinesBuffer) {
-            this.mRenderLimitLinesBuffer = Utils.createNativeArray(4);
+            this.mRenderLimitLinesBuffer = Utils.createNativeArray(2);
         }
         return this.mRenderLimitLinesBuffer;
     }
@@ -198,7 +198,8 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
      */
 
     public renderLimitLines(c: Canvas) {
-        const limitLines = this.mYAxis.getLimitLines();
+        const axis = this.mYAxis;
+        const limitLines = axis.getLimitLines();
 
         if (limitLines == null || limitLines.length <= 0) {
             return;
@@ -207,12 +208,13 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         const pts = this.renderLimitLinesBuffer;
         pts[0] = 0;
         pts[1] = 0;
-        pts[2] = 0;
-        pts[3] = 0;
-        const limitLinePath = this.renderLimitLinesPath;
-        limitLinePath.reset();
+        // const limitLinePath = this.renderLimitLinesPath;
+        // limitLinePath.reset();
 
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        const customRender = axis.getCustomRenderer();
+        const customRendererFunc = customRender && customRender.drawLimitLine;
+        const rect = axis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        const clipToContent = axis.clipLimitLinesToContent;
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
@@ -220,31 +222,31 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
                 continue;
             }
 
-            const clipRestoreCount = c.save();
-            this.mLimitLineClippingRect.set(rect);
-            this.mLimitLineClippingRect.inset(-l.getLineWidth(), 0);
-            c.clipRect(this.mLimitLineClippingRect);
+            const lineWidth = l.getLineWidth();
+            if (clipToContent) {
+                c.save();
+                const clipRect = this.limitLineClippingRect;
+                clipRect.set(rect);
+                clipRect.inset(0, -lineWidth);
+                c.clipRect(clipRect);
+            }
 
             pts[0] = l.getLimit();
-            pts[2] = l.getLimit();
 
             this.mTrans.pointValuesToPixel(pts);
 
-            pts[1] = rect.top;
-            pts[3] = rect.bottom;
-
-            limitLinePath.moveTo(pts[0], pts[1]);
-            limitLinePath.lineTo(pts[2], pts[3]);
-
             const paint = this.limitLinePaint;
-            // paint.setTextAlign(Align.LEFT);
-            paint.setStyle(Style.STROKE);
             paint.setColor(l.getLineColor());
             paint.setPathEffect(l.getDashPathEffect());
             paint.setStrokeWidth(l.getLineWidth());
 
-            c.drawPath(limitLinePath, paint);
-            limitLinePath.reset();
+            if (lineWidth > 0) {
+                if (customRendererFunc) {
+                    customRendererFunc(c, this, l, rect, pts[0], paint);
+                } else {
+                    c.drawLine(pts[0], rect.bottom, pts[0], rect.top, paint);
+                }
+            }
 
             const label = l.getLabel();
 
@@ -262,24 +264,46 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
                 const position = l.getLabelPosition();
 
-                if (position === LimitLabelPosition.RIGHT_TOP) {
-                    const labelLineHeight = Utils.calcTextHeight(paint, label);
-                    paint.setTextAlign(Align.LEFT);
-                    c.drawText(label, pts[0] + xOffset, rect.top + yOffset + labelLineHeight, paint);
-                } else if (position === LimitLabelPosition.RIGHT_BOTTOM) {
-                    paint.setTextAlign(Align.LEFT);
-                    c.drawText(label, pts[0] + xOffset, rect.bottom - yOffset, paint);
-                } else if (position === LimitLabelPosition.LEFT_TOP) {
-                    paint.setTextAlign(Align.RIGHT);
-                    const labelLineHeight = Utils.calcTextHeight(paint, label);
-                    c.drawText(label, pts[0] - xOffset, rect.top + yOffset + labelLineHeight, paint);
-                } else {
-                    paint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, pts[0] - xOffset, rect.bottom - yOffset, paint);
+                switch (position) {
+                    case LimitLabelPosition.RIGHT_TOP: {
+                        const labelLineHeight = Utils.calcTextHeight(paint, label);
+                        paint.setTextAlign(Align.LEFT);
+                        c.drawText(label, pts[0] + xOffset, rect.top + yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.RIGHT_BOTTOM: {
+                        paint.setTextAlign(Align.LEFT);
+                        c.drawText(label, pts[0] + xOffset, rect.bottom - yOffset, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.CENTER_TOP: {
+                        const labelLineHeight = Utils.calcTextHeight(paint, label);
+                        paint.setTextAlign(Align.CENTER);
+                        c.drawText(label, pts[0], rect.top + yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.CENTER_BOTTOM: {
+                        paint.setTextAlign(Align.CENTER);
+                        c.drawText(label, pts[0], rect.bottom - yOffset, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.LEFT_TOP: {
+                        paint.setTextAlign(Align.RIGHT);
+                        const labelLineHeight = Utils.calcTextHeight(paint, label);
+                        c.drawText(label, pts[0] - xOffset, rect.top + yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    default: {
+                        paint.setTextAlign(Align.RIGHT);
+                        c.drawText(label, pts[0] - xOffset, rect.bottom - yOffset, paint);
+                        break;
+                    }
                 }
             }
 
-            c.restoreToCount(clipRestoreCount);
+            if (clipToContent) {
+                c.restore();
+            }
         }
     }
 }

@@ -188,7 +188,8 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
      */
 
     public renderLimitLines(c: Canvas) {
-        const limitLines = this.mXAxis.getLimitLines();
+        const axis = this.mXAxis;
+        const limitLines = axis.getLimitLines();
 
         if (limitLines == null || limitLines.length <= 0) return;
 
@@ -200,35 +201,46 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         limitLinePath.reset();
         let offsetLeft = 0;
         let rect: RectF;
-        if (this.mAxis.isIgnoringOffsets()) {
+        if (axis.isIgnoringOffsets()) {
             rect = this.mViewPortHandler.getChartRect();
         } else {
             rect = this.mViewPortHandler.getContentRect();
             offsetLeft = this.mViewPortHandler.offsetLeft();
         }
+        const customRender = axis.getCustomRenderer();
+        const customRendererFunc = customRender && customRender.drawLimitLine;
+        const clipToContent = axis.clipLimitLinesToContent;
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
             if (!l.isEnabled()) {
                 continue;
             }
-
-            const clipRestoreCount = c.save();
-            this.mLimitLineClippingRect.set(rect);
-            this.mLimitLineClippingRect.inset(0, -l.getLineWidth());
-            c.clipRect(this.mLimitLineClippingRect);
+            const lineWidth = l.getLineWidth();
+            if (clipToContent) {
+                const clipRect = this.limitLineClippingRect;
+                clipRect.set(rect);
+                clipRect.inset(0, -lineWidth);
+                c.clipRect(clipRect);
+            }
 
             const paint = this.limitLinePaint;
-            paint.setStyle(Style.STROKE);
             paint.setColor(l.getLineColor());
-            paint.setStrokeWidth(l.getLineWidth());
+            paint.setStrokeWidth(lineWidth);
             paint.setPathEffect(l.getDashPathEffect());
 
             pts[1] = l.getLimit();
 
             this.mTrans.pointValuesToPixel(pts);
 
-            limitLinePath.moveTo(rect.left, pts[1]);
+            if (lineWidth > 0) {
+                if (customRendererFunc) {
+                    customRendererFunc(c, this, l, rect, pts[1], paint);
+                } else {
+                    c.drawLine(rect.left, pts[1], rect.right, pts[1], paint);
+                }
+            }
+
             limitLinePath.lineTo(rect.right, pts[1]);
 
             c.drawPath(limitLinePath, paint);
@@ -250,22 +262,43 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
                 const position = l.getLabelPosition();
 
-                if (position === LimitLabelPosition.RIGHT_TOP) {
-                    paint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, rect.right - xOffset, pts[1] - yOffset + labelLineHeight, paint);
-                } else if (position === LimitLabelPosition.RIGHT_BOTTOM) {
-                    paint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, rect.right - xOffset, pts[1] + yOffset, paint);
-                } else if (position === LimitLabelPosition.LEFT_TOP) {
-                    paint.setTextAlign(Align.LEFT);
-                    c.drawText(label, rect.left + xOffset, pts[1] - yOffset + labelLineHeight, paint);
-                } else {
-                    paint.setTextAlign(Align.LEFT);
-                    c.drawText(label, offsetLeft + xOffset, pts[1] + yOffset, paint);
+                switch (position) {
+                    case LimitLabelPosition.RIGHT_TOP: {
+                        paint.setTextAlign(Align.RIGHT);
+                        c.drawText(label, rect.right - xOffset, pts[1] - yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.RIGHT_BOTTOM: {
+                        paint.setTextAlign(Align.RIGHT);
+                        c.drawText(label, rect.right - xOffset, pts[1] + yOffset, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.CENTER_TOP: {
+                        paint.setTextAlign(Align.CENTER);
+                        c.drawText(label, rect.right, pts[1] - yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.CENTER_BOTTOM: {
+                        paint.setTextAlign(Align.CENTER);
+                        c.drawText(label, rect.right, pts[1] + yOffset, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.LEFT_TOP: {
+                        paint.setTextAlign(Align.LEFT);
+                        c.drawText(label, rect.left + xOffset, pts[1] - yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.LEFT_BOTTOM: {
+                        paint.setTextAlign(Align.LEFT);
+                        c.drawText(label, offsetLeft + xOffset, pts[1] + yOffset, paint);
+                        break;
+                    }
                 }
             }
 
-            c.restoreToCount(clipRestoreCount);
+            if (clipToContent) {
+                c.restore();
+            }
         }
     }
 }

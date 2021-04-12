@@ -36,13 +36,13 @@ export class YAxisRenderer extends AxisRenderer {
         return this.mZeroLineClippingRect;
     }
 
-    protected mRenderLimitLinesPath: Path;
-    protected get renderLimitLinesPath() {
-        if (!this.mRenderLimitLinesPath) {
-            this.mRenderLimitLinesPath = new Path();
-        }
-        return this.mRenderLimitLinesPath;
-    }
+    // protected mRenderLimitLinesPath: Path;
+    // protected get renderLimitLinesPath() {
+    //     if (!this.mRenderLimitLinesPath) {
+    //         this.mRenderLimitLinesPath = new Path();
+    //     }
+    //     return this.mRenderLimitLinesPath;
+    // }
     protected mRenderLimitLinesBuffer;
     protected get renderLimitLinesBuffer() {
         if (!this.mRenderLimitLinesBuffer) {
@@ -315,36 +315,40 @@ export class YAxisRenderer extends AxisRenderer {
      * @param c
      */
     public renderLimitLines(c: Canvas) {
-        const limitLines = this.mYAxis.getLimitLines();
+        const axis = this.mYAxis;
+        const limitLines = axis.getLimitLines();
 
         if (limitLines == null || limitLines.length <= 0) return;
 
         const pts = this.renderLimitLinesBuffer;
         pts[0] = 0;
         pts[1] = 0;
-        const limitLinePath = this.renderLimitLinesPath;
-        limitLinePath.reset();
         let offsetLeft = 0;
         let rect: RectF;
-        if (this.mAxis.isIgnoringOffsets()) {
+        if (axis.isIgnoringOffsets()) {
             rect = this.mViewPortHandler.getChartRect();
         } else {
             rect = this.mViewPortHandler.getContentRect();
             offsetLeft = this.mViewPortHandler.offsetLeft();
         }
+
+        const customRender = axis.getCustomRenderer();
+        const customRendererFunc = customRender && customRender.drawLimitLine;
+        const clipToContent = axis.clipLimitLinesToContent;
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
             if (!l.isEnabled()) continue;
             const lineWidth = l.getLineWidth();
-            const clipRestoreCount = c.save();
-            const rect = this.limitLineClippingRect;
-            rect.set(rect);
-            rect.inset(0, -lineWidth);
-            c.clipRect(rect);
+            if (clipToContent) {
+                c.save();
+                const clipRect = this.limitLineClippingRect;
+                clipRect.set(rect);
+                clipRect.inset(0, -lineWidth);
+                c.clipRect(clipRect);
+            }
 
             const paint = this.limitLinePaint;
-            paint.setStyle(Style.STROKE);
             paint.setColor(l.getLineColor());
             paint.setStrokeWidth(lineWidth);
             paint.setPathEffect(l.getDashPathEffect());
@@ -353,12 +357,12 @@ export class YAxisRenderer extends AxisRenderer {
             this.mTrans.pointValuesToPixel(pts);
 
             if (lineWidth > 0) {
-                limitLinePath.moveTo(rect.left, pts[1]);
-                limitLinePath.lineTo(rect.right, pts[1]);
-                c.drawPath(limitLinePath, paint);
-                limitLinePath.reset();
+                if (customRendererFunc) {
+                    customRendererFunc(c, this, l, rect, pts[1], paint);
+                } else {
+                    c.drawLine(rect.left, pts[1], rect.right, pts[1], paint);
+                }
             }
-            // c.drawLines(pts, paint);
 
             const label = l.getLabel();
 
@@ -375,23 +379,43 @@ export class YAxisRenderer extends AxisRenderer {
                 const yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset();
 
                 const position = l.getLabelPosition();
-
-                if (position === LimitLabelPosition.RIGHT_TOP) {
-                    paint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, rect.right - xOffset, pts[1] - yOffset + labelLineHeight, paint);
-                } else if (position === LimitLabelPosition.RIGHT_BOTTOM) {
-                    paint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, rect.right - xOffset, pts[1] + yOffset, paint);
-                } else if (position === LimitLabelPosition.LEFT_TOP) {
-                    paint.setTextAlign(Align.LEFT);
-                    c.drawText(label, rect.left + xOffset, pts[1] - yOffset + labelLineHeight, paint);
-                } else {
-                    paint.setTextAlign(Align.LEFT);
-                    c.drawText(label, offsetLeft + xOffset, pts[1] + yOffset, paint);
+                switch (position) {
+                    case LimitLabelPosition.RIGHT_TOP: {
+                        paint.setTextAlign(Align.RIGHT);
+                        c.drawText(label, rect.right - xOffset, pts[1] - yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.RIGHT_BOTTOM: {
+                        paint.setTextAlign(Align.RIGHT);
+                        c.drawText(label, rect.right - xOffset, pts[1] + yOffset, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.CENTER_TOP: {
+                        paint.setTextAlign(Align.RIGHT);
+                        c.drawText(label, rect.right, pts[1] - yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.CENTER_BOTTOM: {
+                        paint.setTextAlign(Align.CENTER);
+                        c.drawText(label, rect.right, pts[1] + yOffset, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.LEFT_TOP: {
+                        paint.setTextAlign(Align.LEFT);
+                        c.drawText(label, rect.left + xOffset, pts[1] - yOffset + labelLineHeight, paint);
+                        break;
+                    }
+                    case LimitLabelPosition.LEFT_BOTTOM: {
+                        paint.setTextAlign(Align.LEFT);
+                        c.drawText(label, offsetLeft + xOffset, pts[1] + yOffset, paint);
+                        break;
+                    }
                 }
             }
 
-            c.restoreToCount(clipRestoreCount);
+            if (clipToContent) {
+                c.restore();
+            }
         }
     }
 }
