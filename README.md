@@ -4,13 +4,6 @@
 [![GitHub forks](https://img.shields.io/github/forks/nativescript-community/ui-chart.svg)](https://github.com/nativescript-community/ui-chart/network)
 [![GitHub stars](https://img.shields.io/github/stars/nativescript-community/ui-chart.svg)](https://github.com/nativescript-community/ui-chart/stargazers)
 
-
-
-https://user-images.githubusercontent.com/655344/114521700-fb21c100-9c42-11eb-90c7-fe4ae21a8399.mp4
-
-
-
-
 ## Installation
 
 -   `tns plugin add @nativescript-community/ui-chart`
