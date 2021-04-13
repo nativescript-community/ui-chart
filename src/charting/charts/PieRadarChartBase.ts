@@ -17,7 +17,7 @@ const LOG_TAG = 'PieRadarChartBase';
 /**
  * View that represents a pie chart. Draws cake like slices.
  *
- * @author Philipp Jahoda
+
  */
 export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, T extends ChartData<U, D>> extends Chart<U, D, T> {
     protected mChartTouchListener: PieRadarChartTouchListener;

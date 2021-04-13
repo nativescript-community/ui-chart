@@ -5,7 +5,7 @@ const DEFAULT_FONT = Font.default.withFontSize(10);
 /**
  * This class encapsulates everything both Axis, Legend and LimitLines have in common.
  *
- * @author Philipp Jahoda
+
  */
 export abstract class ComponentBase {
     /**

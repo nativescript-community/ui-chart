@@ -22,10 +22,10 @@ export interface CustomRenderer extends BaseCustomRenderer {
  * Implementation of the RadarChart, a "spidernet"-like chart. It works best
  * when displaying 5-10 entries per DataSet.
  *
- * @author Philipp Jahoda
+
  */
 export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData> {
-    mRenderer: RadarChartRenderer;
+    protected mRenderer: RadarChartRenderer;
     /**
      * width of the main web lines
      */

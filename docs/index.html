@@ -1,0 +1,707 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Nativescript UI Chart Components</title>
+	<meta name="description" content="Documentation for Nativescript UI Chart Components">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">Nativescript UI Chart Components</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>Nativescript UI Chart Components</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<p><a href="https://www.npmjs.com/package/@nativescript-community/ui-chart"><img src="https://img.shields.io/npm/v/@nativescript-community/ui-chart.svg" alt="npm"></a>
+					<a href="https://www.npmjs.com/package/@nativescript-community/ui-chart"><img src="https://img.shields.io/npm/dt/@nativescript-community/ui-chart.svg?label=npm%20downloads" alt="npm"></a>
+					<a href="https://github.com/nativescript-community/ui-chart/network"><img src="https://img.shields.io/github/forks/nativescript-community/ui-chart.svg" alt="GitHub forks"></a>
+				<a href="https://github.com/nativescript-community/ui-chart/stargazers"><img src="https://img.shields.io/github/stars/nativescript-community/ui-chart.svg" alt="GitHub stars"></a></p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<ul>
+					<li>  <code>tns plugin add @nativescript-community/ui-chart</code></li>
+				</ul>
+				<hr>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<p>For gestures to work, make sure to add the following code block inside main application file (e.g. app.ts):</p>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">install</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart&#039;</span><span style="color: #000000">;</span>
+<span style="color: #795E26">install</span><span style="color: #000000">();</span>
+</code></pre>
+				<p>You can also check <a href="https://github.com/nativescript-community/ui-chart/wiki">Wiki</a> for any useful material.</p>
+				<a href="#plain-nativescript" id="plain-nativescript" style="color: inherit; text-decoration: none;">
+					<h2>Plain NativeScript</h2>
+				</a>
+				<p><span style="color:red">IMPORTANT: </span>Make sure you include <code>xmlns:ch=&quot;@nativescript-community/ui-chart&quot;</code> on the Page element.</p>
+				<a href="#xml" id="xml" style="color: inherit; text-decoration: none;">
+					<h3>XML</h3>
+				</a>
+				<pre><code class="language-XML"><span style="color: #800000">&lt;Page</span><span style="color: #000000"> </span><span style="color: #FF0000">xmlns</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;http://schemas.nativescript.org/tns.xsd&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">xmlns:ch</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;@nativescript-community/ui-chart&quot;</span><span style="color: #800000">&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;ScrollView&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;StackLayout&gt;</span>
+<span style="color: #000000">            </span><span style="color: #800000">&lt;Label</span><span style="color: #000000"> </span><span style="color: #FF0000">text</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;Line Chart&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">fontSize</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;20&quot;</span><span style="color: #800000">/&gt;</span>
+<span style="color: #000000">            </span><span style="color: #800000">&lt;ch:LineChart</span><span style="color: #000000"> </span><span style="color: #FF0000">id</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;line-chart&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">backgroundColor</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;lightgray&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">width</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;300&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">height</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;350&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">loaded</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;onLineChartLoaded&quot;</span><span style="color: #800000">/&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;/StackLayout&gt;</span>
+<span style="color: #000000">    </span><span style="color: #800000">&lt;/ScrollView&gt;</span>
+<span style="color: #800000">&lt;/Page&gt;</span>
+</code></pre>
+				<a href="#typescript" id="typescript" style="color: inherit; text-decoration: none;">
+					<h3>TypeScript</h3>
+				</a>
+				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineChart</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/charts/LineChart&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineDataSet</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/data/LineDataSet&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineData</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/data/LineData&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">onLineChartLoaded</span><span style="color: #000000">(</span><span style="color: #001080">args</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">chart</span><span style="color: #000000"> = </span><span style="color: #001080">args</span><span style="color: #000000">.</span><span style="color: #001080">object</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #267F99">LineChart</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setScaleEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setDragEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">data</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Array</span><span style="color: #000000">(</span><span style="color: #098658">500</span><span style="color: #000000">).</span><span style="color: #795E26">fill</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">).</span><span style="color: #795E26">map</span><span style="color: #000000">((</span><span style="color: #001080">v</span><span style="color: #000000">, </span><span style="color: #001080">i</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> ({</span>
+<span style="color: #000000">        </span><span style="color: #001080">index:</span><span style="color: #000000"> </span><span style="color: #001080">i</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #267F99">Math</span><span style="color: #000000">.</span><span style="color: #795E26">random</span><span style="color: #000000">() * </span><span style="color: #098658">1</span><span style="color: #000000">,</span>
+<span style="color: #000000">    }));</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">sets</span><span style="color: #000000"> = [];</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">set</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">LineDataSet</span><span style="color: #000000">(</span><span style="color: #001080">data</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;Legend Label&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;index&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;value&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">set</span><span style="color: #000000">.</span><span style="color: #795E26">setColor</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;blue&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">sets</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">set</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// Create a data object with the data sets</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ld</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">LineData</span><span style="color: #000000">(</span><span style="color: #001080">sets</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// Set data</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setData</span><span style="color: #000000">(</span><span style="color: #001080">ld</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#nativescript--vue" id="nativescript--vue" style="color: inherit; text-decoration: none;">
+					<h2>NativeScript + Vue</h2>
+				</a>
+				<pre><code class="language-javascript"><span style="color: #001080">Vue</span><span style="color: #000000">.</span><span style="color: #795E26">registerElement</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;LineChart&#039;</span><span style="color: #000000">, () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/charts&#039;</span><span style="color: #000000">).</span><span style="color: #001080">LineChart</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-html"><span style="color: #800000">&lt;</span><span style="color: #CD3131">LineChart</span><span style="color: #000000"> </span><span style="color: #FF0000">ref</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;chart&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">width</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;300&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">height</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;400&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">@loaded</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;onChartLoaded&quot;</span><span style="color: #800000">&gt;</span><span style="color: #000000"> </span><span style="color: #800000">&lt;/</span><span style="color: #CD3131">LineChart</span><span style="color: #800000">&gt;</span>
+</code></pre>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineChart</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/charts/LineChart&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineDataSet</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/data/LineDataSet&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineData</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/data/LineData&#039;</span><span style="color: #000000">;</span>
+</code></pre>
+				<pre><code class="language-javascript"><span style="color: #795E26">onChartLoaded</span><span style="color: #000000">() {</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">chart</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #001080">$refs</span><span style="color: #000000">.</span><span style="color: #001080">chart</span><span style="color: #000000">[</span><span style="color: #A31515">&#039;nativeView&#039;</span><span style="color: #000000">] </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #267F99">LineChart</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #001080">backgroundColor</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;white&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// enable touch gestures</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setTouchEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setDrawGridBackground</span><span style="color: #000000">(</span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// enable scaling and dragging</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setDragEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setScaleEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// force pinch zoom along both axis</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setPinchZoom</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// disable dual axis (only use LEFT axis)</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">getAxisRight</span><span style="color: #000000">().</span><span style="color: #795E26">setEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">myData</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Array</span><span style="color: #000000">(</span><span style="color: #098658">500</span><span style="color: #000000">).</span><span style="color: #795E26">fill</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">).</span><span style="color: #795E26">map</span><span style="color: #000000">((</span><span style="color: #001080">v</span><span style="color: #000000">, </span><span style="color: #001080">i</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> ({</span>
+<span style="color: #000000">        </span><span style="color: #001080">index:</span><span style="color: #000000"> </span><span style="color: #001080">i</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #267F99">Math</span><span style="color: #000000">.</span><span style="color: #795E26">random</span><span style="color: #000000">() * </span><span style="color: #098658">1</span><span style="color: #000000">,</span>
+<span style="color: #000000">    }));</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">sets</span><span style="color: #000000"> = [];</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">set</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">LineDataSet</span><span style="color: #000000">(</span><span style="color: #001080">myData</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;Legend Label&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;index&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;value&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">set</span><span style="color: #000000">.</span><span style="color: #795E26">setColor</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;blue&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">sets</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">set</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// Create a data object with the data sets</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ld</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">LineData</span><span style="color: #000000">(</span><span style="color: #001080">sets</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// Set data</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setData</span><span style="color: #000000">(</span><span style="color: #001080">ld</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#nativescript--angular" id="nativescript--angular" style="color: inherit; text-decoration: none;">
+					<h2>NativeScript + Angular</h2>
+				</a>
+				<p>Register the element in app.module.ts</p>
+				<pre><code class="language-javascript"><span style="color: #795E26">registerElement</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;LineChart&#039;</span><span style="color: #000000">, () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/charts&#039;</span><span style="color: #000000">).</span><span style="color: #001080">LineChart</span><span style="color: #000000">);</span>
+</code></pre>
+				<pre><code class="language-html"><span style="color: #800000">&lt;</span><span style="color: #CD3131">LineChart</span><span style="color: #000000"> </span><span style="color: #FF0000">width</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;300&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">height</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;400&quot;</span><span style="color: #000000"> </span><span style="color: #FF0000">(loaded)</span><span style="color: #000000">=</span><span style="color: #0000FF">&quot;onChartLoaded($event)&quot;</span><span style="color: #800000">&gt;</span><span style="color: #000000"> </span><span style="color: #800000">&lt;/</span><span style="color: #CD3131">LineChart</span><span style="color: #800000">&gt;</span>
+</code></pre>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineChart</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/charts/LineChart&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineDataSet</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/data/LineDataSet&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">LineData</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@nativescript-community/ui-chart/data/LineData&#039;</span><span style="color: #000000">;</span>
+</code></pre>
+				<pre><code class="language-javascript"><span style="color: #795E26">onChartLoaded</span><span style="color: #000000">(</span><span style="color: #001080">args</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">chart</span><span style="color: #000000"> = </span><span style="color: #001080">args</span><span style="color: #000000">.</span><span style="color: #001080">object</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #267F99">LineChart</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #001080">backgroundColor</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;white&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// enable touch gestures</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setTouchEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setDrawGridBackground</span><span style="color: #000000">(</span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// enable scaling and dragging</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setDragEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setScaleEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// force pinch zoom along both axis</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setPinchZoom</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// disable dual axis (only use LEFT axis)</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">getAxisRight</span><span style="color: #000000">().</span><span style="color: #795E26">setEnabled</span><span style="color: #000000">(</span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">myData</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Array</span><span style="color: #000000">(</span><span style="color: #098658">500</span><span style="color: #000000">).</span><span style="color: #795E26">fill</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">).</span><span style="color: #795E26">map</span><span style="color: #000000">((</span><span style="color: #001080">v</span><span style="color: #000000">, </span><span style="color: #001080">i</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> ({</span>
+<span style="color: #000000">        </span><span style="color: #001080">index:</span><span style="color: #000000"> </span><span style="color: #001080">i</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #267F99">Math</span><span style="color: #000000">.</span><span style="color: #795E26">random</span><span style="color: #000000">() * </span><span style="color: #098658">1</span><span style="color: #000000">,</span>
+<span style="color: #000000">    }));</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">sets</span><span style="color: #000000"> = [];</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">set</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">LineDataSet</span><span style="color: #000000">(</span><span style="color: #001080">myData</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;Legend Label&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;index&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;value&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">set</span><span style="color: #000000">.</span><span style="color: #795E26">setColor</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;blue&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #001080">sets</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">set</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// Create a data object with the data sets</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ld</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">LineData</span><span style="color: #000000">(</span><span style="color: #001080">sets</span><span style="color: #000000">);</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// Set data</span>
+<span style="color: #000000">    </span><span style="color: #001080">chart</span><span style="color: #000000">.</span><span style="color: #795E26">setData</span><span style="color: #000000">(</span><span style="color: #001080">ld</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#about" id="about" style="color: inherit; text-decoration: none;">
+					<h2>About</h2>
+				</a>
+				<p>This plugin is based on <a href="https://github.com/PhilJay/MPAndroidChart">MPAndroidChart</a>, a powerful &amp; easy to use chart library. Therefore, special thanks goes to Philipp Jahoda, the creator of <a href="https://github.com/PhilJay/MPAndroidChart">MPAndroidChart</a> and the rest of his team.</p>
+				<p>Instead of directly importing existing native libraries, this library has been rewritten in TypeScript, using <a href="https://github.com/nativescript-community/ui-canvas">@nativescript-community/ui-canvas</a> plugin API as a basis. Plugin &#39;ui-canvas&#39; is an extremely powerful tool that converts Android Native Canvas API to a cross-platform API for NativeScript framework. In few words, &#39;ui-chart&#39; has the same code-base for both Android and iOS.</p>
+				<p>Additionally, <a href="https://github.com/nativescript-community/gesturehandler">@nativescript-community/gesturehandler</a> plugin is used for handling chart gestures.</p>
+				<p>In short, these are the benefits of rewriting library into a NativeScript plugin:</p>
+				<ul>
+					<li>  Same codebase for Android and iOS. Makes maintaining the library very easy.</li>
+					<li>  Smaller apps size because there are no native libs or native frameworks to consume space. All done with the power of {N}</li>
+				</ul>
+				<p>Originally, the main goal was to prevent the need for marshalling all datasets. This is extremely heavy, costly and unnecessary!</p>
+				<p>Upon running demo samples, one can conclude it is the fastest drawing library, in comparison to <code>nativescript-ui-chart</code> and <code>nativescript-mpchart</code>.</p>
+				<p>That is because:</p>
+				<ul>
+					<li>  It does not marshal or recreate any subset of the data sets, but directly uses the provided array instead</li>
+					<li>  It can share the same data array between multiple datasets</li>
+					<li>  It can still use the power of native arrays to NOT marshal arrays of positions while drawing lines with <a href="https://github.com/nativescript-community/ui-canvas">@nativescript-community/ui-canvas</a></li>
+				</ul>
+				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+					<h2>Documentation</h2>
+				</a>
+				<p>The NativeScript &#39;ui-chart&#39; plugin is based on the <a href="https://github.com/PhilJay/MPAndroidChart">MPAndroidChart</a> library.
+				In few words, its API is identical. The possibility to add API reference will be considered in the future.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Modules</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/animation_chartanimator.html">animation/<wbr>Chart<wbr>Animator</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/buffer_abstractbuffer.html">buffer/<wbr>Abstract<wbr>Buffer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/buffer_barbuffer.html">buffer/<wbr>Bar<wbr>Buffer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/buffer_horizontalbarbuffer.html">buffer/<wbr>Horizontal<wbr>Bar<wbr>Buffer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts.html">charts</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_barchart.html">charts/<wbr>Bar<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_barlinechartbase.html">charts/<wbr>Bar<wbr>Line<wbr>Chart<wbr>Base</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_bubblechart.html">charts/<wbr>Bubble<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_candlestickchart.html">charts/<wbr>Candle<wbr>Stick<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_chart.html">charts/<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_combinedchart.html">charts/<wbr>Combined<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_horizontalbarchart.html">charts/<wbr>Horizontal<wbr>Bar<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_linechart.html">charts/<wbr>Line<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_piechart.html">charts/<wbr>Pie<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_pieradarchartbase.html">charts/<wbr>Pie<wbr>Radar<wbr>Chart<wbr>Base</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_radarchart.html">charts/<wbr>Radar<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/charts_scatterchart.html">charts/<wbr>Scatter<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_axisbase.html">components/<wbr>Axis<wbr>Base</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_componentbase.html">components/<wbr>Component<wbr>Base</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_description.html">components/<wbr>Description</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_imarker.html">components/IMarker</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_legend.html">components/<wbr>Legend</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_legendentry.html">components/<wbr>Legend<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_limitline.html">components/<wbr>Limit<wbr>Line</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_xaxis.html">components/XAxis</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/components_yaxis.html">components/YAxis</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_bardata.html">data/<wbr>Bar<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_bardataset.html">data/<wbr>Bar<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_barentry.html">data/<wbr>Bar<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_barlinescattercandlebubbledata.html">data/<wbr>Bar<wbr>Line<wbr>Scatter<wbr>Candle<wbr>Bubble<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_barlinescattercandlebubbledataset.html">data/<wbr>Bar<wbr>Line<wbr>Scatter<wbr>Candle<wbr>Bubble<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_basedataset.html">data/<wbr>Base<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_baseentry.html">data/<wbr>Base<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_bubbledata.html">data/<wbr>Bubble<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_bubbledataset.html">data/<wbr>Bubble<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_bubbleentry.html">data/<wbr>Bubble<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_candledata.html">data/<wbr>Candle<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_candledataset.html">data/<wbr>Candle<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_candleentry.html">data/<wbr>Candle<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_chartdata.html">data/<wbr>Chart<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_combineddata.html">data/<wbr>Combined<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_dataset.html">data/<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_entry.html">data/<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_linedata.html">data/<wbr>Line<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_linedataset.html">data/<wbr>Line<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_lineradardataset.html">data/<wbr>Line<wbr>Radar<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_linescattercandleradardataset.html">data/<wbr>Line<wbr>Scatter<wbr>Candle<wbr>Radar<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_piedata.html">data/<wbr>Pie<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_piedataset.html">data/<wbr>Pie<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_pieentry.html">data/<wbr>Pie<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_radardata.html">data/<wbr>Radar<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_radardataset.html">data/<wbr>Radar<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_radarentry.html">data/<wbr>Radar<wbr>Entry</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_scatterdata.html">data/<wbr>Scatter<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/data_scatterdataset.html">data/<wbr>Scatter<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/formatter_defaultaxisvalueformatter.html">formatter/<wbr>Default<wbr>Axis<wbr>Value<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/formatter_defaultfillformatter.html">formatter/<wbr>Default<wbr>Fill<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/formatter_defaultvalueformatter.html">formatter/<wbr>Default<wbr>Value<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/formatter_iaxisvalueformatter.html">formatter/IAxis<wbr>Value<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/formatter_ifillformatter.html">formatter/IFill<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/formatter_ivalueformatter.html">formatter/IValue<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/formatter_valueformatter.html">formatter/<wbr>Value<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_barhighlighter.html">highlight/<wbr>Bar<wbr>Highlighter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_charthighlighter.html">highlight/<wbr>Chart<wbr>Highlighter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_combinedhighlighter.html">highlight/<wbr>Combined<wbr>Highlighter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_highlight.html">highlight/<wbr>Highlight</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_horizontalbarhighlighter.html">highlight/<wbr>Horizontal<wbr>Bar<wbr>Highlighter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_ihighlighter.html">highlight/IHighlighter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_piehighlighter.html">highlight/<wbr>Pie<wbr>Highlighter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_pieradarhighlighter.html">highlight/<wbr>Pie<wbr>Radar<wbr>Highlighter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/highlight_radarhighlighter.html">highlight/<wbr>Radar<wbr>Highlighter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_dataprovider_bardataprovider.html">interfaces/dataprovider/<wbr>Bar<wbr>Data<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_dataprovider_barlinescattercandlebubbledataprovider.html">interfaces/dataprovider/<wbr>Bar<wbr>Line<wbr>Scatter<wbr>Candle<wbr>Bubble<wbr>Data<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_dataprovider_bubbledataprovider.html">interfaces/dataprovider/<wbr>Bubble<wbr>Data<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_dataprovider_candledataprovider.html">interfaces/dataprovider/<wbr>Candle<wbr>Data<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_dataprovider_chartinterface.html">interfaces/dataprovider/<wbr>Chart<wbr>Interface</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_dataprovider_combineddataprovider.html">interfaces/dataprovider/<wbr>Combined<wbr>Data<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_dataprovider_linedataprovider.html">interfaces/dataprovider/<wbr>Line<wbr>Data<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_dataprovider_scatterdataprovider.html">interfaces/dataprovider/<wbr>Scatter<wbr>Data<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_ibardataset.html">interfaces/datasets/IBar<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_ibarlinescattercandlebubbledataset.html">interfaces/datasets/IBar<wbr>Line<wbr>Scatter<wbr>Candle<wbr>Bubble<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_ibubbledataset.html">interfaces/datasets/IBubble<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_icandledataset.html">interfaces/datasets/ICandle<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_idataset.html">interfaces/datasets/IData<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_ilinedataset.html">interfaces/datasets/ILine<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_ilineradardataset.html">interfaces/datasets/ILine<wbr>Radar<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_ilinescattercandleradardataset.html">interfaces/datasets/ILine<wbr>Scatter<wbr>Candle<wbr>Radar<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_ipiedataset.html">interfaces/datasets/IPie<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_iradardataset.html">interfaces/datasets/IRadar<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/interfaces_datasets_iscatterdataset.html">interfaces/datasets/IScatter<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/jobs_animatedmoveviewjob.html">jobs/<wbr>Animated<wbr>Move<wbr>View<wbr>Job</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/jobs_animatedviewportjob.html">jobs/<wbr>Animated<wbr>View<wbr>Port<wbr>Job</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/jobs_animatedzoomjob.html">jobs/<wbr>Animated<wbr>Zoom<wbr>Job</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/jobs_moveviewjob.html">jobs/<wbr>Move<wbr>View<wbr>Job</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/jobs_viewportjob.html">jobs/<wbr>View<wbr>Port<wbr>Job</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/jobs_zoomjob.html">jobs/<wbr>Zoom<wbr>Job</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/listener_barlinecharttouchlistener.html">listener/<wbr>Bar<wbr>Line<wbr>Chart<wbr>Touch<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/listener_charttouchlistener.html">listener/<wbr>Chart<wbr>Touch<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/listener_pieradarcharttouchlistener.html">listener/<wbr>Pie<wbr>Radar<wbr>Chart<wbr>Touch<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/model_gradientcolor.html">model/<wbr>Gradient<wbr>Color</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_axisrenderer.html">renderer/<wbr>Axis<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_barchartrenderer.html">renderer/<wbr>Bar<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_barlinescattercandlebubblerenderer.html">renderer/<wbr>Bar<wbr>Line<wbr>Scatter<wbr>Candle<wbr>Bubble<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_bubblechartrenderer.html">renderer/<wbr>Bubble<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_candlestickchartrenderer.html">renderer/<wbr>Candle<wbr>Stick<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_combinedchartrenderer.html">renderer/<wbr>Combined<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_datarenderer.html">renderer/<wbr>Data<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_horizontalbarchartrenderer.html">renderer/<wbr>Horizontal<wbr>Bar<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_legendrenderer.html">renderer/<wbr>Legend<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_linechartrenderer.html">renderer/<wbr>Line<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_lineradarrenderer.html">renderer/<wbr>Line<wbr>Radar<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_linescattercandleradarrenderer.html">renderer/<wbr>Line<wbr>Scatter<wbr>Candle<wbr>Radar<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_piechartrenderer.html">renderer/<wbr>Pie<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_radarchartrenderer.html">renderer/<wbr>Radar<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_renderer.html">renderer/<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatterchartrenderer.html">renderer/<wbr>Scatter<wbr>Chart<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_xaxisrenderer.html">renderer/XAxis<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_xaxisrendererhorizontalbarchart.html">renderer/XAxis<wbr>Renderer<wbr>Horizontal<wbr>Bar<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_xaxisrendererradarchart.html">renderer/XAxis<wbr>Renderer<wbr>Radar<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_yaxisrenderer.html">renderer/YAxis<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_yaxisrendererhorizontalbarchart.html">renderer/YAxis<wbr>Renderer<wbr>Horizontal<wbr>Bar<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_yaxisrendererradarchart.html">renderer/YAxis<wbr>Renderer<wbr>Radar<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatter_chevrondownshaperenderer.html">renderer/scatter/<wbr>Chevron<wbr>Down<wbr>Shape<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatter_chevronupshaperenderer.html">renderer/scatter/<wbr>Chevron<wbr>UpShape<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatter_circleshaperenderer.html">renderer/scatter/<wbr>Circle<wbr>Shape<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatter_crossshaperenderer.html">renderer/scatter/<wbr>Cross<wbr>Shape<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatter_ishaperenderer.html">renderer/scatter/IShape<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatter_squareshaperenderer.html">renderer/scatter/<wbr>Square<wbr>Shape<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatter_triangleshaperenderer.html">renderer/scatter/<wbr>Triangle<wbr>Shape<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/renderer_scatter_xshaperenderer.html">renderer/scatter/XShape<wbr>Renderer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_colortemplate.html">utils/<wbr>Color<wbr>Template</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_horizontalviewporthandler.html">utils/<wbr>Horizontal<wbr>View<wbr>Port<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_mppointd.html">utils/MPPointD</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_mppointf.html">utils/MPPointF</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_objectpool.html">utils/<wbr>Object<wbr>Pool</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_transformer.html">utils/<wbr>Transformer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_transformerhorizontalbarchart.html">utils/<wbr>Transformer<wbr>Horizontal<wbr>Bar<wbr>Chart</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_utils.html">utils/<wbr>Utils</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_viewporthandler.html">utils/<wbr>View<wbr>Port<wbr>Handler</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

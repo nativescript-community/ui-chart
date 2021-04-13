@@ -5,7 +5,7 @@ import { BarEntry } from './BarEntry';
 /**
  * Data object that represents all data for the BarChart.
  *
- * @author Philipp Jahoda
+
  */
 export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet> {
     /**

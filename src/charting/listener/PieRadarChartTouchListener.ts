@@ -17,7 +17,7 @@ import {
  * TouchListener for Pie- and RadarChart with handles all
  * touch interaction.
  *
- * @author Philipp Jahoda
+
  */
 export class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChartBase<any, any, any>> {
     rotationGestureHandler: RotationGestureHandler;

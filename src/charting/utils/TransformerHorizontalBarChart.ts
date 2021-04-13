@@ -3,7 +3,7 @@ import { Transformer } from './Transformer';
 /**
  * Transformer class for the HorizontalBarChart.
  *
- * @author Philipp Jahoda
+
  */
 export class TransformerHorizontalBarChart extends Transformer {
     /**

@@ -6,7 +6,7 @@ import { RadarEntry } from './RadarEntry';
 /**
  * Data container for the RadarChart.
  *
- * @author Philipp Jahoda
+
  */
 export class RadarData extends ChartData<RadarEntry, RadarDataSet> {
     private mLabels: string[];

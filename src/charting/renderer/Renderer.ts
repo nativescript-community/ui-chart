@@ -2,7 +2,7 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 /**
  * Abstract baseclass of all Renderers.
  *
- * @author Philipp Jahoda
+
  */
 export abstract class Renderer {
     /**

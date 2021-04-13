@@ -22,7 +22,7 @@ export interface CustomRenderer extends BaseCustomRenderer {
 /**
  * View that represents a pie chart. Draws cake like slices.
  *
- * @author Philipp Jahoda
+
  */
 export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
     mRenderer: PieChartRenderer;

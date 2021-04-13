@@ -6,6 +6,6 @@ import { LineDataSet } from './LineDataSet';
 /**
  * Data object that encapsulates all data associated with a LineChart.
  *
- * @author Philipp Jahoda
+
  */
 export class LineData extends BarLineScatterCandleBubbleData<Entry, LineDataSet> {}

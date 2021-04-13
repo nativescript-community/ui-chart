@@ -17,7 +17,7 @@ export enum XAxisPosition {
  * modify it. Do not access public variables directly. Be aware that not all
  * features the XLabels class provides are suitable for the RadarChart.
  *
- * @author Philipp Jahoda
+
  */
 export class XAxis extends AxisBase {
     /**

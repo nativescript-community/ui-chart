@@ -40,7 +40,7 @@ export interface HighlightEventData extends EventData {
 /**
  * Baseclass of all Chart-Views.
  *
- * @author Philipp Jahoda
+
  */
 export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends ChartData<U, D>> extends CanvasView implements ChartInterface {
     abstract getYChartMin();
@@ -1064,91 +1064,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     public getContentRect() {
         return this.mViewPortHandler.getContentRect();
-    }
-
-    /**
-     * disables intercept touchevents
-     */
-    public disableScroll() {
-        // const parent = getParent();
-        // if (parent != null)
-        //     parent.requestDisallowInterceptTouchEvent(true);
-    }
-
-    /**
-     * enables intercept touchevents
-     */
-    public enableScroll() {
-        // ViewParent parent = getParent();
-        // if (parent != null)
-        //     parent.requestDisallowInterceptTouchEvent(false);
-    }
-
-    /**
-     * palet for the grid background (only line and barchart)
-     */
-    public static PAINT_GRID_BACKGROUND = 4;
-
-    /**
-     * palet for the info text that is displayed when there are no values in the
-     * chart
-     */
-    public static PAINT_INFO = 7;
-
-    /**
-     * palet for the description text in the bottom right corner
-     */
-    public static PAINT_DESCRIPTION = 11;
-
-    /**
-     * palet for the hole in the middle of the pie chart
-     */
-    public static PAINT_HOLE = 13;
-
-    /**
-     * palet for the text in the middle of the pie chart
-     */
-    public static PAINT_CENTER_TEXT = 14;
-
-    /**
-     * palet used for the legend
-     */
-    public static PAINT_LEGEND_LABEL = 18;
-
-    /**
-     * set a new palet object for the specified parameter in the chart e.g.
-     * Chart.PAINT_VALUES
-     *
-     * @param p     the new palet object
-     * @param which Chart.PAINT_VALUES, Chart.PAINT_GRID, Chart.PAINT_VALUES,
-     *              ...
-     */
-    public setPaint(p, which) {
-        switch (which) {
-            case Chart.PAINT_INFO:
-                this.mInfoPaint = p;
-                break;
-            case Chart.PAINT_DESCRIPTION:
-                this.mDescPaint = p;
-                break;
-        }
-    }
-
-    /**
-     * Returns the palet object associated with the provided constant.
-     *
-     * @param which e.g. Chart.PAINT_LEGEND_LABEL
-     * @return
-     */
-    public getPaint(which) {
-        switch (which) {
-            case Chart.PAINT_INFO:
-                return this.infoPaint;
-            case Chart.PAINT_DESCRIPTION:
-                return this.descPaint;
-        }
-
-        return null;
     }
 
     public isDrawMarkerViewsEnabled() {

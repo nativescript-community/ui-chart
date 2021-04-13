@@ -10,7 +10,7 @@ import { Highlight } from '../highlight/Highlight';
  * from the DataSet labels. Each PieData object can only represent one
  * PieDataSet (multiple PieDataSets inside a single PieChart are not possible).
  *
- * @author Philipp Jahoda
+
  */
 export class PieData extends ChartData<PieEntry, PieDataSet> {
     /**

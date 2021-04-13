@@ -19,10 +19,10 @@ export interface CustomRenderer extends BaseCustomRenderer {
 /**
  * Financial chart type that draws candle-sticks (OHCL chart).
  *
- * @author Philipp Jahoda
+
  */
 export class CandleStickChart extends BarLineChartBase<CandleEntry, ICandleDataSet, CandleData> implements CandleDataProvider {
-    mRenderer: CandleStickChartRenderer;
+    protected mRenderer: CandleStickChartRenderer;
     protected init() {
         super.init();
 
@@ -36,7 +36,7 @@ export class CandleStickChart extends BarLineChartBase<CandleEntry, ICandleDataS
         return this.mData;
     }
 
-    mCustomRenderer: CustomRenderer;
+    protected mCustomRenderer: CustomRenderer;
     /**
      * set a custom candle renderer
      */

@@ -62,7 +62,7 @@ export enum LegendDirection {
  * per color and DataSet. Multiple colors in one DataSet are grouped together.
  * The legend object is NOT available before setting data to the chart.
  *
- * @author Philipp Jahoda
+
  */
 export class Legend extends ComponentBase {
     /**

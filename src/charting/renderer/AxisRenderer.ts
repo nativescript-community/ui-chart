@@ -17,7 +17,7 @@ export interface CustomRenderer extends BaseCustomRenderer {
 /**
  * Baseclass of all axis renderers.
  *
- * @author Philipp Jahoda
+
  */
 export abstract class AxisRenderer extends Renderer {
     /** base axis this axis renderer works with */

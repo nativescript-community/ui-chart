@@ -5,7 +5,7 @@ import { Color } from '@nativescript/core/color';
  * ColorTemplate.VORDIPLOM_COLORS) and convenience methods for loading colors
  * from resources.
  *
- * @author Philipp Jahoda
+
  */
 export class ColorTemplate {
     /**

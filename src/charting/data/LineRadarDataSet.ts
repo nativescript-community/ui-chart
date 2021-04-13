@@ -8,7 +8,7 @@ import { ImageSource } from '@nativescript/core';
 /**
  * Base dataset for line and radar DataSets.
  *
- * @author Philipp Jahoda
+
  */
 export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandleRadarDataSet<T> implements ILineRadarDataSet<T> {
     /**

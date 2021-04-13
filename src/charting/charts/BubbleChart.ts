@@ -19,10 +19,10 @@ export interface CustomRenderer extends BaseCustomRenderer {
  * is the area of the bubble, not the radius or diameter of the bubble that
  * conveys the data.
  *
- * @author Philipp Jahoda
+
  */
 export class BubbleChart extends BarLineChartBase<BubbleEntry, IBubbleDataSet, BubbleData> implements BubbleDataProvider {
-    mRenderer: BubbleChartRenderer;
+    protected mRenderer: BubbleChartRenderer;
     protected init() {
         super.init();
 
@@ -33,7 +33,7 @@ export class BubbleChart extends BarLineChartBase<BubbleEntry, IBubbleDataSet, B
         return this.mData;
     }
 
-    mCustomRenderer: CustomRenderer;
+    protected mCustomRenderer: CustomRenderer;
     /**
      * set a custom bubble renderer
      */

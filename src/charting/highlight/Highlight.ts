@@ -4,7 +4,7 @@ import { Entry } from '../data/Entry';
 /**
  * Contains information needed to determine the highlighted value.
  *
- * @author Philipp Jahoda
+
  */
 export class Highlight<T extends Entry = Entry> {
     /**

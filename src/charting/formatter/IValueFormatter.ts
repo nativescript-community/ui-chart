@@ -3,7 +3,7 @@ import { Entry } from '../data/Entry';
 /**
  * Interface to format all values before they are drawn as labels.
  *
- * @author Philipp Jahoda
+
  *  Extend {@link ValueFormatter} instead
  */
 export interface IValueFormatter {

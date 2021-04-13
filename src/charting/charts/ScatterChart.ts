@@ -29,10 +29,10 @@ export enum ScatterShape {
  * Chart-View. CIRCLE and SCQUARE offer the best performance, TRIANGLE has the
  * worst performance.
  *
- * @author Philipp Jahoda
+
  */
 export class ScatterChart extends BarLineChartBase<Entry, IScatterDataSet, ScatterData> implements ScatterDataProvider {
-    mRenderer: ScatterChartRenderer;
+    protected mRenderer: ScatterChartRenderer;
 
     protected init() {
         super.init();
@@ -47,7 +47,7 @@ export class ScatterChart extends BarLineChartBase<Entry, IScatterDataSet, Scatt
         return this.mData;
     }
 
-    mCustomRenderer: CustomRenderer;
+    protected mCustomRenderer: CustomRenderer;
     /**
      * set a custom line renderer
      */

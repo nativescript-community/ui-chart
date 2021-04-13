@@ -32,10 +32,10 @@
     "main": "charts/index.js",
     "typings": "charts/index.d.ts",
     "dependencies": {
-        "@nativescript-community/gesturehandler": "^0.1.34",
+        "@nativescript-community/gesturehandler": "^0.1.41",
         "@nativescript-community/tween": "^0.0.14",
-        "@nativescript-community/ui-canvas": "^4.0.35",
-        "downsample": "^1.3.0",
+        "@nativescript-community/ui-canvas": "^4.0.49",
+        "downsample": "^1.4.0",
         "number-format.js": "^2.0.9"
     }
 }

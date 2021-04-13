@@ -17,7 +17,7 @@ export enum LimitLabelPosition {
  * ScatterCharts. It allows the displaying of an additional line in the chart
  * that marks a certain maximum / limit on the specified axis (x- or y-axis).
  *
- * @author Philipp Jahoda
+
  */
 export class LimitLine extends ComponentBase {
     /** limit / maximum (the y-value or xIndex) */

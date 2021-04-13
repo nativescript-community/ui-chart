@@ -1665,28 +1665,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         return this.mAutoScaleMinMaxEnabled;
     }
 
-    public setPaint(p, which) {
-        super.setPaint(p, which);
-
-        switch (which) {
-            case Chart.PAINT_GRID_BACKGROUND:
-                this.mGridBackgroundPaint = p;
-                break;
-        }
-    }
-
-    public getPaint(which) {
-        const p = super.getPaint(which);
-        if (p != null) return p;
-
-        switch (which) {
-            case Chart.PAINT_GRID_BACKGROUND:
-                return this.gridBackgroundPaint;
-        }
-
-        return null;
-    }
-
     protected mOnSizeChangedBuffer = Utils.createNativeArray(2);
 
     public onSizeChanged(w: number, h: number, oldw: number, oldh: number) {

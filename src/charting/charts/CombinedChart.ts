@@ -30,28 +30,28 @@ export enum DrawOrder {
  * This chart class allows the combination of lines, bars, scatter and candle
  * data all displayed in one chart area.
  *
- * @author Philipp Jahoda
+
  */
 export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleBubbleDataSet<Entry>, CombinedData> implements CombinedDataProvider {
-    mRenderer: CombinedChartRenderer;
+    protected mRenderer: CombinedChartRenderer;
     /**
      * if set to true, all values are drawn above their bars, instead of below
      * their top
      */
-    mDrawValueAboveBar = true;
+    protected mDrawValueAboveBar = true;
 
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */
-    mHighlightFullBarEnabled = false;
+    protected mHighlightFullBarEnabled = false;
 
     /**
      * if set to true, a grey area is drawn behind each bar that indicates the
      * maximum value
      */
-    mDrawBarShadow = false;
+    protected mDrawBarShadow = false;
 
-    mDrawOrder: DrawOrder[];
+    protected mDrawOrder: DrawOrder[];
 
     protected init() {
         super.init();

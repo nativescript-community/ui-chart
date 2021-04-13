@@ -13,7 +13,7 @@ import { Highlight } from '../highlight/Highlight';
  * Data object that allows the combination of Line-, Bar-, Scatter-, Bubble- and
  * CandleData. Used in the CombinedChart class.
  *
- * @author Philipp Jahoda
+
  */
 export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineScatterCandleBubbleDataSet<Entry>> {
     mLineData: LineData;

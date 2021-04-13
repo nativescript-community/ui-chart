@@ -1,0 +1,557 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>YAxisRenderer | Nativescript UI Chart Components</title>
+	<meta name="description" content="Documentation for Nativescript UI Chart Components">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Nativescript UI Chart Components</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">Nativescript UI Chart Components</a>
+				</li>
+				<li>
+					<a href="../modules/renderer_yaxisrenderer.html">renderer/YAxisRenderer</a>
+				</li>
+				<li>
+					<a href="renderer_yaxisrenderer.yaxisrenderer.html">YAxisRenderer</a>
+				</li>
+			</ul>
+			<h1>Class YAxisRenderer</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<a href="renderer_axisrenderer.axisrenderer.html" class="tsd-signature-type" data-tsd-kind="Class">AxisRenderer</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">YAxisRenderer</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="renderer_yaxisrendererhorizontalbarchart.yaxisrendererhorizontalbarchart.html" class="tsd-signature-type" data-tsd-kind="Class">YAxisRendererHorizontalBarChart</a>
+									</li>
+									<li>
+										<a href="renderer_yaxisrendererradarchart.yaxisrendererradarchart.html" class="tsd-signature-type" data-tsd-kind="Class">YAxisRendererRadarChart</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="renderer_yaxisrenderer.yaxisrenderer.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="renderer_yaxisrenderer.yaxisrenderer.html#axislabelspaint" class="tsd-kind-icon">axis<wbr>Labels<wbr>Paint</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="renderer_yaxisrenderer.yaxisrenderer.html#axislinepaint" class="tsd-kind-icon">axis<wbr>Line<wbr>Paint</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="renderer_yaxisrenderer.yaxisrenderer.html#gridpaint" class="tsd-kind-icon">grid<wbr>Paint</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="renderer_yaxisrenderer.yaxisrenderer.html#limitlinepaint" class="tsd-kind-icon">limit<wbr>Line<wbr>Paint</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="renderer_yaxisrenderer.yaxisrenderer.html#zerolinepaint" class="tsd-kind-icon">zero<wbr>Line<wbr>Paint</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="renderer_yaxisrenderer.yaxisrenderer.html#computeaxis" class="tsd-kind-icon">compute<wbr>Axis</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="renderer_yaxisrenderer.yaxisrenderer.html#getgridclippingrect" class="tsd-kind-icon">get<wbr>Grid<wbr>Clipping<wbr>Rect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="renderer_yaxisrenderer.yaxisrenderer.html#gettransformer" class="tsd-kind-icon">get<wbr>Transformer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="renderer_yaxisrenderer.yaxisrenderer.html#renderaxislabels" class="tsd-kind-icon">render<wbr>Axis<wbr>Labels</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="renderer_yaxisrenderer.yaxisrenderer.html#renderaxisline" class="tsd-kind-icon">render<wbr>Axis<wbr>Line</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="renderer_yaxisrenderer.yaxisrenderer.html#rendergridlines" class="tsd-kind-icon">render<wbr>Grid<wbr>Lines</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="renderer_yaxisrenderer.yaxisrenderer.html#renderlimitlines" class="tsd-kind-icon">render<wbr>Limit<wbr>Lines</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">new YAxis<wbr>Renderer<span class="tsd-signature-symbol">(</span>viewPortHandler<span class="tsd-signature-symbol">: </span><a href="utils_viewporthandler.viewporthandler.html" class="tsd-signature-type" data-tsd-kind="Class">ViewPortHandler</a>, yAxis<span class="tsd-signature-symbol">: </span><a href="components_yaxis.yaxis.html" class="tsd-signature-type" data-tsd-kind="Class">YAxis</a>, trans<span class="tsd-signature-symbol">: </span><a href="utils_transformer.transformer.html" class="tsd-signature-type" data-tsd-kind="Class">Transformer</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="renderer_yaxisrenderer.yaxisrenderer.html" class="tsd-signature-type" data-tsd-kind="Class">YAxisRenderer</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="renderer_axisrenderer.axisrenderer.html">AxisRenderer</a>.<a href="renderer_axisrenderer.axisrenderer.html#constructor">constructor</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/YAxisRenderer.ts#L59">renderer/YAxisRenderer.ts:59</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>viewPortHandler: <a href="utils_viewporthandler.viewporthandler.html" class="tsd-signature-type" data-tsd-kind="Class">ViewPortHandler</a></h5>
+								</li>
+								<li>
+									<h5>yAxis: <a href="components_yaxis.yaxis.html" class="tsd-signature-type" data-tsd-kind="Class">YAxis</a></h5>
+								</li>
+								<li>
+									<h5>trans: <a href="utils_transformer.transformer.html" class="tsd-signature-type" data-tsd-kind="Class">Transformer</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="renderer_yaxisrenderer.yaxisrenderer.html" class="tsd-signature-type" data-tsd-kind="Class">YAxisRenderer</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="axislabelspaint" class="tsd-anchor"></a>
+					<h3>axis<wbr>Labels<wbr>Paint</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> axisLabelsPaint<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Paint</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/AxisRenderer.ts#L87">renderer/AxisRenderer.ts:87</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the Paint object used for drawing the axis (labels).</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Paint</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="axislinepaint" class="tsd-anchor"></a>
+					<h3>axis<wbr>Line<wbr>Paint</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> axisLinePaint<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Paint</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/AxisRenderer.ts#L62">renderer/AxisRenderer.ts:62</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the Paint object that is used for drawing the axis-line that goes
+									alongside the axis.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Paint</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="gridpaint" class="tsd-anchor"></a>
+					<h3>grid<wbr>Paint</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> gridPaint<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Paint</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/AxisRenderer.ts#L108">renderer/AxisRenderer.ts:108</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the Paint object that is used for drawing the grid-lines of the
+									axis.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Paint</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="limitlinepaint" class="tsd-anchor"></a>
+					<h3>limit<wbr>Line<wbr>Paint</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> limitLinePaint<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Paint</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/AxisRenderer.ts#L73">renderer/AxisRenderer.ts:73</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Paint</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="zerolinepaint" class="tsd-anchor"></a>
+					<h3>zero<wbr>Line<wbr>Paint</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> zeroLinePaint<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Paint</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/YAxisRenderer.ts#L66">renderer/YAxisRenderer.ts:66</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Paint</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="computeaxis" class="tsd-anchor"></a>
+					<h3>compute<wbr>Axis</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">compute<wbr>Axis<span class="tsd-signature-symbol">(</span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, inverted<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="renderer_axisrenderer.axisrenderer.html">AxisRenderer</a>.<a href="renderer_axisrenderer.axisrenderer.html#computeaxis">computeAxis</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/AxisRenderer.ts#L135">renderer/AxisRenderer.ts:135</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Computes the axis values.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>min: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the minimum value in the data object for this axis</p>
+									</div>
+								</li>
+								<li>
+									<h5>max: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the maximum value in the data object for this axis</p>
+									</div>
+								</li>
+								<li>
+									<h5>inverted: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getgridclippingrect" class="tsd-anchor"></a>
+					<h3>get<wbr>Grid<wbr>Clipping<wbr>Rect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Grid<wbr>Clipping<wbr>Rect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RectF</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/YAxisRenderer.ts#L235">renderer/YAxisRenderer.ts:235</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">RectF</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="gettransformer" class="tsd-anchor"></a>
+					<h3>get<wbr>Transformer</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Transformer<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="utils_transformer.transformer.html" class="tsd-signature-type" data-tsd-kind="Class">Transformer</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="renderer_axisrenderer.axisrenderer.html">AxisRenderer</a>.<a href="renderer_axisrenderer.axisrenderer.html#gettransformer">getTransformer</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/AxisRenderer.ts#L125">renderer/AxisRenderer.ts:125</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the Transformer object used for transforming the axis values.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="utils_transformer.transformer.html" class="tsd-signature-type" data-tsd-kind="Class">Transformer</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="renderaxislabels" class="tsd-anchor"></a>
+					<h3>render<wbr>Axis<wbr>Labels</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Axis<wbr>Labels<span class="tsd-signature-symbol">(</span>c<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Canvas</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="renderer_axisrenderer.axisrenderer.html">AxisRenderer</a>.<a href="renderer_axisrenderer.axisrenderer.html#renderaxislabels">renderAxisLabels</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/YAxisRenderer.ts#L80">renderer/YAxisRenderer.ts:80</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>draws the y-axis labels to the screen</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>c: <span class="tsd-signature-type">Canvas</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="renderaxisline" class="tsd-anchor"></a>
+					<h3>render<wbr>Axis<wbr>Line</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Axis<wbr>Line<span class="tsd-signature-symbol">(</span>c<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Canvas</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="renderer_axisrenderer.axisrenderer.html">AxisRenderer</a>.<a href="renderer_axisrenderer.axisrenderer.html#renderaxisline">renderAxisLine</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/YAxisRenderer.ts#L130">renderer/YAxisRenderer.ts:130</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>c: <span class="tsd-signature-type">Canvas</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="rendergridlines" class="tsd-anchor"></a>
+					<h3>render<wbr>Grid<wbr>Lines</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Grid<wbr>Lines<span class="tsd-signature-symbol">(</span>c<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Canvas</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="renderer_axisrenderer.axisrenderer.html">AxisRenderer</a>.<a href="renderer_axisrenderer.axisrenderer.html#rendergridlines">renderGridLines</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/YAxisRenderer.ts#L205">renderer/YAxisRenderer.ts:205</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>c: <span class="tsd-signature-type">Canvas</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="renderlimitlines" class="tsd-anchor"></a>
+					<h3>render<wbr>Limit<wbr>Lines</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Limit<wbr>Lines<span class="tsd-signature-symbol">(</span>c<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Canvas</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="renderer_axisrenderer.axisrenderer.html">AxisRenderer</a>.<a href="renderer_axisrenderer.axisrenderer.html#renderlimitlines">renderLimitLines</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Akylas/nativescript-chart/blob/a598f45/src/charting/renderer/YAxisRenderer.ts#L317">renderer/YAxisRenderer.ts:317</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Draws the LimitLines associated with this axis to the screen.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>c: <span class="tsd-signature-type">Canvas</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/renderer_yaxisrenderer.html">renderer/YAxis<wbr>Renderer</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="renderer_yaxisrenderer.yaxisrenderer.html" class="tsd-kind-icon">YAxis<wbr>Renderer</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#axislabelspaint" class="tsd-kind-icon">axis<wbr>Labels<wbr>Paint</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#axislinepaint" class="tsd-kind-icon">axis<wbr>Line<wbr>Paint</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#gridpaint" class="tsd-kind-icon">grid<wbr>Paint</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#limitlinepaint" class="tsd-kind-icon">limit<wbr>Line<wbr>Paint</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#zerolinepaint" class="tsd-kind-icon">zero<wbr>Line<wbr>Paint</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#computeaxis" class="tsd-kind-icon">compute<wbr>Axis</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#getgridclippingrect" class="tsd-kind-icon">get<wbr>Grid<wbr>Clipping<wbr>Rect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#gettransformer" class="tsd-kind-icon">get<wbr>Transformer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#renderaxislabels" class="tsd-kind-icon">render<wbr>Axis<wbr>Labels</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#renderaxisline" class="tsd-kind-icon">render<wbr>Axis<wbr>Line</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#rendergridlines" class="tsd-kind-icon">render<wbr>Grid<wbr>Lines</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="renderer_yaxisrenderer.yaxisrenderer.html#renderlimitlines" class="tsd-kind-icon">render<wbr>Limit<wbr>Lines</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

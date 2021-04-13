@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig",
+    "compilerOptions": {
+        "sourceRoot": null,
+        "sourceMap": false,
+        "plugins": []
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "plugin"]
+}

@@ -14,7 +14,7 @@ export interface BaseCustomRenderer {
 /**
  * Superclass of all render classes for the different data types (line, bar, ...).
  *
- * @author Philipp Jahoda
+
  */
 export abstract class DataRenderer extends Renderer {
     /**

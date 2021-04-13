@@ -5,8 +5,7 @@ export { Easing };
 /**
  * Object responsible for all animations in the Chart. Animations require API level 11.
  *
- * @author Philipp Jahoda
- * @author Mick Ashton
+
  */
 export class ChartAnimator {
     /** object that is updated upon animation update */

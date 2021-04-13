@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  * View that can be displayed when selecting values in the chart. Extend this class to provide custom layouts for your
  * markers.
  *
- * @author Philipp Jahoda
+
  */
 public class MarkerView extends RelativeLayout implements IMarker {
 

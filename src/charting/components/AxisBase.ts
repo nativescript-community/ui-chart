@@ -9,7 +9,7 @@ import { CustomRenderer } from '../renderer/AxisRenderer';
 /**
  * Base-class of all axes (previously called labels).
  *
- * @author Philipp Jahoda
+
  */
 export abstract class AxisBase extends ComponentBase {
     /**

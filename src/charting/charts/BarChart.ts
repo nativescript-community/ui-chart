@@ -22,7 +22,7 @@ export interface CustomRenderer extends BaseCustomRenderer {
 }
 
 export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider {
-    mRenderer: BarChartRenderer;
+    protected mRenderer: BarChartRenderer;
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */
@@ -96,7 +96,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
             xPx: h.xPx,
             yPx: h.yPx,
             dataSetIndex: h.dataSetIndex,
-            axis: h.axis,
+            axis: h.axis
         };
     }
 

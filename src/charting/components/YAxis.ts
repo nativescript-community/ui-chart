@@ -6,7 +6,7 @@ import { Utils } from '../utils/Utils';
 /**
  * Enum that specifies the axis a DataSet should be plotted against, either LEFT or RIGHT.
  *
- * @author Philipp Jahoda
+
  */
 export enum AxisDependency {
     LEFT,
@@ -28,7 +28,7 @@ export enum YAxisLabelPosition {
  * setting data for the
  * chart.
  *
- * @author Philipp Jahoda
+
  */
 export class YAxis extends AxisBase {
     /**

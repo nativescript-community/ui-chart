@@ -40,7 +40,7 @@ function getSDK() {
  * done, if the Utils are used before that, Utils.init(...) needs to be called
  * manually.
  *
- * @author Philipp Jahoda
+
  */
 export namespace Utils {
     // const mainScreen = screen.mainScreen;

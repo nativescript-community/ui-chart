@@ -6,7 +6,7 @@ import { Color } from '@nativescript/core/color';
 /**
  * Baseclass of all DataSets for Bar-, Line-, Scatter- and CandleStickChart.
  *
- * @author Philipp Jahoda
+
  */
 export abstract class BarLineScatterCandleBubbleDataSet<T extends Entry> extends DataSet<T> implements IBarLineScatterCandleBubbleDataSet<T> {
     /**

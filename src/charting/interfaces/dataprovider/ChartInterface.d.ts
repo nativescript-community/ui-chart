@@ -7,7 +7,7 @@ import { Rect } from '@nativescript-community/ui-canvas';
  * Interface that provides everything there is to know about the dimensions,
  * bounds, and range of the chart.
  *
- * @author Philipp Jahoda
+
  */
 export interface ChartInterface {
     /**
