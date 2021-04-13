@@ -16,7 +16,7 @@ const typedocJson = require('./typedoc');
 const createTypeScriptApiDocs = (exports.createTypeScriptApiDocs = async ({ entryPoint, outDir }, typeDocOptions) => {
     const app = new td.Application();
     app.options.addReader(new td.TSConfigReader());
-    const files = await globby(['src/**/*.ts', '!src/interfaces', '!src/utils', '!**/references.d.ts', '!**/appbar', '!**/page', '!**/typings', '!**/angular', '!**/vue', '!**/react'], {
+    const files = await globby(['src/**/*.ts', '!src/utils', '!**/references.d.ts', '!**/appbar', '!**/page', '!**/typings', '!**/angular', '!**/vue', '!**/react'], {
         absolute: true,
         cwd: path.join(process.cwd())
     });
