@@ -1,6 +1,5 @@
 import { Highlight } from './Highlight';
 import { IHighlighter } from './IHighlighter';
-import { PieChart } from '../charts/PieChart';
 import { PieRadarChartBase } from '../charts/PieRadarChartBase';
 import { Entry } from '../data/Entry';
 import { DataSet } from '../data/DataSet';
@@ -33,7 +32,8 @@ export abstract class PieRadarHighlighter<E extends Entry, D extends DataSet<E>,
 
         let angle = this.mChart.getAngleForPoint(x, y);
 
-        if (this.mChart instanceof PieChart) {
+        // detect PieChart while preventing circular dep
+        if (!(this.mChart['mCircleBox'])) {
             angle /= this.mChart.getAnimator().getPhaseY();
         }
 
