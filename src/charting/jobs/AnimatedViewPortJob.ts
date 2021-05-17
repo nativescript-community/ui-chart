@@ -1,22 +1,22 @@
-import TWEEN from '@nativescript-community/tween';
+import { Tween } from '@tweenjs/tween.js';
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { Transformer } from '../utils/Transformer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ViewPortJob } from './ViewPortJob';
 
 export interface AnimatorUpdateListener {
-    onAnimationUpdate(animation: TWEEN.Tween);
+    onAnimationUpdate(animation: Tween<any>);
 }
 export interface AnimatorListener {
-    onAnimationStart(animation: TWEEN.Tween);
-    onAnimationEnd(animation: TWEEN.Tween);
-    onAnimationCancel(animation: TWEEN.Tween);
+    onAnimationStart(animation: Tween<any>);
+    onAnimationEnd(animation: Tween<any>);
+    onAnimationCancel(animation: Tween<any>);
 }
 /**
  * Created by Philipp Jahoda on 19/02/16.
  */
 export abstract class AnimatedViewPortJob extends ViewPortJob implements AnimatorUpdateListener, AnimatorListener {
-    protected animator: TWEEN.Tween;
+    protected animator: Tween<any>;
 
     protected phase;
 
@@ -30,7 +30,7 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
     }
 
     createAnimator(duration) {
-        this.animator = new TWEEN.Tween({ value: 0 })
+        this.animator = new Tween<any>({ value: 0 })
             .to({ value: 1 }, duration)
             .onStop(() => this.onAnimationCancel(this.animator))
             .onComplete(() => this.onAnimationEnd(this.animator))
@@ -75,9 +75,9 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
         // this.animator.addListener(this);
     }
 
-    public onAnimationStart(animation: TWEEN.Tween) {}
+    public onAnimationStart(animation: Tween<any>) {}
 
-    public onAnimationEnd(animation: TWEEN.Tween) {
+    public onAnimationEnd(animation: Tween<any>) {
         try {
             this.recycleSelf();
         } catch (e) {
@@ -85,7 +85,7 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
         }
     }
 
-    public onAnimationCancel(animation: TWEEN.Tween) {
+    public onAnimationCancel(animation: Tween<any>) {
         try {
             this.recycleSelf();
         } catch (e) {
@@ -93,5 +93,5 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
         }
     }
 
-    public onAnimationUpdate(animation: TWEEN.Tween) {}
+    public onAnimationUpdate(animation: Tween<any>) {}
 }
