@@ -3,7 +3,6 @@ import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
 import { GestureTypes } from '@nativescript/core/ui/gestures';
 import { BarLineChartBase } from './BarLineChartBase';
 import { Chart } from '../charts/Chart';
-import { PieChart } from '../charts/PieChart';
 import { LegendHorizontalAlignment, LegendOrientation, LegendVerticalAlignment } from '../components/Legend';
 import { ChartData } from '../data/ChartData';
 import { Entry } from '../data/Entry';
@@ -177,8 +176,9 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
         }
 
         let minOffset = this.mMinOffset;
-
-        if (!(this instanceof PieChart)) {
+        
+        // detect PieChart while preventing circular dep
+        if (!(this['mCircleBox'])) {
             const x = this.getXAxis();
 
             if (x.isEnabled() && x.isDrawLabelsEnabled()) {
