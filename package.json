@@ -16,7 +16,7 @@
         "plugin.watch.tsc": "npm run tsc -- -w",
         "plugin.watch": "npm run plugin.watch.tsc",
         "publish": "npm run build && lerna publish --create-release=github --force-publish",
-        "doc": "node builddoc",
+        "doc": "node builddoc && git add docs/* && git commit -m \"doc\"",
         "commitmsg": "commitlint -e $GIT_PARAMS"
     },
     "keywords": [
