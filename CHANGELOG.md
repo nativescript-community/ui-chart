@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.34](https://github.com/Akylas/nativescript-chart/compare/v1.1.33...v1.1.34) (2021-05-17)
+
+
+### Bug Fixes
+
+* prevent circular issue with terser ([ceb95e6](https://github.com/Akylas/nativescript-chart/commit/ceb95e6a936377a89874a212207d624187c56112))
+
+
+
+
+
 ## [1.1.33](https://github.com/Akylas/nativescript-chart/compare/v1.1.32...v1.1.33) (2021-04-12)
 
 
