@@ -33,7 +33,7 @@ export abstract class PieRadarHighlighter<E extends Entry, D extends DataSet<E>,
         let angle = this.mChart.getAngleForPoint(x, y);
 
         // detect PieChart while preventing circular dep
-        if (!(this.mChart['mCircleBox'])) {
+        if (!this.mChart['mCircleBox']) {
             angle /= this.mChart.getAnimator().getPhaseY();
         }
 
