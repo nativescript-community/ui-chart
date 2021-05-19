@@ -318,7 +318,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
             }
 
             // Search by closest to y-value
-            if (!isNaN(closestToY)) {
+            if (closest >= 1 && !isNaN(closestToY)) {
                 e = Utils.getArrayItem(values, closest - 1);
                 xValue = getEntryXValue(e, xKey, closest - 1);
                 while (closest > 0 && xValue === closestXValue) closest -= 1;
