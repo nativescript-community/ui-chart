@@ -320,29 +320,32 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
             // Search by closest to y-value
             if (closest >= 1 && !isNaN(closestToY)) {
                 e = Utils.getArrayItem(values, closest - 1);
-                xValue = getEntryXValue(e, xKey, closest - 1);
-                while (closest > 0 && xValue === closestXValue) closest -= 1;
+                if (e) {
+                    xValue = getEntryXValue(e, xKey, closest - 1);
+                    while (closest > 0 && xValue === closestXValue) closest -= 1;
 
-                let closestYValue = Utils.getArrayItem(values, closest)[yKey];
-                let closestYIndex = closest;
+                    let closestYValue = Utils.getArrayItem(values, closest)[yKey];
+                    let closestYIndex = closest;
 
-                // eslint-disable-next-line no-constant-condition
-                while (true) {
-                    closest += 1;
-                    if (closest >= values.length) break;
+                    // eslint-disable-next-line no-constant-condition
+                    while (true) {
+                        closest += 1;
+                        if (closest >= values.length) break;
 
-                    e = Utils.getArrayItem(values, closest);
-                    xValue = getEntryXValue(e, xKey, closest);
+                        e = Utils.getArrayItem(values, closest);
+                        if (!e) break;
+                        xValue = getEntryXValue(e, xKey, closest);
 
-                    if (xValue !== closestXValue) break;
+                        if (xValue !== closestXValue) break;
 
-                    if (Math.abs(e[yKey] - closestToY) < Math.abs(closestYValue - closestToY)) {
-                        closestYValue = closestToY;
-                        closestYIndex = closest;
+                        if (Math.abs(e[yKey] - closestToY) < Math.abs(closestYValue - closestToY)) {
+                            closestYValue = closestToY;
+                            closestYIndex = closest;
+                        }
                     }
-                }
 
-                closest = closestYIndex;
+                    closest = closestYIndex;
+                }
             }
         }
 
