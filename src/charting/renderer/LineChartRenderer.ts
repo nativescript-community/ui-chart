@@ -1,4 +1,4 @@
-import { Canvas, Direction, FillType, Matrix, Paint, Path, Style, createImage, releaseImage } from '@nativescript-community/ui-canvas';
+import { Canvas, Direction, FillType, LinearGradient, Matrix, Paint, Path, Style, TileMode, createImage, releaseImage } from '@nativescript-community/ui-canvas';
 import { Color, ImageSource, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { LineChart } from '../charts';
@@ -222,24 +222,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         const scaleX = this.mViewPortHandler.getScaleX();
         dataSet.applyFiltering(scaleX);
-
-        let result = false;
-        switch (dataSet.getMode()) {
-            default:
-            case Mode.LINEAR:
-            case Mode.STEPPED:
-                result = this.drawLinear(c, dataSet);
-                break;
-
-            case Mode.CUBIC_BEZIER:
-                result = this.drawCubicBezier(c, dataSet);
-                break;
-
-            case Mode.HORIZONTAL_BEZIER:
-                result = this.drawHorizontalBezier(c, dataSet);
-                break;
-        }
-
+        const result = this.draw(c, dataSet);
         renderPaint.setPathEffect(null);
         return result;
     }
@@ -433,74 +416,82 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    @profile
-    protected drawCubicBezier(c: Canvas, dataSet: LineDataSet) {
-        const result = false;
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
-        const linePath = this.linePath;
-
-        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
-
-        this.generateCubicPath(dataSet, linePath);
-
-        // if filled is enabled, close the path
+    getMultiColorsShader(colors: { color: string | Color; [k: string]: any }[], points, trans: Transformer, dataSet: LineDataSet, renderPaint: Paint) {
+        const nbColors = colors.length;
         const xKey = dataSet.xProperty;
-        if (dataSet.isDrawFilledEnabled()) {
-            const fillPath = this.fillPath;
-            fillPath.reset();
-            fillPath.addPath(linePath);
-            const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
-            const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
-            this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
-            // result = true; // this would be to draw on a bitmap cache
-        }
+        if (nbColors > 1) {
+            trans.pointValuesToPixel(points);
+            const shaderColors = [];
+            const positions = [];
+            const firstIndex = Math.max(0, this.mXBounds.min);
+            const range = this.mXBounds.range;
+            const lastIndex = firstIndex + range;
+            const width = this.mViewPortHandler.getChartWidth();
+            const chartRect = this.mViewPortHandler.getChartRect();
+            let lastColor, lastColorPosX;
 
-        if (dataSet.getLineWidth() > 0) {
-            trans.pathValueToPixel(linePath);
-            const customRender = this.mChart.getCustomRenderer();
-            const renderPaint = this.renderPaint;
-            if (customRender && customRender.drawLine) {
-                customRender.drawLine(c, linePath, renderPaint);
-            } else {
-                this.drawPath(c, linePath, renderPaint);
+            const gradientDelta = 0;
+            const posDelta = gradientDelta / width;
+            for (let index = 0; index < nbColors; index++) {
+                const color = colors[index] as { color: string | Color; [k: string]: any };
+                let colorIndex = color[xKey || 'index'] as number;
+                // if filtered we need to get the real index
+                if ((dataSet as any).isFiltered()) {
+                    (dataSet as any).setIgnoreFiltered(true);
+                    const entry = dataSet.getEntryForIndex(colorIndex);
+                    (dataSet as any).setIgnoreFiltered(false);
+                    if (entry !== null) {
+                        colorIndex = dataSet.getEntryIndexForXValue(getEntryXValue(entry, xKey, colorIndex), NaN, Rounding.CLOSEST);
+                    }
+                }
+                if (colorIndex < firstIndex) {
+                    lastColor = color.color;
+                    continue;
+                }
+                if (colorIndex > lastIndex) {
+                    if (shaderColors.length === 0) {
+                        shaderColors.push(lastColor);
+                        positions.push(0);
+                    }
+                    break;
+                }
+                const posX = Math.floor(points[(colorIndex - firstIndex) * 2]);
+                const pos = (posX - chartRect.left) / width;
+                // if (posX - lastColorPosX < 3) {
+                //     // ignore too small
+                //     // lastColor = color.color;
+                //     shaderColors.pop();
+                //     shaderColors.pop();
+                //     positions.pop();
+                //     positions.pop();
+                //     lastColor = shaderColors[shaderColors.length -1];
+                //     lastColorPosX = positions[positions.length -1] * width + chartRect.left;
+                //     continue;
+                // }
+                if (lastColor) {
+                    if (shaderColors.length === 0) {
+                        shaderColors.push(lastColor);
+                        positions.push(0);
+                    }
+                    shaderColors.push(lastColor);
+                    positions.push(pos - posDelta);
+                }
+                shaderColors.push(color.color);
+                positions.push(pos + posDelta);
+                lastColor = color.color;
+                lastColorPosX = posX;
+            }
+            if (shaderColors.length > 1) {
+                return new LinearGradient(0, 0, width, 0, shaderColors, positions, TileMode.CLAMP);
+            } else if (shaderColors.length === 1) {
+                renderPaint.setColor(shaderColors[0]);
             }
         }
-
-        return result;
+        return null;
     }
 
     @profile
-    protected drawHorizontalBezier(c: Canvas, dataSet: LineDataSet) {
-        const result = false;
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
-
-        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
-        const linePath = this.linePath;
-        this.generateHorizontalBezierPath(dataSet, linePath);
-
-        // if filled is enabled, close the path
-        const xKey = dataSet.xProperty;
-        if (dataSet.isDrawFilledEnabled()) {
-            const fillPath = this.fillPath;
-            fillPath.reset();
-            fillPath.addPath(linePath);
-            const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
-            const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
-            this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
-            // result = true; // this would be to draw on a bitmap cache
-        }
-
-        if (dataSet.getLineWidth() > 0) {
-            trans.pathValueToPixel(linePath);
-            const renderPaint = this.renderPaint;
-            this.drawPath(c, linePath, renderPaint);
-        }
-
-        return result;
-    }
-
-    @profile
-    protected drawLinear(c: Canvas, dataSet: LineDataSet) {
+    protected draw(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const drawFilled = dataSet.isDrawFilledEnabled();
         const drawLine = dataSet.getLineWidth() > 0;
@@ -511,113 +502,70 @@ export class LineChartRenderer extends LineRadarRenderer {
         const linePath = this.linePath;
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+        let points;
 
-        const [points, index] = this.generateLinearPath(dataSet, linePath);
+        switch (dataSet.getMode()) {
+            default:
+            case Mode.LINEAR:
+            case Mode.STEPPED:
+                points = this.generateLinearPath(dataSet, linePath)[0];
+                break;
+
+            case Mode.CUBIC_BEZIER:
+                points = this.generateCubicPath(dataSet, linePath)[0];
+                break;
+
+            case Mode.HORIZONTAL_BEZIER:
+                points = this.generateHorizontalBezierPath(dataSet, linePath)[0];
+                break;
+        }
+
         if (!points) {
             return result;
         }
 
         const colors = (dataSet.getColors() as any) as { color: string | Color; [k: string]: any }[];
         const nbColors = colors.length;
-
         const xKey = dataSet.xProperty;
         const useColorsForFill = dataSet.getUseColorsForFill();
-        if (drawFilled && (nbColors === 1 || !useColorsForFill)) {
+        const renderPaint = this.renderPaint;
+        let paintColorsShader;
+        if (nbColors > 1) {
+            paintColorsShader = this.getMultiColorsShader(colors, points, trans, dataSet, renderPaint);
+        }
+
+        let oldShader;
+        if (drawFilled) {
+            if (paintColorsShader && useColorsForFill) {
+                oldShader = renderPaint.getShader();
+                renderPaint.setShader(paintColorsShader);
+            }
             const fillPath = this.fillPath;
             fillPath.reset();
             fillPath.addPath(linePath);
             const minEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), xKey, this.mXBounds.min);
             const maxEntryValue = getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), xKey, this.mXBounds.min + this.mXBounds.range);
             this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
-        }
-        const renderPaint = this.renderPaint;
-        if (nbColors === 1) {
-            if (drawLine) {
-                // trans.pointValuesToPixel(points);
-                // this.drawLines(c, points, 0,index, renderPaint);
-                trans.pathValueToPixel(linePath);
-                this.drawPath(c, linePath, renderPaint);
+            if (paintColorsShader && useColorsForFill) {
+                renderPaint.setShader(oldShader);
+                oldShader = null;
             }
-        } else {
-            trans.pointValuesToPixel(points);
-            const firstIndex = Math.max(0, this.mXBounds.min);
-            const lastIndex = this.mXBounds.min + this.mXBounds.range;
-            const colorsToBeDrawn = [];
-            let lastDrawnIndex = 0,
-                nbItems;
-            for (let index = 0; index < nbColors; index++) {
-                const color = colors[index] as { color: string | Color; [k: string]: any };
-                let colorIndex = color[xKey || 'index'] as number;
-                // if filtered we need to get the real index
-                if ((dataSet as any).isFiltered()) {
-                    (dataSet as any).setIgnoreFiltered(true);
-                    const entry = dataSet.getEntryForIndex(colorIndex);
-                    (dataSet as any).setIgnoreFiltered(false);
-                    if (entry !== null) {
-                        colorIndex = dataSet.getEntryIndexForXValue(getEntryXValue(entry, xKey, colorIndex), NaN, Rounding.DOWN);
-                    }
-                }
-                if (colorIndex < firstIndex) {
-                    continue;
-                }
-                const startIndex = lastDrawnIndex;
-                nbItems = Math.max(colorIndex - (firstIndex + lastDrawnIndex) + 1, 0);
-                if (nbItems > lastIndex - (startIndex + firstIndex) + 1) {
-                    nbItems = lastIndex - (startIndex + firstIndex) + 1;
-                }
-                if (nbItems === 0) {
-                    continue;
-                } else {
-                    // too small "horizontal" sections can be ignored
-                    const pxDist = Math.abs(points[(startIndex + nbItems) * 2] - points[startIndex * 2]);
-                    if (pxDist <= 3) {
-                        continue;
-                    }
-                }
-                lastDrawnIndex = startIndex + nbItems;
-                const isLast = lastDrawnIndex + firstIndex >= lastIndex;
-                if (isLast && lastDrawnIndex + firstIndex === lastIndex) {
-                    nbItems += 1;
-                    lastDrawnIndex += 1;
-                }
-                colorsToBeDrawn.push({
-                    color: color.color,
-                    startIndex,
-                    nbItems
-                });
-
-                if (isLast) {
-                    break;
-                } else {
-                    lastDrawnIndex -= 1;
-                }
-            }
-            let fillMin = drawFilled && useColorsForFill ? dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart) : undefined;
-            if (fillMin !== undefined) {
-                // to make things faster we wont transform the path again
-                // so we need get fillMin as pixel value
-                // let's use circlesBuffer for this
-                const circleBuffer = this.circlesBuffer;
-                circleBuffer[0] = 0;
-                circleBuffer[1] = fillMin;
-                trans.pointValuesToPixel(circleBuffer);
-                fillMin = circleBuffer[1];
-            }
-            colorsToBeDrawn.forEach((color) => {
-                linePath.setLines(points, color.startIndex * 2, color.nbItems * 2);
-                if (drawFilled && useColorsForFill) {
-                    const fillPath = this.fillPath;
-                    fillPath.reset();
-                    fillPath.addPath(linePath);
-                    this.drawFill(c, dataSet, fillPath, null, points[color.startIndex * 2], points[(color.startIndex + color.nbItems - 1) * 2], color.color, fillMin);
-                }
-                if (drawLine) {
-                    renderPaint.setColor(color.color);
-                    this.drawPath(c, linePath, renderPaint);
-                }
-            });
         }
 
+        if (drawLine) {
+            if (paintColorsShader) {
+                oldShader = renderPaint.getShader();
+                renderPaint.setShader(paintColorsShader);
+            }
+            // trans.pointValuesToPixel(points);
+            // this.drawLines(c, points, 0,index, renderPaint);
+            trans.pathValueToPixel(linePath);
+            this.drawPath(c, linePath, renderPaint);
+            if (paintColorsShader) {
+                renderPaint.setShader(oldShader);
+                oldShader = null;
+            }
+        }
         return result;
     }
 
