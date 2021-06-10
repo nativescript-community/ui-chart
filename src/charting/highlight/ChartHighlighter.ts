@@ -55,15 +55,14 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      */
     protected getHighlightForX(xVal, x, y) {
         const closestValues = this.getHighlightsAtXValue(xVal, x, y);
-        if (closestValues.length === 0) {
-            return null;
+        if (closestValues.length <= 1) {
+            return closestValues[0];
         }
 
         const leftAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.LEFT);
         const rightAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.RIGHT);
 
         const axis = leftAxisMinDist < rightAxisMinDist ? AxisDependency.LEFT : AxisDependency.RIGHT;
-
         const detail = this.getClosestHighlightByPixel(closestValues, x, y, axis, this.mChart.getMaxHighlightDistance());
 
         return detail;
