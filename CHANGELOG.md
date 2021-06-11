@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.38](https://github.com/Akylas/nativescript-chart/compare/v1.1.37...v1.1.38) (2021-06-11)
+
+
+### Bug Fixes
+
+* ensure we return the closest value if only one ([ce341a7](https://github.com/Akylas/nativescript-chart/commit/ce341a730f75ea1c16a4a3bf7d0c6ad7250a629e))
+* line chart multi colors fixes and perf improvements ([2f5d171](https://github.com/Akylas/nativescript-chart/commit/2f5d171c06def78447042cbed4d92dcc1f9b8c96))
+
+
+
+
+
 ## [1.1.37](https://github.com/Akylas/nativescript-chart/compare/v1.1.36...v1.1.37) (2021-05-25)
 
 
