@@ -66,7 +66,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
             for (let i = 0; i < labelCount; i++) {
                 axis.mEntries[i] = v;
-                axis.mLabels[i] = formatter.getAxisLabel(v, axis);
+                axis.mLabels[i] = formatter.getAxisLabel(v, axis, this.mViewPortHandler);
                 v += step;
             }
 
@@ -107,7 +107,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
                 }
 
                 axis.mEntries[i] = f;
-                axis.mLabels[i] = formatter.getAxisLabel(f, axis);
+                axis.mLabels[i] = formatter.getAxisLabel(f, axis, this.mViewPortHandler);
             }
         }
 

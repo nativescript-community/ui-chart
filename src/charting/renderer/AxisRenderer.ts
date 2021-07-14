@@ -209,7 +209,7 @@ export abstract class AxisRenderer extends Renderer {
 
             for (let i = 0; i < labelCount; i++) {
                 axis.mEntries[i] = v;
-                axis.mLabels[i] = formatter.getAxisLabel(v, axis);
+                axis.mLabels[i] = formatter.getAxisLabel(v, axis, this.mViewPortHandler);
                 v += interval;
             }
             n = labelCount;
@@ -258,7 +258,7 @@ export abstract class AxisRenderer extends Renderer {
                 }
 
                 axis.mEntries[i] = f;
-                axis.mLabels[i] = formatter.getAxisLabel(f, axis);
+                axis.mLabels[i] = formatter.getAxisLabel(f, axis, this.mViewPortHandler);
             }
         }
 
