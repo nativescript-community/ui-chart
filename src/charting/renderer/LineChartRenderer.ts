@@ -452,6 +452,8 @@ export class LineChartRenderer extends LineRadarRenderer {
                     if (shaderColors.length === 0) {
                         shaderColors.push(lastColor);
                         positions.push(0);
+                        shaderColors.push(lastColor);
+                        positions.push(1);
                     }
                     break;
                 }
@@ -503,7 +505,6 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
         let points;
-
         switch (dataSet.getMode()) {
             default:
             case Mode.LINEAR:
