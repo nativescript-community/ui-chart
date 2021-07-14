@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.39](https://github.com/Akylas/nativescript-chart/compare/v1.1.38...v1.1.39) (2021-07-14)
+
+
+### Bug Fixes
+
+* getAxisLabel has viewPortHandler as parameter for user to use ([dd50c42](https://github.com/Akylas/nativescript-chart/commit/dd50c423176ce83009f7f21da04fc021851abde7))
+* line chart clear filter on setValues ([2851f94](https://github.com/Akylas/nativescript-chart/commit/2851f948bf4dca3458cbc74464b975cce0b39aa4))
+* line chart colors fix while zoomed in ([57a81ef](https://github.com/Akylas/nativescript-chart/commit/57a81ef93b8e01cd1772272808f01b96b10821f0))
+
+
+
+
+
 ## [1.1.38](https://github.com/Akylas/nativescript-chart/compare/v1.1.37...v1.1.38) (2021-06-11)
 
 
