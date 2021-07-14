@@ -1,19 +1,18 @@
+import { DashPathEffect } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color';
-import { DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
-import { createLTTB } from 'downsample';
-import { Entry } from './Entry';
-import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
-import { LineRadarDataSet } from './LineRadarDataSet';
-import { ColorTemplate } from '../utils/ColorTemplate';
-import { Utils } from '../utils/Utils';
+import { createLTTB } from 'downsample/methods/LTTB';
 import { DefaultFillFormatter } from '../formatter/DefaultFillFormatter';
 import { IFillFormatter } from '../formatter/IFillFormatter';
+import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
+import { ColorTemplate } from '../utils/ColorTemplate';
+import { Entry } from './Entry';
+import { LineRadarDataSet } from './LineRadarDataSet';
 
 export enum Mode {
     LINEAR,
     STEPPED,
     CUBIC_BEZIER,
-    HORIZONTAL_BEZIER,
+    HORIZONTAL_BEZIER
 }
 
 export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet {
@@ -98,7 +97,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
                 if (!this.mFilterFunction) {
                     this.mFilterFunction = createLTTB({
                         x: this.xProperty,
-                        y: this.yProperty,
+                        y: this.yProperty
                     } as any);
                 }
                 this.mFilteredValues = this.mFilterFunction(this.mValues, filterCount);
@@ -117,6 +116,10 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
     setIgnoreFiltered(value) {
         this.mIgnoreFiltered = value;
+    }
+    setValues(values) {
+        super.setValues(values);
+        this.mFilteredValues = null;
     }
     isFiltered() {
         return !!this.mFilteredValues;
