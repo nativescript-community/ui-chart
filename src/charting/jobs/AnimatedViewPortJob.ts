@@ -1,4 +1,5 @@
 import { Tween } from '@tweenjs/tween.js';
+import TWEEN from '@nativescript-community/tween';
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { Transformer } from '../utils/Transformer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
@@ -30,7 +31,7 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
     }
 
     createAnimator(duration) {
-        this.animator = new Tween<any>({ value: 0 })
+        this.animator = new TWEEN.Tween<any>({ value: 0 })
             .to({ value: 1 }, duration)
             .onStop(() => this.onAnimationCancel(this.animator))
             .onComplete(() => this.onAnimationEnd(this.animator))
