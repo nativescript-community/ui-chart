@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.40](https://github.com/Akylas/nativescript-chart/compare/v1.1.39...v1.1.40) (2021-08-08)
+
+
+### Bug Fixes
+
+* horizontal bezier fix ([0b1bf97](https://github.com/Akylas/nativescript-chart/commit/0b1bf972ab8d6ba1515f10043fe1f276fb883196))
+
+
+
+
+
 ## [1.1.39](https://github.com/Akylas/nativescript-chart/compare/v1.1.38...v1.1.39) (2021-07-14)
 
 
