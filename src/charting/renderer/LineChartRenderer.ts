@@ -239,19 +239,19 @@ export class LineChartRenderer extends LineRadarRenderer {
             const phaseY = this.mAnimator.getPhaseY();
             const xKey = dataSet.xProperty;
             const yKey = dataSet.yProperty;
-            let prev = dataSet.getEntryForIndex(this.mXBounds.min);
-            let prevXVal = getEntryXValue(prev, xKey, this.mXBounds.min);
-            let cur = prev;
-            const float32arr = this.mLineBuffer;
-            float32arr[0] = prevXVal;
-            float32arr[1] = cur[yKey] * phaseY;
 
             const firstIndex = Math.max(0, this.mXBounds.min);
             // let firstIndex = this.mXBounds.min + 1;
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
+            let prev = dataSet.getEntryForIndex(firstIndex);
+            let prevXVal = getEntryXValue(prev, xKey, firstIndex);
+            let cur = prev;
+            let curXVal = prevXVal;
+            const float32arr = this.mLineBuffer;
+            let index = 0;
+            float32arr[index++] = prevXVal;
+            float32arr[index++] = cur[yKey] * phaseY;
             // let the spline start
-            let index = 2,
-                curXVal;
 
             for (let j = firstIndex + 1; j <= lastIndex; j++) {
                 const newEntry = dataSet.getEntryForIndex(j);
@@ -260,8 +260,8 @@ export class LineChartRenderer extends LineRadarRenderer {
                 }
                 prev = cur;
                 prevXVal = curXVal;
-                cur = dataSet.getEntryForIndex(j);
-                curXVal = getEntryXValue(prev, xKey, j);
+                cur = newEntry;
+                curXVal = getEntryXValue(cur, xKey, j);
                 const cpx = prevXVal + (curXVal - prevXVal) / 2.0;
 
                 float32arr[index++] = cpx;
@@ -305,12 +305,13 @@ export class LineChartRenderer extends LineRadarRenderer {
             // let firstIndex = this.mXBounds.min + 1;
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
 
-            let prevPrev;
-            let prevPrevXVal;
             let i = Math.max(firstIndex - 2, 0);
+            let prevPrev = dataSet.getEntryForIndex(i);
+            let prevPrevXVal = getEntryXValue(prevPrev, xKey, i);
+            i = Math.max(firstIndex - 1, 0);
             let prev = dataSet.getEntryForIndex(i);
             let prevXVal = getEntryXValue(prev, xKey, i);
-            i = Math.max(firstIndex - 1, 0);
+            i = Math.max(firstIndex, 0);
             let cur = dataSet.getEntryForIndex(i);
             let curXVal = getEntryXValue(cur, xKey, i);
             let next = cur;
@@ -321,6 +322,8 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             const float32arr = this.mLineBuffer;
             let index = 0;
+            // outputPath.reset();
+            // outputPath.moveTo(curXVal, cur[yKey] * phaseY);
             float32arr[index++] = curXVal;
             float32arr[index++] = cur[yKey] * phaseY;
             // let the spline start
@@ -335,7 +338,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 prevXVal = curXVal;
                 cur = nextIndex === j ? next : newEntry;
                 curXVal = nextIndex === j ? nextXVal : getEntryXValue(newEntry, xKey, j);
-                nextIndex = j + 1 < dataSet.getEntryCount() ? j + 1 : j;
+                nextIndex = Math.min(j + 1, dataSet.getEntryCount() - 1);
                 next = dataSet.getEntryForIndex(nextIndex);
                 nextXVal = getEntryXValue(next, xKey, nextIndex);
                 if (next[yKey] === undefined || next[yKey] === null) {
@@ -352,6 +355,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 float32arr[index++] = (cur[yKey] - curDy) * phaseY;
                 float32arr[index++] = curXVal;
                 float32arr[index++] = cur[yKey] * phaseY;
+                // outputPath.cubicTo(prevXVal + prevDx, (prev[yKey] + prevDy) * phaseY, curXVal - curDx, (cur[yKey] - curDy) * phaseY, curXVal, cur[yKey] * phaseY);
             }
             const points = Utils.pointsFromBuffer(float32arr);
             outputPath.setCubicLines(points, 0, index);
