@@ -1,4 +1,3 @@
-
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { ObjectPool } from '../utils/ObjectPool';
 import { Transformer } from '../utils/Transformer';
@@ -8,9 +7,7 @@ import { ViewPortJob } from './ViewPortJob';
  * Created by Philipp Jahoda on 19/02/16.
  */
 export class MoveViewJob extends ViewPortJob {
-
-
-    public static  getInstance(viewPortHandler: ViewPortHandler,  xValue,  yValue,  trans: Transformer,  v: BarLineChartBase<any, any, any>){
+    public static getInstance(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>) {
         const result = pool.get();
         result.mViewPortHandler = viewPortHandler;
         result.xValue = xValue;
@@ -20,17 +17,15 @@ export class MoveViewJob extends ViewPortJob {
         return result;
     }
 
-    public static  recycleInstance( instance: MoveViewJob){
+    public static recycleInstance(instance: MoveViewJob) {
         pool.recycle(instance);
     }
 
-    constructor(viewPortHandler: ViewPortHandler,  xValue,  yValue,  trans: Transformer, v: BarLineChartBase<any, any, any>) {
+    constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>) {
         super(viewPortHandler, xValue, yValue, trans, v);
     }
 
-
     public run() {
-
         this.pts[0] = this.xValue;
         this.pts[1] = this.yValue;
 
@@ -39,7 +34,6 @@ export class MoveViewJob extends ViewPortJob {
 
         MoveViewJob.recycleInstance(this);
     }
-
 
     public instantiate() {
         return new MoveViewJob(this.mViewPortHandler, this.xValue, this.yValue, this.mTrans, this.view);

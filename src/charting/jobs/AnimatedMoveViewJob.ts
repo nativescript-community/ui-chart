@@ -7,7 +7,6 @@ import { AnimatedViewPortJob } from './AnimatedViewPortJob';
  * Created by Philipp Jahoda on 19/02/16.
  */
 export class AnimatedMoveViewJob extends AnimatedViewPortJob {
-
     public static getInstance(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, duration) {
         const result = pool.get();
         result.mViewPortHandler = viewPortHandler;

@@ -4,7 +4,7 @@ import { Transformer } from '../utils/Transformer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Utils } from '../utils/Utils';
 
-export abstract class ViewPortJob  extends Poolable {
+export abstract class ViewPortJob extends Poolable {
     protected pts = Utils.createNativeArray(2);
 
     protected mViewPortHandler: ViewPortHandler;
