@@ -1,33 +1,33 @@
 {
     "name": "chartdemovue",
-    "main": "main",
+    "main": "app/main",
     "displayName": "chartdemovue",
     "version": "7.0.1",
     "description": "A native application built with NativeScript-Vue",
     "author": "Martin Guillon <martin.guillon@akylas.fr>",
     "license": "MIT",
     "dependencies": {
-        "@nativescript-community/ui-canvas": "4.0.49",
+        "@nativescript-community/ui-canvas": "4.0.50",
         "@nativescript-community/ui-chart": "file:../plugin",
         "@nativescript-community/ui-svg": "^0.0.8",
-        "@nativescript/core": "~7.3.0",
+        "@nativescript/core": "~8.0.8",
         "@nativescript/theme": "~3.0.1",
         "nativescript-perms": "^2.0.11",
-        "nativescript-vue": "~2.8.4"
+        "nativescript-vue": "~2.9.0"
     },
     "devDependencies": {
         "@babel/core": "~7.13.10",
         "@babel/preset-env": "~7.13.10",
-        "@nativescript/android": "7.0.1",
-        "@nativescript/ios": "7.2.0",
+        "@nativescript/android": "8.0.0",
+        "@nativescript/ios": "8.0.0",
         "@nativescript/types": "^7.3.0",
-        "@nativescript/webpack": "~4.1.0",
+        "@nativescript/webpack": "beta",
         "babel-loader": "~8.2.2",
-        "nativescript-vue-template-compiler": "~2.8.4",
+        "nativescript-vue-template-compiler": "~2.9.0",
         "sass": "^1.32.8",
         "typescript": "^4.2.3",
         "vue": "^2.6.12",
         "vue-class-component": "^7.2.6",
-        "vue-loader": "~15.9.6"
+        "vue-loader": "~15.9.8"
     }
 }
