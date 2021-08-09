@@ -14,6 +14,65 @@ import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { LineRadarRenderer } from './LineRadarRenderer';
 
+interface XYPoint {
+    x: number;
+    y: number;
+}
+function distanceBetweenPoints(pt1: XYPoint, pt2: XYPoint) {
+    return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
+}
+function almostEquals(x, y, epsilon) {
+    return Math.abs(x - y) < epsilon;
+}
+function _isPointInArea(point: XYPoint, area, margin = 0.5) {
+    // margin - default is to match rounded decimals
+
+    return point && point.x > area.left - margin && point.x < area.right + margin && point.y > area.top - margin && point.y < area.bottom + margin;
+}
+const sign = Math.sign;
+export function splineCurve(firstPoint: XYPoint, middlePoint: XYPoint, afterPoint: XYPoint, tension: number) {
+    // Props to Rob Spencer at scaled innovation for his post on splining between points
+    // http://scaledinnovation.com/analytics/splines/aboutSplines.html
+
+    // This function must also respect "skipped" points
+
+    const previous = firstPoint;
+    const current = middlePoint;
+    const next = afterPoint;
+    const d01 = distanceBetweenPoints(current, previous);
+    const d12 = distanceBetweenPoints(next, current);
+
+    let s01 = d01 / (d01 + d12);
+    let s12 = d12 / (d01 + d12);
+
+    // If all points are the same, s01 & s02 will be inf
+    s01 = isNaN(s01) ? 0 : s01;
+    s12 = isNaN(s12) ? 0 : s12;
+
+    const fa = tension * s01; // scaling factor for triangle Ta
+    const fb = tension * s12;
+
+    return {
+        previous: {
+            x: current.x - fa * (next.x - previous.x),
+            y: current.y - fa * (next.y - previous.y)
+        },
+        next: {
+            x: current.x + fb * (next.x - previous.x),
+            y: current.y + fb * (next.y - previous.y)
+        }
+    };
+}
+function getXYValue(dataSet, index) {
+    const xKey = dataSet.xProperty;
+    const yKey = dataSet.yProperty;
+    const entry = dataSet.getEntryForIndex(index);
+    if (entry[yKey] === undefined || entry[yKey] === null) {
+        return null;
+    }
+    return { x: getEntryXValue(entry, xKey, index), y: entry[yKey] };
+}
+
 // fix drawing "too" thin paths on iOS
 
 export class DataSetImageCache {
@@ -279,6 +338,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             return [];
         }
     }
+
     @profile
     generateCubicPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
@@ -291,10 +351,6 @@ export class LineChartRenderer extends LineRadarRenderer {
             const xKey = dataSet.xProperty;
             const yKey = dataSet.yProperty;
             const intensity = dataSet.getCubicIntensity();
-            let prevDx = 0;
-            let prevDy = 0;
-            let curDx = 0;
-            let curDy = 0;
 
             // Take an extra polet from the left, and an extra from the right.
             // That's because we need 4 points for a cubic bezier (cubic=4), otherwise we get lines moving and doing weird stuff on the edges of the chart.
@@ -305,57 +361,45 @@ export class LineChartRenderer extends LineRadarRenderer {
             // let firstIndex = this.mXBounds.min + 1;
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
 
-            let i = Math.max(firstIndex - 2, 0);
-            let prevPrev = dataSet.getEntryForIndex(i);
-            let prevPrevXVal = getEntryXValue(prevPrev, xKey, i);
-            i = Math.max(firstIndex - 1, 0);
-            let prev = dataSet.getEntryForIndex(i);
-            let prevXVal = getEntryXValue(prev, xKey, i);
-            i = Math.max(firstIndex, 0);
-            let cur = dataSet.getEntryForIndex(i);
-            let curXVal = getEntryXValue(cur, xKey, i);
-            let next = cur;
-            let nextXVal = curXVal;
-            let nextIndex = -1;
-
-            if (cur == null) return [];
-
             const float32arr = this.mLineBuffer;
             let index = 0;
-            // outputPath.reset();
-            // outputPath.moveTo(curXVal, cur[yKey] * phaseY);
-            float32arr[index++] = curXVal;
-            float32arr[index++] = cur[yKey] * phaseY;
-            // let the spline start
-            for (let j = firstIndex + 1; j <= lastIndex; j++) {
-                const newEntry = dataSet.getEntryForIndex(j);
-                if (newEntry[yKey] === undefined || newEntry[yKey] === null) {
+            let nextIndex = -1;
+            let next: XYPoint;
+            let controlPoints;
+            let point: XYPoint;
+            let prev: XYPoint;
+            let prevControlPoints;
+            for (let j = firstIndex; j <= lastIndex; j++) {
+                point = getXYValue(dataSet, j);
+                if (!point) {
+                    if (j === 0) {
+                        return [];
+                    }
                     continue;
                 }
-                prevPrev = prev;
-                prevPrevXVal = prevXVal;
-                prev = cur;
-                prevXVal = curXVal;
-                cur = nextIndex === j ? next : newEntry;
-                curXVal = nextIndex === j ? nextXVal : getEntryXValue(newEntry, xKey, j);
-                nextIndex = Math.min(j + 1, dataSet.getEntryCount() - 1);
-                next = dataSet.getEntryForIndex(nextIndex);
-                nextXVal = getEntryXValue(next, xKey, nextIndex);
-                if (next[yKey] === undefined || next[yKey] === null) {
+                if (!prev) {
+                    prev = point;
+                }
+                nextIndex = j + 1 < dataSet.getEntryCount() ? j + 1 : j;
+                next = getXYValue(dataSet, nextIndex);
+                if (!next) {
                     continue;
                 }
-                prevDx = (curXVal - prevPrevXVal) * intensity;
-                prevDy = (cur[yKey] - prevPrev[yKey]) * intensity;
-                curDx = (nextXVal - prevXVal) * intensity;
-                curDy = (next[yKey] - prev[yKey]) * intensity;
+                controlPoints = splineCurve(prev, point, next, intensity);
+                if (j === 0) {
+                    float32arr[index++] = point.x;
+                    float32arr[index++] = point.y * phaseY;
+                } else {
+                    float32arr[index++] = prevControlPoints.next.x;
+                    float32arr[index++] = prevControlPoints.next.y * phaseY;
+                    float32arr[index++] = controlPoints.previous.x;
+                    float32arr[index++] = controlPoints.previous.y * phaseY;
+                    float32arr[index++] = point.x;
+                    float32arr[index++] = point.y * phaseY;
+                }
 
-                float32arr[index++] = prevXVal + prevDx;
-                float32arr[index++] = (prev[yKey] + prevDy) * phaseY;
-                float32arr[index++] = curXVal - curDx;
-                float32arr[index++] = (cur[yKey] - curDy) * phaseY;
-                float32arr[index++] = curXVal;
-                float32arr[index++] = cur[yKey] * phaseY;
-                // outputPath.cubicTo(prevXVal + prevDx, (prev[yKey] + prevDy) * phaseY, curXVal - curDx, (cur[yKey] - curDy) * phaseY, curXVal, cur[yKey] * phaseY);
+                prevControlPoints = controlPoints;
+                prev = point;
             }
             const points = Utils.pointsFromBuffer(float32arr);
             outputPath.setCubicLines(points, 0, index);
@@ -536,6 +580,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         const renderPaint = this.renderPaint;
         let paintColorsShader;
         if (nbColors > 1) {
+            // TODO: we transforms points in there. Could be dangerous if used after
             paintColorsShader = this.getMultiColorsShader(colors, points, trans, dataSet, renderPaint);
         }
 
@@ -562,8 +607,6 @@ export class LineChartRenderer extends LineRadarRenderer {
                 oldShader = renderPaint.getShader();
                 renderPaint.setShader(paintColorsShader);
             }
-            // trans.pointValuesToPixel(points);
-            // this.drawLines(c, points, 0,index, renderPaint);
             trans.pathValueToPixel(linePath);
             this.drawPath(c, linePath, renderPaint);
             if (paintColorsShader) {
