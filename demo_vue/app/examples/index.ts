@@ -8,6 +8,7 @@ import Realtime from './Realtime.vue';
 
 export const getExamples = () =>
     [
+        {  component:NSChart, title: nsChartTitle },
         {  component:Basic, title: 'Simple line chart.' },
         // {  component:Multiple, title: 'Show multiple data sets.' },
         // {  component:Dual Axis, title: 'Line chart with dual y-axes.' },
