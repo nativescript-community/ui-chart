@@ -4,7 +4,6 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 import { IScatterDataSet } from '../interfaces/datasets/IScatterDataSet';
-import { getEntryXValue } from '../data/BaseEntry';
 import { Highlight } from '../highlight/Highlight';
 import { Entry } from '../data/Entry';
 import { CandleDataProvider } from '../interfaces/dataprovider/CandleDataProvider';
@@ -60,7 +59,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
             if (e == null) continue;
 
-            const xPos = getEntryXValue(e, xKey, j);
+            const xPos = dataSet.getEntryXValue(e, j);
 
             const open = e[dataSet.openProperty] || 0;
             const close = e[dataSet.closeProperty] || 0;
@@ -272,8 +271,6 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         const paint = this.highlightPaint;
         for (const high of indices) {
             const set = candleData.getDataSetByIndex(high.dataSetIndex);
-            const xKey = set.xProperty;
-            const yKey = set.yProperty;
 
             if (set == null || !set.isHighlightEnabled()) continue;
 
@@ -291,7 +288,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
             const highValue = (entry[set.highProperty] || 0) * this.mAnimator.getPhaseY();
             const y = (lowValue + highValue) / 2;
 
-            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(getEntryXValue(entry, xKey, index), y);
+            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(set.getEntryXValue(entry, index), y);
 
             high.drawX = pix.x;
             high.drawY = pix.y;

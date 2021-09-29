@@ -1,6 +1,5 @@
 import { AbstractBuffer } from './AbstractBuffer';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
-import { getEntryXValue } from '../data/BaseEntry';
 
 export class BarBuffer extends AbstractBuffer<IBarDataSet> {
     protected mDataSetIndex = 0;
@@ -50,7 +49,6 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
     public feed(data: IBarDataSet) {
         const size = data.getEntryCount() * this.phaseX;
         const barWidthHalf = this.mBarWidth / 2;
-        const xKey = data.xProperty;
         const yKey = data.yProperty;
         for (let i = 0; i < size; i++) {
             const e = data.getEntryForIndex(i);
@@ -58,7 +56,7 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                 continue;
             }
 
-            const x = getEntryXValue(e, xKey, i);
+            const x = data.getEntryXValue(e, i);
             let y = e[yKey];
             const vals = e.yVals;
 

@@ -127,6 +127,7 @@ export class XAxisRenderer extends AxisRenderer {
         // MPPointF.recycleInstance(pointF);
     }
 
+    @profile
     public renderAxisLine(c: Canvas) {
         const axis = this.mXAxis;
         if (!axis.isDrawAxisLineEnabled() || !axis.isEnabled() || axis.getAxisLineWidth() === 0 || axis.mEntryCount === 0) return;
@@ -145,6 +146,7 @@ export class XAxisRenderer extends AxisRenderer {
         }
     }
 
+    protected labelsPositionsBuffer = [];
     /**
      * draws the x-labels on the specified y-position
      *
@@ -157,18 +159,22 @@ export class XAxisRenderer extends AxisRenderer {
         const centeringEnabled = axis.isCenterAxisLabelsEnabled();
         const entryCount = axis.mEntryCount;
         const length = entryCount * 2;
-        const positions = Utils.createNativeArray(length);
+        if (this.labelsPositionsBuffer.length !== length) {
+            this.labelsPositionsBuffer = Utils.createArrayBuffer(length);
+        }
+        const positionsBuffer = this.labelsPositionsBuffer;
         for (let i = 0; i < length; i += 2) {
             // only fill x values
             if (centeringEnabled) {
-                positions[i] = axis.mCenteredEntries[i / 2];
+                positionsBuffer[i] = axis.mCenteredEntries[i / 2];
             } else {
-                positions[i] = axis.mEntries[i / 2];
+                positionsBuffer[i] = axis.mEntries[i / 2];
             }
             if (i + 1 < length) {
-                positions[i + 1] = 0;
+                positionsBuffer[i + 1] = 0;
             }
         }
+        const positions = Utils.pointsFromBuffer(positionsBuffer);
         this.mTrans.pointValuesToPixel(positions);
         const chartWidth = this.mViewPortHandler.getChartWidth();
         let offsetRight = 0;
@@ -222,20 +228,21 @@ export class XAxisRenderer extends AxisRenderer {
 
         const length = this.mAxis.mEntryCount * 2;
         if (this.mRenderGridLinesBuffer.length !== length) {
-            this.mRenderGridLinesBuffer = Utils.createNativeArray(length);
+            this.mRenderGridLinesBuffer = Utils.createArrayBuffer(length);
         }
-        const positions = this.mRenderGridLinesBuffer;
+        const positionsBuffer = this.mRenderGridLinesBuffer;
         for (let i = 0; i < length; i += 2) {
-            positions[i] = this.mXAxis.mEntries[i / 2];
+            positionsBuffer[i] = this.mXAxis.mEntries[i / 2];
             if (i + 1 < length) {
-                positions[i + 1] = 0;
+                positionsBuffer[i + 1] = 0;
             }
         }
-        this.mTrans.pointValuesToPixel(positions);
+        const points = Utils.pointsFromBuffer(positionsBuffer);
+        this.mTrans.pointValuesToPixel(points);
 
         const paint = this.axisLinePaint;
         for (let i = 0; i < length; i += 2) {
-            const x = positions[i];
+            const x = points[i];
             c.drawLine(x, pos, x, pos + ticklength, paint);
         }
     }

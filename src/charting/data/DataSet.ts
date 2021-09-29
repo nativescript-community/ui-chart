@@ -1,7 +1,6 @@
 import { ObservableArray } from '@nativescript/core';
 import { Entry } from './Entry';
 import { BaseDataSet } from './BaseDataSet';
-import { getEntryXValue } from './BaseEntry';
 import { Utils } from '../utils/Utils';
 
 /**
@@ -59,6 +58,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     constructor(values, label, xProperty?, yProperty?) {
         super(label, xProperty, yProperty);
         this.mValues = values;
+        this.updateGetEntryForIndex();
     }
 
     toString() {
@@ -67,7 +67,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
     init() {
         if (this.mValues == null) this.mValues = [];
-
+        this.updateGetEntryForIndex();
         if (this.mValues.length > 0) {
             for (let index = 0, e: T; index < this.mValues.length; index++) {
                 e = this.getEntryForIndex(index);
@@ -131,7 +131,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
                 this.calcMinMaxForEntry(e, index);
             }
         } else {
-            const x = getEntryXValue(e, this.xProperty, index);
+            const x = this.getEntryXValue(e, index);
             if (x < this.mXMin) this.mXMin = x;
 
             if (x > this.mXMax) this.mXMax = x;
@@ -169,6 +169,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
      */
     public setValues(values) {
         this.mValues = values;
+        this.updateGetEntryForIndex();
         this.notifyDataSetChanged();
     }
 
@@ -256,6 +257,19 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         return null;
     }
 
+    protected updateGetEntryForIndex() {
+        const internalValues = this.getInternalValues();
+        if (internalValues instanceof ObservableArray) {
+            this.getEntryForIndex = function (index) {
+                return internalValues.getItem(index);
+            };
+        } else {
+            this.getEntryForIndex = function (index) {
+                return internalValues[index];
+            };
+        }
+    }
+
     public getEntryForIndex(index) {
         return this.getInternalValues() instanceof ObservableArray ? (this.getInternalValues() as ObservableArray<T>).getItem(index) : this.getInternalValues()[index];
     }
@@ -267,15 +281,14 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         let low = 0;
         let high = values.length - 1;
         let closest = high;
-        const xKey = this.xProperty;
         const yKey = this.yProperty;
         let m: number, e: T, e1: T;
         while (low < high) {
             m = Math.floor((low + high) / 2);
             e = Utils.getArrayItem(values, m);
             e1 = Utils.getArrayItem(values, m + 1);
-            const d1 = getEntryXValue(e, xKey, m) - xValue,
-                d2 = getEntryXValue(e1, xKey, m + 1) - xValue,
+            const d1 = this.getEntryXValue(e, m) - xValue,
+                d2 = this.getEntryXValue(e1, m + 1) - xValue,
                 ad1 = Math.abs(d1),
                 ad2 = Math.abs(d2);
 
@@ -304,7 +317,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
         if (closest !== -1) {
             let e = Utils.getArrayItem(values, closest);
-            const closestXValue = getEntryXValue(e, xKey, closest);
+            const closestXValue = this.getEntryXValue(e, closest);
             if (rounding === Rounding.UP) {
                 // If rounding up, and found x-value is lower than specified x, and we can go upper...
                 if (closestXValue < xValue && closest < values.length - 1) {
@@ -321,7 +334,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
             if (closest >= 1 && !isNaN(closestToY)) {
                 e = Utils.getArrayItem(values, closest - 1);
                 if (e) {
-                    xValue = getEntryXValue(e, xKey, closest - 1);
+                    xValue = this.getEntryXValue(e, closest - 1);
                     while (closest > 0 && xValue === closestXValue) closest -= 1;
 
                     let closestYValue = Utils.getArrayItem(values, closest)[yKey];
@@ -334,7 +347,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
                         e = Utils.getArrayItem(values, closest);
                         if (!e) break;
-                        xValue = getEntryXValue(e, xKey, closest);
+                        xValue = this.getEntryXValue(e, closest);
 
                         if (xValue !== closestXValue) break;
 
@@ -364,17 +377,17 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         while (low <= high) {
             m = Math.floor((high + low) / 2);
             e = Utils.getArrayItem(values, m);
-            mXValue = getEntryXValue(e, xKey, m);
+            mXValue = this.getEntryXValue(e, m);
             // if we have a match
             if (xValue === mXValue) {
-                while (m > 0 && getEntryXValue(Utils.getArrayItem(values, m - 1), xKey, m - 1) === xValue) m--;
+                while (m > 0 && this.getEntryXValue(Utils.getArrayItem(values, m - 1), m - 1) === xValue) m--;
 
                 high = values.length;
 
                 // loop over all "equal" entries
                 for (; m < high; m++) {
                     e = Utils.getArrayItem(values, m);
-                    mXValue = getEntryXValue(e, xKey, m);
+                    mXValue = this.getEntryXValue(e, m);
                     if (mXValue === xValue) {
                         entries.push(e);
                     } else {
@@ -398,22 +411,21 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         let low = 0;
         let high = values.length - 1;
 
-        const xKey = this.xProperty;
         let entry: T, mXValue;
         while (low <= high) {
             let m = Math.floor((high + low) / 2);
             entry = Utils.getArrayItem(values, m);
-            mXValue = getEntryXValue(entry, xKey, m);
+            mXValue = this.getEntryXValue(entry, m);
             // if we have a match
             if (xValue === mXValue) {
-                while (m > 0 && getEntryXValue(Utils.getArrayItem(values, m - 1), xKey, m - 1) === xValue) m--;
+                while (m > 0 && this.getEntryXValue(Utils.getArrayItem(values, m - 1), m - 1) === xValue) m--;
 
                 high = values.length;
 
                 // loop over all "equal" entries
                 for (; m < high; m++) {
                     entry = Utils.getArrayItem(values, m);
-                    mXValue = getEntryXValue(entry, xKey, m);
+                    mXValue = this.getEntryXValue(entry, m);
                     if (mXValue === xValue) {
                         entries.push({ entry, index: m });
                     } else {

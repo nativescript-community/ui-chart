@@ -15,7 +15,6 @@ import { HorizontalViewPortHandler } from '../utils/HorizontalViewPortHandler';
 import { TransformerHorizontalBarChart } from '../utils/TransformerHorizontalBarChart';
 import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { RectF } from '@nativescript-community/ui-canvas';
-import { getEntryXValue } from '../data/BaseEntry';
 import { Trace } from '@nativescript/core';
 
 const LOG_TAG = 'HorizontalBarChart';
@@ -130,7 +129,7 @@ export class HorizontalBarChart extends BarChart {
         const xKey = set.xProperty;
         const yKey = set.yProperty;
 
-        const x = getEntryXValue(e, xKey, index);
+        const x = set.getEntryXValue(e, index);
         const y = e[yKey];
 
         const barWidth = this.mData.getBarWidth();

@@ -8,7 +8,6 @@ import { IBubbleDataSet } from '../interfaces/datasets/IBubbleDataSet';
 import { Color } from '@nativescript/core';
 import { Highlight } from '../highlight/Highlight';
 import { BubbleEntry } from '../data/BubbleEntry';
-import { getEntryXValue } from '../data/BaseEntry';
 import { BubbleDataSet } from '../data/BubbleDataSet';
 
 /**
@@ -59,7 +58,6 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     protected drawDataSet(c: Canvas, dataSet: BubbleDataSet) {
         if (dataSet.getEntryCount() < 1) return;
-        const xKey = dataSet.xProperty;
         const yKey = dataSet.yProperty;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
@@ -88,7 +86,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         }
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             const entry = dataSet.getEntryForIndex(j);
-            const xValue = getEntryXValue(entry, xKey, j);
+            const xValue = dataSet.getEntryXValue(entry, j);
             this.pointBuffer[0] = xValue;
             this.pointBuffer[1] = entry[yKey] * phaseY;
             trans.pointValuesToPixel(this.pointBuffer);
@@ -187,7 +185,6 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const customRender = this.mChart.getCustomRenderer();
         for (const high of indices) {
             const set = bubbleData.getDataSetByIndex(high.dataSetIndex);
-            const xKey = set.xProperty;
             const yKey = set.yProperty;
 
             if (set == null || !set.isHighlightEnabled()) {
@@ -221,7 +218,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const maxBubbleHeight = Math.abs(this.mViewPortHandler.contentBottom() - this.mViewPortHandler.contentTop());
             const referenceSize = Math.min(maxBubbleHeight, maxBubbleWidth);
 
-            this.pointBuffer[0] = getEntryXValue(entry, xKey, index);
+            this.pointBuffer[0] = set.getEntryXValue(entry, index);
             this.pointBuffer[1] = entry[yKey] * phaseY;
             trans.pointValuesToPixel(this.pointBuffer);
 
@@ -236,7 +233,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             if (!this.mViewPortHandler.isInBoundsRight(this.pointBuffer[0] - shapeHalf)) break;
 
-            let originalColor = set.getColor(getEntryXValue(entry, xKey, index)) as Color;
+            let originalColor = set.getColor(set.getEntryXValue(entry, index)) as Color;
             if (!(originalColor instanceof Color)) {
                 originalColor = new Color(originalColor);
             }

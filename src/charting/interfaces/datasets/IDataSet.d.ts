@@ -146,6 +146,8 @@ export interface IDataSet<T extends Entry> {
      */
     getEntryForIndex(index: number): T;
 
+    getEntryXValue(e: BaseEntry, entryIndex: number): number;
+
     /**
      * Returns the first Entry index found at the given x-value with binary
      * search.

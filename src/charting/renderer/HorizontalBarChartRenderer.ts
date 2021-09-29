@@ -9,7 +9,6 @@ import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Align, Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
-import { getEntryXValue } from '../data/BaseEntry';
 
 export class HorizontalBarChartRenderer extends BarChartRenderer {
     public get valuePaint() {
@@ -62,7 +61,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             const barShadowRectBuffer = this.barShadowRectBuffer;
             for (let i = 0, count = Math.min(Math.ceil(dataSet.getEntryCount() * phaseX), dataSet.getEntryCount()); i < count; i++) {
                 const e = dataSet.getEntryForIndex(i);
-                x = getEntryXValue(e, xKey, i);
+                x = dataSet.getEntryXValue(e, i);
 
                 barShadowRectBuffer.top = x - barWidthHalf;
                 barShadowRectBuffer.bottom = x + barWidthHalf;

@@ -9,7 +9,6 @@ import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Canvas, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
 import { profile } from '@nativescript/core';
-import { getEntryXValue } from '../data/BaseEntry';
 import { Entry } from '../data/Entry';
 
 export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
@@ -98,7 +97,6 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     }
 
     protected drawDataSet(c: Canvas, dataSet: IBarDataSet, index: number): boolean {
-        const xKey = dataSet.xProperty;
         const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
 
         const drawBorder = dataSet.getBarBorderWidth() > 0;
@@ -126,7 +124,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const barShadowRectBuffer = this.barShadowRectBuffer;
             for (let i = 0, count = Math.min(Math.ceil(dataSet.getEntryCount() * phaseX), dataSet.getEntryCount()); i < count; i++) {
                 const e = dataSet.getEntryForIndex(i);
-                x = getEntryXValue(e, xKey, i);
+                x = dataSet.getEntryXValue(e, i);
                 barShadowRectBuffer.left = x - barWidthHalf;
                 barShadowRectBuffer.right = x + barWidthHalf;
 
@@ -434,7 +432,6 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 continue;
             }
 
-            const xKey = set.xProperty;
             const yKey = set.yProperty;
             const trans = this.mChart.getTransformer(set.getAxisDependency());
 
@@ -461,7 +458,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 y1 = entry[yKey];
                 y2 = minAxisValue >= 0 ? minAxisValue : 0;
             }
-            const x = getEntryXValue(entry, xKey, index);
+            const x = set.getEntryXValue(entry, index);
             this.prepareBarHighlight(x, y1, y2, barData.getBarWidth() / 2, trans);
 
             this.setHighlightDrawPos(high, barRect);

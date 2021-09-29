@@ -2,7 +2,6 @@ import { BarHighlighter } from './BarHighlighter';
 import { Highlight } from './Highlight';
 import { BarDataProvider } from '../interfaces/dataprovider/BarDataProvider';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
-import { getEntryXValue } from '../data/BaseEntry';
 
 export class HorizontalBarHighlighter extends BarHighlighter {
     constructor(chart: BarDataProvider) {
@@ -26,7 +25,6 @@ export class HorizontalBarHighlighter extends BarHighlighter {
     }
 
     protected buildHighlights(set: IBarDataSet, dataSetIndex, xVal, rounding) {
-        const xKey = set.xProperty;
         const yKey = set.yProperty;
         const highlights: Highlight[] = [];
 
@@ -37,7 +35,7 @@ export class HorizontalBarHighlighter extends BarHighlighter {
             const closest = set.getEntryAndIndexForXValue(xVal, NaN, rounding);
             if (closest !== null) {
                 //noinspection unchecked
-                entries = set.getEntriesAndIndexesForXValue(getEntryXValue(closest.entry, xKey, closest.index));
+                entries = set.getEntriesAndIndexesForXValue(set.getEntryXValue(closest.entry, closest.index));
             }
         }
 
@@ -47,7 +45,7 @@ export class HorizontalBarHighlighter extends BarHighlighter {
 
         for (const r of entries) {
             const e = r.entry;
-            const xVal = getEntryXValue(e, xKey, r.index);
+            const xVal = set.getEntryXValue(e, r.index);
             const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[yKey], xVal);
 
             highlights.push({
@@ -58,7 +56,7 @@ export class HorizontalBarHighlighter extends BarHighlighter {
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex,
-                axis: set.getAxisDependency(),
+                axis: set.getAxisDependency()
             });
         }
 

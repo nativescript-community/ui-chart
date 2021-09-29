@@ -9,7 +9,6 @@ import { BarHighlighter } from '../highlight/BarHighlighter';
 import { Highlight } from '../highlight/Highlight';
 import { BarChartRenderer } from '../renderer/BarChartRenderer';
 import { Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
-import { getEntryXValue } from '../data/BaseEntry';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 import { Color } from '@nativescript/core';
 import { BaseCustomRenderer } from '../renderer/DataRenderer';
@@ -117,7 +116,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         const xKey = set.xProperty;
         const yKey = set.yProperty;
 
-        const x = getEntryXValue(e, xKey, index);
+        const x = set.getEntryXValue(e, index);
         const y = e[yKey];
 
         const barWidth = this.mData.getBarWidth();

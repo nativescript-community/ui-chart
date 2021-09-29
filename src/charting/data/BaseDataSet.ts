@@ -131,8 +131,23 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
             this.yProperty = yProperty;
         }
 
+        if (this.xProperty === undefined || this.xProperty === null) {
+            this.getEntryXValue = function (e: T, entryIndex: number) {
+                return entryIndex;
+            };
+        } else {
+            this.getEntryXValue = (e: T, entryIndex: number) => e[this.xProperty];
+        }
+
         this.mValueColors.push('black');
         this.mLabel = label;
+    }
+
+    public getEntryXValue(e: T, entryIndex: number) {
+        if (this.xProperty === undefined || this.xProperty === null) {
+            return entryIndex;
+        }
+        return e[this.xProperty];
     }
 
     /**

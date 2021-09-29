@@ -7,7 +7,6 @@ import { Entry } from '../data/Entry';
 import { CandleDataSet } from '../data/CandleDataSet';
 import { BubbleDataSet } from '../data/BubbleDataSet';
 import { CandleEntry } from '../data/CandleEntry';
-import { getEntryXValue } from '../data/BaseEntry';
 import { constants } from 'crypto';
 
 /**
@@ -91,14 +90,13 @@ export class Transformer {
         }
         const valuePoints = this.valuePointsForGenerateTransformedValuesScatter;
 
-        const xKey = dataSet.xProperty;
         const yKey = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
             const index = j / 2 + from;
             const e = dataSet.getEntryForIndex(index);
 
             if (e != null) {
-                valuePoints[j] = getEntryXValue(e, xKey, index);
+                valuePoints[j] = dataSet.getEntryXValue(e, index);
                 valuePoints[j + 1] = e[yKey] * phaseY;
             } else {
                 valuePoints[j] = 0;
@@ -107,7 +105,7 @@ export class Transformer {
         }
 
         const points = Utils.pointsFromBuffer(valuePoints);
-        this.getValueToPixelMatrix().mapPoints(points);
+        this.mapPoints(this.getValueToPixelMatrix(), points);
 
         return { points, count };
     }
@@ -127,14 +125,13 @@ export class Transformer {
             this.valuePointsForGenerateTransformedValuesBubble = Utils.createArrayBuffer(count);
         }
         const valuePoints = this.valuePointsForGenerateTransformedValuesBubble;
-        const xKey = dataSet.xProperty;
         const yKey = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
             const index = j / 2 + from;
             const e = dataSet.getEntryForIndex(index);
 
             if (e != null) {
-                valuePoints[j] = getEntryXValue(e, xKey, index);
+                valuePoints[j] = dataSet.getEntryXValue(e, index);
                 valuePoints[j + 1] = e[yKey] * phaseY;
             } else {
                 valuePoints[j] = 0;
@@ -142,7 +139,7 @@ export class Transformer {
             }
         }
         const points = Utils.pointsFromBuffer(valuePoints);
-        this.getValueToPixelMatrix().mapPoints(points);
+        this.mapPoints(this.getValueToPixelMatrix(), points);
 
         return { points, count };
     }
@@ -166,14 +163,13 @@ export class Transformer {
         // let valuePoints = this.valuePointsForGenerateTransformedValues;
         const valuePoints = this.valuePointsForGenerateTransformedValues;
 
-        const xKey = dataSet.xProperty;
         const yKey = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
             const index = j / 2 + from;
             const e = dataSet.getEntryForIndex(index);
 
             if (e) {
-                valuePoints[j] = getEntryXValue(e, xKey, index);
+                valuePoints[j] = dataSet.getEntryXValue(e, index);
                 valuePoints[j + 1] = e[yKey] * phaseY;
             } else {
                 valuePoints[j] = 0;
@@ -181,7 +177,7 @@ export class Transformer {
             }
         }
         const points = Utils.pointsFromBuffer(valuePoints);
-        this.getValueToPixelMatrix().mapPoints(points);
+        this.mapPoints(this.getValueToPixelMatrix(), points);
 
         return { points, count };
     }
@@ -217,7 +213,7 @@ export class Transformer {
     //         }
     //     }
 
-    //     this.getValueToPixelMatrix().mapPoints(valuePoints);
+    //      this.mapPoints(this.getValueToPixelMatrix(), valuePoints);
 
     //     return valuePoints;
     // }
@@ -243,10 +239,9 @@ export class Transformer {
             index = j / 2 + from;
             e = dataSet.getEntryForIndex(index);
 
-            const xKey = dataSet.xProperty;
             const highProperty = dataSet.highProperty;
             if (e) {
-                valuePoints[j] = getEntryXValue(e, xKey, index);
+                valuePoints[j] = dataSet.getEntryXValue(e, index);
                 valuePoints[j + 1] = e[highProperty] * phaseY;
             } else {
                 valuePoints[j] = 0;
@@ -254,7 +249,7 @@ export class Transformer {
             }
         }
         const points = Utils.pointsFromBuffer(valuePoints);
-        this.getValueToPixelMatrix().mapPoints(points);
+        this.mapPoints(this.getValueToPixelMatrix(), points);
 
         return { points, count };
     }
@@ -284,6 +279,14 @@ export class Transformer {
         }
     }
 
+    public mapPoints(matrix: Matrix, pts) {
+        if (global.isAndroid && ArrayBuffer.isView(pts)) {
+            matrix['mapPointsBuffer'](pts);
+        } else {
+            matrix.mapPoints(pts);
+        }
+    }
+
     /**
      * Transform an array of points with all matrices. VERY IMPORTANT: Keep
      * matrix order "value-touch-offset" when transforming.
@@ -294,8 +297,7 @@ export class Transformer {
         // this.mMatrixValueToPx.mapPoints(pts);
         // this.mViewPortHandler.getMatrixTouch().mapPoints(pts);
         // this.mMatrixOffset.mapPoints(pts);
-        const tmp = this.getValueToPixelMatrix();
-        tmp.mapPoints(pts);
+        this.mapPoints(this.getValueToPixelMatrix(), pts);
     }
 
     /**
@@ -372,9 +374,9 @@ export class Transformer {
      *
      * @param pixels
      */
-    public pixelsToValue(pixels: number[]) {
+    public pixelsToValue(pixels) {
         const tmp = this.getPixelToValueMatrix();
-        tmp.mapPoints(pixels);
+        this.mapPoints(tmp, pixels);
     }
 
     /**

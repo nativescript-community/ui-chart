@@ -5,7 +5,6 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Canvas, Paint } from '@nativescript-community/ui-canvas';
 import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { IScatterDataSet } from '../interfaces/datasets/IScatterDataSet';
-import { getEntryXValue } from '../data/BaseEntry';
 import { Highlight } from '../highlight/Highlight';
 import { Entry } from '../data/Entry';
 import { ScatterChart } from '../charts';
@@ -56,7 +55,6 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         }
 
         const max = Math.min(Math.ceil(dataSet.getEntryCount() * this.mAnimator.getPhaseX()), dataSet.getEntryCount());
-        const xKey = dataSet.xProperty;
         const yKey = dataSet.yProperty;
         const customRender = this.mChart.getCustomRenderer();
         const renderPaint = this.renderPaint;
@@ -69,7 +67,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         for (let i = 0; i < max; i++) {
             const e = dataSet.getEntryForIndex(i);
 
-            pixelBuffer[0] = getEntryXValue(e, xKey, i);
+            pixelBuffer[0] = dataSet.getEntryXValue(e, i);
             pixelBuffer[1] = e[yKey] * phaseY;
 
             trans.pointValuesToPixel(pixelBuffer);
@@ -158,7 +156,6 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         const paint = this.highlightPaint;
         for (const high of indices) {
             const set = scatterData.getDataSetByIndex(high.dataSetIndex);
-            const xKey = set.xProperty;
             const yKey = set.yProperty;
 
             if (set == null || !set.isHighlightEnabled()) continue;
@@ -174,7 +171,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
             if (!this.isInBoundsX(entry, set)) continue;
 
-            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(getEntryXValue(entry, xKey, index), entry[yKey] * this.mAnimator.getPhaseY());
+            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(set.getEntryXValue(entry, index), entry[yKey] * this.mAnimator.getPhaseY());
 
             high.x = pix.x;
             high.y = pix.y;

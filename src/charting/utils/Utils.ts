@@ -8,6 +8,10 @@ import { Chart } from '../charts/Chart';
 
 export const ChartTraceCategory = 'NativescriptChart';
 
+declare global {
+    const __runtimeVersion: string;
+}
+
 export enum CLogTypes {
     log = Trace.messageType.log,
     info = Trace.messageType.info,
@@ -670,22 +674,32 @@ export namespace Utils {
         // return edited descriptor as opposed to overwriting the descriptor
         return descriptor;
     }
+    let _runtimeVersion;
+    let _supportsDirectArrayBuffers;
+    export function supportsDirectArrayBuffers() {
+        if (_supportsDirectArrayBuffers === undefined) {
+            if (!_runtimeVersion) {
+                _runtimeVersion = __runtimeVersion;
+            }
+            _supportsDirectArrayBuffers = parseInt(_runtimeVersion[0], 10) > 8 || (parseInt(_runtimeVersion[0], 10) === 8 && parseInt(_runtimeVersion[2], 10) >= 2);
+        }
+        return _supportsDirectArrayBuffers;
+    }
 
     // export const createArrayBuffer = profile('createArrayBuffer', function(length: number, force = false): number[] {
     export function createArrayBuffer(length: number, force = false): number[] {
-        if (global.isAndroid) {
+        if (global.isAndroid && !supportsDirectArrayBuffers()) {
             const bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
             const result = (ArrayBuffer as any).from(bb);
             const array = new Float32Array(result);
             // return new FloatConstructor(result) as any;
             return array as any;
-        } else {
-            return new FloatConstructor(length) as any;
         }
+        return new FloatConstructor(length) as any;
     }
     // export const pointsFromBuffer = profile('pointsFromBuffer', function(float32Array) {
     export function pointsFromBuffer(float32Array) {
-        if (global.isAndroid) {
+        if (global.isAndroid && !supportsDirectArrayBuffers()) {
             const buffer = float32Array.buffer;
             const length = float32Array.length;
             const testArray = Array.create('float', length);
@@ -696,7 +710,7 @@ export namespace Utils {
     }
     // export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
     export function nativeArrayToArray(array) {
-        if (global.isAndroid) {
+        if (global.isAndroid && !supportsDirectArrayBuffers()) {
             const result = [];
             for (let index = 0; index < array.length; index++) {
                 result[index] = array[index];
@@ -712,17 +726,6 @@ export namespace Utils {
         }
         // At least, set length to use it for iterations
         return new Array(length);
-    }
-    export function arrayoNativeArray(array: number[]) {
-        if (!Array.isArray(array)) {
-            return array;
-        }
-        const length = array.length;
-        const nNative = Array.create('float', length);
-        for (let i = 0; i < length; i++) {
-            nNative[i] = array[i];
-        }
-        return nNative;
     }
 
     export function clipPathSupported() {

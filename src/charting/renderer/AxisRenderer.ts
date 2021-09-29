@@ -6,6 +6,7 @@ import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { BaseCustomRenderer } from './DataRenderer';
 import { LimitLine } from '../components/LimitLine';
+import { profile } from '@nativescript/core';
 
 export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
 export type CustomRendererLimitLineFunction = (c: Canvas, renderer: AxisRenderer, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
@@ -132,6 +133,7 @@ export abstract class AxisRenderer extends Renderer {
      * @param min - the minimum value in the data object for this axis
      * @param max - the maximum value in the data object for this axis
      */
+    @profile
     public computeAxis(min, max, inverted) {
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)

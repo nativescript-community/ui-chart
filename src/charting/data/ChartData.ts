@@ -1,5 +1,4 @@
 import { Entry } from './Entry';
-import { getEntryXValue } from './BaseEntry';
 import { AxisDependency } from '../components/YAxis';
 import { IValueFormatter } from '../formatter/IValueFormatter';
 import { Highlight } from '../highlight/Highlight';
@@ -432,7 +431,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     protected calcMinMaxForEntry(set: IDataSet<Entry>, e: Entry, entryIndex: number, axis: AxisDependency) {
         const xKey = set.xProperty;
         const yKey = set.yProperty;
-        const xValue = getEntryXValue(e, xKey, entryIndex);
+        const xValue = set.getEntryXValue(e, entryIndex);
         const yValue = e[yKey];
         if (this.mYMax < yValue) this.mYMax = yValue;
         if (this.mYMin > yValue) this.mYMin = yValue;

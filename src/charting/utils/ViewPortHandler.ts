@@ -395,7 +395,6 @@ export class ViewPortHandler {
     public limitTransAndScale(matrix: Matrix, content: Rect) {
         // TODO: native buffer to be optimized (or rewrite matrix!)
         matrix.getValues(this.matrixBuffer);
-
         const curTransX = this.matrixBuffer[Matrix.MTRANS_X];
         const curScaleX = this.matrixBuffer[Matrix.MSCALE_X];
 

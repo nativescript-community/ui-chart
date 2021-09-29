@@ -9,10 +9,3 @@ export interface BaseEntry {
     data?: any;
     [k: string]: any;
 }
-
-export function getEntryXValue(e: BaseEntry, xKey: string, entryIndex: number) {
-    if (xKey === undefined || xKey === null) {
-        return entryIndex;
-    }
-    return e[xKey];
-}

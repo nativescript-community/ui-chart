@@ -1,4 +1,5 @@
 import { DashPathEffect } from '@nativescript-community/ui-canvas';
+import { ObservableArray, profile } from '@nativescript/core';
 import { Color } from '@nativescript/core/color';
 import { createLTTB } from 'downsample/methods/LTTB';
 import { DefaultFillFormatter } from '../formatter/DefaultFillFormatter';
@@ -90,6 +91,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     protected mFilteredValues: Entry[] = null;
     protected mFilterFunction;
+    @profile
     public applyFiltering(scaleX: number) {
         if (this.mMaxFilterNumber > 0 && this.mValues.length / scaleX > this.mMaxFilterNumber) {
             const filterCount = Math.round(this.mMaxFilterNumber * scaleX);
@@ -105,6 +107,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
         } else if (this.mFilteredValues) {
             this.mFilteredValues = null;
         }
+        this.updateGetEntryForIndex();
     }
 
     mIgnoreFiltered = false;
@@ -116,10 +119,11 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
     setIgnoreFiltered(value) {
         this.mIgnoreFiltered = value;
+        this.updateGetEntryForIndex();
     }
     setValues(values) {
-        super.setValues(values);
         this.mFilteredValues = null;
+        super.setValues(values);
     }
     isFiltered() {
         return !!this.mFilteredValues;
