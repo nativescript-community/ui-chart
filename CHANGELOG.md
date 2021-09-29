@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.42](https://github.com/Akylas/nativescript-chart/compare/v1.1.41...v1.1.42) (2021-09-29)
+
+
+### Bug Fixes
+
+* improved performances for big data ([5837a60](https://github.com/Akylas/nativescript-chart/commit/5837a608cc29f437624383706071dba6edfb0e77))
+
+
+
+
+
 ## [1.1.41](https://github.com/Akylas/nativescript-chart/compare/v1.1.40...v1.1.41) (2021-08-09)
 
 
