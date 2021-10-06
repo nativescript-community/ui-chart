@@ -73,7 +73,7 @@ export class Transformer {
         }
     }
 
-    protected valuePointsForGenerateTransformedValuesScatter = [];
+    protected mValuePointsForGenerateTransformedValuesScatter = [];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -85,10 +85,10 @@ export class Transformer {
     public generateTransformedValuesScatter(dataSet: IDataSet<Entry>, phaseX, phaseY, from, to) {
         const count = ((to - from) * phaseX + 1) * 2;
 
-        if (this.valuePointsForGenerateTransformedValuesScatter.length !== count) {
-            this.valuePointsForGenerateTransformedValuesScatter = Utils.createArrayBuffer(count);
+        if (this.mValuePointsForGenerateTransformedValuesScatter.length !== count) {
+            this.mValuePointsForGenerateTransformedValuesScatter = Utils.createArrayBuffer(count);
         }
-        const valuePoints = this.valuePointsForGenerateTransformedValuesScatter;
+        const valuePoints = this.mValuePointsForGenerateTransformedValuesScatter;
 
         const yKey = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
@@ -110,7 +110,7 @@ export class Transformer {
         return { points, count };
     }
 
-    protected valuePointsForGenerateTransformedValuesBubble: number[] = [];
+    protected mValuePointsForGenerateTransformedValuesBubble: number[] = [];
     /**
      * Transforms an List of Entry into a float array containing the x and
      * y values transformed with all matrices for the BUBBLECHART.
@@ -121,10 +121,10 @@ export class Transformer {
     public generateTransformedValuesBubble(dataSet: BubbleDataSet, phaseY, from, to) {
         const count = (to - from + 1) * 2; // (int) Math.ceil((to - from) * phaseX) * 2;
 
-        if (this.valuePointsForGenerateTransformedValuesBubble.length !== count) {
-            this.valuePointsForGenerateTransformedValuesBubble = Utils.createArrayBuffer(count);
+        if (this.mValuePointsForGenerateTransformedValuesBubble.length !== count) {
+            this.mValuePointsForGenerateTransformedValuesBubble = Utils.createArrayBuffer(count);
         }
-        const valuePoints = this.valuePointsForGenerateTransformedValuesBubble;
+        const valuePoints = this.mValuePointsForGenerateTransformedValuesBubble;
         const yKey = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
             const index = j / 2 + from;
@@ -144,7 +144,7 @@ export class Transformer {
         return { points, count };
     }
 
-    protected valuePointsForGenerateTransformedValues: number[] = [];
+    protected mValuePointsForGenerateTransformedValues: number[] = [];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -157,11 +157,11 @@ export class Transformer {
         const count = Math.ceil((to - from) * phaseX + 1) * 2;
         // let count = (to - from + 1) * 2; //  Math.ceil((to - from) * phaseX) * 2;
 
-        if (!this.valuePointsForGenerateTransformedValues || this.valuePointsForGenerateTransformedValues.length < count) {
-            this.valuePointsForGenerateTransformedValues = Utils.createArrayBuffer(count);
+        if (!this.mValuePointsForGenerateTransformedValues || this.mValuePointsForGenerateTransformedValues.length < count) {
+            this.mValuePointsForGenerateTransformedValues = Utils.createArrayBuffer(count);
         }
         // let valuePoints = this.valuePointsForGenerateTransformedValues;
-        const valuePoints = this.valuePointsForGenerateTransformedValues;
+        const valuePoints = this.mValuePointsForGenerateTransformedValues;
 
         const yKey = dataSet.yProperty;
         for (let j = 0; j < count; j += 2) {
@@ -218,7 +218,7 @@ export class Transformer {
     //     return valuePoints;
     // }
 
-    protected valuePointsForGenerateTransformedValuesCandle: number[] = [];
+    protected mValuePointsForGenerateTransformedValuesCandle: number[] = [];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -230,10 +230,10 @@ export class Transformer {
     public generateTransformedValuesCandle(dataSet: CandleDataSet, phaseX, phaseY, from, to) {
         const count = ((to - from) * phaseX + 1) * 2;
 
-        if (this.valuePointsForGenerateTransformedValuesCandle.length !== count) {
-            this.valuePointsForGenerateTransformedValuesCandle = Utils.createArrayBuffer(count);
+        if (this.mValuePointsForGenerateTransformedValuesCandle.length !== count) {
+            this.mValuePointsForGenerateTransformedValuesCandle = Utils.createArrayBuffer(count);
         }
-        const valuePoints = this.valuePointsForGenerateTransformedValuesCandle;
+        const valuePoints = this.mValuePointsForGenerateTransformedValuesCandle;
 
         for (let j = 0, e: CandleEntry, index: number; j < count; j += 2) {
             index = j / 2 + from;
@@ -382,7 +382,7 @@ export class Transformer {
     /**
      * buffer for performance
      */
-    ptsBuffer = Utils.createNativeArray(2);
+    mPtsBuffer = Utils.createNativeArray(2);
 
     /**
      * Returns a recyclable MPPointD instance.
@@ -400,12 +400,12 @@ export class Transformer {
         if (!outputPoint) {
             outputPoint = { x: 0, y: 0 };
         }
-        this.ptsBuffer[0] = x;
-        this.ptsBuffer[1] = y;
+        this.mPtsBuffer[0] = x;
+        this.mPtsBuffer[1] = y;
 
-        this.pixelsToValue(this.ptsBuffer);
-        outputPoint.x = this.ptsBuffer[0];
-        outputPoint.y = this.ptsBuffer[1];
+        this.pixelsToValue(this.mPtsBuffer);
+        outputPoint.x = this.mPtsBuffer[0];
+        outputPoint.y = this.mPtsBuffer[1];
         return outputPoint;
     }
 
@@ -418,13 +418,13 @@ export class Transformer {
      * @return
      */
     public getPixelForValues(x, y) {
-        this.ptsBuffer[0] = x;
-        this.ptsBuffer[1] = y;
+        this.mPtsBuffer[0] = x;
+        this.mPtsBuffer[1] = y;
 
-        this.pointValuesToPixel(this.ptsBuffer);
+        this.pointValuesToPixel(this.mPtsBuffer);
 
-        const xPx = this.ptsBuffer[0];
-        const yPx = this.ptsBuffer[1];
+        const xPx = this.mPtsBuffer[0];
+        const yPx = this.mPtsBuffer[1];
 
         return { x: xPx, y: yPx };
     }
