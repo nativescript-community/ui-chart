@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.43](https://github.com/Akylas/nativescript-chart/compare/v1.1.42...v1.1.43) (2021-10-06)
+
+
+### Bug Fixes
+
+* crash fix when no axis labels ([5aca350](https://github.com/Akylas/nativescript-chart/commit/5aca35093fa993b7116146178d673b8d79501e10))
+
+
+
+
+
 ## [1.1.42](https://github.com/Akylas/nativescript-chart/compare/v1.1.41...v1.1.42) (2021-09-29)
 
 
