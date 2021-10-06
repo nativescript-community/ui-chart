@@ -29,7 +29,7 @@
             "@nativescript-community/ui-chart/*": ["src/charting/*"],
             "*": ["node_modules/*"]
         },
-        "plugins": [{ "transform": "@nativescript/webpack/transformers/ns-transform-native-classes", "type": "raw" }]
+        "plugins": [{ "transform": "@nativescript/webpack/dist/transformers/NativeClass", "type": "raw" }]
     },
     "include": ["src/**/*", "./references.d.ts"],
     "exclude": ["node_modules", "platforms"],
