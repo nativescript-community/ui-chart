@@ -25,7 +25,8 @@ const LOG_TAG = 'BarLineChartBase';
 
 export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatterCandleBubbleDataSet<U>, T extends BarLineScatterCandleBubbleData<U, D>>
     extends Chart<U, D, T>
-    implements BarLineScatterCandleBubbleDataProvider {
+    implements BarLineScatterCandleBubbleDataProvider
+{
     protected mChartTouchListener: BarLineChartTouchListener;
 
     /**
