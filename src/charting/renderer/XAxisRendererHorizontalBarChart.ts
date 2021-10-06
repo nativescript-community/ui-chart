@@ -119,17 +119,26 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         const axis = this.mXAxis;
         const labelRotationAngleDegrees = axis.getLabelRotationAngle();
         const centeringEnabled = axis.isCenterAxisLabelsEnabled();
-
-        const positions = Utils.createNativeArray(axis.mEntryCount * 2);
-
-        for (let i = 0; i < positions.length; i += 2) {
+        const entryCount = axis.mEntryCount;
+        if (entryCount === 0) {
+            return;
+        }
+        if (this.labelsPositionsBuffer.length !== length) {
+            this.labelsPositionsBuffer = Utils.createArrayBuffer(length);
+        }
+        const positionsBuffer = this.labelsPositionsBuffer;
+        for (let i = 0; i < length; i += 2) {
             // only fill x values
             if (centeringEnabled) {
-                positions[i + 1] = axis.mCenteredEntries[i / 2];
+                positionsBuffer[i] = axis.mCenteredEntries[i / 2];
             } else {
-                positions[i + 1] = axis.mEntries[i / 2];
+                positionsBuffer[i] = axis.mEntries[i / 2];
+            }
+            if (i + 1 < length) {
+                positionsBuffer[i + 1] = 0;
             }
         }
+        const positions = Utils.pointsFromBuffer(positionsBuffer);
 
         this.mTrans.pointValuesToPixel(positions);
         const labels = axis.mLabels;
