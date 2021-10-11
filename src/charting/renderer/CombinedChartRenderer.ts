@@ -19,6 +19,8 @@ export class CombinedChartRenderer extends DataRenderer {
     protected mRenderers: DataRenderer[] = new Array(5);
 
     protected mChart: WeakRef<CombinedChart>;
+    
+    protected mHighlightBuffer: Highlight[] = [];
 
     constructor(chart: CombinedChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
@@ -74,8 +76,6 @@ export class CombinedChartRenderer extends DataRenderer {
     public drawExtras(c: Canvas) {
         for (const renderer of this.mRenderers) renderer.drawExtras(c);
     }
-
-    protected mHighlightBuffer: Highlight[] = [];
 
     public drawHighlighted(c: Canvas, indices: Highlight[]) {
         const chart = this.mChart.get();

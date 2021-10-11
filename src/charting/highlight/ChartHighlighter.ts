@@ -116,7 +116,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
             // don't include DataSets that cannot be highlighted
             if (!dataSet.isHighlightEnabled()) continue;
-            Array.prototype.push.apply(this.mHighlightBuffer, this.buildHighlights(dataSet, i, xVal, Rounding.CLOSEST));
+            this.mHighlightBuffer.push(...this.buildHighlights(dataSet, i, xVal, Rounding.CLOSEST));
         }
 
         return this.mHighlightBuffer;

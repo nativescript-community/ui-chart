@@ -669,7 +669,7 @@ export class Legend extends ComponentBase {
             case LegendOrientation.HORIZONTAL: {
                 const labelLineHeight = Utils.getLineHeight(labelpaint);
                 const labelLineSpacing = Utils.getLineSpacing(labelpaint) + yEntrySpace;
-                const contentWidth = viewPortHandler.contentWidth() * this.mMaxSizePercent;
+                const contentWidth = viewPortHandler.getContentRect().width() * this.mMaxSizePercent;
 
                 // Start calculating layout
                 let maxLineWidth = 0;

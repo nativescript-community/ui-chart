@@ -1,4 +1,4 @@
-import { CanvasView, Matrix, Rect, RectF } from '@nativescript-community/ui-canvas';
+import { CanvasView, Matrix, Rect, RectF, TypedArray } from '@nativescript-community/ui-canvas';
 import { Utils } from './Utils';
 
 /**
@@ -16,8 +16,8 @@ export class ViewPortHandler {
     /**
      * this rectangle defines the area in which graph values can be drawn
      */
-    protected mContentRect = new RectF(0.0, 0.0, 0.0, 0.0);
-    protected mChartRect = new RectF(0.0, 0.0, 0.0, 0.0);
+    protected mContentRect = new RectF(0, 0, 0, 0);
+    protected mChartRect = new RectF(0, 0, 0, 0);
 
     protected mChartWidth = 0;
     protected mChartHeight = 0;
@@ -25,14 +25,7 @@ export class ViewPortHandler {
     /**
      * buffer for storing the 9 matrix values of a 3x3 matrix
      */
-    protected matrixBuffer = Utils.createNativeArray(9);
-
-    /**
-     * buffer for storing the 9 matrix values of a 3x3 matrix regarding fit screen
-     */
-    protected valsBufferForFitScreen = Utils.createNativeArray(9);
-
-    protected mCenterViewPortMatrixBuffer = new Matrix();
+    protected mMatrixBuffer: number[] | TypedArray;
 
     /**
      * minimum scale value on the y-axis
@@ -144,14 +137,6 @@ export class ViewPortHandler {
         return this.mContentRect.bottom;
     }
 
-    public contentWidth() {
-        return this.mContentRect.width();
-    }
-
-    public contentHeight() {
-        return this.mContentRect.height();
-    }
-
     public getContentRect() {
         return this.mContentRect;
     }
@@ -221,7 +206,7 @@ export class ViewPortHandler {
     public resetZoom(outputMatrix) {
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
-        outputMatrix.postScale(1.0, 1.0, 0.0, 0.0);
+        outputMatrix.postScale(1, 1, 0, 0);
     }
 
     /**
@@ -311,7 +296,7 @@ export class ViewPortHandler {
 
         outputMatrix.set(this.mMatrixTouch);
 
-        const vals = this.valsBufferForFitScreen;
+        const vals = Utils.getTempArray(9);
         for (let i = 0; i < 9; i++) {
             vals[i] = 0;
         }
@@ -336,7 +321,7 @@ export class ViewPortHandler {
      */
     public translate(transformedPts, outputMatrix?) {
         if (!outputMatrix) {
-            outputMatrix = new Matrix();
+            outputMatrix = Utils.getTempMatrix();
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
@@ -356,8 +341,8 @@ export class ViewPortHandler {
      * @param view
      * @return save
      */
-    public centerViewPort(transformedPts, view: CanvasView) {
-        const save = this.mCenterViewPortMatrixBuffer;
+    public centerViewPort(transformedPts: number[] | TypedArray, view: CanvasView) {
+        const save = Utils.getTempMatrix();
         save.reset();
         save.set(this.mMatrixTouch);
 
@@ -394,12 +379,16 @@ export class ViewPortHandler {
      */
     public limitTransAndScale(matrix: Matrix, content: Rect) {
         // TODO: native buffer to be optimized (or rewrite matrix!)
-        matrix.getValues(this.matrixBuffer);
-        const curTransX = this.matrixBuffer[Matrix.MTRANS_X];
-        const curScaleX = this.matrixBuffer[Matrix.MSCALE_X];
+        if (!this.mMatrixBuffer) {
+            this.mMatrixBuffer = Utils.createArrayBufferOrNativeArray(9);
+        }
+        const matrixBuffer = this.mMatrixBuffer;
+        matrix.getValues(matrixBuffer);
+        const curTransX = matrixBuffer[Matrix.MTRANS_X];
+        const curScaleX = matrixBuffer[Matrix.MSCALE_X];
 
-        const curTransY = this.matrixBuffer[Matrix.MTRANS_Y];
-        const curScaleY = this.matrixBuffer[Matrix.MSCALE_Y];
+        const curTransY = matrixBuffer[Matrix.MTRANS_Y];
+        const curScaleY = matrixBuffer[Matrix.MSCALE_Y];
 
         // min scale-x is 1
         this.mScaleX = Math.min(Math.max(this.mMinScaleX, curScaleX), this.mMaxScaleX);
@@ -421,13 +410,12 @@ export class ViewPortHandler {
         const maxTransY = height * (this.mScaleY - 1);
         this.mTransY = Math.max(Math.min(curTransY, maxTransY + this.mTransOffsetY), -this.mTransOffsetY);
 
-        this.matrixBuffer[Matrix.MTRANS_X] = this.mTransX;
-        this.matrixBuffer[Matrix.MSCALE_X] = this.mScaleX;
+        matrixBuffer[Matrix.MTRANS_X] = this.mTransX;
+        matrixBuffer[Matrix.MSCALE_X] = this.mScaleX;
 
-        this.matrixBuffer[Matrix.MTRANS_Y] = this.mTransY;
-        this.matrixBuffer[Matrix.MSCALE_Y] = this.mScaleY;
-
-        matrix.setValues(this.matrixBuffer);
+        matrixBuffer[Matrix.MTRANS_Y] = this.mTransY;
+        matrixBuffer[Matrix.MSCALE_Y] = this.mScaleY;
+        matrix.setValues(matrixBuffer);
     }
 
     /**

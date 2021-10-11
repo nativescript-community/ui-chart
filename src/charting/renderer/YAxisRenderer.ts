@@ -2,7 +2,7 @@ import { AxisRenderer, CustomRendererGridLineFunction } from './AxisRenderer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { AxisDependency, YAxis, YAxisLabelPosition } from '../components/YAxis';
 import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, Paint, Path, RectF, Style } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Paint, Path, RectF, Style, TypedArray } from '@nativescript-community/ui-canvas';
 import { Utils } from '../utils/Utils';
 import { LimitLabelPosition } from '../components/LimitLine';
 import { profile } from '@nativescript/core/profiling';
@@ -12,51 +12,7 @@ export class YAxisRenderer extends AxisRenderer {
 
     protected mZeroLinePaint: Paint;
 
-    protected mGridClippingRect: RectF;
-    protected get gridClippingRect() {
-        if (!this.mGridClippingRect) {
-            this.mGridClippingRect = new RectF(0, 0, 0, 0);
-        }
-        return this.mGridClippingRect;
-    }
-    protected mGetTransformedPositionsBuffer;
-
-    protected mDrawZeroLinePath: Path;
-    protected get drawZeroLinePath() {
-        if (!this.mDrawZeroLinePath) {
-            this.mDrawZeroLinePath = new Path();
-        }
-        return this.mDrawZeroLinePath;
-    }
-    protected mZeroLineClippingRect: RectF;
-    protected get zeroLineClippingRect() {
-        if (!this.mZeroLineClippingRect) {
-            this.mZeroLineClippingRect = new RectF(0, 0, 0, 0);
-        }
-        return this.mZeroLineClippingRect;
-    }
-
-    // protected mRenderLimitLinesPath: Path;
-    // protected get renderLimitLinesPath() {
-    //     if (!this.mRenderLimitLinesPath) {
-    //         this.mRenderLimitLinesPath = new Path();
-    //     }
-    //     return this.mRenderLimitLinesPath;
-    // }
-    protected mRenderLimitLinesBuffer;
-    protected get renderLimitLinesBuffer() {
-        if (!this.mRenderLimitLinesBuffer) {
-            this.mRenderLimitLinesBuffer = Utils.createNativeArray(2);
-        }
-        return this.mRenderLimitLinesBuffer;
-    }
-    protected mLimitLineClippingRect: RectF;
-    protected get limitLineClippingRect() {
-        if (!this.mLimitLineClippingRect) {
-            this.mLimitLineClippingRect = new RectF(0, 0, 0, 0);
-        }
-        return this.mLimitLineClippingRect;
-    }
+    protected mGetTransformedPositionsBuffer: TypedArray;
 
     constructor(viewPortHandler: ViewPortHandler, yAxis: YAxis, trans: Transformer) {
         super(viewPortHandler, trans, yAxis);
@@ -65,11 +21,7 @@ export class YAxisRenderer extends AxisRenderer {
 
     get zeroLinePaint() {
         if (this.mZeroLinePaint) {
-            this.mZeroLinePaint = new Paint();
-            this.mZeroLinePaint.setAntiAlias(true);
-            this.mZeroLinePaint.setColor('gray');
-            this.mZeroLinePaint.setStrokeWidth(1);
-            this.mZeroLinePaint.setStyle(Style.STROKE);
+            this.mZeroLinePaint = Utils.getTemplatePaint('gray-stroke');
         }
         return this.mZeroLinePaint;
     }
@@ -158,8 +110,9 @@ export class YAxisRenderer extends AxisRenderer {
         const paint = this.axisLabelsPaint;
         for (let i = from; i < to; i++) {
             const text = mYAxis.getFormattedLabel(i);
-
-            c.drawText(text, fixedPosition, positions[i * 2 + 1] + offset, paint);
+            if (text) {
+                c.drawText(text + '', fixedPosition, positions[i * 2 + 1] + offset, paint);
+            }
         }
     }
 
@@ -234,27 +187,11 @@ export class YAxisRenderer extends AxisRenderer {
 
     public getGridClippingRect() {
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        const gridClippingRect = this.gridClippingRect;
+        const gridClippingRect = Utils.getTempRectF();
         gridClippingRect.set(rect);
         gridClippingRect.inset(0, -this.mAxis.getGridLineWidth());
         return gridClippingRect;
     }
-
-    /**
-     * Calculates the path for a grid line.
-     *
-     * @param p
-     * @param i
-     * @param positions
-     * @return
-     */
-    // protected linePath(p: Path, i, positions) {
-    //     p.setLines([this.mViewPortHandler.offsetLeft(), positions[i + 1], rect.right, positions[i + 1]]);
-    //     // p.moveTo(this.mViewPortHandler.offsetLeft(), positions[i + 1]);
-    //     // p.lineTo(rect.right, positions[i + 1]);
-
-    //     return p;
-    // }
 
     /**
      * Transforms the values contained in the axis entries to screen pixels and returns them in form of a let array
@@ -286,7 +223,7 @@ export class YAxisRenderer extends AxisRenderer {
         const axis = this.mYAxis;
         const clipRestoreCount = c.save();
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        const zeroLineClippingRectl = this.zeroLineClippingRect;
+        const zeroLineClippingRectl = Utils.getTempRectF();
         zeroLineClippingRectl.set(rect);
         zeroLineClippingRectl.inset(0, -axis.getZeroLineWidth());
         c.clipRect(zeroLineClippingRectl);
@@ -297,7 +234,7 @@ export class YAxisRenderer extends AxisRenderer {
         paint.setColor(axis.getZeroLineColor());
         paint.setStrokeWidth(axis.getZeroLineWidth());
 
-        const zeroLinePath = this.drawZeroLinePath;
+        const zeroLinePath = Utils.getTempPath();
         zeroLinePath.reset();
 
         zeroLinePath.moveTo(rect.left, pos.y);
@@ -320,7 +257,7 @@ export class YAxisRenderer extends AxisRenderer {
 
         if (limitLines == null || limitLines.length <= 0) return;
 
-        const pts = this.renderLimitLinesBuffer;
+        const pts = Utils.getTempArray(2);
         pts[0] = 0;
         pts[1] = 0;
         let offsetLeft = 0;
@@ -342,7 +279,7 @@ export class YAxisRenderer extends AxisRenderer {
             const lineWidth = l.getLineWidth();
             if (clipToContent) {
                 c.save();
-                const clipRect = this.limitLineClippingRect;
+                const clipRect = Utils.getTempRectF();
                 clipRect.set(rect);
                 clipRect.inset(0, -lineWidth);
                 c.clipRect(clipRect);

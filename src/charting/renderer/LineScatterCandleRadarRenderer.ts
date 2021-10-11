@@ -1,24 +1,14 @@
-import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubbleRenderer';
+import { Canvas } from '@nativescript-community/ui-canvas';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ILineScatterCandleRadarDataSet } from '../interfaces/datasets/ILineScatterCandleRadarDataSet';
-import { Canvas, Path } from '@nativescript-community/ui-canvas';
-import { profile } from '@nativescript/core';
+import { Utils } from '../utils/Utils';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubbleRenderer';
 
 /**
  * Created by Philipp Jahoda on 11/07/15.
  */
 export abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandleBubbleRenderer {
-    /**
-     * path that is used for drawing highlight-lines (drawLines(...) cannot be used because of dashes)
-     */
-    private mHighlightLinePath: Path;
-    protected get highlightLinePath() {
-        if (!this.mHighlightLinePath) {
-            this.mHighlightLinePath = new Path();
-        }
-        return this.mHighlightLinePath;
-    }
 
     constructor(animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
@@ -40,9 +30,9 @@ export abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandl
 
         // draw highlighted lines (if enabled)
         paint.setPathEffect(set.getDashPathEffectHighlight());
-        const path = this.highlightLinePath;
         // draw vertical highlight lines
         if (set.isVerticalHighlightIndicatorEnabled()) {
+            const path = Utils.getTempPath();
             // create vertical path
             path.reset();
             path.moveTo(x, this.mViewPortHandler.contentTop());
@@ -53,6 +43,7 @@ export abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandl
 
         // draw horizontal highlight lines
         if (set.isHorizontalHighlightIndicatorEnabled()) {
+            const path = Utils.getTempPath();
             // create horizontal path
             path.reset();
             path.moveTo(this.mViewPortHandler.contentLeft(), y);

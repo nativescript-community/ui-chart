@@ -4,6 +4,7 @@ import { ChartAnimator } from '../animation/ChartAnimator';
 import { Highlight } from '../highlight/Highlight';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
+import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Renderer } from './Renderer';
 
@@ -42,21 +43,21 @@ export abstract class DataRenderer extends Renderer {
         super(viewPortHandler);
         this.mAnimator = animator;
     }
+    
+    public initBuffers() {
 
+    }
+    
     public get renderPaint() {
         if (!this.mRenderPaint) {
-            this.mRenderPaint = new Paint();
-            this.mRenderPaint.setAntiAlias(true);
-            this.mRenderPaint.setStyle(Style.FILL);
+            this.mRenderPaint = Utils.getTemplatePaint('black-fill');
         }
         return this.mRenderPaint;
     }
 
     public get highlightPaint() {
         if (!this.mHighlightPaint) {
-            this.mHighlightPaint = new Paint();
-            this.mHighlightPaint.setAntiAlias(true);
-            this.mHighlightPaint.setStyle(Style.STROKE);
+            this.mHighlightPaint = Utils.getTemplatePaint('black-stroke');
             this.mHighlightPaint.setStrokeWidth(2);
             this.mHighlightPaint.setColor('#FFBB73');
         }
@@ -65,11 +66,7 @@ export abstract class DataRenderer extends Renderer {
 
     public get valuePaint() {
         if (!this.mValuePaint) {
-            this.mValuePaint = new Paint();
-            this.mValuePaint.setAntiAlias(true);
-            this.mValuePaint.setColor('#3F3F3F');
-            this.mValuePaint.setTextAlign(Align.CENTER);
-            this.mValuePaint.setTextSize(9);
+            this.mValuePaint = Utils.getTemplatePaint('value');
         }
         return this.mValuePaint;
     }
@@ -91,13 +88,6 @@ export abstract class DataRenderer extends Renderer {
         }
         this.valuePaint.setTextSize(set.getValueTextSize());
     }
-
-    /**
-     * Initializes the buffers used for rendering with a new size. Since this
-     * method performs memory allocations, it should only be called if
-     * necessary.
-     */
-    public abstract initBuffers();
 
     /**
      * Draws the actual data in form of lines, bars, ... depending on Renderer subclass.

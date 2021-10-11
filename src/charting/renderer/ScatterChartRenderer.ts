@@ -12,20 +12,11 @@ import { Trace } from '@nativescript/core';
 
 export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     mChart: ScatterChart;
-    mPixelBuffer;
-    protected get pixelBuffer() {
-        if (!this.mPixelBuffer) {
-            this.mPixelBuffer = Utils.createNativeArray(2);
-        }
-        return this.mPixelBuffer;
-    }
 
     constructor(chart: ScatterChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
     }
-
-    public initBuffers() {}
 
     public drawData(c: Canvas) {
         const scatterData = this.mChart.getScatterData();
@@ -58,7 +49,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         const yKey = dataSet.yProperty;
         const customRender = this.mChart.getCustomRenderer();
         const renderPaint = this.renderPaint;
-        const pixelBuffer = this.pixelBuffer;
+        const pixelBuffer = Utils.getTempArray(2)
         const previousShader = renderPaint.getShader();
         const shader = dataSet.getFillShader();
         if (shader) {

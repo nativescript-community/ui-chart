@@ -67,8 +67,8 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
     private mYAxis: YAxis;
 
     // for performance tracking
-    private totalTime = 0;
-    private drawCycles = 0;
+    private mTotalTime = 0;
+    private mDrawCycles = 0;
 
     protected mYAxisRenderer: YAxisRendererRadarChart;
     protected mXAxisRenderer: XAxisRendererRadarChart;
@@ -142,10 +142,10 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
         this.notify({ eventName: 'drawn', object: this });
         if (Trace.isEnabled()) {
             const drawtime = Date.now() - startTime;
-            this.totalTime += drawtime;
-            this.drawCycles += 1;
-            const average = this.totalTime / this.drawCycles;
-            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
+            this.mTotalTime += drawtime;
+            this.mDrawCycles += 1;
+            const average = this.mTotalTime / this.mDrawCycles;
+            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.mDrawCycles);
         }
     }
 

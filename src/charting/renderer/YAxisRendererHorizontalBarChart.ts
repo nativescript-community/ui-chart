@@ -8,19 +8,6 @@ import { LimitLabelPosition } from '../components/LimitLine';
 import { profile } from '@nativescript/core';
 
 export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
-    protected mDrawZeroLinePathBuffer: Path;
-    protected get drawZeroLinePathBuffer() {
-        if (!this.mDrawZeroLinePathBuffer) {
-            this.mDrawZeroLinePathBuffer = new Path();
-        }
-        return this.mDrawZeroLinePathBuffer;
-    }
-    protected get renderLimitLinesBuffer() {
-        if (!this.mRenderLimitLinesBuffer) {
-            this.mRenderLimitLinesBuffer = Utils.createNativeArray(2);
-        }
-        return this.mRenderLimitLinesBuffer;
-    }
     /**
      * Computes the axis values.
      *
@@ -126,15 +113,16 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
         for (let i = from; i < to; i++) {
             const text = axis.getFormattedLabel(i);
-
-            c.drawText(text, positions[i * 2], fixedPosition - offset, paint);
+            if (text) {
+                c.drawText(text + '', positions[i * 2], fixedPosition - offset, paint);
+            }
         }
     }
 
     protected getTransformedPositions() {
         const axis = this.mYAxis;
         const length = axis.mEntryCount * 2;
-        if (this.mGetTransformedPositionsBuffer.length !== length) {
+        if (!this.mGetTransformedPositionsBuffer || this.mGetTransformedPositionsBuffer.length !== length) {
             this.mGetTransformedPositionsBuffer = Utils.createArrayBuffer(length);
         }
 
@@ -151,25 +139,20 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
     public getGridClippingRect(): RectF {
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        this.mGridClippingRect.set(rect);
-        this.mGridClippingRect.inset(-this.mAxis.getGridLineWidth(), 0);
-        return this.mGridClippingRect;
+        const temRect = Utils.getTempRectF();
+        temRect.set(rect);
+        temRect.inset(-this.mAxis.getGridLineWidth(), 0);
+        return temRect;
     }
-
-    // protected linePath(p: Path, i, positions): Path {
-    //     p.moveTo(positions[i], rect.top);
-    //     p.lineTo(positions[i], rect.bottom);
-
-    //     return p;
-    // }
 
     protected drawZeroLine(c: Canvas) {
         const axis = this.mYAxis;
         const clipRestoreCount = c.save();
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        this.mZeroLineClippingRect.set(rect);
-        this.mZeroLineClippingRect.inset(-axis.getZeroLineWidth(), 0);
-        c.clipRect(this.mLimitLineClippingRect);
+        const zeroLineClippingRect = Utils.getTempRectF();
+        zeroLineClippingRect.set(rect);
+        zeroLineClippingRect.inset(-axis.getZeroLineWidth(), 0);
+        c.clipRect(zeroLineClippingRect);
 
         // draw zero line
         const pos = this.mTrans.getPixelForValues(0, 0);
@@ -178,7 +161,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         paint.setColor(axis.getZeroLineColor());
         paint.setStrokeWidth(axis.getZeroLineWidth());
 
-        const zeroLinePath = this.drawZeroLinePathBuffer;
+        const zeroLinePath = Utils.getTempPath();
         zeroLinePath.reset();
 
         zeroLinePath.moveTo(pos.x - 1, rect.top);
@@ -205,7 +188,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
             return;
         }
 
-        const pts = this.renderLimitLinesBuffer;
+        const pts = Utils.getTempArray(2);
         pts[0] = 0;
         pts[1] = 0;
         // const limitLinePath = this.renderLimitLinesPath;
@@ -225,7 +208,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
             const lineWidth = l.getLineWidth();
             if (clipToContent) {
                 c.save();
-                const clipRect = this.limitLineClippingRect;
+                const clipRect = Utils.getTempRectF();
                 clipRect.set(rect);
                 clipRect.inset(0, -lineWidth);
                 c.clipRect(clipRect);

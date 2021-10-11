@@ -155,8 +155,9 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
             Utils.getPosition(center, r, this.mChart.getRotationAngle(), pOut);
 
             const label = this.mYAxis.getFormattedLabel(j);
-
-            c.drawText(label, pOut.x + 10, pOut.y, paint);
+            if (label) {
+                c.drawText(label + '', pOut.x + 10, pOut.y, paint);
+            }
         }
         // MPPointF.recycleInstance(center);
         // MPPointF.recycleInstance(pOut);

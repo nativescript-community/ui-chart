@@ -1,4 +1,4 @@
-import { Canvas, Direction, Paint, Path, Style } from '@nativescript-community/ui-canvas';
+import { Canvas, Direction, Paint, Path, Style, TypedArray } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { RadarChart } from '../charts/RadarChart';
@@ -17,25 +17,8 @@ export class RadarChartRenderer extends LineRadarRenderer {
      * palet for drawing the web
      */
     protected mWebPaint: Paint;
-    protected mHighlightCirclePaint: Paint;
 
-    protected mDrawDataSetSurfacePathBuffer: Path;
-    protected get drawDataSetSurfacePathBuffer() {
-        if (!this.mDrawDataSetSurfacePathBuffer) {
-            this.mDrawDataSetSurfacePathBuffer = new Path();
-        }
-        return this.mDrawDataSetSurfacePathBuffer;
-    }
-
-    private mLineBuffer: number[];
-
-    protected mDrawHighlightCirclePathBuffer: Path;
-    protected get drawHighlightCirclePathBuffer() {
-        if (!this.mDrawHighlightCirclePathBuffer) {
-            this.mDrawHighlightCirclePathBuffer = new Path();
-        }
-        return this.mDrawHighlightCirclePathBuffer;
-    }
+    private mLineBuffer: TypedArray;
 
     constructor(chart: RadarChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
@@ -44,9 +27,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
 
     public get highlightPaint() {
         if (!this.mHighlightPaint) {
-            this.mHighlightPaint = new Paint();
-            this.mHighlightPaint.setAntiAlias(true);
-            this.mHighlightPaint.setStyle(Style.STROKE);
+            this.mHighlightPaint = Utils.getTemplatePaint('black-stroke');
             this.mHighlightPaint.setStrokeWidth(2);
             this.mHighlightPaint.setColor(new Color(255, 255, 187, 115));
         }
@@ -54,15 +35,9 @@ export class RadarChartRenderer extends LineRadarRenderer {
     }
     public get webPaint() {
         if (!this.mWebPaint) {
-            this.mWebPaint = new Paint();
-            this.mWebPaint.setAntiAlias(true);
-            this.mWebPaint.setStyle(Style.STROKE);
+            this.mWebPaint = Utils.getTemplatePaint('black-stroke');
         }
         return this.mWebPaint;
-    }
-
-    public initBuffers() {
-        // TODO Auto-generated method stub
     }
 
     public drawData(c: Canvas) {
@@ -95,7 +70,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
 
         const center = this.mChart.getCenterOffsets();
         const pOut: MPPointF = { x: 0, y: 0 };
-        const surface = this.drawDataSetSurfacePathBuffer;
+        const surface = Utils.getTempPath();
         surface.reset();
 
         let hasMovedToPoint = false;
@@ -134,7 +109,11 @@ export class RadarChartRenderer extends LineRadarRenderer {
         float32arr[index++] = float32arr[0];
         float32arr[index++] = float32arr[1];
         const points = Utils.pointsFromBuffer(float32arr);
-        surface.setLines(points, 0, index);
+        if (global.isAndroid && Utils.supportsDirectArrayBuffers()) {
+            surface['setLinesBuffer'](points, 0, index);
+        } else {
+            surface.setLines(points as number[], 0, index);
+        }
 
         // surface.close();
 
@@ -364,26 +343,24 @@ export class RadarChartRenderer extends LineRadarRenderer {
     public drawHighlightCircle(c: Canvas, point: MPPointF, innerRadius, outerRadius, fillColor, strokeColor, strokeWidth) {
         c.save();
 
-        outerRadius = outerRadius;
-        innerRadius = innerRadius;
-
+        const paint  = Utils.getTempPaint();
         if (fillColor && fillColor !== ColorTemplate.COLOR_NONE) {
-            const p = this.drawHighlightCirclePathBuffer;
+            const p = Utils.getTempPath();
             p.reset();
             p.addCircle(point.x, point.y, outerRadius, Direction.CW);
             if (innerRadius > 0) {
                 p.addCircle(point.x, point.y, innerRadius, Direction.CCW);
             }
-            this.mHighlightCirclePaint.setColor(fillColor);
-            this.mHighlightCirclePaint.setStyle(Style.FILL);
-            c.drawPath(p, this.mHighlightCirclePaint);
+            paint.setColor(fillColor);
+            paint.setStyle(Style.FILL);
+            c.drawPath(p, paint);
         }
 
         if (strokeColor && strokeColor !== ColorTemplate.COLOR_NONE) {
-            this.mHighlightCirclePaint.setColor(strokeColor);
-            this.mHighlightCirclePaint.setStyle(Style.STROKE);
-            this.mHighlightCirclePaint.setStrokeWidth(strokeWidth);
-            c.drawCircle(point.x, point.y, outerRadius, this.mHighlightCirclePaint);
+            paint.setColor(strokeColor);
+            paint.setStyle(Style.STROKE);
+            paint.setStrokeWidth(strokeWidth);
+            c.drawCircle(point.x, point.y, outerRadius, paint);
         }
 
         c.restore();

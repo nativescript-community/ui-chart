@@ -1,10 +1,29 @@
+import {
+    Align,
+    Canvas,
+    FontMetrics,
+    Matrix,
+    Paint,
+    Path,
+    Rect,
+    RectF,
+    StaticLayout,
+    Style,
+    TypedArray,
+    arrayToNativeArray as arrayToNativeArrayFn,
+    createArrayBuffer as createArrayBufferFn,
+    createArrayBufferOrNativeArray as createArrayBufferOrNativeArrayFn,
+    createNativeArray as createNativeArrayFn,
+    nativeArrayToArray as nativeArrayToArrayFn,
+    pointsFromBuffer as pointsFromBufferFn,
+    supportsDirectArrayBuffers as supportsDirectArrayBuffersFn
+} from '@nativescript-community/ui-canvas';
+import Shape from '@nativescript-community/ui-canvas/shapes/shape';
 import { Color, ImageSource, ObservableArray, Trace } from '@nativescript/core';
 import { Screen } from '@nativescript/core/platform';
-import { Align, Canvas, FontMetrics, Paint, Rect, StaticLayout } from '@nativescript-community/ui-canvas';
+import { Chart } from '../charts/Chart';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { ValueFormatter } from '../formatter/ValueFormatter';
-import Shape from '@nativescript-community/ui-canvas/shapes/shape';
-import { Chart } from '../charts/Chart';
 
 export const ChartTraceCategory = 'NativescriptChart';
 
@@ -22,14 +41,6 @@ export enum CLogTypes {
 export const CLog = (type: CLogTypes, ...args) => {
     Trace.write(args.map((a) => (a && typeof a === 'object' ? JSON.stringify(a) : a)).join(' '), ChartTraceCategory, type);
 };
-
-export type FloatArray = Float32Array | Float64Array;
-export let FloatConstructor: typeof Float32Array | typeof Float64Array;
-if (global.isAndroid) {
-    FloatConstructor = Float32Array;
-} else {
-    FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
-}
 
 let SDK_INT = -1;
 function getSDK() {
@@ -500,8 +511,6 @@ export namespace Utils {
         let drawOffsetX = 0;
         let drawOffsetY = 0;
 
-        // Android sometimes has pre-padding
-        //drawOffsetX -= mDrawTextRectBuffer.left;
 
         // Android does not snap the bounds to line boundaries,
         // and draws from bottom to top.
@@ -674,58 +683,107 @@ export namespace Utils {
         // return edited descriptor as opposed to overwriting the descriptor
         return descriptor;
     }
-    let _runtimeVersion;
-    let _supportsDirectArrayBuffers;
-    export function supportsDirectArrayBuffers() {
-        if (_supportsDirectArrayBuffers === undefined) {
-            if (!_runtimeVersion) {
-                _runtimeVersion = __runtimeVersion;
-            }
-            _supportsDirectArrayBuffers = parseInt(_runtimeVersion[0], 10) > 8 || (parseInt(_runtimeVersion[0], 10) === 8 && parseInt(_runtimeVersion[2], 10) >= 2);
+
+    export const supportsDirectArrayBuffers = supportsDirectArrayBuffersFn;
+    export const createArrayBuffer = createArrayBufferFn;
+    export const pointsFromBuffer = pointsFromBufferFn;
+    export const createArrayBufferOrNativeArray = createArrayBufferOrNativeArrayFn;
+    export const createNativeArray = createNativeArrayFn;
+    export const nativeArrayToArray = nativeArrayToArrayFn;
+    export const arrayToNativeArray = arrayToNativeArrayFn;
+
+    const mTempArrays: { [k: string]: number[] | TypedArray } = {};
+    export function getTempArray(length, useInts = false, canReturnBuffer = true, optKey?: string) {
+        let key = length + '' + useInts;
+        if (optKey) {
+            key += optKey;
         }
-        return _supportsDirectArrayBuffers;
+        if (mTempArrays[key]) {
+            return mTempArrays[key];
+        }
+        const buf = (mTempArrays[key] = createArrayBufferOrNativeArray(length, useInts, canReturnBuffer));
+        return buf;
     }
 
-    // export const createArrayBuffer = profile('createArrayBuffer', function(length: number, force = false): number[] {
-    export function createArrayBuffer(length: number, force = false): number[] {
-        if (global.isAndroid && !supportsDirectArrayBuffers()) {
-            const bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-            const result = (ArrayBuffer as any).from(bb);
-            const array = new Float32Array(result);
-            // return new FloatConstructor(result) as any;
-            return array as any;
+    let mTempRectF: RectF;
+    export function getTempRectF() {
+        if (!mTempRectF) {
+            mTempRectF = new RectF(0, 0, 0, 0);
         }
-        return new FloatConstructor(length) as any;
+        return mTempRectF;
     }
-    // export const pointsFromBuffer = profile('pointsFromBuffer', function(float32Array) {
-    export function pointsFromBuffer(float32Array) {
-        if (global.isAndroid && !supportsDirectArrayBuffers()) {
-            const buffer = float32Array.buffer;
-            const length = float32Array.length;
-            const testArray = Array.create('float', length);
-            (buffer.nativeObject as java.nio.ByteBuffer).asFloatBuffer().get(testArray, 0, length);
-            return testArray;
+    let mTempPath: Path;
+    export function getTempPath() {
+        if (!mTempPath) {
+            mTempPath = new Path();
         }
-        return float32Array;
+        return mTempPath;
     }
-    // export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
-    export function nativeArrayToArray(array) {
-        if (global.isAndroid && !supportsDirectArrayBuffers()) {
-            const result = [];
-            for (let index = 0; index < array.length; index++) {
-                result[index] = array[index];
+    let mTempMatrix: Matrix;
+    export function getTempMatrix() {
+        if (!mTempMatrix) {
+            mTempMatrix = new Matrix();
+        }
+        return mTempMatrix;
+    }
+    let mTempPaint: Paint;
+    export function getTempPaint() {
+        if (!mTempPaint) {
+            mTempPaint = new Paint();
+        }
+        return mTempPaint;
+    }
+    const mTemplatePaints: { [k: string]: Paint } = {};
+    export function getTemplatePaint(template: string) {
+        if (mTemplatePaints[template]) {
+            return new Paint(mTemplatePaints[template]);
+        }
+        let paint: Paint;
+        switch (template) {
+            case 'black-stroke': {
+                paint = new Paint();
+                paint.setStyle(Style.STROKE);
+                paint.setColor('black');
+                paint.setStrokeWidth(1);
+                break;
             }
-
-            return result as number[];
+            case 'gray-stroke': {
+                paint = getTemplatePaint('black-stroke');
+                paint.setColor('gray');
+                break;
+            }
+            case 'white-stroke': {
+                paint = getTemplatePaint('black-stroke');
+                paint.setColor('white');
+                break;
+            }
+            case 'black-fill': {
+                paint = new Paint();
+                paint.setStyle(Style.FILL);
+                break;
+            }
+            case 'white-fill': {
+                paint = getTemplatePaint('black-fill');
+                paint.setColor('white');
+                break;
+            }
+            case 'grid': {
+                paint = getTemplatePaint('black-stroke');
+                this.mGridPaint = new Paint();
+                paint.setColor('gray');
+                paint.setAlpha(90);
+                break;
+            }
+            case 'value': {
+                paint = new Paint();
+                paint.setColor('#3F3F3F');
+                paint.setTextAlign(Align.CENTER);
+                paint.setTextSize(9);
+                break;
+            }
         }
-        return array;
-    }
-    export function createNativeArray(length) {
-        if (global.isAndroid) {
-            return Array.create('float', length);
-        }
-        // At least, set length to use it for iterations
-        return new Array(length);
+        mTemplatePaints[template] = paint;
+        return paint;
     }
 
     export function clipPathSupported() {
@@ -798,85 +856,5 @@ export namespace Utils {
 
     export function getArrayItem(array: any[] | ObservableArray<any>, index: number) {
         return array instanceof ObservableArray ? array.getItem(index) : array[index];
-    }
-
-    export function RGBToHSV(r, g, b) {
-        if (arguments.length === 1) {
-            g = r.g;
-            b = r.b;
-            r = r.r;
-        }
-        const max = Math.max(r, g, b),
-            min = Math.min(r, g, b),
-            d = max - min,
-            s = max === 0 ? 0 : d / max,
-            v = max / 255;
-        let h;
-        switch (max) {
-            case min:
-                h = 0;
-                break;
-            case r:
-                h = g - b + d * (g < b ? 6 : 0);
-                h /= 6 * d;
-                break;
-            case g:
-                h = b - r + d * 2;
-                h /= 6 * d;
-                break;
-            case b:
-                h = r - g + d * 4;
-                h /= 6 * d;
-                break;
-        }
-
-        return [h, s, v] as [number, number, number];
-    }
-
-    export function HSVToColor(a, h, s, v) {
-        let r, g, b;
-        if (arguments.length === 1) {
-            s = h.s;
-            v = h.v;
-            h = h.h;
-        }
-        const i = Math.floor(h * 6);
-        const f = h * 6 - i;
-        const p = v * (1 - s);
-        const q = v * (1 - f * s);
-        const t = v * (1 - (1 - f) * s);
-        switch (i % 6) {
-            case 0:
-                r = v;
-                g = t;
-                b = p;
-                break;
-            case 1:
-                r = q;
-                g = v;
-                b = p;
-                break;
-            case 2:
-                r = p;
-                g = v;
-                b = t;
-                break;
-            case 3:
-                r = p;
-                g = q;
-                b = v;
-                break;
-            case 4:
-                r = t;
-                g = p;
-                b = v;
-                break;
-            case 5:
-                r = v;
-                g = p;
-                b = q;
-                break;
-        }
-        return new Color(a, Math.round(r * 255), Math.round(g * 255), Math.round(b * 255));
     }
 }

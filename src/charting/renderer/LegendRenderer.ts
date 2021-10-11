@@ -40,17 +40,14 @@ export class LegendRenderer extends Renderer {
 
     get formPaint() {
         if (!this.mLegendFormPaint) {
-            this.mLegendFormPaint = new Paint();
-            this.mLegendFormPaint.setAntiAlias(true);
-            this.mLegendFormPaint.setStyle(Style.FILL);
+            this.mLegendFormPaint = Utils.getTemplatePaint('black-fill');
         }
         return this.mLegendFormPaint;
     }
     get labelPaint() {
         if (!this.mLegendLabelPaint) {
-            this.mLegendLabelPaint = new Paint();
+            this.mLegendLabelPaint = Utils.getTemplatePaint('black-stroke');
             this.mLegendLabelPaint.setTextSize(9);
-            this.mLegendLabelPaint.setAntiAlias(true);
             this.mLegendLabelPaint.setTextAlign(Align.LEFT);
         }
         return this.mLegendLabelPaint;
@@ -194,7 +191,7 @@ export class LegendRenderer extends Renderer {
 
             case LegendHorizontalAlignment.CENTER:
                 if (orientation === LegendOrientation.VERTICAL) originPosX = this.mViewPortHandler.getChartWidth() / 2;
-                else originPosX = this.mViewPortHandler.contentLeft() + this.mViewPortHandler.contentWidth() / 2;
+                else originPosX = this.mViewPortHandler.contentLeft() + this.mViewPortHandler.getContentRect().width() / 2;
 
                 originPosX += direction === LegendDirection.LEFT_TO_RIGHT ? +xoffset : -xoffset;
 

@@ -38,34 +38,35 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * flag that indicates if auto scaling on the y axis is enabled
      */
-    protected mAutoScaleMinMaxEnabled = false;
+    protected mAutoScaleMinMaxEnabled: boolean;
 
     /**
      * flag that indicates if pinch-zoom is enabled. if true, both x and y axis
      * can be scaled with 2 fingers, if false, x and y axis can be scaled
      * separately
      */
-    protected mPinchZoomEnabled = false;
+    protected mPinchZoomEnabled: boolean;
 
     /**
      * flag that indicates if double tap zoom is enabled or not
      */
-    protected mDoubleTapToZoomEnabled = false;
+    protected mDoubleTapToZoomEnabled: boolean;
 
     /**
      * flag that indicates if highlighting per dragging over a fully zoomed out
      * chart is enabled
      */
-    protected mHighlightPerDragEnabled = false;
+    protected mHighlightPerDragEnabled: boolean;
 
     /**
      * if true, dragging is enabled for the chart
      */
-    private mDragXEnabled = false;
-    private mDragYEnabled = false;
+    private mDragXEnabled: boolean;
+    private mDragYEnabled: boolean;
+    e;
 
-    private mScaleXEnabled = false;
-    private mScaleYEnabled = false;
+    private mScaleXEnabled: boolean;
+    private mScaleYEnabled: boolean;
 
     /**
      * palet object for the (by default) lightgrey background of the grid
@@ -77,9 +78,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * flag indicating if the grid background should be drawn or not
      */
-    protected mDrawGridBackground = false;
+    protected mDrawGridBackground: boolean;
 
-    protected mDrawBorders = false;
+    protected mDrawBorders: boolean;
 
     protected mClipValuesToContent = true;
 
@@ -95,7 +96,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * flag indicating if the chart should stay at the same position after a rotation. Default is false.
      */
-    protected mKeepPositionOnRotation = false;
+    protected mKeepPositionOnRotation: boolean;
 
     /**
      * the listener for user drawing on the chart
@@ -120,8 +121,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected mXAxisRenderer: XAxisRenderer;
 
-    protected mOffsetsBuffer: RectF = new RectF(0, 0, 0, 0);
-
     // /** the approximator object used for data filtering */
     // private Approximator this.mApproximator;
 
@@ -141,18 +140,14 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     get gridBackgroundPaint() {
         if (!this.mGridBackgroundPaint) {
-            this.mGridBackgroundPaint = new Paint();
-            this.mGridBackgroundPaint.setStyle(Style.FILL);
+            this.mGridBackgroundPaint = Utils.getTemplatePaint('black-fill');
             this.mGridBackgroundPaint.setColor('#F0F0F0'); // light
         }
         return this.mGridBackgroundPaint;
     }
     get borderPaint() {
         if (!this.mBorderPaint) {
-            this.mBorderPaint = new Paint();
-            this.mBorderPaint.setStyle(Style.STROKE);
-            this.mBorderPaint.setColor('black');
-            this.mBorderPaint.setStrokeWidth(1);
+            this.mBorderPaint = Utils.getTemplatePaint('black-stroke');
         }
         return this.mBorderPaint;
     }
@@ -442,17 +437,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         }
         this.mOffsetsCalculated = true;
         if (!this.mCustomViewPortEnabled) {
-            let offsetLeft = 0,
-                offsetRight = 0,
-                offsetTop = 0,
-                offsetBottom = 0;
+            const offsetBuffer = Utils.getTempRectF();
+            this.calculateLegendOffsets(offsetBuffer);
 
-            this.calculateLegendOffsets(this.mOffsetsBuffer);
-
-            offsetLeft += this.mOffsetsBuffer.left;
-            offsetTop += this.mOffsetsBuffer.top;
-            offsetRight += this.mOffsetsBuffer.right;
-            offsetBottom += this.mOffsetsBuffer.bottom;
+            let offsetLeft = offsetBuffer.left;
+            let offsetTop = offsetBuffer.top;
+            let offsetRight = offsetBuffer.right;
+            let offsetBottom = offsetBuffer.bottom;
 
             // offsets for y-labels
             if (this.mAxisLeft && this.mAxisLeft.needsOffset()) {
@@ -465,7 +456,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
             if (this.mXAxis.isEnabled() && this.mXAxis.isDrawLabelsEnabled()) {
                 const xLabelHeight = this.mXAxis.mLabelRotatedHeight + this.mXAxis.getYOffset();
-
                 // offsets for x-labels
                 if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
                     offsetBottom += xLabelHeight;
@@ -483,7 +473,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             offsetLeft += this.getExtraLeftOffset();
 
             const minOffset = this.mMinOffset;
-
             this.mViewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
 
             if (Trace.isEnabled()) {
@@ -926,7 +915,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * flag that indicates if a custom viewport offset has been set
      */
-    private mCustomViewPortEnabled = false;
+    private mCustomViewPortEnabled: boolean;
 
     /**
      * Sets custom offsets for the current ViewPort (the offsets on the sides of
@@ -1666,7 +1655,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         return this.mAutoScaleMinMaxEnabled;
     }
 
-    protected mOnSizeChangedBuffer = Utils.createNativeArray(2);
+    protected mOnSizeChangedBuffer = Utils.createArrayBuffer(2);
 
     public onSizeChanged(w: number, h: number, oldw: number, oldh: number) {
         // Saving current position of chart.

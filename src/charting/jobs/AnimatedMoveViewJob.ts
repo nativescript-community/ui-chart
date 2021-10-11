@@ -1,6 +1,7 @@
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { ObjectPool } from '../utils/ObjectPool';
 import { Transformer } from '../utils/Transformer';
+import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { AnimatedViewPortJob } from './AnimatedViewPortJob';
 /**
@@ -10,12 +11,12 @@ export class AnimatedMoveViewJob extends AnimatedViewPortJob {
     public static getInstance(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, duration) {
         const result = pool.get();
         result.mViewPortHandler = viewPortHandler;
-        result.xValue = xValue;
-        result.yValue = yValue;
+        result.mXValue = xValue;
+        result.mYValue = yValue;
         result.mTrans = trans;
-        result.view = v;
-        result.xOrigin = xOrigin;
-        result.yOrigin = yOrigin;
+        result.mView = v;
+        result.mXOrigin = xOrigin;
+        result.mYOrigin = yOrigin;
         //result.resetAnimator();
         result.createAnimator(duration);
         return result;
@@ -30,11 +31,12 @@ export class AnimatedMoveViewJob extends AnimatedViewPortJob {
     }
 
     public onAnimationUpdate(animation) {
-        this.pts[0] = this.xOrigin + (this.xValue - this.xOrigin) * this.phase;
-        this.pts[1] = this.yOrigin + (this.yValue - this.yOrigin) * this.phase;
+        const pts = Utils.getTempArray(2);
+        pts[0] = this.mXOrigin + (this.mXValue - this.mXOrigin) * this.mPhase;
+        pts[1] = this.mYOrigin + (this.mYValue - this.mYOrigin) * this.mPhase;
 
-        this.mTrans.pointValuesToPixel(this.pts);
-        this.mViewPortHandler.centerViewPort(this.pts, this.view);
+        this.mTrans.pointValuesToPixel(pts);
+        this.mViewPortHandler.centerViewPort(pts, this.mView);
     }
 
     public recycleSelf() {

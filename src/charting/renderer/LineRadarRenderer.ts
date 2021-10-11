@@ -5,8 +5,6 @@ import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { LineScatterCandleRadarRenderer } from './LineScatterCandleRadarRenderer';
 
-// export const SCALE_FACTOR = 1;
-
 /**
  * Created by Philipp Jahoda on 25/01/16.
  */
@@ -24,7 +22,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
      */
     @profile
     protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable: ImageSource, shader) {
-        if (this.clipPathSupported()) {
+        if (Utils.clipPathSupported()) {
             const save = c.save();
             // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
             c.clipPath(filledPath);
@@ -79,7 +77,7 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
             renderPaint.setShader(shader);
         }
 
-        if (this.clipPathSupported()) {
+        if (Utils.clipPathSupported()) {
             const save = c.save();
             c.clipPath(filledPath);
             c.drawPaint(renderPaint);
@@ -91,15 +89,5 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
         renderPaint.setColor(previousColor);
         renderPaint.setShader(previousShader);
         renderPaint.setStyle(previous);
-    }
-
-    /**
-     * Clip path with hardware acceleration only working properly on API level 18 and above.
-     *
-     * @return
-     */
-    private clipPathSupported() {
-        return Utils.clipPathSupported();
-        // return Utils.getSDKInt() >= 18;
     }
 }

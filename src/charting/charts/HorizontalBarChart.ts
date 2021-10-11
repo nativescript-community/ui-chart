@@ -21,7 +21,6 @@ const LOG_TAG = 'HorizontalBarChart';
 
 export class HorizontalBarChart extends BarChart {
     mRenderer: HorizontalBarChartRenderer;
-    protected mGetPositionBuffer = Utils.createNativeArray(2);
 
     protected init() {
         this.mViewPortHandler = new HorizontalViewPortHandler();
@@ -46,17 +45,13 @@ export class HorizontalBarChart extends BarChart {
     }
 
     public calculateOffsets() {
-        let offsetLeft = 0,
-            offsetRight = 0,
-            offsetTop = 0,
-            offsetBottom = 0;
+        const offsetBuffer = Utils.getTempRectF();
+        this.calculateLegendOffsets(offsetBuffer);
 
-        this.calculateLegendOffsets(this.mOffsetsBuffer);
-
-        offsetLeft += this.mOffsetsBuffer.left;
-        offsetTop += this.mOffsetsBuffer.top;
-        offsetRight += this.mOffsetsBuffer.right;
-        offsetBottom += this.mOffsetsBuffer.bottom;
+        let offsetLeft = offsetBuffer.left;
+        let offsetTop = offsetBuffer.top;
+        let offsetRight = offsetBuffer.right;
+        let offsetBottom = offsetBuffer.bottom;
 
         // offsets for y-labels
         if (this.mAxisLeft && this.mAxisLeft.needsOffset()) {

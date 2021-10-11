@@ -55,17 +55,17 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
     /**
      * if true, the hole will see-through to the inner tips of the slices
      */
-    private mDrawSlicesUnderHole: boolean = false;
+    private mDrawSlicesUnderHole: boolean;
 
     /**
      * if true, the values inside the piechart are drawn as percent values
      */
-    private mUsePercentValues: boolean = false;
+    private mUsePercentValues: boolean;
 
     /**
      * if true, the slices of the piechart are rounded
      */
-    private mDrawRoundedSlices: boolean = false;
+    private mDrawRoundedSlices: boolean;
 
     /**
      * variable for the text that is drawn in the center of the pie-chart

@@ -50,7 +50,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * flag that indicates if logging is enabled or not
      */
-    protected mLogEnabled = false;
+    protected mLogEnabled;
 
     /**
      * object that holds all data that was originally set for the chart, before
@@ -61,7 +61,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * Flag that indicates if highlighting per tap (touch) is enabled
      */
-    protected mHighLightPerTapEnabled = false;
+    protected mHighLightPerTapEnabled;
 
     /**
      * If set to true, chart continues to scroll after touch up
@@ -155,13 +155,13 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * flag that indicates if offsets calculation has already been done or not
      */
-    protected mOffsetsCalculated = false;
+    protected mOffsetsCalculated;
 
     /**
      * let the drawer know it does not need to compute axis and legends
      * (it can used the cached ones)
      */
-    protected noComputeOnNextDraw = false;
+    protected noComputeOnNextDraw;
     /**
      * array of Highlight objects that reference the highlighted slices in the
      * chart
@@ -172,6 +172,11 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * The maximum distance in dp away from an entry causing it to highlight.
      */
     protected mMaxHighlightDistance = 500;
+
+    /**
+     * tasks to be done after the view is setup
+     */
+     protected mJobs = [];
 
     /**
      * default constructor for initialization in code
@@ -209,20 +214,11 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     get infoPaint() {
         if (!this.mInfoPaint) {
-            this.mInfoPaint = new Paint();
-            this.mInfoPaint.setAntiAlias(true);
-            this.mInfoPaint.setColor('#F7BD33'); // orange
+            this.mInfoPaint = Utils.getTemplatePaint('black-fill');
             this.mInfoPaint.setTextAlign(Align.CENTER);
             this.mInfoPaint.setTextSize(12);
         }
         return this.mInfoPaint;
-    }
-    get descPaint() {
-        if (!this.mDescPaint) {
-            this.mDescPaint = new Paint();
-            this.mDescPaint.setAntiAlias(true);
-        }
-        return this.mDescPaint;
     }
 
     public panGestureOptions: PanGestureHandlerOptions & { gestureTag?: number };
@@ -360,7 +356,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         // check if description should be drawn
         if (this.mDescription != null && this.mDescription.isEnabled()) {
             const position = this.mDescription.getPosition();
-            const paint = this.descPaint;
+            const paint = Utils.getTempPaint();
             paint.setFont(this.mDescription.getFont());
             paint.setColor(this.mDescription.getTextColor());
             paint.setTextAlign(this.mDescription.getTextAlign());
@@ -1308,10 +1304,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     //     return saveToGallery(fileName, "", "MPAndroidChart-Library Save", Bitmap.CompressFormat.PNG, 40);
     // }
 
-    /**
-     * tasks to be done after the view is setup
-     */
-    protected mJobs = [];
 
     public removeViewportJob(job) {
         const index = this.mJobs.indexOf(job);

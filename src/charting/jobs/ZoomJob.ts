@@ -3,20 +3,26 @@ import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { AxisDependency } from '../components/YAxis';
 import { ObjectPool } from '../utils/ObjectPool';
 import { Transformer } from '../utils/Transformer';
+import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ViewPortJob } from './ViewPortJob';
 
 export class ZoomJob extends ViewPortJob {
+    protected mScaleX: number;
+    protected mScaleY: number;
+
+    protected mAxisDependency: AxisDependency;
+
     public static getInstance(viewPortHandler: ViewPortHandler, scaleX, scaleY, xValue, yValue, trans: Transformer, axis: AxisDependency, v: BarLineChartBase<any, any, any>) {
         const result = pool.get();
-        result.xValue = xValue;
-        result.yValue = yValue;
-        result.scaleX = scaleX;
-        result.scaleY = scaleY;
+        result.mXValue = xValue;
+        result.mYValue = yValue;
+        result.mScaleX = scaleX;
+        result.mScaleY = scaleY;
         result.mViewPortHandler = viewPortHandler;
         result.mTrans = trans;
-        result.axisDependency = axis;
-        result.view = v;
+        result.mAxisDependency = axis;
+        result.mView = v;
         return result;
     }
 
@@ -24,39 +30,36 @@ export class ZoomJob extends ViewPortJob {
         pool.recycle(instance);
     }
 
-    protected scaleX;
-    protected scaleY;
-
-    protected axisDependency: AxisDependency;
 
     constructor(viewPortHandler: ViewPortHandler, scaleX, scaleY, xValue, yValue, trans: Transformer, axis: AxisDependency, v: BarLineChartBase<any, any, any>) {
         super(viewPortHandler, xValue, yValue, trans, v);
 
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
-        this.axisDependency = axis;
+        this.mScaleX = scaleX;
+        this.mScaleY = scaleY;
+        this.mAxisDependency = axis;
     }
 
-    protected mRunMatrixBuffer = new Matrix();
 
     public run() {
-        const save = this.mRunMatrixBuffer;
-        this.mViewPortHandler.zoom(this.scaleX, this.scaleY, save);
-        this.mViewPortHandler.refresh(save, this.view, false);
+        const save = Utils.getTempMatrix();
+        const viewPortHanlder = this.mViewPortHandler;
+        viewPortHanlder.zoom(this.mScaleX, this.mScaleY, save);
+        viewPortHanlder.refresh(save, this.mView, false);
 
-        const yValsInView = this.view.getAxis(this.axisDependency).mAxisRange / this.mViewPortHandler.getScaleY();
-        const xValsInView = this.view.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
+        const yValsInView = this.mView.getAxis(this.mAxisDependency).mAxisRange / viewPortHanlder.getScaleY();
+        const xValsInView = this.mView.getXAxis().mAxisRange / viewPortHanlder.getScaleX();
+        const pts = Utils.getTempArray(2);
 
-        this.pts[0] = this.xValue - xValsInView / 2;
-        this.pts[1] = this.yValue + yValsInView / 2;
+        pts[0] = this.mXValue - xValsInView / 2;
+        pts[1] = this.mYValue + yValsInView / 2;
 
-        this.mTrans.pointValuesToPixel(this.pts);
+        this.mTrans.pointValuesToPixel(pts);
 
-        this.mViewPortHandler.translate(this.pts, save);
-        this.mViewPortHandler.refresh(save, this.view, false);
+        viewPortHanlder.translate(pts, save);
+        viewPortHanlder.refresh(save, this.mView, false);
 
-        this.view.calculateOffsets();
-        this.view.invalidate();
+        this.mView.calculateOffsets();
+        this.mView.invalidate();
 
         ZoomJob.recycleInstance(this);
     }

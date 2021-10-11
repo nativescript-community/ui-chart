@@ -1,14 +1,12 @@
-import { DataRenderer } from './DataRenderer';
+import { ChartAnimator } from '../animation/ChartAnimator';
+import { BarLineScatterCandleBubbleDataSet } from '../data/BarLineScatterCandleBubbleDataSet';
+import { Rounding } from '../data/DataSet';
+import { Entry } from '../data/Entry';
 import { BarLineScatterCandleBubbleDataProvider } from '../interfaces/dataprovider/BarLineScatterCandleBubbleDataProvider';
 import { IBarLineScatterCandleBubbleDataSet } from '../interfaces/datasets/IBarLineScatterCandleBubbleDataSet';
-import { Rounding } from '../data/DataSet';
-import { ChartAnimator } from '../animation/ChartAnimator';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
-import { Entry } from '../data/Entry';
-import { BarLineScatterCandleBubbleDataSet } from '../data/BarLineScatterCandleBubbleDataSet';
-import { Canvas, Paint } from '@nativescript-community/ui-canvas';
-import { Color } from '@nativescript/core';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { DataRenderer } from './DataRenderer';
 
 /**
  * Class representing the bounds of the current viewport in terms of indices in the values array of a DataSet.

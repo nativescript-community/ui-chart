@@ -1,16 +1,18 @@
-import { AxisRenderer, CustomRenderer, CustomRendererGridLineFunction, CustomRendererLimitLineFunction } from './AxisRenderer';
-import { XAxis, XAxisPosition } from '../components/XAxis';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, Paint, Path, RectF, Style } from '@nativescript-community/ui-canvas';
-import { Utils } from '../utils/Utils';
-import { MPPointF } from '../utils/MPPointF';
-import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
+import { Align, Canvas, Paint, RectF, TypedArray } from '@nativescript-community/ui-canvas';
 import { profile } from '@nativescript/core';
+import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
+import { XAxis, XAxisPosition } from '../components/XAxis';
+import { MPPointF } from '../utils/MPPointF';
+import { Transformer } from '../utils/Transformer';
+import { Utils } from '../utils/Utils';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { AxisRenderer, CustomRendererGridLineFunction, CustomRendererLimitLineFunction } from './AxisRenderer';
 
 export class XAxisRenderer extends AxisRenderer {
     protected mXAxis: XAxis;
     protected mForceLongestLabelComputation = true;
+    protected mLabelsPositionsBuffer: TypedArray;
+    protected mRenderGridLinesBuffer: TypedArray;
 
     constructor(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: Transformer) {
         super(viewPortHandler, trans, xAxis);
@@ -79,6 +81,9 @@ export class XAxisRenderer extends AxisRenderer {
 
         const yoffset = axis.getYOffset();
         const paint = this.axisLabelsPaint;
+        // we cant remove that line right now of the ascent wont be computed...
+        // TODO: refactor this
+        const labelLineHeight = Utils.getLineHeight(paint);
         paint.setFont(axis.getFont());
         paint.setTextAlign(axis.getLabelTextAlign());
         paint.setColor(axis.getTextColor());
@@ -89,7 +94,6 @@ export class XAxisRenderer extends AxisRenderer {
         // for now Utils.drawXAxisValue needs the font ascent
         // but it is not calculated all the time (in the lightest of cases)
         // we call this next line to ensure it is
-        const labelLineHeight = Utils.getLineHeight(paint);
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         const pointF = { x: 0, y: 0 };
         if (axis.getPosition() === XAxisPosition.TOP) {
@@ -123,8 +127,6 @@ export class XAxisRenderer extends AxisRenderer {
             this.drawLabels(c, rect.bottom + yoffset, pointF);
             this.drawMarkTicket(c, rect.bottom, +yoffset / 2);
         }
-        // this.mAxisLabelPaint.setTextAlign(align);
-        // MPPointF.recycleInstance(pointF);
     }
 
     @profile
@@ -146,7 +148,6 @@ export class XAxisRenderer extends AxisRenderer {
         }
     }
 
-    protected labelsPositionsBuffer = [];
     /**
      * draws the x-labels on the specified y-position
      *
@@ -162,10 +163,10 @@ export class XAxisRenderer extends AxisRenderer {
             return;
         }
         const length = entryCount * 2;
-        if (this.labelsPositionsBuffer.length !== length) {
-            this.labelsPositionsBuffer = Utils.createArrayBuffer(length);
+        if (!this.mLabelsPositionsBuffer || this.mLabelsPositionsBuffer.length !== length) {
+            this.mLabelsPositionsBuffer = Utils.createArrayBuffer(length);
         }
-        const positionsBuffer = this.labelsPositionsBuffer;
+        const positionsBuffer = this.mLabelsPositionsBuffer;
         for (let i = 0; i < length; i += 2) {
             // only fill x values
             if (centeringEnabled) {
@@ -230,7 +231,7 @@ export class XAxisRenderer extends AxisRenderer {
         if (!this.mXAxis.isDrawMarkTicksEnabled()) return;
 
         const length = this.mAxis.mEntryCount * 2;
-        if (this.mRenderGridLinesBuffer.length !== length) {
+        if (!this.mRenderGridLinesBuffer || this.mRenderGridLinesBuffer.length !== length) {
             this.mRenderGridLinesBuffer = Utils.createArrayBuffer(length);
         }
         const positionsBuffer = this.mRenderGridLinesBuffer;
@@ -250,8 +251,6 @@ export class XAxisRenderer extends AxisRenderer {
         }
     }
 
-    // protected mRenderGridLinesPath = new Path();
-    protected mRenderGridLinesBuffer = [];
     public renderGridLines(c: Canvas) {
         const axis = this.mXAxis;
         if (!axis.isDrawGridLinesEnabled() || !axis.isEnabled()) return;
@@ -260,16 +259,17 @@ export class XAxisRenderer extends AxisRenderer {
         c.clipRect(this.getGridClippingRect());
 
         const length = this.mAxis.mEntryCount * 2;
-        if (this.mRenderGridLinesBuffer.length !== length) {
-            this.mRenderGridLinesBuffer = Utils.createNativeArray(length);
+        if (!this.mRenderGridLinesBuffer || this.mRenderGridLinesBuffer.length !== length) {
+            this.mRenderGridLinesBuffer = Utils.createArrayBuffer(length);
         }
-        const positions = this.mRenderGridLinesBuffer;
+        const positionsBuffer = this.mRenderGridLinesBuffer;
 
         for (let i = 0; i < length; i += 2) {
-            positions[i] = axis.mEntries[i / 2];
-            positions[i + 1] = axis.mEntries[i / 2];
+            positionsBuffer[i] = axis.mEntries[i / 2];
+            positionsBuffer[i + 1] = axis.mEntries[i / 2];
         }
 
+        const positions = Utils.pointsFromBuffer(positionsBuffer);
         this.mTrans.pointValuesToPixel(positions);
 
         const paint = this.gridPaint;
@@ -291,13 +291,13 @@ export class XAxisRenderer extends AxisRenderer {
         c.restoreToCount(clipRestoreCount);
     }
 
-    protected mGridClippingRect = new RectF(0, 0, 0, 0);
-
     public getGridClippingRect() {
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        this.mGridClippingRect.set(rect);
-        this.mGridClippingRect.inset(-this.mAxis.getGridLineWidth(), 0);
-        return this.mGridClippingRect;
+
+        const gridClippingRect = Utils.getTempRectF();
+        gridClippingRect.set(rect);
+        gridClippingRect.inset(-this.mAxis.getGridLineWidth(), 0);
+        return gridClippingRect;
     }
 
     /**
@@ -317,22 +317,6 @@ export class XAxisRenderer extends AxisRenderer {
         }
     }
 
-    protected mRenderLimitLinesBuffer;
-
-    protected get renderLimitLinesBuffer() {
-        if (!this.mRenderLimitLinesBuffer) {
-            this.mRenderLimitLinesBuffer = Utils.createNativeArray(2);
-        }
-        return this.mRenderLimitLinesBuffer;
-    }
-
-    protected mLimitLineClippingRect: RectF;
-    protected get limitLineClippingRect() {
-        if (!this.mLimitLineClippingRect) {
-            this.mLimitLineClippingRect = new RectF(0, 0, 0, 0);
-        }
-        return this.mLimitLineClippingRect;
-    }
     /**
      * Draws the LimitLines associated with this axis to the screen.
      *
@@ -345,7 +329,7 @@ export class XAxisRenderer extends AxisRenderer {
 
         if (limitLines == null || limitLines.length <= 0) return;
 
-        const position = this.renderLimitLinesBuffer;
+        const position = Utils.getTempArray(2);
         position[0] = 0;
         position[1] = 0;
 
@@ -360,7 +344,7 @@ export class XAxisRenderer extends AxisRenderer {
             const lineWidth = l.getLineWidth();
             if (clipToContent) {
                 c.save();
-                const clipRect = this.limitLineClippingRect;
+                const clipRect = Utils.getTempRectF();
                 clipRect.set(rect);
                 clipRect.inset(0, -lineWidth);
                 c.clipRect(clipRect);
@@ -382,21 +366,8 @@ export class XAxisRenderer extends AxisRenderer {
         }
     }
 
-    // private mLimitLineSegmentsBuffer = [];
-    // private mLimitLinePath = new Path();
-
     public renderLimitLineLine(c: Canvas, limitLine: LimitLine, rect: RectF, x: number, customRendererFunc?: CustomRendererLimitLineFunction) {
-        // this.mLimitLineSegmentsBuffer[0] = position[0];
-        // this.mLimitLineSegmentsBuffer[1] = rect.top;
-        // this.mLimitLineSegmentsBuffer[2] = position[0];
-        // this.mLimitLineSegmentsBuffer[3] = rect.bottom;
-
-        // this.mLimitLinePath.reset();
-        // this.mLimitLinePath.moveTo(this.mLimitLineSegmentsBuffer[0], this.mLimitLineSegmentsBuffer[1]);
-        // this.mLimitLinePath.lineTo(this.mLimitLineSegmentsBuffer[2], this.mLimitLineSegmentsBuffer[3]);
-
         const paint = this.limitLinePaint;
-        // paint.setStyle(Style.STROKE);
         paint.setColor(limitLine.getLineColor());
         paint.setStrokeWidth(limitLine.getLineWidth());
         paint.setPathEffect(limitLine.getDashPathEffect());

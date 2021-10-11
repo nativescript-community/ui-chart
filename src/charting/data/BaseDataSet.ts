@@ -183,19 +183,6 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return this.mColors[Math.floor(index) % this.mColors.length];
     }
 
-    // /**
-    //  * Sets the colors that should be used fore this DataSet. Colors are reused
-    //  * as soon as the number of Entries the DataSet represents is higher than
-    //  * the size of the colors array. If you are using colors from the resources,
-    //  * make sure that the colors are already prepared (by calling
-    //  * getResources().getColor(...)) before adding them to the DataSet.
-    //  *
-    //  * @param colors
-    //  */
-    // public  setColors(...colors :number[]) {
-    //     this.mColors = ColorTemplate.createColors(colors);
-    // }
-
     /**
      * Adds a new color to the colors array of the DataSet.
      *

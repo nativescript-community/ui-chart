@@ -16,7 +16,7 @@ export abstract class AbstractBuffer<T> {
      */
     constructor(size: number) {
         this.index = 0;
-        this.buffer = Utils.createNativeArray(size);
+        this.buffer = Utils.createArrayBuffer(size);
     }
 
     /** limits the drawing on the x-axis */

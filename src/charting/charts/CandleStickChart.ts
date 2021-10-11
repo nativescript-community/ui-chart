@@ -1,4 +1,4 @@
-import { Canvas, Paint } from '@nativescript-community/ui-canvas';
+import { Canvas, Paint, TypedArray } from '@nativescript-community/ui-canvas';
 import { CandleData } from '../data/CandleData';
 import { CandleEntry } from '../data/CandleEntry';
 import { Highlight } from '../highlight/Highlight';
@@ -9,11 +9,11 @@ import { BaseCustomRenderer } from '../renderer/DataRenderer';
 import { BarLineChartBase } from './BarLineChartBase';
 
 export interface CustomRenderer extends BaseCustomRenderer {
-    drawShadows?: (c: Canvas, e: CandleEntry, lines: number[], paint: Paint) => void;
+    drawShadows?: (c: Canvas, e: CandleEntry, lines: number[] | TypedArray, paint: Paint) => void;
     drawOpened?: (c: Canvas, e: CandleEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
     drawClosed?: (c: Canvas, e: CandleEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
     drawEqual?: (c: Canvas, e: CandleEntry, left: number, top: number, right: number, bottom: number, paint: Paint) => void;
-    drawLines?: (c: Canvas, e: CandleEntry, range: number[], open: number[], close: number[], paint: Paint) => void;
+    drawLines?: (c: Canvas, e: CandleEntry, range: number[] | TypedArray, open: number[] | TypedArray, close: number[] | TypedArray, paint: Paint) => void;
     drawHighlight?: (c: Canvas, e: Highlight, set: ICandleDataSet, paint: Paint) => void;
 }
 /**

@@ -1,25 +1,18 @@
-import { XAxisRenderer } from './XAxisRenderer';
-import { BarChart } from '../charts/BarChart';
-import { XAxis, XAxisPosition } from '../components/XAxis';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { Transformer } from '../utils/Transformer';
-import { Align, Canvas, Paint, Path, RectF, Style } from '@nativescript-community/ui-canvas';
-import { Utils } from '../utils/Utils';
-import { MPPointF } from '../utils/MPPointF';
-import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
+import { Align, Canvas, Paint, Path, RectF } from '@nativescript-community/ui-canvas';
 import { profile } from '@nativescript/core';
+import { BarChart } from '../charts/BarChart';
+import { LimitLabelPosition } from '../components/LimitLine';
+import { XAxis, XAxisPosition } from '../components/XAxis';
+import { MPPointF } from '../utils/MPPointF';
+import { Transformer } from '../utils/Transformer';
+import { Utils } from '../utils/Utils';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { CustomRendererGridLineFunction } from './AxisRenderer';
+import { XAxisRenderer } from './XAxisRenderer';
 
 export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     protected mChart: BarChart;
     mForceLongestLabelComputation = true;
-    protected mRenderLimitLinesPathBuffer: Path;
-    protected get renderLimitLinesPathBuffer() {
-        if (!this.mRenderLimitLinesPathBuffer) {
-            this.mRenderLimitLinesPathBuffer = new Path();
-        }
-        return this.mRenderLimitLinesPathBuffer;
-    }
 
     constructor(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: Transformer, chart: BarChart) {
         super(viewPortHandler, xAxis, trans);
@@ -29,7 +22,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     public computeAxis(min, max, inverted) {
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
-        if (this.mViewPortHandler.contentWidth() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
+        if (this.mViewPortHandler.getContentRect().width() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
             const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.bottom);
             const p2 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
@@ -123,10 +116,10 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         if (entryCount === 0) {
             return;
         }
-        if (this.labelsPositionsBuffer.length !== length) {
-            this.labelsPositionsBuffer = Utils.createArrayBuffer(length);
+        if (!this.mLabelsPositionsBuffer || this.mLabelsPositionsBuffer.length !== length) {
+            this.mLabelsPositionsBuffer = Utils.createArrayBuffer(length);
         }
-        const positionsBuffer = this.labelsPositionsBuffer;
+        const positionsBuffer = this.mLabelsPositionsBuffer;
         for (let i = 0; i < length; i += 2) {
             // only fill x values
             if (centeringEnabled) {
@@ -155,12 +148,6 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         }
     }
 
-    public getGridClippingRect(): RectF {
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-        this.mGridClippingRect.set(rect);
-        this.mGridClippingRect.inset(0, -this.mAxis.getGridLineWidth());
-        return this.mGridClippingRect;
-    }
     protected drawGridLine(c: Canvas, rect: RectF, x, y, axisValue, paint: Paint, customRendererFunc: CustomRendererGridLineFunction) {
         if (customRendererFunc) {
             customRendererFunc(c, this, rect, x, y, axisValue, paint);
@@ -202,11 +189,11 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         if (limitLines == null || limitLines.length <= 0) return;
 
-        const pts = this.renderLimitLinesBuffer;
+        const pts = Utils.getTempArray(2);
         pts[0] = 0;
         pts[1] = 0;
 
-        const limitLinePath = this.renderLimitLinesPathBuffer;
+        const limitLinePath = Utils.getTempPath();
         limitLinePath.reset();
         let offsetLeft = 0;
         let rect: RectF;
@@ -227,7 +214,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
             }
             const lineWidth = l.getLineWidth();
             if (clipToContent) {
-                const clipRect = this.limitLineClippingRect;
+                const clipRect = Utils.getTempRectF();
                 clipRect.set(rect);
                 clipRect.inset(0, -lineWidth);
                 c.clipRect(clipRect);

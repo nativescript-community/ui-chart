@@ -15,43 +15,18 @@ export class PieChartRenderer extends DataRenderer {
     protected mChart: PieChart;
 
     /**
-     * palet for the hole in the center of the pie chart and the transparent
-     * circle
-     */
-    protected mHolePaint: Paint;
-    protected mTransparentCirclePaint: Paint;
-    protected mValueLinePaint: Paint;
-    public get valueLinePaint() {
-        if (!this.mValueLinePaint) {
-            this.mValueLinePaint = new Paint();
-            this.mValueLinePaint.setAntiAlias(true);
-            this.mValueLinePaint.setStyle(Style.STROKE);
-        }
-        return this.mValueLinePaint;
-    }
-
-    /**
      * Bitmap for drawing the center hole
      */
     protected mDrawBitmap: WeakRef<ImageSource>;
 
     protected mBitmapCanvas: Canvas;
 
-    protected mDrawCenterTextPathBuffer: Path;
-    protected get drawCenterTextPathBuffer() {
-        if (!this.mDrawCenterTextPathBuffer) {
-            this.mDrawCenterTextPathBuffer = new Path();
-        }
-        return this.mDrawCenterTextPathBuffer;
-    }
-
-    protected mDrawHighlightedRectF: RectF;
-    protected get drawHighlightedRectF() {
-        if (!this.mDrawHighlightedRectF) {
-            this.mDrawHighlightedRectF = new RectF(0, 0, 0, 0);
-        }
-        return this.mDrawHighlightedRectF;
-    }
+    /**
+     * palet for the hole in the center of the pie chart and the transparent
+     * circle
+     */
+    protected mHolePaint: Paint;
+    protected mTransparentCirclePaint: Paint;
 
     /**
      * palet object for the text that can be displayed in the center of the
@@ -81,29 +56,6 @@ export class PieChartRenderer extends DataRenderer {
         return this.mRectBuffer;
     }
 
-    private mPathBuffer: Path;
-    protected get pathBuffer() {
-        if (!this.mPathBuffer) {
-            this.mPathBuffer = new Path();
-        }
-        return this.mPathBuffer;
-    }
-    private mInnerRectBuffer: RectF;
-    protected get innerRectBuffer() {
-        if (!this.mInnerRectBuffer) {
-            this.mInnerRectBuffer = new RectF(0, 0, 0, 0);
-        }
-        return this.mInnerRectBuffer;
-    }
-
-    private mHoleCirclePath: Path;
-    protected get holeCirclePath() {
-        if (!this.mHoleCirclePath) {
-            this.mHoleCirclePath = new Path();
-        }
-        return this.mHoleCirclePath;
-    }
-
     constructor(chart: PieChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
@@ -111,17 +63,14 @@ export class PieChartRenderer extends DataRenderer {
 
     public get centerTextPaint() {
         if (!this.mCenterTextPaint) {
-            this.mCenterTextPaint = new Paint();
-            this.mCenterTextPaint.setColor('black');
+            this.mCenterTextPaint = Utils.getTemplatePaint('black-fill');
             this.mCenterTextPaint.setTextSize(12);
         }
         return this.mCenterTextPaint;
     }
     public get entryLabelsPaint() {
         if (!this.mEntryLabelsPaint) {
-            this.mEntryLabelsPaint = new Paint();
-            this.mEntryLabelsPaint.setAntiAlias(true);
-            this.mEntryLabelsPaint.setColor('white');
+            this.mEntryLabelsPaint = Utils.getTemplatePaint('white-fill');
             this.mEntryLabelsPaint.setTextAlign(Align.CENTER);
             this.mEntryLabelsPaint.setTextSize(13);
         }
@@ -129,37 +78,24 @@ export class PieChartRenderer extends DataRenderer {
     }
     public get transparentCirclePaint() {
         if (!this.mTransparentCirclePaint) {
-            this.mTransparentCirclePaint = new Paint();
-            this.mTransparentCirclePaint.setAntiAlias(true);
-            this.mTransparentCirclePaint.setColor('white');
-            this.mTransparentCirclePaint.setStyle(Style.FILL);
+            this.mTransparentCirclePaint = Utils.getTemplatePaint('white-fill');
             this.mTransparentCirclePaint.setAlpha(105);
         }
         return this.mTransparentCirclePaint;
     }
     public get holePaint() {
         if (!this.mHolePaint) {
-            this.mHolePaint = new Paint();
-            this.mHolePaint.setAntiAlias(true);
-            this.mHolePaint.setColor('white');
-            this.mHolePaint.setStyle(Style.FILL);
+            this.mHolePaint = Utils.getTemplatePaint('white-fill');
         }
         return this.mHolePaint;
     }
     public get valuePaint() {
         if (!this.mValuePaint) {
-            this.mValuePaint = new Paint();
-            this.mValuePaint.setAntiAlias(true);
-            this.mValuePaint.setStyle(Style.STROKE);
+            this.mValuePaint = Utils.getTemplatePaint('value');
             this.mValuePaint.setColor('white');
-            this.mValuePaint.setTextAlign(Align.CENTER);
             this.mValuePaint.setTextSize(13);
         }
         return this.mValuePaint;
-    }
-
-    public initBuffers() {
-        // TODO Auto-generated method stub
     }
 
     @profile
@@ -273,7 +209,7 @@ export class PieChartRenderer extends DataRenderer {
 
         const customRender = this.mChart.getCustomRenderer();
         const renderPaint = this.renderPaint;
-        const pathBuffer = this.pathBuffer;
+        const pathBuffer = Utils.getTempPath();
         const previousShader = renderPaint.getShader();
         const shader = dataSet.getFillShader();
         if (shader) {
@@ -331,10 +267,11 @@ export class PieChartRenderer extends DataRenderer {
             }
 
             // Android API < 21 does not receive floats in addArc, but a RectF
-            this.innerRectBuffer.set(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius);
 
             if (drawInnerArc && (innerRadius > 0 || accountForSliceSpacing)) {
-                if (accountForSliceSpacing) {
+            const innerRectBuffer = Utils.getTempRectF()
+            innerRectBuffer.set(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius);
+            if (accountForSliceSpacing) {
                     let minSpacedRadius = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY, arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter);
 
                     if (minSpacedRadius < 0) {
@@ -365,7 +302,7 @@ export class PieChartRenderer extends DataRenderer {
                         pathBuffer.lineTo(center.x + innerRadius * Math.cos(endAngleInner * Utils.DEG2RAD), center.y + innerRadius * Math.sin(endAngleInner * Utils.DEG2RAD));
                     }
 
-                    pathBuffer.arcTo(this.innerRectBuffer, endAngleInner, -sweepAngleInner);
+                    pathBuffer.arcTo(innerRectBuffer, endAngleInner, -sweepAngleInner);
                 }
             } else {
                 if (sweepAngleOuter % 360 > Utils.NUMBER_EPSILON) {
@@ -443,6 +380,8 @@ export class PieChartRenderer extends DataRenderer {
         const paint = this.valuePaint;
         const entryLabelsPaint: Paint = drawEntryLabels ? this.entryLabelsPaint : undefined;
         const customRender = this.mChart.getCustomRenderer();
+        const valueLinePaint = Utils.getTempPaint();
+        valueLinePaint.setStyle(Style.STROKE);
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
             const drawValues = dataSet.isDrawValuesEnabled();
@@ -464,8 +403,8 @@ export class PieChartRenderer extends DataRenderer {
 
             const entryCount = dataSet.getEntryCount();
 
-            this.valueLinePaint.setColor(dataSet.getValueLineColor());
-            this.valueLinePaint.setStrokeWidth(dataSet.getValueLineWidth());
+            valueLinePaint.setColor(dataSet.getValueLineColor());
+            valueLinePaint.setStrokeWidth(dataSet.getValueLineWidth());
 
             const sliceSpace = this.getSliceSpace(dataSet);
 
@@ -555,11 +494,11 @@ export class PieChartRenderer extends DataRenderer {
 
                     if (dataSet.getValueLineColor() !== ColorTemplate.COLOR_NONE) {
                         if (dataSet.isUsingSliceColorAsValueLineColor()) {
-                            this.valueLinePaint.setColor(dataSet.getColor(j));
+                            valueLinePaint.setColor(dataSet.getColor(j));
                         }
 
-                        c.drawLine(pt0x, pt0y, pt1x, pt1y, this.valueLinePaint);
-                        c.drawLine(pt1x, pt1y, pt2x, pt2y, this.valueLinePaint);
+                        c.drawLine(pt0x, pt0y, pt1x, pt1y, valueLinePaint);
+                        c.drawLine(pt1x, pt1y, pt2x, pt2y, valueLinePaint);
                     }
 
                     // draw everything, depending on settings
@@ -660,7 +599,7 @@ export class PieChartRenderer extends DataRenderer {
                 transparentCirclePaint.setAlpha(alpha * this.mAnimator.getPhaseX() * this.mAnimator.getPhaseY());
 
                 // draw the transparent-circle
-                const path = this.holeCirclePath;
+                const path = Utils.getTempPath();
                 path.reset();
                 path.addCircle(center.x, center.y, secondHoleRadius, Direction.CW);
                 path.addCircle(center.x, center.y, holeRadius, Direction.CCW);
@@ -720,7 +659,7 @@ export class PieChartRenderer extends DataRenderer {
 
             if (global.isAndroid) {
                 if (android.os.Build.VERSION.SDK_INT >= 18) {
-                    const path = this.drawCenterTextPathBuffer;
+                    const path = Utils.getTempPath();
                     path.reset();
                     path.addOval(holeRect, Direction.CW);
                     c.clipPath(path);
@@ -756,12 +695,11 @@ export class PieChartRenderer extends DataRenderer {
         const radius = this.mChart.getRadius();
         const userInnerRadius = drawInnerArc ? radius * (this.mChart.getHoleRadius() / 100) : 0;
 
-        const highlightedCircleBox = this.drawHighlightedRectF;
-        highlightedCircleBox.set(0, 0, 0, 0);
+        const highlightedCircleBox = Utils.getTempRectF();
 
         const customRender = this.mChart.getCustomRenderer();
         const renderPaint = this.renderPaint;
-        const pathBuffer = this.pathBuffer;
+        const pathBuffer = Utils.getTempPath();
         for (let i = 0; i < indices.length; i++) {
             // get the index to highlight
             const high = indices[i];
@@ -847,10 +785,11 @@ export class PieChartRenderer extends DataRenderer {
                 );
             }
 
-            // Android API < 21 does not receive floats in addArc, but a RectF
-            this.innerRectBuffer.set(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius);
 
             if (drawInnerArc && (innerRadius > 0 || accountForSliceSpacing)) {
+                // Android API < 21 does not receive floats in addArc, but a RectF
+                const innerRectBuffer = Utils.getTempRectF()
+                innerRectBuffer.set(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius);
                 if (accountForSliceSpacing) {
                     let minSpacedRadius = sliceSpaceRadius;
 
@@ -872,7 +811,7 @@ export class PieChartRenderer extends DataRenderer {
                     pathBuffer.addCircle(center.x, center.y, innerRadius, Direction.CCW);
                 } else {
                     pathBuffer.lineTo(center.x + innerRadius * Math.cos(endAngleInner * Utils.DEG2RAD), center.y + innerRadius * Math.sin(endAngleInner * Utils.DEG2RAD));
-                    pathBuffer.arcTo(this.innerRectBuffer, endAngleInner, -sweepAngleInner);
+                    pathBuffer.arcTo(innerRectBuffer, endAngleInner, -sweepAngleInner);
                 }
             } else {
                 if (sweepAngleOuter % 360 > Utils.NUMBER_EPSILON) {

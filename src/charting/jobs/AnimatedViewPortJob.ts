@@ -17,59 +17,59 @@ export interface AnimatorListener {
  * Created by Philipp Jahoda on 19/02/16.
  */
 export abstract class AnimatedViewPortJob extends ViewPortJob implements AnimatorUpdateListener, AnimatorListener {
-    protected animator: Tween<any>;
+    protected mAnimator: Tween<any>;
 
-    protected phase;
+    protected mPhase;
 
-    protected xOrigin;
-    protected yOrigin;
+    protected mXOrigin: number;
+    protected mYOrigin: number;
 
-    constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, private duration) {
+    constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin: number, yOrigin: number, private duration: number) {
         super(viewPortHandler, xValue, yValue, trans, v);
-        this.xOrigin = xOrigin;
-        this.yOrigin = yOrigin;
+        this.mXOrigin = xOrigin;
+        this.mYOrigin = yOrigin;
     }
 
     createAnimator(duration) {
-        this.animator = new TWEEN.Tween<any>({ value: 0 })
+        this.mAnimator = new TWEEN.Tween<any>({ value: 0 })
             .to({ value: 1 }, duration)
-            .onStop(() => this.onAnimationCancel(this.animator))
-            .onComplete(() => this.onAnimationEnd(this.animator))
-            .onStart(() => this.onAnimationStart(this.animator))
+            .onStop(() => this.onAnimationCancel(this.mAnimator))
+            .onComplete(() => this.onAnimationEnd(this.mAnimator))
+            .onStart(() => this.onAnimationStart(this.mAnimator))
             .onUpdate((obj) => {
-                this.phase = obj.value;
-                this.onAnimationUpdate(this.animator);
+                this.mPhase = obj.value;
+                this.onAnimationUpdate(this.mAnimator);
             });
     }
 
     public run() {
-        if (!this.animator) {
+        if (!this.mAnimator) {
             this.createAnimator(this.duration);
         }
-        this.animator.start();
+        this.mAnimator.start();
     }
 
     public getPhase() {
-        return this.phase;
+        return this.mPhase;
     }
 
     public setPhase(phase) {
-        this.phase = phase;
+        this.mPhase = phase;
     }
 
     public getXOrigin() {
-        return this.xOrigin;
+        return this.mXOrigin;
     }
 
     public getYOrigin() {
-        return this.yOrigin;
+        return this.mYOrigin;
     }
 
     public abstract recycleSelf();
 
     protected resetAnimator() {
-        this.animator.stop();
-        this.animator.update(0);
+        this.mAnimator.stop();
+        this.mAnimator.update(0);
         // this.animator.reset();
         // this.animator.reverse();
         // this.animator.addUpdateListener(this);

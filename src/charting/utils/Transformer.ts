@@ -1,13 +1,11 @@
-import { Matrix, Path, Rect } from '@nativescript-community/ui-canvas';
-import { ViewPortHandler } from './ViewPortHandler';
-import { Utils } from './Utils';
-import { profile } from '@nativescript/core/profiling';
-import { IDataSet } from '../interfaces/datasets/IDataSet';
-import { Entry } from '../data/Entry';
-import { CandleDataSet } from '../data/CandleDataSet';
+import { Matrix, Path, Rect, TypedArray } from '@nativescript-community/ui-canvas';
 import { BubbleDataSet } from '../data/BubbleDataSet';
+import { CandleDataSet } from '../data/CandleDataSet';
 import { CandleEntry } from '../data/CandleEntry';
-import { constants } from 'crypto';
+import { Entry } from '../data/Entry';
+import { IDataSet } from '../interfaces/datasets/IDataSet';
+import { Utils } from './Utils';
+import { ViewPortHandler } from './ViewPortHandler';
 
 /**
  * Transformer class that contains all matrices and is responsible for
@@ -19,14 +17,22 @@ export class Transformer {
     /**
      * matrix to map the values to the screen pixels
      */
-    protected mMatrixValueToPx = new Matrix();
+    protected mMatrixValueToPx: Matrix = new Matrix();
 
     /**
      * matrix for handling the different offsets of the chart
      */
-    protected mMatrixOffset = new Matrix();
+    protected mMatrixOffset: Matrix = new Matrix();
 
     protected mViewPortHandler: ViewPortHandler;
+
+    protected mValuePointsForGenerateTransformedValuesScatter: TypedArray;
+    protected mValuePointsForGenerateTransformedValuesCandle: TypedArray;
+    protected mValuePointsForGenerateTransformedValues: TypedArray;
+    protected mValuePointsForGenerateTransformedValuesBubble: TypedArray;
+
+    private mMBuffer1 = new Matrix();
+    private mMBuffer2 = new Matrix();
 
     constructor(viewPortHandler: ViewPortHandler) {
         this.mViewPortHandler = viewPortHandler;
@@ -42,8 +48,8 @@ export class Transformer {
      * @param yChartMin
      */
     public prepareMatrixValuePx(xChartMin, deltaX, deltaY, yChartMin) {
-        let scaleX = this.mViewPortHandler.contentWidth() / deltaX;
-        let scaleY = this.mViewPortHandler.contentHeight() / deltaY;
+        let scaleX = this.mViewPortHandler.getContentRect().width() / deltaX;
+        let scaleY = this.mViewPortHandler.getContentRect().height() / deltaY;
         if (!Number.isFinite(scaleX) || isNaN(scaleX)) {
             scaleX = 0;
         }
@@ -73,8 +79,6 @@ export class Transformer {
         }
     }
 
-    protected mValuePointsForGenerateTransformedValuesScatter = [];
-
     /**
      * Transforms an List of Entry into a let array containing the x and
      * y values transformed with all matrices for the SCATTERCHART.
@@ -85,7 +89,7 @@ export class Transformer {
     public generateTransformedValuesScatter(dataSet: IDataSet<Entry>, phaseX, phaseY, from, to) {
         const count = ((to - from) * phaseX + 1) * 2;
 
-        if (this.mValuePointsForGenerateTransformedValuesScatter.length !== count) {
+        if (!this.mValuePointsForGenerateTransformedValuesScatter || this.mValuePointsForGenerateTransformedValuesScatter.length !== count) {
             this.mValuePointsForGenerateTransformedValuesScatter = Utils.createArrayBuffer(count);
         }
         const valuePoints = this.mValuePointsForGenerateTransformedValuesScatter;
@@ -110,7 +114,6 @@ export class Transformer {
         return { points, count };
     }
 
-    protected mValuePointsForGenerateTransformedValuesBubble: number[] = [];
     /**
      * Transforms an List of Entry into a float array containing the x and
      * y values transformed with all matrices for the BUBBLECHART.
@@ -121,7 +124,7 @@ export class Transformer {
     public generateTransformedValuesBubble(dataSet: BubbleDataSet, phaseY, from, to) {
         const count = (to - from + 1) * 2; // (int) Math.ceil((to - from) * phaseX) * 2;
 
-        if (this.mValuePointsForGenerateTransformedValuesBubble.length !== count) {
+        if (!this.mValuePointsForGenerateTransformedValuesScatter || this.mValuePointsForGenerateTransformedValuesBubble.length !== count) {
             this.mValuePointsForGenerateTransformedValuesBubble = Utils.createArrayBuffer(count);
         }
         const valuePoints = this.mValuePointsForGenerateTransformedValuesBubble;
@@ -143,8 +146,6 @@ export class Transformer {
 
         return { points, count };
     }
-
-    protected mValuePointsForGenerateTransformedValues: number[] = [];
 
     /**
      * Transforms an List of Entry into a let array containing the x and
@@ -181,45 +182,6 @@ export class Transformer {
 
         return { points, count };
     }
-
-    // protected valuePointsForGenerateTransformedValuesLine = [];
-
-    /**
-     * Transforms an List of Entry into a let array containing the x and
-     * y values transformed with all matrices for the LINECHART.
-     *
-     * @param data
-     * @return
-     */
-    // public generateTransformedValuesLine(dataSet: IDataSet<Entry>, phaseX, phaseY, min, max) {
-    //     let count = ((max - min) * phaseX + 1) * 2;
-
-    //     if (this.valuePointsForGenerateTransformedValuesLine.length != count) {
-    //         this.valuePointsForGenerateTransformedValuesLine = [];
-    //     }
-    //     const valuePoints = this.valuePointsForGenerateTransformedValuesLine;
-
-    //     const xProperty = dataSet.xProperty;
-    //     const yProperty = dataSet.yProperty;
-    //     for (let j = 0; j < count; j += 2) {
-    //         const e = dataSet.getEntryForIndex(j / 2 + min);
-
-    //         if (e != null) {
-    //             valuePoints[j] = e[xProperty];
-    //             valuePoints[j + 1] = e[yProperty] * phaseY;
-    //         } else {
-    //             valuePoints[j] = 0;
-    //             valuePoints[j + 1] = 0;
-    //         }
-    //     }
-
-    //      this.mapPoints(this.getValueToPixelMatrix(), valuePoints);
-
-    //     return valuePoints;
-    // }
-
-    protected mValuePointsForGenerateTransformedValuesCandle: number[] = [];
-
     /**
      * Transforms an List of Entry into a let array containing the x and
      * y values transformed with all matrices for the CANDLESTICKCHART.
@@ -230,7 +192,7 @@ export class Transformer {
     public generateTransformedValuesCandle(dataSet: CandleDataSet, phaseX, phaseY, from, to) {
         const count = ((to - from) * phaseX + 1) * 2;
 
-        if (this.mValuePointsForGenerateTransformedValuesCandle.length !== count) {
+        if (!this.mValuePointsForGenerateTransformedValuesCandle || this.mValuePointsForGenerateTransformedValuesCandle.length !== count) {
             this.mValuePointsForGenerateTransformedValuesCandle = Utils.createArrayBuffer(count);
         }
         const valuePoints = this.mValuePointsForGenerateTransformedValuesCandle;
@@ -279,7 +241,7 @@ export class Transformer {
         }
     }
 
-    public mapPoints(matrix: Matrix, pts) {
+    public mapPoints(matrix: Matrix, pts: number[] | TypedArray) {
         if (global.isAndroid && ArrayBuffer.isView(pts)) {
             matrix['mapPointsBuffer'](pts);
         } else {
@@ -293,7 +255,7 @@ export class Transformer {
      *
      * @param pts
      */
-    public pointValuesToPixel(pts) {
+    public pointValuesToPixel(pts: number[] | TypedArray) {
         // this.mMatrixValueToPx.mapPoints(pts);
         // this.mViewPortHandler.getMatrixTouch().mapPoints(pts);
         // this.mMatrixOffset.mapPoints(pts);
@@ -380,11 +342,6 @@ export class Transformer {
     }
 
     /**
-     * buffer for performance
-     */
-    mPtsBuffer = Utils.createNativeArray(2);
-
-    /**
      * Returns a recyclable MPPointD instance.
      * returns the x and y values in the chart at the given touch point
      * (encapsulated in a MPPointD). This method transforms pixel coordinates to
@@ -400,12 +357,13 @@ export class Transformer {
         if (!outputPoint) {
             outputPoint = { x: 0, y: 0 };
         }
-        this.mPtsBuffer[0] = x;
-        this.mPtsBuffer[1] = y;
+        const buffer = Utils.getTempArray(2);
+        buffer[0] = x;
+        buffer[1] = y;
 
-        this.pixelsToValue(this.mPtsBuffer);
-        outputPoint.x = this.mPtsBuffer[0];
-        outputPoint.y = this.mPtsBuffer[1];
+        this.pixelsToValue(buffer);
+        outputPoint.x = buffer[0];
+        outputPoint.y = buffer[1];
         return outputPoint;
     }
 
@@ -418,13 +376,14 @@ export class Transformer {
      * @return
      */
     public getPixelForValues(x, y) {
-        this.mPtsBuffer[0] = x;
-        this.mPtsBuffer[1] = y;
+        const buffer = Utils.getTempArray(2);
+        buffer[0] = x;
+        buffer[1] = y;
 
-        this.pointValuesToPixel(this.mPtsBuffer);
+        this.pointValuesToPixel(buffer);
 
-        const xPx = this.mPtsBuffer[0];
-        const yPx = this.mPtsBuffer[1];
+        const xPx = buffer[0];
+        const yPx = buffer[1];
 
         return { x: xPx, y: yPx };
     }
@@ -437,7 +396,6 @@ export class Transformer {
         return this.mMatrixOffset;
     }
 
-    private mMBuffer1 = new Matrix();
 
     public getValueToPixelMatrix() {
         this.mMBuffer1.set(this.mMatrixValueToPx);
@@ -446,7 +404,6 @@ export class Transformer {
         return this.mMBuffer1;
     }
 
-    private mMBuffer2 = new Matrix();
 
     public getPixelToValueMatrix() {
         this.getValueToPixelMatrix().invert(this.mMBuffer2);

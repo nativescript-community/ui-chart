@@ -1,12 +1,12 @@
-import { Renderer } from './Renderer';
+import { Align, Canvas, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
+import { profile } from '@nativescript/core';
 import { AxisBase } from '../components/AxisBase';
-import { Align, Canvas, Paint, Path, RectF, Style } from '@nativescript-community/ui-canvas';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
+import { LimitLine } from '../components/LimitLine';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { BaseCustomRenderer } from './DataRenderer';
-import { LimitLine } from '../components/LimitLine';
-import { profile } from '@nativescript/core';
+import { Renderer } from './Renderer';
 
 export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
 export type CustomRendererLimitLineFunction = (c: Canvas, renderer: AxisRenderer, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
@@ -62,20 +62,14 @@ export abstract class AxisRenderer extends Renderer {
      */
     get axisLinePaint() {
         if (!this.mAxisLinePaint) {
-            this.mAxisLinePaint = new Paint();
-            this.mAxisLinePaint.setColor('black');
-            this.mAxisLinePaint.setAntiAlias(true);
-            this.mAxisLinePaint.setStrokeWidth(1);
-            this.mAxisLinePaint.setStyle(Style.STROKE);
+            this.mAxisLinePaint = Utils.getTemplatePaint('black-stroke')
         }
         return this.mAxisLinePaint;
     }
 
     get limitLinePaint() {
         if (!this.mLimitLinePaint) {
-            this.mLimitLinePaint = new Paint();
-            this.mLimitLinePaint.setAntiAlias(true);
-            this.mLimitLinePaint.setStyle(Style.STROKE);
+            this.mLimitLinePaint = Utils.getTemplatePaint('black-stroke')
         }
         return this.mLimitLinePaint;
     }
@@ -93,9 +87,7 @@ export abstract class AxisRenderer extends Renderer {
     }
 
     protected createAxisLabelsPaint() {
-        const paint = new Paint();
-        paint.setColor('black');
-        paint.setAntiAlias(true);
+        const paint = Utils.getTemplatePaint('black-fill');
         paint.setTextAlign(Align.LEFT);
         return paint;
     }
@@ -108,12 +100,7 @@ export abstract class AxisRenderer extends Renderer {
      */
     public get gridPaint() {
         if (!this.mGridPaint) {
-            this.mGridPaint = new Paint();
-            this.mGridPaint.setColor('gray');
-            this.mGridPaint.setStrokeWidth(1);
-            this.mGridPaint.setAntiAlias(true);
-            this.mGridPaint.setStyle(Style.STROKE);
-            this.mGridPaint.setAlpha(90);
+            this.mGridPaint = Utils.getTemplatePaint('grid');
         }
         return this.mGridPaint;
     }
@@ -137,7 +124,7 @@ export abstract class AxisRenderer extends Renderer {
     public computeAxis(min, max, inverted) {
         // calculate the starting and entry polet of the y-labels (depending on
         // zoom / contentrect bounds)
-        if (this.mViewPortHandler != null && this.mViewPortHandler.contentWidth() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
+        if (this.mViewPortHandler != null && this.mViewPortHandler.getContentRect().width() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
             const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
             const p2 = this.mTrans.getValuesByTouchPoint(rect.left, rect.bottom);

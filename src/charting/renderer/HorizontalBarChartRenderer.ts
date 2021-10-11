@@ -1,23 +1,17 @@
-import { BarChartRenderer } from './BarChartRenderer';
-import { ChartAnimator } from '../animation/ChartAnimator';
+import { Align, Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
 import { HorizontalBarBuffer } from '../buffer/HorizontalBarBuffer';
-import { BarChart } from '../charts/BarChart';
 import { Highlight } from '../highlight/Highlight';
 import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { Align, Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
+import { BarChartRenderer } from './BarChartRenderer';
 
 export class HorizontalBarChartRenderer extends BarChartRenderer {
     public get valuePaint() {
         if (!this.mValuePaint) {
-            this.mValuePaint = new Paint();
-            this.mValuePaint.setAntiAlias(true);
-            this.mValuePaint.setColor('#3F3F3F');
+            this.mValuePaint = Utils.getTemplatePaint('value');
             this.mValuePaint.setTextAlign(Align.LEFT);
-            this.mValuePaint.setTextSize(9);
         }
         return this.mValuePaint;
     }
@@ -58,7 +52,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             const barWidthHalf = barWidth / 2;
             let x;
 
-            const barShadowRectBuffer = this.barShadowRectBuffer;
+            const barShadowRectBuffer = Utils.getTempRectF();
             for (let i = 0, count = Math.min(Math.ceil(dataSet.getEntryCount() * phaseX), dataSet.getEntryCount()); i < count; i++) {
                 const e = dataSet.getEntryForIndex(i);
                 x = dataSet.getEntryXValue(e, i);
@@ -301,7 +295,10 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                         }
                         // draw stack values
                     } else {
-                        const transformed = Utils.createNativeArray(vals.length * 2);
+                        if (!this.mTransformedBuffer || this.mTransformedBuffer.length !== vals.length * 2) {
+                            this.mTransformedBuffer = Utils.createArrayBuffer(vals.length * 2);
+                        }
+                        const transformed = this.mTransformedBuffer;
 
                         let posY = 0;
                         let negY = -entry.negativeSum;
@@ -324,9 +321,10 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             transformed[k] = y * phaseY;
                         }
 
+                        const points = Utils.pointsFromBuffer(transformed);
                         trans.pointValuesToPixel(transformed);
 
-                        for (let k = 0; k < transformed.length; k += 2) {
+                        for (let k = 0; k < points.length; k += 2) {
                             const val = vals[k / 2];
                             const formattedValue = formatter.getBarStackedLabel(val, entry);
 
@@ -341,7 +339,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                             }
 
                             const drawBelow = (val === 0 && negY === 0 && posY > 0) || val < 0;
-                            const x = transformed[k] + (drawBelow ? negOffset : posOffset);
+                            const x = points[k] + (drawBelow ? negOffset : posOffset);
                             const y = (buffer.buffer[bufferIndex + 1] + buffer.buffer[bufferIndex + 3]) / 2;
 
                             if (!this.mViewPortHandler.isInBoundsTop(y)) {
@@ -374,12 +372,11 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         }
     }
 
-    protected prepareBarHighlight(x: number, y1: number, y2: number, barWidthHalf: number, trans: Transformer) {
+    protected prepareBarHighlight(x: number, y1: number, y2: number, barWidthHalf: number, trans: Transformer, barRect: RectF) {
         const top = x - barWidthHalf;
         const bottom = x + barWidthHalf;
         const left = y1;
         const right = y2;
-        const barRect = this.barRect;
 
         barRect.set(left, top, right, bottom);
 

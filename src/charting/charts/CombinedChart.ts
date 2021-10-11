@@ -43,13 +43,13 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */
-    protected mHighlightFullBarEnabled = false;
+    protected mHighlightFullBarEnabled;
 
     /**
      * if set to true, a grey area is drawn behind each bar that indicates the
      * maximum value
      */
-    protected mDrawBarShadow = false;
+    protected mDrawBarShadow;
 
     protected mDrawOrder: DrawOrder[];
 
