@@ -172,7 +172,7 @@ export default Vue.extend({
             for (let index = 0; index < this.count; index += 0.5) entries.push({ x: index + 0.25, y: getRandom(10, 55) });
 
             const set = new ScatterDataSet(entries, 'Scatter DataSet');
-            set.setColors(ColorTemplate.MATERIAL_COLORS);
+            // set.setColors(ColorTemplate.MATERIAL_COLORS);
             set.setScatterShapeSize(7.5);
             set.setDrawValues(false);
             set.setValueTextSize(10);
@@ -209,7 +209,7 @@ export default Vue.extend({
             }
 
             const set = new BubbleDataSet(entries, 'Bubble DataSet');
-            set.setColors(ColorTemplate.VORDIPLOM_COLORS);
+            // set.setColors(ColorTemplate.VORDIPLOM_COLORS);
             set.setValueTextSize(10);
             set.setValueTextColor('white');
             set.setHighlightCircleWidth(1.5);

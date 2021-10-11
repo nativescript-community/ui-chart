@@ -150,7 +150,6 @@ export default Vue.extend({
             startSVG.width = 30;
             startSVG.height = 30;
             const chart = this.$refs.chart['nativeView'] as LineChart;
-            console.log('setData', count, range);
             const values = new Array(Math.round(count)).fill(0).map((v, i) => ({
                 y: Math.random() * range - 30,
                 icon: startSVG,
@@ -210,7 +209,6 @@ export default Vue.extend({
 
                 // create a data object with the data sets
                 const data = new LineData(dataSets);
-
                 // set data
                 chart.setData(data);
             }

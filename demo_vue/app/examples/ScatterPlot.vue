@@ -114,12 +114,12 @@ export default Vue.extend({
             // create a dataset and give it a type
             const set1 = new ScatterDataSet(values1, 'DS 1');
             set1.setScatterShape(ScatterShape.SQUARE);
-            set1.setColor(ColorTemplate.COLORFUL_COLORS[0]);
+            set1.setColor('red');
             const set2 = new ScatterDataSet(values2, 'DS 2');
             set2.setScatterShape(ScatterShape.CIRCLE);
-            set2.setScatterShapeHoleColor(ColorTemplate.COLORFUL_COLORS[3]);
+            set2.setScatterShapeHoleColor('green');
             set2.setScatterShapeHoleRadius(3);
-            set2.setColor(ColorTemplate.COLORFUL_COLORS[1]);
+            set2.setColor('blue');
             const set3 = new ScatterDataSet(values3, 'DS 3');
             set3.setShapeRenderer({
                 renderShape(c, dataSet, viewPortHandler, posX, posY, renderPaint) {
@@ -128,7 +128,7 @@ export default Vue.extend({
                     c.drawLine(posX - shapeHalf, posY - shapeHalf, posX + shapeHalf, posY + shapeHalf, renderPaint);
                 }
             });
-            set3.setColor(ColorTemplate.COLORFUL_COLORS[2]);
+            set3.setColor('yellow');
 
             set1.setScatterShapeSize(8);
             set2.setScatterShapeSize(8);

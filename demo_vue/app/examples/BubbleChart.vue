@@ -125,17 +125,17 @@ export default Vue.extend({
             // create a dataset and give it a type
             const set1 = new BubbleDataSet(values1, 'DS 1');
             set1.setDrawIcons(false);
-            set1.setColor(ColorTemplate.COLORFUL_COLORS[0], 130);
+            set1.setColor('red', 130);
             set1.setDrawValues(true);
 
             const set2 = new BubbleDataSet(values2, 'DS 2');
             set2.setDrawIcons(false);
             set2.setIconsOffset({ x: 0, y: 15 });
-            set2.setColor(ColorTemplate.COLORFUL_COLORS[1], 130);
+            set2.setColor('green', 130);
             set2.setDrawValues(true);
 
             const set3 = new BubbleDataSet(values3, 'DS 3');
-            set3.setColor(ColorTemplate.COLORFUL_COLORS[2], 130);
+            set3.setColor('blue', 130);
             set3.setDrawValues(true);
 
             // create a data object with the data sets
