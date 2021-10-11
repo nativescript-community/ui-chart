@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/Akylas/nativescript-chart/compare/v1.1.43...v1.2.0) (2021-10-11)
+
+
+### Bug Fixes
+
+* full refactoring using latest canvas plugin. Should be faster and use less memory ([cb6b298](https://github.com/Akylas/nativescript-chart/commit/cb6b2982e3d7108bb5e54c89612f66b7c89f8757))
+
+
+### Features
+
+* native-api-usage support ([a4eae25](https://github.com/Akylas/nativescript-chart/commit/a4eae255561b9032c29f6f8fc47fbcf871f7801d))
+
+
+
+
+
 ## [1.1.43](https://github.com/Akylas/nativescript-chart/compare/v1.1.42...v1.1.43) (2021-10-06)
 
 
