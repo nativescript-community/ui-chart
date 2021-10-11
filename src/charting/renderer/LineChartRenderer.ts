@@ -734,9 +734,10 @@ export class LineChartRenderer extends LineRadarRenderer {
             const e = dataSet.getEntryForIndex(j);
 
             if (e == null) continue;
-
+            const yVal = e[yKey];
+            if (yVal == null || yVal === undefined) continue;
             circleBuffer[0] = dataSet.getEntryXValue(e, j);
-            circleBuffer[1] = e[yKey] * phaseY;
+            circleBuffer[1] = yVal * phaseY;
 
             trans.pointValuesToPixel(circleBuffer);
             // native buffer access is slow
