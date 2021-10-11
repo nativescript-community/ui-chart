@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/nativescript-community/ui-chart/compare/v1.2.0...v1.2.1) (2021-10-11)
+
+
+### Bug Fixes
+
+* **android:** PathDashEffect fix ([dd2354a](https://github.com/nativescript-community/ui-chart/commit/dd2354a7033a448b40d2f538b342e0dbc2918228))
+
+
+
+
+
 # [1.2.0](https://github.com/nativescript-community/ui-chart/compare/v1.1.43...v1.2.0) (2021-10-11)
 
 

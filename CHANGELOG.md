@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/Akylas/nativescript-chart/compare/v1.2.0...v1.2.1) (2021-10-11)
+
+
+### Bug Fixes
+
+* dont draw circles if null / undefined value ([1f01659](https://github.com/Akylas/nativescript-chart/commit/1f01659cf89762676463102271200167d62f7799))
+* **android:** PathDashEffect fix ([dd2354a](https://github.com/Akylas/nativescript-chart/commit/dd2354a7033a448b40d2f538b342e0dbc2918228))
+
+
+
+
+
 # [1.2.0](https://github.com/Akylas/nativescript-chart/compare/v1.1.43...v1.2.0) (2021-10-11)
 
 
