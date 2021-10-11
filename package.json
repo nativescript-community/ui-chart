@@ -41,7 +41,7 @@
         "@commitlint/config-conventional": "^13.2.0",
         "@nativescript-community/gesturehandler": "^0.1.47",
         "@nativescript-community/tween": "0.0.14",
-        "@nativescript-community/ui-canvas": "4.2.11",
+        "@nativescript-community/ui-canvas": "4.2.12",
         "@nativescript/core": "8.1.4",
         "@nativescript/types-android": "8.1.0",
         "@nativescript/types-ios": "8.1.1",
