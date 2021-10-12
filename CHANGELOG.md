@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/Akylas/nativescript-chart/compare/v1.2.1...v1.2.2) (2021-10-12)
+
+
+### Bug Fixes
+
+* drawFrameRate property name fix ([77c1eaa](https://github.com/Akylas/nativescript-chart/commit/77c1eaa882be9016fddea6508e6347430eb38fb4))
+* move to new tween library. Smaller bundle for same result ([b41fdde](https://github.com/Akylas/nativescript-chart/commit/b41fddee7ecdc33982baac5ee7f7213fc836937a))
+
+
+
+
+
 ## [1.2.1](https://github.com/Akylas/nativescript-chart/compare/v1.2.0...v1.2.1) (2021-10-11)
 
 
