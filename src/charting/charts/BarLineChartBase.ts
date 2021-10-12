@@ -1,4 +1,4 @@
-import { Canvas, Matrix, Paint, RectF, Style } from '@nativescript-community/ui-canvas';
+import { Canvas, Matrix, Paint } from '@nativescript-community/ui-canvas';
 import { EventData, Observable, Trace, profile } from '@nativescript/core';
 import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
 import { GestureTypes } from '@nativescript/core/ui/gestures';

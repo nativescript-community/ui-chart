@@ -1,10 +1,12 @@
 export abstract class Poolable {
-    public static NO_OWNER = -1;
-    currentOwnerId = Poolable.NO_OWNER;
+    public static mNO_OWNER = -1;
+    mCurrentOwnerId = Poolable.mNO_OWNER;
 
     public abstract instantiate(): Poolable;
 }
 
+const WRONG_POOL = 'object_wrong_poolid';
+const ALREADY_STORED = 'object_already_stored';
 /**
  * An object pool for recycling of object instances extending Poolable.
  *
@@ -19,14 +21,14 @@ export abstract class Poolable {
  * Created by Tony Patino on 6/20/16.
  */
 export class ObjectPool<T extends Poolable> {
-    private static ids = 0;
+    private static mIds = 0;
 
-    private poolId;
-    private desiredCapacity;
-    private objects: any[];
-    private objectsPointer;
-    private modelObject: T;
-    private replenishPercentage;
+    private mPoolId;
+    private mDesiredCapacity;
+    private mObjects: any[];
+    private mObjectsPointer;
+    private mModelObject: T;
+    private mReplenishPercentage;
 
     /**
      * Returns the id of the given pool instance.
@@ -34,7 +36,7 @@ export class ObjectPool<T extends Poolable> {
      * @return an integer ID belonging to this pool instance.
      */
     public getPoolId() {
-        return this.poolId;
+        return this.mPoolId;
     }
 
     /**
@@ -46,7 +48,7 @@ export class ObjectPool<T extends Poolable> {
      */
     public static create<T extends Poolable>(withCapacity, object: T) {
         const result = new ObjectPool<T>(withCapacity, object);
-        result.poolId = ObjectPool.ids++;
+        result.mPoolId = ObjectPool.mIds++;
         // ObjectPool.ids++;
 
         return result;
@@ -56,11 +58,11 @@ export class ObjectPool<T extends Poolable> {
         if (withCapacity <= 0) {
             throw new Error('Object Pool must be instantiated with a capacity greater than 0!');
         }
-        this.desiredCapacity = withCapacity;
-        this.objects = new Array(this.desiredCapacity);
-        this.objectsPointer = 0;
-        this.modelObject = object;
-        this.replenishPercentage = 1.0;
+        this.mDesiredCapacity = withCapacity;
+        this.mObjects = new Array(this.mDesiredCapacity);
+        this.mObjectsPointer = 0;
+        this.mModelObject = object;
+        this.mReplenishPercentage = 1.0;
         this.refillPool();
     }
 
@@ -77,30 +79,30 @@ export class ObjectPool<T extends Poolable> {
         } else if (p < 0) {
             p = 0;
         }
-        this.replenishPercentage = p;
+        this.mReplenishPercentage = p;
         return this;
     }
 
     public getReplenishPercentage() {
-        return this.replenishPercentage;
+        return this.mReplenishPercentage;
     }
 
     private refillPool(percentage?) {
         if (percentage === undefined) {
-            this.refillPool(this.replenishPercentage);
+            this.refillPool(this.mReplenishPercentage);
         } else {
-            let portionOfCapacity = this.desiredCapacity * percentage;
+            let portionOfCapacity = this.mDesiredCapacity * percentage;
 
             if (portionOfCapacity < 1) {
                 portionOfCapacity = 1;
-            } else if (portionOfCapacity > this.desiredCapacity) {
-                portionOfCapacity = this.desiredCapacity;
+            } else if (portionOfCapacity > this.mDesiredCapacity) {
+                portionOfCapacity = this.mDesiredCapacity;
             }
 
             for (let i = 0; i < portionOfCapacity; i++) {
-                this.objects[i] = this.modelObject.instantiate();
+                this.mObjects[i] = this.mModelObject.instantiate();
             }
-            this.objectsPointer = portionOfCapacity - 1;
+            this.mObjectsPointer = portionOfCapacity - 1;
         }
     }
 
@@ -112,13 +114,13 @@ export class ObjectPool<T extends Poolable> {
      * @return An instance of Poolable object T
      */
     public get(): T {
-        if (this.objectsPointer == -1 && this.replenishPercentage > 0.0) {
+        if (this.mObjectsPointer === -1 && this.mReplenishPercentage > 0.0) {
             this.refillPool();
         }
 
-        const result = this.objects[this.objectsPointer] as T;
-        result.currentOwnerId = Poolable.NO_OWNER;
-        this.objectsPointer--;
+        const result = this.mObjects[this.mObjectsPointer] as T;
+        result.mCurrentOwnerId = Poolable.mNO_OWNER;
+        this.mObjectsPointer--;
 
         return result;
     }
@@ -131,52 +133,52 @@ export class ObjectPool<T extends Poolable> {
      */
     public recycle(object: T | T[]) {
         if (Array.isArray(object)) {
-            while (this.objects.length + this.objectsPointer + 1 > this.desiredCapacity) {
+            while (this.mObjects.length + this.mObjectsPointer + 1 > this.mDesiredCapacity) {
                 this.resizePool();
             }
-            const objectsListSize = this.objects.length;
+            const objectsListSize = this.mObjects.length;
 
             // Not relying on recycle(T object) because this is more performant.
             for (let i = 0; i < objectsListSize; i++) {
-                const object = this.objects[i];
-                if (object.currentOwnerId != Poolable.NO_OWNER) {
-                    if (object.currentOwnerId == this.poolId) {
-                        throw new Error('The object passed is already stored in this pool!');
+                const object = this.mObjects[i];
+                if (object.currentOwnerId !== Poolable.mNO_OWNER) {
+                    if (object.currentOwnerId === this.mPoolId) {
+                        throw new Error(ALREADY_STORED);
                     } else {
-                        throw new Error('The object to recycle already belongs to poolId ' + object.currentOwnerId + '.  Object cannot belong to two different pool instances simultaneously!');
+                        throw new Error(WRONG_POOL);
                     }
                 }
-                object.currentOwnerId = this.poolId;
-                this.objects[this.objectsPointer + 1 + i] = object;
+                object.currentOwnerId = this.mPoolId;
+                this.mObjects[this.mObjectsPointer + 1 + i] = object;
             }
-            this.objectsPointer += objectsListSize;
+            this.mObjectsPointer += objectsListSize;
         } else {
-            if (object.currentOwnerId != Poolable.NO_OWNER) {
-                if (object.currentOwnerId == this.poolId) {
-                    throw new Error('The object passed is already stored in this pool!');
+            if (object.mCurrentOwnerId !== Poolable.mNO_OWNER) {
+                if (object.mCurrentOwnerId === this.mPoolId) {
+                    throw new Error(ALREADY_STORED);
                 } else {
-                    throw new Error('The object to recycle already belongs to poolId ' + object.currentOwnerId + '.  Object cannot belong to two different pool instances simultaneously!');
+                    throw new Error(WRONG_POOL);
                 }
             }
 
-            this.objectsPointer++;
-            if (this.objectsPointer >= this.objects.length) {
+            this.mObjectsPointer++;
+            if (this.mObjectsPointer >= this.mObjects.length) {
                 this.resizePool();
             }
 
-            object.currentOwnerId = this.poolId;
-            this.objects[this.objectsPointer] = object;
+            object.mCurrentOwnerId = this.mPoolId;
+            this.mObjects[this.mObjectsPointer] = object;
         }
     }
 
     private resizePool() {
-        const oldCapacity = this.desiredCapacity;
-        this.desiredCapacity *= 2;
-        const temp = new Array(this.desiredCapacity);
+        const oldCapacity = this.mDesiredCapacity;
+        this.mDesiredCapacity *= 2;
+        const temp = new Array(this.mDesiredCapacity);
         for (let i = 0; i < oldCapacity; i++) {
-            temp[i] = this.objects[i];
+            temp[i] = this.mObjects[i];
         }
-        this.objects = temp;
+        this.mObjects = temp;
     }
 
     /**
@@ -187,7 +189,7 @@ export class ObjectPool<T extends Poolable> {
      * @return The capacity of the pool.
      */
     public getPoolCapacity() {
-        return this.objects.length;
+        return this.mObjects.length;
     }
 
     /**
@@ -196,6 +198,6 @@ export class ObjectPool<T extends Poolable> {
      * @return The number of objects remaining in the pool.
      */
     public getPoolCount() {
-        return this.objectsPointer + 1;
+        return this.mObjectsPointer + 1;
     }
 }
