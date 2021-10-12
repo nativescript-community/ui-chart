@@ -38,7 +38,7 @@ export default Vue.extend({
         return {
             range: 180,
             count: 45,
-            hardwareAccelerated: false,
+            hardwareAccelerated: true,
         };
     },
     created() {},
@@ -46,10 +46,9 @@ export default Vue.extend({
     methods: {
         onChartLoaded() {
             const chart = this.$refs.chart['nativeView'] as LineChart;
-            chart.drawFameRate = true;
+            chart.drawFrameRate = true;
 
-            chart.backgroundColor = 'white';
-            chart.setLogEnabled(true);
+            // chart.backgroundColor = 'white';
             // disable description text
             // chart.getDescription().setEnabled(false);
 

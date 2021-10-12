@@ -46,9 +46,8 @@ export default Vue.extend({
     methods: {
         onChartLoaded() {
             const chart = this.$refs.chart['nativeView'] as CandleStickChart;
-            chart.drawFameRate = true;
+            chart.drawFrameRate = true;
 
-            // chart.backgroundColor = 'white';
 
             // chart.getDescription().setEnabled(false);
 

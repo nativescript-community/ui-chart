@@ -52,9 +52,8 @@ export default Vue.extend({
     methods: {
         onChartLoaded() {
             const chart = this.$refs.chart['nativeView'] as CombinedChart;
-            chart.drawFameRate = true;
+            chart.drawFrameRate = true;
 
-            chart.backgroundColor = 'white';
             chart.setDrawGridBackground(false);
             chart.setDrawBarShadow(false);
             chart.setHighlightFullBarEnabled(false);

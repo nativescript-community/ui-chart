@@ -46,7 +46,7 @@ export default Vue.extend({
     methods: {
         onChartLoaded() {
             const chart = this.$refs.chart['nativeView'] as ScatterChart;
-            chart.drawFameRate = true;
+            chart.drawFrameRate = true;
 
             // chart.backgroundColor = 'white';
 

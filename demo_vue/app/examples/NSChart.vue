@@ -62,8 +62,7 @@ export default Vue.extend({
     methods: {
         onLoaded() {
             const chart = this.$refs.lineChart['nativeView'] as LineChart;
-            chart.drawFameRate = true;
-            chart.setLogEnabled(true);
+            chart.drawFrameRate = true;
             chart.setScaleEnabled(true);
             chart.setDragEnabled(true);
             // chart.setHardwareAccelerationEnabled(true);

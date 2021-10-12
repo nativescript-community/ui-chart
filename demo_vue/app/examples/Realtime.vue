@@ -41,13 +41,10 @@ export default Vue.extend({
     methods: {
         onChartLoaded() {
             const chart = this.$refs.chart['nativeView'] as LineChart;
-            chart.drawFameRate = true;
-
-            chart.backgroundColor = 'white';
+            chart.drawFrameRate = true;
 
             // disable description text
             // chart.getDescription().setEnabled(false);
-            chart.setLogEnabled(true);
             // enable touch gestures
             chart.setTouchEnabled(true);
 

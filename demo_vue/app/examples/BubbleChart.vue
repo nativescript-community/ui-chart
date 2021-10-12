@@ -45,7 +45,7 @@ export default Vue.extend({
     methods: {
         onChartLoaded() {
             const chart = this.$refs.chart['nativeView'] as BubbleChart;
-            chart.drawFameRate = true;
+            chart.drawFrameRate = true;
 
             // chart.backgroundColor = 'white';
 
