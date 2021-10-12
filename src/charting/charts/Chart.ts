@@ -1,29 +1,25 @@
-import { IDataSet } from '../interfaces/datasets/IDataSet';
-import { DataSet } from '../data/DataSet';
-import { Entry } from '../data/Entry';
-import { ChartData } from '../data/ChartData';
-import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
+import { PanGestureHandlerOptions, PinchGestureHandlerOptions, TapGestureHandlerOptions } from '@nativescript-community/gesturehandler';
 import { Align, Canvas, CanvasView, Paint } from '@nativescript-community/ui-canvas';
-import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
-import { CLog, CLogTypes, Utils } from '../utils/Utils';
-import { Color } from '@nativescript/core/color';
-import { Highlight } from '../highlight/Highlight';
-import { Legend } from '../components/Legend';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { XAxis } from '../components/XAxis';
-import { Description } from '../components/Description';
-import { DataRenderer } from '../renderer/DataRenderer';
-import { IMarker } from '../components/IMarker';
-import { LegendRenderer } from '../renderer/LegendRenderer';
-import { IHighlighter } from '../highlight/IHighlighter';
-import { profile } from '@nativescript/core/profiling';
+import { EventData, Trace } from '@nativescript/core';
+import { layout } from '@nativescript/core/utils/utils';
 import { ChartAnimator, EasingFunction } from '../animation/ChartAnimator';
+import { Description } from '../components/Description';
+import { IMarker } from '../components/IMarker';
+import { Legend } from '../components/Legend';
+import { XAxis } from '../components/XAxis';
+import { ChartData } from '../data/ChartData';
+import { Entry } from '../data/Entry';
+import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
+import { Highlight } from '../highlight/Highlight';
+import { IHighlighter } from '../highlight/IHighlighter';
+import { ChartInterface } from '../interfaces/dataprovider/ChartInterface';
+import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { ViewPortJob } from '../jobs/ViewPortJob';
 import { ChartTouchListener } from '../listener/ChartTouchListener';
-import { layout } from '@nativescript/core/utils/utils';
-import { EventData, Trace } from '@nativescript/core';
-import { addWeakEventListener, removeWeakEventListener } from '@nativescript/core/ui/core/weak-event-listener';
-import { PanGestureHandlerOptions, PinchGestureHandlerOptions, TapGestureHandlerOptions } from '@nativescript-community/gesturehandler';
+import { DataRenderer } from '../renderer/DataRenderer';
+import { LegendRenderer } from '../renderer/LegendRenderer';
+import { CLog, CLogTypes, Utils } from '../utils/Utils';
+import { ViewPortHandler } from '../utils/ViewPortHandler';
 
 const LOG_TAG = 'NSChart';
 
@@ -46,11 +42,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     abstract getYChartMin();
     abstract getYChartMax();
     abstract getMaxVisibleCount();
-
-    /**
-     * flag that indicates if logging is enabled or not
-     */
-    protected mLogEnabled;
 
     /**
      * object that holds all data that was originally set for the chart, before
@@ -176,7 +167,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     /**
      * tasks to be done after the view is setup
      */
-     protected mJobs = [];
+    protected mJobs = [];
 
     /**
      * default constructor for initialization in code
@@ -199,7 +190,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * initialize all paints and stuff
      */
     protected init() {
-        this.mAnimator = new ChartAnimator(() => {
+        this.mAnimator = new ChartAnimator((state) => {
             // during animations we dont need to compute axis things
             this.noComputeOnNextDraw = true;
             this.invalidate();
@@ -919,27 +910,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     }
 
     /**
-     * Set this to true to enable logcat outputs for the chart. Beware that
-     * logcat output decreases rendering performance. Default: disabled.
-     *
-     * @deprecated use Nativescript Trace with ChartTraceCategory
-     * @param enabled
-     */
-    public setLogEnabled(enabled) {
-        this.mLogEnabled = enabled;
-    }
-
-    /**
-     * Returns true if log-output is enabled for the chart, fals if not.
-     *
-     * @deprecated use Nativescript Trace with ChartTraceCategory
-     * @return
-     */
-    public isLogEnabled() {
-        return this.mLogEnabled;
-    }
-
-    /**
      * Sets the text that informs the user that there is no data available with
      * which to draw the chart.
      *
@@ -1303,7 +1273,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     // public saveToGallery(fileName) {
     //     return saveToGallery(fileName, "", "MPAndroidChart-Library Save", Bitmap.CompressFormat.PNG, 40);
     // }
-
 
     public removeViewportJob(job) {
         const index = this.mJobs.indexOf(job);

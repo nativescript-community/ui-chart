@@ -1,15 +1,24 @@
-import TWEEN from '@nativescript-community/tween';
-const Easing = TWEEN.Easing;
-export type EasingFunction = (k: number) => number;
-export { Easing };
-/**
- * Object responsible for all animations in the Chart. Animations require API level 11.
- *
+import { time } from '@nativescript/core/profiling';
+import { AdditiveTweening, EasingFunction } from 'additween';
+export { EasingFunction };
+if (!global.window) {
+    window = global.window = {
+        requestAnimationFrame,
+        cancelAnimationFrame,
+        performance: {
+            now: time
+        }
+    } as any;
+}
 
- */
+function clamp(value) {
+    return Math.min(1, Math.max(0, value));
+}
+
+class Tween<T extends Record<string, number>> extends AdditiveTweening<T> {}
 export class ChartAnimator {
     /** object that is updated upon animation update */
-    private mListener: () => void;
+    private mListener: (state) => void;
 
     /** The phase of drawn values on the y-axis. 0 - 1 */
     protected mPhaseY = 1;
@@ -17,32 +26,33 @@ export class ChartAnimator {
     /** The phase of drawn values on the x-axis. 0 - 1 */
     protected mPhaseX = 1;
 
-    constructor(listener?: () => void) {
+    constructor(listener?: (state) => void) {
         this.mListener = listener;
     }
 
-    private xAnimator(duration, easing: EasingFunction = Easing.Linear.None, listener?: () => void) {
-        return new TWEEN.Tween({ value: 0 })
-            .to({ value: 1 }, duration)
-            .easing(easing)
-            .onUpdate((obj) => {
-                this.setPhaseX(obj.value);
+    private startAnim(duration, easing?: EasingFunction, listener?: (state) => void) {
+        const anim = new Tween({
+            onRender: (state) => {
                 if (listener) {
-                    listener();
+                    listener(state);
                 }
-            });
+            }
+        });
+        anim.tween({ value: 0 }, { value: 1 }, duration);
+        return anim;
+    }
+    private startXAnim(duration, easing?: EasingFunction, listener?: (state) => void) {
+        return this.startAnim(duration, easing, (state) => {
+            this.setPhaseX(state.value);
+            listener?.(state);
+        });
     }
 
-    private yAnimator(duration, easing: EasingFunction = Easing.Linear.None, listener?: () => void) {
-        return new TWEEN.Tween({ value: 0 })
-            .to({ value: 1 }, duration)
-            .easing(easing)
-            .onUpdate((obj) => {
-                this.setPhaseY(obj.value);
-                if (listener) {
-                    listener();
-                }
-            });
+    private startYAnim(duration, easing?: EasingFunction, listener?: (state) => void) {
+        return this.startAnim(duration, easing, (state) => {
+            this.setPhaseY(state.value);
+            listener?.(state);
+        });
     }
 
     /**
@@ -51,9 +61,8 @@ export class ChartAnimator {
      * @param durationMillis animation duration
      * @param easing EasingFunction
      */
-    public animateX(durationMillis, easing: EasingFunction = Easing.Linear.None) {
-        const animatorX = this.xAnimator(durationMillis, easing, this.mListener);
-        animatorX.start(0);
+    public animateX(durationMillis, easing?: EasingFunction) {
+        this.startXAnim(durationMillis, easing, this.mListener);
     }
 
     /**
@@ -64,11 +73,9 @@ export class ChartAnimator {
      * @param easingX EasingFunction for the X axis
      * @param easingY EasingFunction for the Y axis
      */
-    public animateXY(durationMillisX, durationMillisY, easingX: EasingFunction = Easing.Linear.None, easingY: EasingFunction = Easing.Linear.None) {
-        const xAnimator = this.xAnimator(durationMillisX, easingX, durationMillisX > durationMillisY ? this.mListener : undefined);
-        const yAnimator = this.yAnimator(durationMillisY, easingY || easingX, durationMillisX > durationMillisY ? undefined : this.mListener);
-        xAnimator.start(0);
-        yAnimator.start(0);
+    public animateXY(durationMillisX, durationMillisY, easingX?: EasingFunction, easingY?: EasingFunction) {
+        this.startXAnim(durationMillisX, easingX, durationMillisX > durationMillisY ? this.mListener : undefined);
+        this.startYAnim(durationMillisY, easingY || easingX, durationMillisX > durationMillisY ? undefined : this.mListener);
     }
 
     /**
@@ -77,9 +84,8 @@ export class ChartAnimator {
      * @param durationMillis animation duration
      * @param easing EasingFunction
      */
-    public animateY(durationMillis, easing: EasingFunction = Easing.Linear.None) {
-        const animatorY = this.yAnimator(durationMillis, easing, this.mListener);
-        animatorY.start(0);
+    public animateY(durationMillis, easing?: EasingFunction) {
+        this.startYAnim(durationMillis, easing, this.mListener);
     }
 
     /**
@@ -97,12 +103,7 @@ export class ChartAnimator {
      * @param phase let value between 0 - 1
      */
     public setPhaseY(phase) {
-        if (phase > 1) {
-            phase = 1;
-        } else if (phase < 0) {
-            phase = 0;
-        }
-        this.mPhaseY = phase;
+        this.mPhaseY = clamp(phase);
     }
 
     /**
@@ -120,11 +121,6 @@ export class ChartAnimator {
      * @param phase let value between 0 - 1
      */
     public setPhaseX(phase) {
-        if (phase > 1) {
-            phase = 1;
-        } else if (phase < 0) {
-            phase = 0;
-        }
-        this.mPhaseX = phase;
+        this.mPhaseX = clamp(phase);
     }
 }
