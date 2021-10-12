@@ -1,15 +1,13 @@
-import { Tween } from '@tweenjs/tween.js';
-import TWEEN from '@nativescript-community/tween';
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { Transformer } from '../utils/Transformer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ViewPortJob } from './ViewPortJob';
+import { Tween, EasingFunction } from '../animation/Tween';
 
 export interface AnimatorUpdateListener {
     onAnimationUpdate(animation: Tween<any>);
 }
 export interface AnimatorListener {
-    onAnimationStart(animation: Tween<any>);
     onAnimationEnd(animation: Tween<any>);
     onAnimationCancel(animation: Tween<any>);
 }
@@ -31,22 +29,23 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
     }
 
     createAnimator(duration) {
-        this.mAnimator = new TWEEN.Tween<any>({ value: 0 })
-            .to({ value: 1 }, duration)
-            .onStop(() => this.onAnimationCancel(this.mAnimator))
-            .onComplete(() => this.onAnimationEnd(this.mAnimator))
-            .onStart(() => this.onAnimationStart(this.mAnimator))
-            .onUpdate((obj) => {
-                this.mPhase = obj.value;
+        this.mAnimator = new Tween({
+            onRender: (state) => {
+                this.mPhase = state.value;
                 this.onAnimationUpdate(this.mAnimator);
-            });
+            },
+            onFinish: () => this.onAnimationEnd(this.mAnimator),
+            onCancel: () => this.onAnimationCancel(this.mAnimator)
+        });
+        this.mAnimator['duration'] = duration;
     }
 
     public run() {
         if (!this.mAnimator) {
             this.createAnimator(this.duration);
         }
-        this.mAnimator.start();
+        
+        this.mAnimator.tween( { value: 0 }, { value: 1 }, this.mAnimator['duration']);
     }
 
     public getPhase() {
@@ -68,12 +67,7 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
     public abstract recycleSelf();
 
     protected resetAnimator() {
-        this.mAnimator.stop();
-        this.mAnimator.update(0);
-        // this.animator.reset();
-        // this.animator.reverse();
-        // this.animator.addUpdateListener(this);
-        // this.animator.addListener(this);
+        this.mAnimator.cancel();
     }
 
     public onAnimationStart(animation: Tween<any>) {}

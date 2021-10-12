@@ -1,21 +1,9 @@
-import { time } from '@nativescript/core/profiling';
-import { AdditiveTweening, EasingFunction } from 'additween';
-export { EasingFunction };
-if (!global.window) {
-    window = global.window = {
-        requestAnimationFrame,
-        cancelAnimationFrame,
-        performance: {
-            now: time
-        }
-    } as any;
-}
+import { Tween, EasingFunction } from './Tween';
 
 function clamp(value) {
     return Math.min(1, Math.max(0, value));
 }
 
-class Tween<T extends Record<string, number>> extends AdditiveTweening<T> {}
 export class ChartAnimator {
     /** object that is updated upon animation update */
     private mListener: (state) => void;

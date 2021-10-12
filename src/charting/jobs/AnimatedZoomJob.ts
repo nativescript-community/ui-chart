@@ -1,4 +1,3 @@
-import { Matrix } from '@nativescript-community/ui-canvas';
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { YAxis } from '../components/YAxis';
 import { ObjectPool } from '../utils/ObjectPool';
