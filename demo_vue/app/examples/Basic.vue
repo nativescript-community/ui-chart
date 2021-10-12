@@ -5,6 +5,7 @@
             <StackLayout orientation="horizontal">
                 <Button text="redraw" @tap="redraw" />
                 <Button text="reset" @tap="reset" />
+                <Button text="anim" @tap="animate" />
                 <Button text="clear" @tap="clearDataSet" />
             </StackLayout>
         </ActionBar>
@@ -124,7 +125,7 @@ export default Vue.extend({
             this.updateData();
 
             // draw points over time
-            chart.animateX(1500);
+            chart.animateX(1000);
         },
         onChartTap(e) {
             console.log('onChartTap', e.data.extraData, e.highlight);
@@ -132,6 +133,10 @@ export default Vue.extend({
         redraw() {
             const chart = this.$refs.chart['nativeView'] as LineChart;
             chart.invalidate();
+        },
+        animate() {
+            const chart = this.$refs.chart['nativeView'] as LineChart;
+            chart.animateY(1000);
         },
         reset() {
             this.updateData();
@@ -147,6 +152,7 @@ export default Vue.extend({
             const startSVG = new SVG();
             startSVG.src = '~/assets/star.svg';
             startSVG.width = 30;
+            startSVG.cache = true;
             startSVG.height = 30;
             const chart = this.$refs.chart['nativeView'] as LineChart;
             const values = new Array(Math.round(count)).fill(0).map((v, i) => ({
