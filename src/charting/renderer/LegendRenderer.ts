@@ -46,7 +46,7 @@ export class LegendRenderer extends Renderer {
     }
     get labelPaint() {
         if (!this.mLegendLabelPaint) {
-            this.mLegendLabelPaint = Utils.getTemplatePaint('black-stroke');
+            this.mLegendLabelPaint = Utils.getTemplatePaint('black-fill');
             this.mLegendLabelPaint.setTextSize(9);
             this.mLegendLabelPaint.setTextAlign(Align.LEFT);
         }
