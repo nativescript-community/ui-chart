@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Color, Frame, ImageSource } from '@nativescript/core';
+import { Color, Font, Frame, ImageSource } from '@nativescript/core';
 import Vue from 'vue';
 import { LineChart } from '@nativescript-community/ui-chart/charts/LineChart';
 import { LimitLine, LimitLabelPosition } from '@nativescript-community/ui-chart/components/LimitLine';
@@ -32,6 +32,7 @@ import { YAxisLabelPosition, AxisDependency } from '@nativescript-community/ui-c
 import { XAxisPosition } from '@nativescript-community/ui-chart/components/XAxis';
 import { DashPathEffect } from '@nativescript-community/ui-canvas';
 import { SVG } from '@nativescript-community/ui-svg';
+import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 
 export default Vue.extend({
     props: ['title'],
@@ -77,7 +78,9 @@ export default Vue.extend({
 
             // force pinch zoom along both axis
             chart.setPinchZoom(true);
-
+            const legend = chart.getLegend();
+            legend.setEnabled(true);
+            legend.setFont(new Font("serif", 10, FontStyle.ITALIC, FontWeight.EXTRA_LIGHT));
             const xAxis = chart.getXAxis();
 
             // vertical grid lines
