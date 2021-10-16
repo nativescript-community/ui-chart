@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.3](https://github.com/Akylas/nativescript-chart/compare/v1.2.2...v1.2.3) (2021-10-16)
+
+
+### Bug Fixes
+
+* legend drawing “bold” (stroke) ([fa5d7e3](https://github.com/Akylas/nativescript-chart/commit/fa5d7e3a318581933f22b026d6d06e6bc29321d5))
+
+
+
+
+
 ## [1.2.2](https://github.com/Akylas/nativescript-chart/compare/v1.2.1...v1.2.2) (2021-10-12)
 
 
