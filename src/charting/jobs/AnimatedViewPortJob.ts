@@ -2,7 +2,7 @@ import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { Transformer } from '../utils/Transformer';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { ViewPortJob } from './ViewPortJob';
-import { Tween, EasingFunction } from '../animation/Tween';
+import { EasingFunction, Tween } from '../animation/Tween';
 
 export interface AnimatorUpdateListener {
     onAnimationUpdate(animation: Tween<any>);
@@ -44,8 +44,8 @@ export abstract class AnimatedViewPortJob extends ViewPortJob implements Animato
         if (!this.mAnimator) {
             this.createAnimator(this.duration);
         }
-        
-        this.mAnimator.tween( { value: 0 }, { value: 1 }, this.mAnimator['duration']);
+
+        this.mAnimator.tween({ value: 0 }, { value: 1 }, this.mAnimator['duration']);
     }
 
     public getPhase() {

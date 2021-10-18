@@ -511,7 +511,6 @@ export namespace Utils {
         let drawOffsetX = 0;
         let drawOffsetY = 0;
 
-
         // Android does not snap the bounds to line boundaries,
         // and draws from bottom to top.
         // And we want to normalize it.
