@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.4](https://github.com/Akylas/nativescript-chart/compare/v1.2.3...v1.2.4) (2021-10-18)
+
+
+### Bug Fixes
+
+* tween init fix ([ce3171c](https://github.com/Akylas/nativescript-chart/commit/ce3171c18f5530d55ab7e696e81b50b12153e099))
+
+
+
+
+
 ## [1.2.3](https://github.com/Akylas/nativescript-chart/compare/v1.2.2...v1.2.3) (2021-10-16)
 
 
