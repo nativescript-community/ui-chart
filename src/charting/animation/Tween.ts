@@ -13,9 +13,10 @@ if (!global.window) {
     global.window.requestAnimationFrame = requestAnimationFrame;
     global.window.cancelAnimationFrame = cancelAnimationFrame;
     if (!global.window.performance) {
-        global.window.performance= {
+        //@ts-ignore
+        global.window.performance = {
             now: time
-        }
+        };
     }
 }
 
