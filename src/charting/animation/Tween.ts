@@ -9,6 +9,14 @@ if (!global.window) {
             now: time
         }
     } as any;
+} else if (!global.window.requestAnimationFrame) {
+    global.window.requestAnimationFrame = requestAnimationFrame;
+    global.window.cancelAnimationFrame = cancelAnimationFrame;
+    if (!global.window.performance) {
+        global.window.performance= {
+            now: time
+        }
+    }
 }
 
 export class Tween<T extends Record<string, number>> extends AdditiveTweening<T> {}
