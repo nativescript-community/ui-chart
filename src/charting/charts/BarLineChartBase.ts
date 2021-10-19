@@ -195,10 +195,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             if (xEnabled) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
         }
 
-        if (xEnabled) this.mXAxisRenderer.renderAxisLine(canvas);
-        if (leftEnabled) this.mAxisRendererLeft.renderAxisLine(canvas);
-        if (rightEnabled) this.mAxisRendererRight.renderAxisLine(canvas);
-
         if (xEnabled && this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
         if (leftEnabled && this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
         if (rightEnabled && this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
@@ -206,6 +202,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (xLimitEnabled && this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
         if (leftLimitEnabled && this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
         if (rightLimitEnabled && this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+
+        if (xEnabled) this.mXAxisRenderer.renderAxisLine(canvas);
+        if (leftEnabled) this.mAxisRendererLeft.renderAxisLine(canvas);
+        if (rightEnabled) this.mAxisRendererRight.renderAxisLine(canvas);
 
         if (xEnabled && this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
         if (leftEnabled && this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
