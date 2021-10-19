@@ -64,7 +64,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     private mDrawCircleHole = true;
 
-    private mUserColorsForFill = false;
+    private mUseColorsForFill = false;
 
     public useColorsForLine = false;
 
@@ -370,10 +370,10 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     getUseColorsForFill() {
-        return this.mUserColorsForFill;
+        return this.mUseColorsForFill;
     }
 
     setUseColorsForFill(value: boolean) {
-        this.mUserColorsForFill = value;
+        this.mUseColorsForFill = value;
     }
 }

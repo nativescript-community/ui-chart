@@ -50,8 +50,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * List representing all colors that are used for this DataSet
      */
     protected mColors: (string | Color)[] = null;
-
-    private mColorDefault = '#8CEAFF';
+    protected mColor: string | Color = '#8CEAFF';
 
     /**
      * List representing all colors that are used for drawing the actual values for this DataSet
@@ -163,7 +162,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     public getColors(): (string | Color)[] {
         if (this.mColors.length === 0) {
-            return [this.mColorDefault];
+            return [this.mColor];
         }
         return this.mColors;
     }
@@ -176,9 +175,9 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return this.mValueColors;
     }
 
-    public getColor(index = 0) {
-        if (this.mColors.length === 0) {
-            return this.mColorDefault;
+    public getColor(index?) {
+        if (index === undefined || this.mColors.length === 0) {
+            return this.mColor;
         }
         return this.mColors[Math.floor(index) % this.mColors.length];
     }
@@ -200,12 +199,11 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * @param alpha from 0-255
      */
     public setColor(color: string | Color, alpha?: number) {
-        this.resetColors();
         if (alpha !== undefined) {
             const actColor = color instanceof Color ? color : new Color(color);
             color = new Color(actColor.r, actColor.g, actColor.b, alpha);
         }
-        this.mColors.push(color);
+        this.mColor = color;
     }
 
     /**

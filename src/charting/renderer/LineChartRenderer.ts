@@ -233,9 +233,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         const renderPaint = this.renderPaint;
         renderPaint.setStrokeWidth(dataSet.getLineWidth());
         renderPaint.setPathEffect(dataSet.getDashPathEffect());
-        if (dataSet.getNbColors() === 1) {
-            renderPaint.setColor(dataSet.getColor());
-        }
+        renderPaint.setColor(dataSet.getColor());
         renderPaint.setStyle(Style.STROKE);
 
         const scaleX = this.mViewPortHandler.getScaleX();
@@ -559,7 +557,6 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         const colors = dataSet.getColors() as any as { color: string | Color; [k: string]: any }[];
         const nbColors = colors.length;
-        const xKey = dataSet.xProperty;
         const renderPaint = this.renderPaint;
         let paintColorsShader;
         if (nbColors > 1) {
