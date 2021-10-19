@@ -560,7 +560,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         const colors = dataSet.getColors() as any as { color: string | Color; [k: string]: any }[];
         const nbColors = colors.length;
         const xKey = dataSet.xProperty;
-        const useColorsForFill = dataSet.getUseColorsForFill();
         const renderPaint = this.renderPaint;
         let paintColorsShader;
         if (nbColors > 1) {
@@ -570,6 +569,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         let oldShader;
         if (drawFilled) {
+            const useColorsForFill = dataSet.getUseColorsForFill();
             if (paintColorsShader && useColorsForFill) {
                 oldShader = renderPaint.getShader();
                 renderPaint.setShader(paintColorsShader);
@@ -587,13 +587,14 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
 
         if (drawLine) {
-            if (paintColorsShader) {
+            const useColorsForLine = dataSet.useColorsForLine;
+            if (paintColorsShader && useColorsForLine) {
                 oldShader = renderPaint.getShader();
                 renderPaint.setShader(paintColorsShader);
             }
             trans.pathValueToPixel(linePath);
             this.drawPath(c, linePath, renderPaint);
-            if (paintColorsShader) {
+            if (paintColorsShader && useColorsForLine) {
                 renderPaint.setShader(oldShader);
                 oldShader = null;
             }
