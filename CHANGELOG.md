@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.5](https://github.com/Akylas/nativescript-chart/compare/v1.2.4...v1.2.5) (2021-10-19)
+
+
+### Bug Fixes
+
+* added `useColorsForLine` for `LineChartDataSet` ([3545e53](https://github.com/Akylas/nativescript-chart/commit/3545e53f457182ad967c5a027cac68feb09735e6))
+
+
+
+
+
 ## [1.2.4](https://github.com/Akylas/nativescript-chart/compare/v1.2.3...v1.2.4) (2021-10-18)
 
 
