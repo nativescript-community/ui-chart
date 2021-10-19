@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.7](https://github.com/Akylas/nativescript-chart/compare/v1.2.6...v1.2.7) (2021-10-19)
+
+
+### Bug Fixes
+
+* gradient colors support 1 color ([1e9aa18](https://github.com/Akylas/nativescript-chart/commit/1e9aa188d91ce9a1a89130bee68e7cae51d42f7c))
+
+
+
+
+
 ## [1.2.6](https://github.com/Akylas/nativescript-chart/compare/v1.2.5...v1.2.6) (2021-10-19)
 
 
