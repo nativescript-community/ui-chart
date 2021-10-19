@@ -446,10 +446,10 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    getMultiColorsShader(colors: { color: string | Color; [k: string]: any }[], points, trans: Transformer, dataSet: LineDataSet, renderPaint: Paint) {
+    getMultiColorsShader(colors: { color: string | Color; [k: string]: any }[], points, trans: Transformer, dataSet: LineDataSet) {
         const nbColors = colors.length;
         const xKey = dataSet.xProperty;
-        if (nbColors > 1) {
+        if (nbColors > 0) {
             trans.pointValuesToPixel(points);
             const shaderColors = [];
             const positions = [];
@@ -458,7 +458,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             const lastIndex = firstIndex + range;
             const width = this.mViewPortHandler.getChartWidth();
             const chartRect = this.mViewPortHandler.getChartRect();
-            let lastColor, lastColorPosX;
+            let lastColor;
 
             const gradientDelta = 0;
             const posDelta = gradientDelta / width;
@@ -489,17 +489,6 @@ export class LineChartRenderer extends LineRadarRenderer {
                 }
                 const posX = Math.floor(points[(colorIndex - firstIndex) * 2]);
                 const pos = (posX - chartRect.left) / width;
-                // if (posX - lastColorPosX < 3) {
-                //     // ignore too small
-                //     // lastColor = color.color;
-                //     shaderColors.pop();
-                //     shaderColors.pop();
-                //     positions.pop();
-                //     positions.pop();
-                //     lastColor = shaderColors[shaderColors.length -1];
-                //     lastColorPosX = positions[positions.length -1] * width + chartRect.left;
-                //     continue;
-                // }
                 if (lastColor) {
                     if (shaderColors.length === 0) {
                         shaderColors.push(lastColor);
@@ -511,13 +500,16 @@ export class LineChartRenderer extends LineRadarRenderer {
                 shaderColors.push(color.color);
                 positions.push(pos + posDelta);
                 lastColor = color.color;
-                lastColorPosX = posX;
             }
-            if (shaderColors.length > 1) {
-                return new LinearGradient(0, 0, width, 0, shaderColors, positions, TileMode.CLAMP);
-            } else if (shaderColors.length === 1) {
-                renderPaint.setColor(shaderColors[0]);
+            if (shaderColors.length === 0) {
+                shaderColors.push(colors[0].color);
+                positions.push(0);
             }
+            if (shaderColors.length === 1) {
+                shaderColors.push(colors[0].color);
+                positions.push(1);
+            }
+            return new LinearGradient(0, 0, width, 0, shaderColors, positions, TileMode.CLAMP);
         }
         return null;
     }
@@ -559,9 +551,9 @@ export class LineChartRenderer extends LineRadarRenderer {
         const nbColors = colors.length;
         const renderPaint = this.renderPaint;
         let paintColorsShader;
-        if (nbColors > 1) {
+        if (nbColors > 0) {
             // TODO: we transforms points in there. Could be dangerous if used after
-            paintColorsShader = this.getMultiColorsShader(colors, points, trans, dataSet, renderPaint);
+            paintColorsShader = this.getMultiColorsShader(colors, points, trans, dataSet);
         }
 
         let oldShader;
