@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.8](https://github.com/Akylas/nativescript-chart/compare/v1.2.7...v1.2.8) (2021-10-19)
+
+
+### Bug Fixes
+
+* axis should draw above grid lines ([4463982](https://github.com/Akylas/nativescript-chart/commit/4463982606a5d9135c6ed4fbe158c39d3f8d490e))
+
+
+
+
+
 ## [1.2.7](https://github.com/Akylas/nativescript-chart/compare/v1.2.6...v1.2.7) (2021-10-19)
 
 
