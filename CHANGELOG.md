@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.6](https://github.com/Akylas/nativescript-chart/compare/v1.2.5...v1.2.6) (2021-10-19)
+
+
+### Bug Fixes
+
+* allow to user color and colors ([046e501](https://github.com/Akylas/nativescript-chart/commit/046e5014b342b103ef7d41159b5c69cde1149f6a))
+
+
+
+
+
 ## [1.2.5](https://github.com/Akylas/nativescript-chart/compare/v1.2.4...v1.2.5) (2021-10-19)
 
 
