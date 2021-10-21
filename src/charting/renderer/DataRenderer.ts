@@ -43,11 +43,9 @@ export abstract class DataRenderer extends Renderer {
         super(viewPortHandler);
         this.mAnimator = animator;
     }
-    
-    public initBuffers() {
 
-    }
-    
+    public initBuffers() {}
+
     public get renderPaint() {
         if (!this.mRenderPaint) {
             this.mRenderPaint = Utils.getTemplatePaint('black-fill');

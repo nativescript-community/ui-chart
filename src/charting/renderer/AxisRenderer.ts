@@ -62,14 +62,14 @@ export abstract class AxisRenderer extends Renderer {
      */
     get axisLinePaint() {
         if (!this.mAxisLinePaint) {
-            this.mAxisLinePaint = Utils.getTemplatePaint('black-stroke')
+            this.mAxisLinePaint = Utils.getTemplatePaint('black-stroke');
         }
         return this.mAxisLinePaint;
     }
 
     get limitLinePaint() {
         if (!this.mLimitLinePaint) {
-            this.mLimitLinePaint = Utils.getTemplatePaint('black-stroke')
+            this.mLimitLinePaint = Utils.getTemplatePaint('black-stroke');
         }
         return this.mLimitLinePaint;
     }
@@ -167,8 +167,8 @@ export abstract class AxisRenderer extends Renderer {
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
-        if (axis.isGranularityEnabled()) {
-            interval = interval < axis.getGranularity() ? axis.getGranularity() : interval;
+        if (axis.isGranularityEnabled() && interval < axis.getGranularity()) {
+            interval = axis.getGranularity();
         }
 
         // Normalize interval
