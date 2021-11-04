@@ -3,13 +3,14 @@ import NSUIChart, { title as nsUIChartTitle } from './NSUIChart.vue';
 import Basic from './Basic.vue';
 import BubbleChart from './BubbleChart.vue';
 import ScatterPlot from './ScatterPlot.vue';
+import CombinedChart from './CombinedChart.vue';
 import CandleStick from './CandleStickChart.vue';
 import Realtime from './Realtime.vue';
 
 export const getExamples = () =>
     [
-        {  component:NSChart, title: nsChartTitle },
-        {  component:Basic, title: 'Simple line chart.' },
+        { component: NSChart, title: nsChartTitle },
+        { component: Basic, title: 'Simple line chart.' },
         // {  component:Multiple, title: 'Show multiple data sets.' },
         // {  component:Dual Axis, title: 'Line chart with dual y-axes.' },
         // {  component:Inverted Axis, title: 'Inverted y-axis.' },
@@ -33,10 +34,10 @@ export const getExamples = () =>
         // {  component:Half Pie, title: '180° (half) pie chart.' },
 
         // {  component:Combined Chart, title: 'Bar and line chart together.' },
-        {  component:ScatterPlot, title: 'Simple scatter plot.' },
-        {  component:BubbleChart, title: 'Simple bubble chart.' },
-        {  component:CandleStick, title: 'Simple financial chart.' },
-        // {  component:Radar Chart, title: 'Simple web chart.' },
+        { component: ScatterPlot, title: 'Simple scatter plot.' },
+        { component: BubbleChart, title: 'Simple bubble chart.' },
+        { component: CandleStick, title: 'Simple financial chart.' },
+        { component: CombinedChart, title: 'Combined chart.' },
 
         // {  component:Multiple, title: 'Various types of charts as fragments.' },
         // {  component:View Pager, title: 'Swipe through different charts.' },
@@ -47,6 +48,6 @@ export const getExamples = () =>
         // {  component:Even More Line Charts },
 
         // {  component:Dynamic, title: 'Build a line chart by adding points and sets.' },
-        {  component:Realtime, title: 'Add data points in realtime.' },
+        { component: Realtime, title: 'Add data points in realtime.' }
         // {  component:Hourly, title: 'Uses the current time to add a data point for each hour.' }
     ] as any[];
