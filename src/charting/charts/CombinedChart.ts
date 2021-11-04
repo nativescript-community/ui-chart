@@ -102,28 +102,23 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
     }
 
     public getLineData() {
-        if (this.mData == null) return null;
-        return this.mData.getLineData();
+        return this.mData?.getLineData();
     }
 
     public getBarData() {
-        if (this.mData == null) return null;
-        return this.mData.getBarData();
+        return this.mData?.getBarData();
     }
 
     public getScatterData() {
-        if (this.mData == null) return null;
-        return this.mData.getScatterData();
+        return this.mData?.getScatterData();
     }
 
     public getCandleData() {
-        if (this.mData == null) return null;
-        return this.mData.getCandleData();
+        return this.mData?.getCandleData();
     }
 
     public getBubbleData() {
-        if (this.mData == null) return null;
-        return this.mData.getBubbleData();
+        return this.mData?.getBubbleData();
     }
 
     public isDrawBarShadowEnabled() {

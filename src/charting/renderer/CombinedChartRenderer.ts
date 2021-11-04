@@ -19,7 +19,7 @@ export class CombinedChartRenderer extends DataRenderer {
     protected mRenderers: DataRenderer[] = new Array(5);
 
     protected mChart: WeakRef<CombinedChart>;
-    
+
     protected mHighlightBuffer: Highlight[] = [];
 
     constructor(chart: CombinedChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
