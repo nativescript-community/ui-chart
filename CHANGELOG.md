@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.9](https://github.com/Akylas/nativescript-chart/compare/v1.2.8...v1.2.9) (2021-11-04)
+
+
+### Bug Fixes
+
+* bar chart fix in combined chart ([d8bee1a](https://github.com/Akylas/nativescript-chart/commit/d8bee1a5cf00b8558ce4d73064cc350e266ee727))
+* **android:** bar chart fix ([b33b7eb](https://github.com/Akylas/nativescript-chart/commit/b33b7eb9b1085357b0b33f1071f299e01efa5f27))
+
+
+
+
+
 ## [1.2.8](https://github.com/Akylas/nativescript-chart/compare/v1.2.7...v1.2.8) (2021-10-19)
 
 
