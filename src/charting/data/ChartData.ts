@@ -3,6 +3,7 @@ import { AxisDependency } from '../components/YAxis';
 import { IValueFormatter } from '../formatter/IValueFormatter';
 import { Highlight } from '../highlight/Highlight';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
+import { DataSet } from './DataSet';
 
 export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
@@ -271,11 +272,12 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param ignorecase if true, the search is not case-sensitive
      * @return
      */
-    protected getDataSetIndexByLabel(dataSets, label, ignorecase) {
+    protected getDataSetIndexByLabel(dataSets: T[], label: string, ignorecase) {
         if (ignorecase) {
-            for (let i = 0; i < dataSets.length; i++) if (label.equalsIgnoreCase(dataSets[i].getLabel())) return i;
+            const toTest = label.toLowerCase();
+            for (let i = 0; i < dataSets.length; i++) if (toTest === dataSets[i].getLabel()?.toLowerCase()) return i;
         } else {
-            for (let i = 0; i < dataSets.length; i++) if (label.equals(dataSets[i].getLabel())) return i;
+            for (let i = 0; i < dataSets.length; i++) if (label === dataSets[i].getLabel()) return i;
         }
 
         return -1;
