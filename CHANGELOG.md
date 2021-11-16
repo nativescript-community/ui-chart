@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.10](https://github.com/Akylas/nativescript-chart/compare/v1.2.9...v1.2.10) (2021-11-16)
+
+
+### Bug Fixes
+
+* error on getDataSetByLabel ([5bca0d1](https://github.com/Akylas/nativescript-chart/commit/5bca0d11e49737cf5838cb53c3d781b893c0e7ae))
+
+
+
+
+
 ## [1.2.9](https://github.com/Akylas/nativescript-chart/compare/v1.2.8...v1.2.9) (2021-11-04)
 
 
