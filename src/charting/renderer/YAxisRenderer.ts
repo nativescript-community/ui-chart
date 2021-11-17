@@ -20,7 +20,7 @@ export class YAxisRenderer extends AxisRenderer {
     }
 
     get zeroLinePaint() {
-        if (this.mZeroLinePaint) {
+        if (!this.mZeroLinePaint) {
             this.mZeroLinePaint = Utils.getTemplatePaint('gray-stroke');
         }
         return this.mZeroLinePaint;
