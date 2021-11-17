@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.11](https://github.com/Akylas/nativescript-chart/compare/v1.2.10...v1.2.11) (2021-11-17)
+
+
+### Bug Fixes
+
+* zeroLinePaint init error ([3e96d5a](https://github.com/Akylas/nativescript-chart/commit/3e96d5a8235745d3706f896da635edb9f9a63013))
+
+
+
+
+
 ## [1.2.10](https://github.com/Akylas/nativescript-chart/compare/v1.2.9...v1.2.10) (2021-11-16)
 
 

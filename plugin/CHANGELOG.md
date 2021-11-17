@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.11](https://github.com/nativescript-community/ui-chart/compare/v1.2.10...v1.2.11) (2021-11-17)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+
+
+
+
 ## [1.2.10](https://github.com/nativescript-community/ui-chart/compare/v1.2.9...v1.2.10) (2021-11-16)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
