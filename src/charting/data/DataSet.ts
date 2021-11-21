@@ -209,6 +209,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     public clear() {
         this.mValues = [];
         this.notifyDataSetChanged();
+        this.updateGetEntryForIndex();
     }
 
     public addEntry(e: T) {
