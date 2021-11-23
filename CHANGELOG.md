@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.12](https://github.com/Akylas/nativescript-chart/compare/v1.2.11...v1.2.12) (2021-11-23)
+
+
+### Bug Fixes
+
+* circle drawing fix. new `circleHighRes` set property ([0b2a94f](https://github.com/Akylas/nativescript-chart/commit/0b2a94f0e161ec975ffc8d8e39cc1d6cbdfbbb3f))
+
+
+
+
+
 ## [1.2.11](https://github.com/Akylas/nativescript-chart/compare/v1.2.10...v1.2.11) (2021-11-17)
 
 
