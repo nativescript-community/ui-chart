@@ -186,6 +186,12 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     /**
+     * Property definining wheter circles are drawn in high res.
+     * Default true
+     */
+    circleHighRes = true;
+
+    /**
      * Sets the hole radius of the drawn circles.
      * Default radius = 2f, Min = 0.5f
      *

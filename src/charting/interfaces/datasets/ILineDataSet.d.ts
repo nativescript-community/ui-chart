@@ -24,7 +24,6 @@ export interface ILineDataSet extends ILineRadarDataSet<Entry> {
 
     isDrawSteppedEnabled();
 
-
     getUseColorsForFill(): boolean;
     setUseColorsForFill(value: boolean);
 
@@ -32,6 +31,11 @@ export interface ILineDataSet extends ILineRadarDataSet<Entry> {
      * Returns the size of the drawn circles.
      */
     getCircleRadius();
+
+    /**
+     * Defines whether the circle are drawn in high res (better rendering but slower drawing)
+     */
+    circleHighRes: boolean;
 
     /**
      * Returns the hole radius of the drawn circles.

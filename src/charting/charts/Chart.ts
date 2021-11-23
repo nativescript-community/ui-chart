@@ -1108,7 +1108,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      *
      * @param highlighter
      */
-    public setHighlighter(highlighter) {
+    public setHighlighter(highlighter: IHighlighter) {
         this.mHighlighter = highlighter;
     }
 

@@ -711,6 +711,13 @@ export namespace Utils {
         }
         return mTempRectF;
     }
+    let mTempRect: RectF;
+    export function getTempRect() {
+        if (!mTempRect) {
+            mTempRect = new Rect(0, 0, 0, 0);
+        }
+        return mTempRect;
+    }
     let mTempPath: Path;
     export function getTempPath() {
         if (!mTempPath) {

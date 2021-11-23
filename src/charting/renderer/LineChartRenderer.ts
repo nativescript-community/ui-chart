@@ -1,5 +1,5 @@
 import { Canvas, Direction, FillType, LinearGradient, Matrix, Paint, Path, Style, TileMode, TypedArray, createImage, releaseImage } from '@nativescript-community/ui-canvas';
-import { Color, ImageSource, profile } from '@nativescript/core';
+import { Color, ImageSource, Screen, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { LineChart } from '../charts';
 import { Rounding } from '../data/DataSet';
@@ -106,11 +106,11 @@ export class DataSetImageCache {
         const colorCount = set.getCircleColorCount();
         const circleRadius = set.getCircleRadius();
         const circleHoleRadius = set.getCircleHoleRadius();
+        const scale = set.circleHighRes ? Screen.mainScreen.scale : 1;
 
         for (let i = 0; i < colorCount; i++) {
-            const circleBitmap = createImage({ width: circleRadius * 2.1, height: circleRadius * 2.1, scale: 1 });
-
-            const canvas = new Canvas(circleBitmap);
+            const canvas = new Canvas(Math.round(circleRadius * 2 * scale), Math.round(circleRadius * 2 * scale));
+            canvas.scale(scale, scale);
             renderPaint.setColor(set.getCircleColor(i));
 
             if (drawTransparentCircleHole) {
@@ -122,7 +122,7 @@ export class DataSetImageCache {
                 circlePathBuffer.addCircle(circleRadius, circleRadius, circleRadius, Direction.CW);
 
                 // Cut hole in path
-                circlePathBuffer.addCircle(circleRadius, circleRadius, circleHoleRadius, Direction.CW);
+                circlePathBuffer.addCircle(circleRadius, circleRadius, circleHoleRadius, Direction.CCW);
 
                 // Fill in-between
                 canvas.drawPath(circlePathBuffer, renderPaint);
@@ -131,7 +131,7 @@ export class DataSetImageCache {
                 canvas.drawCircle(circleRadius, circleRadius, circleRadius, renderPaint);
 
                 if (drawCircleHole) {
-                    canvas.drawCircle(circleRadius, circleRadius, circleHoleRadius, circlePaintInner);
+                    canvas.drawCircle(circleRadius, circleRadius, circleHoleRadius - 2, circlePaintInner);
                 }
             }
             this.circleBitmaps[i] = canvas.getImage();
@@ -194,7 +194,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     get circlePaintInner() {
         if (!this.mCirclePaintInner) {
-            this.mCirclePaintInner = Utils.getTemplatePaint('white-stroke');
+            this.mCirclePaintInner = Utils.getTemplatePaint('white-fill');
         }
         return this.mCirclePaintInner;
     }
@@ -720,6 +720,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         const boundsRangeCount = this.mXBounds.range + this.mXBounds.min;
         const circleBuffer = Utils.getTempArray(2);
+        const destRect = Utils.getTempRectF();
         for (let j = this.mXBounds.min; j <= boundsRangeCount; j++) {
             const e = dataSet.getEntryForIndex(j);
 
@@ -741,7 +742,8 @@ export class LineChartRenderer extends LineRadarRenderer {
             const circleBitmap = imageCache.getBitmap(j);
 
             if (circleBitmap != null) {
-                c.drawBitmap(circleBitmap, cx - circleRadius, cy - circleRadius, null);
+                destRect.set(cx - circleRadius, cy - circleRadius, cx - circleRadius + 2 * circleRadius, cy - circleRadius + 2 * circleRadius);
+                c.drawBitmap(circleBitmap, null, destRect, null);
             }
         }
     }
