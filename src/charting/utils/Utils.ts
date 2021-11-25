@@ -741,8 +741,9 @@ export namespace Utils {
     }
     const mTemplatePaints: { [k: string]: Paint } = {};
     export function getTemplatePaint(template: string) {
-        if (mTemplatePaints[template]) {
-            return new Paint(mTemplatePaints[template]);
+        const cached = mTemplatePaints[template];
+        if (cached) {
+            return new Paint(cached);
         }
         let paint: Paint;
         switch (template) {
@@ -789,7 +790,7 @@ export namespace Utils {
             }
         }
         mTemplatePaints[template] = paint;
-        return paint;
+        return new Paint(paint);
     }
 
     export function clipPathSupported() {
