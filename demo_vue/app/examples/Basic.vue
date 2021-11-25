@@ -90,14 +90,20 @@ export default Vue.extend({
 
             // disable dual axis (only use LEFT axis)
             chart.getAxisRight().setEnabled(false);
-
+    yAxis.setAxisLineWidth(3);
+    yAxis.setAxisLineColor('blue');
             // horizontal grid lines
-            yAxis.enableGridDashedLine(10, 10, 0);
+            yAxis.enableGridDashedLine(10, 30, 0);
 
             // axis range
             yAxis.setAxisMaximum(200);
             yAxis.setAxisMinimum(-50);
 
+            const rightAxis = chart.getAxisRight();
+            rightAxis.setEnabled(true);
+    rightAxis.setAxisLineColor('red');
+    rightAxis.setAxisLineWidth(2);
+    rightAxis.setDrawGridLines(false)
             const llXAxis = new LimitLine(9, 'Index 10');
             llXAxis.setLineWidth(4);
             llXAxis.enableDashedLine(10, 10, 0);
