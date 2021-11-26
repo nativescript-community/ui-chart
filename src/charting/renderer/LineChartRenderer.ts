@@ -131,7 +131,7 @@ export class DataSetImageCache {
                 canvas.drawCircle(circleRadius, circleRadius, circleRadius, renderPaint);
 
                 if (drawCircleHole) {
-                    canvas.drawCircle(circleRadius, circleRadius, circleHoleRadius - 2, circlePaintInner);
+                    canvas.drawCircle(circleRadius, circleRadius, circleHoleRadius, circlePaintInner);
                 }
             }
             this.circleBitmaps[i] = canvas.getImage();
