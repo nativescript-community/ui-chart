@@ -269,9 +269,9 @@ export class PieChartRenderer extends DataRenderer {
             // Android API < 21 does not receive floats in addArc, but a RectF
 
             if (drawInnerArc && (innerRadius > 0 || accountForSliceSpacing)) {
-            const innerRectBuffer = Utils.getTempRectF()
-            innerRectBuffer.set(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius);
-            if (accountForSliceSpacing) {
+                const innerRectBuffer = Utils.getTempRectF();
+                innerRectBuffer.set(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius);
+                if (accountForSliceSpacing) {
                     let minSpacedRadius = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY, arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter);
 
                     if (minSpacedRadius < 0) {
@@ -785,10 +785,9 @@ export class PieChartRenderer extends DataRenderer {
                 );
             }
 
-
             if (drawInnerArc && (innerRadius > 0 || accountForSliceSpacing)) {
                 // Android API < 21 does not receive floats in addArc, but a RectF
-                const innerRectBuffer = Utils.getTempRectF()
+                const innerRectBuffer = Utils.getTempRectF();
                 innerRectBuffer.set(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius);
                 if (accountForSliceSpacing) {
                     let minSpacedRadius = sliceSpaceRadius;
