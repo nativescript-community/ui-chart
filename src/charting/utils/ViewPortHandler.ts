@@ -378,7 +378,6 @@ export class ViewPortHandler {
      * @param matrix
      */
     public limitTransAndScale(matrix: Matrix, content: Rect) {
-        // TODO: native buffer to be optimized (or rewrite matrix!)
         if (!this.mMatrixBuffer) {
             this.mMatrixBuffer = Utils.createArrayBufferOrNativeArray(9);
         }
