@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.15](https://github.com/Akylas/nativescript-chart/compare/v1.2.14...v1.2.15) (2022-04-07)
+
+
+### Bug Fixes
+
+* bring back colors templates ([8bd61af](https://github.com/Akylas/nativescript-chart/commit/8bd61afb06574601c53b4111e9b147b7f6381ef1))
+* line chart custom renderer fix ([f63073b](https://github.com/Akylas/nativescript-chart/commit/f63073b0bc10573cd6ed7a1b6759e2c61b3e806e))
+* **android:** candleStick chart fix ([b140ce9](https://github.com/Akylas/nativescript-chart/commit/b140ce95766b571c72c364a744014a9ffe9b0b05))
+
+
+
+
+
 ## [1.2.14](https://github.com/Akylas/nativescript-chart/compare/v1.2.13...v1.2.14) (2021-11-30)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
