@@ -574,6 +574,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 oldShader = null;
             }
         }
+        const customRender = this.mChart.getCustomRenderer();
 
         if (drawLine) {
             const useColorsForLine = dataSet.useColorsForLine;
@@ -582,7 +583,11 @@ export class LineChartRenderer extends LineRadarRenderer {
                 renderPaint.setShader(paintColorsShader);
             }
             trans.pathValueToPixel(linePath);
-            this.drawPath(c, linePath, renderPaint);
+            if (customRender?.drawLine) {
+                customRender.drawLine(c, linePath, renderPaint);
+            } else {
+                this.drawPath(c, linePath, renderPaint);
+            }
             if (paintColorsShader && useColorsForLine) {
                 renderPaint.setShader(oldShader);
                 oldShader = null;
