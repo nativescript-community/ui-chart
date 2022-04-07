@@ -1,4 +1,4 @@
-import { Color } from '@nativescript/core/color';
+import { Color } from '@nativescript/core';
 
 /**
  * Class that holds predefined color integer arrays (e.g.
@@ -18,6 +18,26 @@ export class ColorTemplate {
      * form should be skipped
      */
     public static COLOR_SKIP = new Color(0x00112234);
+
+    static get LIBERTY_COLORS() {
+        return require('/colors/liberty').colors;
+    }
+    static get JOYFUL_COLORS() {
+        return require('/colors/joyful').colors;
+    }
+    static get PASTEL_COLORS() {
+        return require('/colors/pastel').colors;
+    }
+    static get COLORFUL_COLORS() {
+        return require('/colors/colorful').colors;
+    }
+    static get VORDIPLOM_COLORS() {
+        return require('/colors/vordiplom').colors;
+    }
+    static get MATERIAL_COLORS() {
+        return require('/colors/material').colors;
+    }
+
     /**
      * Returns the Android ICS holo blue light color.
      *
