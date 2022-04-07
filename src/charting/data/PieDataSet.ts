@@ -6,7 +6,7 @@ import { Utils } from '../utils/Utils';
 
 export enum ValuePosition {
     INSIDE_SLICE,
-    OUTSIDE_SLICE,
+    OUTSIDE_SLICE
 }
 export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     /**

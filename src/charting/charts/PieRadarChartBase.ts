@@ -176,9 +176,9 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
         }
 
         let minOffset = this.mMinOffset;
-        
+
         // detect PieChart while preventing circular dep
-        if (!(this['mCircleBox'])) {
+        if (!this['mCircleBox']) {
             const x = this.getXAxis();
 
             if (x.isEnabled() && x.isDrawLabelsEnabled()) {
