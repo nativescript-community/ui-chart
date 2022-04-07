@@ -5,6 +5,7 @@ import BubbleChart from './BubbleChart.vue';
 import ScatterPlot from './ScatterPlot.vue';
 import CombinedChart from './CombinedChart.vue';
 import CandleStick from './CandleStickChart.vue';
+import PieChart from './PieChart.vue';
 import Realtime from './Realtime.vue';
 
 export const getExamples = () =>
@@ -38,6 +39,7 @@ export const getExamples = () =>
         { component: BubbleChart, title: 'Simple bubble chart.' },
         { component: CandleStick, title: 'Simple financial chart.' },
         { component: CombinedChart, title: 'Combined chart.' },
+        { component: PieChart, title: 'Pie chart.' },
 
         // {  component:Multiple, title: 'Various types of charts as fragments.' },
         // {  component:View Pager, title: 'Swipe through different charts.' },
