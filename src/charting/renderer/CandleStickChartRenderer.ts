@@ -1,4 +1,4 @@
-import { Canvas, Style } from '@nativescript-community/ui-canvas';
+import { Canvas, Style, TypedArray } from '@nativescript-community/ui-canvas';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { CandleStickChart } from '../charts';
 import { CandleDataSet } from '../data/CandleDataSet';
@@ -11,6 +11,7 @@ import { LineScatterCandleRadarRenderer } from './LineScatterCandleRadarRenderer
 
 export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     mChart: CandleStickChart;
+    mShadowBuffer: TypedArray;
 
     constructor(chart: CandleStickChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
@@ -56,7 +57,10 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
             if (showCandleBar) {
                 // calculate the shadow
-                const shadowBuffers = Utils.getTempArray(8);
+                if (!this.mShadowBuffer) {
+                    this.mShadowBuffer = Utils.createArrayBuffer(8);
+                }
+                const shadowBuffers = this.mShadowBuffer;
                 shadowBuffers[0] = xPos;
                 shadowBuffers[2] = xPos;
                 shadowBuffers[4] = xPos;
@@ -94,10 +98,17 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                 renderPaint.setStyle(Style.STROKE);
 
-                if (customRender && customRender.drawShadows) {
-                    customRender.drawShadows(c, e, shadowBuffers, renderPaint);
+                const linePath = Utils.getTempPath();
+                const points = Utils.pointsFromBuffer(shadowBuffers);
+                if (global.isAndroid && Utils.supportsDirectArrayBuffers()) {
+                    linePath['setLinesBuffer'](points);
                 } else {
-                    c.drawLines(Utils.arrayToNativeArray(shadowBuffers, false, false), renderPaint);
+                    linePath.setLines(points as number[]);
+                }
+                if (customRender?.drawShadows) {
+                    customRender.drawShadows(c, e, linePath, renderPaint);
+                } else {
+                    c.drawPath(linePath, renderPaint);
                 }
 
                 // calculate the body
@@ -156,9 +167,9 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                     }
                 }
             } else {
-                const rangeBuffers = Utils.getTempArray(4, false, true);
-                const openBuffers = Utils.getTempArray(4, false, true, '1');
-                const closeBuffers = Utils.getTempArray(4, false, true, '2');
+                const rangeBuffers = Utils.getTempArray(4, false, false);
+                const openBuffers = Utils.getTempArray(4, false, false, '1');
+                const closeBuffers = Utils.getTempArray(4, false, false, '2');
                 rangeBuffers[0] = xPos;
                 rangeBuffers[1] = high * phaseY;
                 rangeBuffers[2] = xPos;
@@ -194,9 +205,6 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                     c.drawLines(Utils.arrayToNativeArray(openBuffers, false, false), renderPaint);
                     c.drawLines(Utils.arrayToNativeArray(closeBuffers, false, false), renderPaint);
                 }
-
-                // c.drawLine(openBuffers[0], openBuffers[1], openBuffers[2], openBuffers[3], renderPaint);
-                // c.drawLine(closeBuffers[0], closeBuffers[1], closeBuffers[2], closeBuffers[3], renderPaint);
             }
         }
     }
