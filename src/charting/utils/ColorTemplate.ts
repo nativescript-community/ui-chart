@@ -20,22 +20,22 @@ export class ColorTemplate {
     public static COLOR_SKIP = new Color(0x00112234);
 
     static get LIBERTY_COLORS() {
-        return require('/colors/liberty').colors;
+        return require('./colors/liberty').colors;
     }
     static get JOYFUL_COLORS() {
-        return require('/colors/joyful').colors;
+        return require('./colors/joyful').colors;
     }
     static get PASTEL_COLORS() {
-        return require('/colors/pastel').colors;
+        return require('./colors/pastel').colors;
     }
     static get COLORFUL_COLORS() {
-        return require('/colors/colorful').colors;
+        return require('./colors/colorful').colors;
     }
     static get VORDIPLOM_COLORS() {
-        return require('/colors/vordiplom').colors;
+        return require('./colors/vordiplom').colors;
     }
     static get MATERIAL_COLORS() {
-        return require('/colors/material').colors;
+        return require('./colors/material').colors;
     }
 
     /**
