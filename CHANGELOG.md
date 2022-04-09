@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.17](https://github.com/Akylas/nativescript-chart/compare/v1.2.16...v1.2.17) (2022-04-09)
+
+
+### Features
+
+* allow to change LimitLine `limit` ([5432e9d](https://github.com/Akylas/nativescript-chart/commit/5432e9d14e2ffcd9ce4adadb805c0ce5b168139f))
+
+
+
+
+
 ## [1.2.16](https://github.com/Akylas/nativescript-chart/compare/v1.2.15...v1.2.16) (2022-04-08)
 
 
