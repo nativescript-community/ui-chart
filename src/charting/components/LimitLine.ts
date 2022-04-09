@@ -64,6 +64,15 @@ export class LimitLine extends ComponentBase {
     }
 
     /**
+     * Update/change the limit that is set for this line.
+     *
+     * @return
+     */
+    public setLimit(value) {
+        this.mLimit = value;
+    }
+
+    /**
      * set the line width of the chart (min = 0.2f, max = 12f); default 2f NOTE:
      * thinner line == better performance, thicker line == worse performance
      *
