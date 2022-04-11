@@ -183,4 +183,9 @@ export abstract class ComponentBase {
     public isEnabled() {
         return this.mEnabled;
     }
+
+    /**
+     * Defines if the renderer should ensure we always see the component fully
+     */
+    public ensureVisible = false;
 }

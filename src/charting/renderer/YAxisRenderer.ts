@@ -311,40 +311,85 @@ export class YAxisRenderer extends AxisRenderer {
                 paint.setFont(l.getFont());
                 paint.setStrokeWidth(0.5);
 
-                const labelLineHeight = Utils.calcTextHeight(paint, label);
-                const xOffset = 4 + l.getXOffset();
-                const yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset();
+                let size = Utils.calcTextSize(paint, label);
+                const xOffset = l.getXOffset();
+                const yOffset = l.getLineWidth() + size.height + l.getYOffset();
 
                 const position = l.getLabelPosition();
+                const needsSize = l.ensureVisible;
+
+                if (needsSize) {
+                    size = Utils.calcTextSize(paint, label);
+                }
                 switch (position) {
                     case LimitLabelPosition.RIGHT_TOP: {
                         paint.setTextAlign(Align.RIGHT);
-                        c.drawText(label, rect.right - xOffset, pts[1] - yOffset + labelLineHeight, paint);
+                        const x = rect.right - xOffset;
+                        let y = pts[1] - yOffset + size.height;
+                        if (l.ensureVisible && y < size.height) {
+                            y -= size.height;
+                        }
+                        c.drawText(label, x, y, paint);
                         break;
                     }
                     case LimitLabelPosition.RIGHT_BOTTOM: {
                         paint.setTextAlign(Align.RIGHT);
-                        c.drawText(label, rect.right - xOffset, pts[1] + yOffset, paint);
+                        const x = rect.right - xOffset;
+                        let y = pts[1] - yOffset;
+
+                        if (l.ensureVisible && y > rect.bottom - size.height) {
+                            y += size.height;
+                        }
+                        c.drawText(label, x, y, paint);
                         break;
                     }
                     case LimitLabelPosition.CENTER_TOP: {
-                        paint.setTextAlign(Align.RIGHT);
-                        c.drawText(label, rect.right, pts[1] - yOffset + labelLineHeight, paint);
+                        const x = rect.right - xOffset;
+                        let y = pts[1] - yOffset + size.height;
+
+                        if (l.ensureVisible && y < size.height) {
+                            y -= size.height;
+                        }
+                        c.drawText(label, x, y, paint);
+                        c.drawText(label, rect.right, pts[1] - yOffset + size.height, paint);
                         break;
                     }
                     case LimitLabelPosition.CENTER_BOTTOM: {
                         paint.setTextAlign(Align.CENTER);
+                        const x = rect.right - xOffset;
+                        let y = pts[1] - yOffset;
+
+                        if (l.ensureVisible && y > rect.bottom - size.height) {
+                            y += size.height;
+                        }
+                        c.drawText(label, x, y, paint);
                         c.drawText(label, rect.right, pts[1] + yOffset, paint);
                         break;
                     }
                     case LimitLabelPosition.LEFT_TOP: {
-                        paint.setTextAlign(Align.LEFT);
-                        c.drawText(label, rect.left + xOffset, pts[1] - yOffset + labelLineHeight, paint);
+                        const x = offsetLeft + xOffset;
+                        let y = pts[1] - yOffset + size.height;
+                        if (l.ensureVisible && x > rect.right - size.width) {
+                            paint.setTextAlign(Align.RIGHT);
+                        }
+                        if (l.ensureVisible && y < size.height) {
+                            y -= size.height;
+                        }
+                        c.drawText(label, x, y, paint);
                         break;
                     }
                     case LimitLabelPosition.LEFT_BOTTOM: {
                         paint.setTextAlign(Align.LEFT);
-                        c.drawText(label, offsetLeft + xOffset, pts[1] + yOffset, paint);
+                        const x = offsetLeft + xOffset;
+                        let y = pts[1] + yOffset;
+                        if (l.ensureVisible && x > rect.right - size.width) {
+                            paint.setTextAlign(Align.RIGHT);
+                        }
+                        if (l.ensureVisible && y > rect.bottom - size.height) {
+                            y += size.height;
+                        }
+                        c.drawText(label, x, y, paint);
+                        c.drawText(label, x, y, paint);
                         break;
                     }
                 }

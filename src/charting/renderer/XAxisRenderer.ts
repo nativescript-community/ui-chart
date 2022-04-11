@@ -197,7 +197,7 @@ export class XAxisRenderer extends AxisRenderer {
                 if (!label) {
                     continue;
                 }
-                if (axis.isAvoidFirstLastClippingEnabled()) {
+                if (axis.isAvoidFirstLastClippingEnabled() || axis.ensureVisible) {
                     // avoid clipping of the last
                     if (i / 2 === entryCount - 1 && entryCount > 1) {
                         const width = Utils.calcTextWidth(paint, label);
@@ -209,7 +209,11 @@ export class XAxisRenderer extends AxisRenderer {
                         // avoid clipping of the first
                     } else if (i === 0) {
                         const width = Utils.calcTextWidth(paint, label);
-                        x += width / 2;
+                        if (paint.getTextAlign() === Align.CENTER) {
+                            x += width / 2;
+                        } else if (paint.getTextAlign() === Align.RIGHT) {
+                            x += width;
+                        }
                     }
                 }
                 this.drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees, paint);
@@ -358,7 +362,7 @@ export class XAxisRenderer extends AxisRenderer {
             if (lineWidth > 0) {
                 this.renderLimitLineLine(c, l, rect, position[0], customRenderFunction);
             }
-            this.renderLimitLineLabel(c, l, position, 2 + l.getYOffset());
+            this.renderLimitLineLabel(c, l, position, l.getYOffset());
 
             if (clipToContent) {
                 c.restore();
@@ -394,39 +398,73 @@ export class XAxisRenderer extends AxisRenderer {
             const xOffset = limitLine.getLineWidth() + limitLine.getXOffset();
 
             const labelPosition = limitLine.getLabelPosition();
+            const needsSize =
+                limitLine.ensureVisible || labelPosition === LimitLabelPosition.CENTER_TOP || labelPosition === LimitLabelPosition.RIGHT_TOP || labelPosition === LimitLabelPosition.LEFT_TOP;
+            let size: { width: number; height: number };
+
+            if (needsSize) {
+                size = Utils.calcTextSize(paint, label);
+            }
 
             switch (labelPosition) {
                 case LimitLabelPosition.CENTER_TOP: {
-                    const labelLineHeight = Utils.calcTextHeight(paint, label);
                     paint.setTextAlign(Align.CENTER);
-                    c.drawText(label, position[0], rect.top + yOffset + labelLineHeight, paint);
+                    let x = position[0];
+                    if (limitLine.ensureVisible) {
+                        x = Math.max(size.width / 2, Math.min(rect.right - size.width / 2, x));
+                    }
+                    c.drawText(label, x, rect.top + yOffset + size.height, paint);
                     break;
                 }
                 case LimitLabelPosition.CENTER_BOTTOM: {
                     paint.setTextAlign(Align.CENTER);
-                    c.drawText(label, position[0], rect.bottom - yOffset, paint);
+                    let x = position[0];
+                    if (limitLine.ensureVisible) {
+                        x = Math.max(size.width / 2, Math.min(rect.right - size.width / 2, x));
+                    }
+                    c.drawText(label, x, rect.bottom - yOffset, paint);
                     break;
                 }
                 case LimitLabelPosition.RIGHT_TOP: {
-                    const labelLineHeight = Utils.calcTextHeight(paint, label);
                     paint.setTextAlign(Align.LEFT);
-                    c.drawText(label, position[0] + xOffset, rect.top + yOffset + labelLineHeight, paint);
+                    let x = position[0] + xOffset;
+                    if (limitLine.ensureVisible && x > rect.right - size.width) {
+                        x = position[0] - xOffset;
+                        paint.setTextAlign(Align.RIGHT);
+                    }
+                    c.drawText(label, x, rect.top + yOffset + size.height, paint);
                     break;
                 }
                 case LimitLabelPosition.RIGHT_BOTTOM: {
                     paint.setTextAlign(Align.LEFT);
-                    c.drawText(label, position[0] + xOffset, rect.bottom - yOffset, paint);
+                    let x = position[0] + xOffset;
+                    if (limitLine.ensureVisible && x > rect.right - size.width) {
+                        x = position[0] - xOffset;
+                        paint.setTextAlign(Align.RIGHT);
+                    }
+                    c.drawText(label, x, rect.bottom - yOffset, paint);
                     break;
                 }
                 case LimitLabelPosition.LEFT_TOP: {
                     paint.setTextAlign(Align.RIGHT);
-                    const labelLineHeight = Utils.calcTextHeight(paint, label);
-                    c.drawText(label, position[0] - xOffset, rect.top + yOffset + labelLineHeight, paint);
+                    let x = position[0] - xOffset;
+
+                    if (limitLine.ensureVisible && x < size.width) {
+                        x = position[0] + xOffset;
+                        paint.setTextAlign(Align.LEFT);
+                    }
+                    c.drawText(label, x, rect.top + yOffset + size.height, paint);
                     break;
                 }
                 case LimitLabelPosition.LEFT_BOTTOM: {
                     paint.setTextAlign(Align.RIGHT);
-                    c.drawText(label, position[0] - xOffset, rect.bottom - yOffset, paint);
+                    let x = position[0] - xOffset;
+
+                    if (limitLine.ensureVisible && x < size.width) {
+                        x = position[0] + xOffset;
+                        paint.setTextAlign(Align.LEFT);
+                    }
+                    c.drawText(label, x, rect.bottom - yOffset, paint);
                     break;
                 }
             }
