@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.18](https://github.com/Akylas/nativescript-chart/compare/v1.2.17...v1.2.18) (2022-04-11)
+
+
+### Features
+
+* ensureVisible option for Axis and LimitLine ([8142a04](https://github.com/Akylas/nativescript-chart/commit/8142a044c7232fdc57a803b8eeebead91f6ef616))
+
+
+
+
+
 ## [1.2.17](https://github.com/Akylas/nativescript-chart/compare/v1.2.16...v1.2.17) (2022-04-09)
 
 
