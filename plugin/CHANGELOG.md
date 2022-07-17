@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.19](https://github.com/nativescript-community/ui-chart/compare/v1.2.18...v1.2.19) (2022-07-17)
+
+
+### Bug Fixes
+
+* fix for latest canvas plugin ([f418d10](https://github.com/nativescript-community/ui-chart/commit/f418d10486ad40e3da4397ce2881c4bd4cd84116))
+
+
+
+
+
 ## [1.2.18](https://github.com/nativescript-community/ui-chart/compare/v1.2.17...v1.2.18) (2022-04-11)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart
