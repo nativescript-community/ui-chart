@@ -201,9 +201,9 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 if (customRender && customRender.drawLines) {
                     customRender.drawLines(c, e, rangeBuffers, openBuffers, closeBuffers, renderPaint);
                 } else {
-                    c.drawLines(Utils.arrayToNativeArray(rangeBuffers, false, false), renderPaint);
-                    c.drawLines(Utils.arrayToNativeArray(openBuffers, false, false), renderPaint);
-                    c.drawLines(Utils.arrayToNativeArray(closeBuffers, false, false), renderPaint);
+                    c.drawLines(Utils.pointsFromBuffer(rangeBuffers, false, false) as number[], renderPaint);
+                    c.drawLines(Utils.pointsFromBuffer(openBuffers, false, false) as number[], renderPaint);
+                    c.drawLines(Utils.pointsFromBuffer(closeBuffers, false, false) as number[], renderPaint);
                 }
             }
         }

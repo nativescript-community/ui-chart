@@ -1,14 +1,5 @@
+import { Align, Canvas, FontMetrics, Matrix, Paint, Path, Rect, RectF, StaticLayout, Style } from '@nativescript-community/ui-canvas';
 import {
-    Align,
-    Canvas,
-    FontMetrics,
-    Matrix,
-    Paint,
-    Path,
-    Rect,
-    RectF,
-    StaticLayout,
-    Style,
     TypedArray,
     arrayToNativeArray as arrayToNativeArrayFn,
     createArrayBuffer as createArrayBufferFn,
@@ -17,7 +8,7 @@ import {
     nativeArrayToArray as nativeArrayToArrayFn,
     pointsFromBuffer as pointsFromBufferFn,
     supportsDirectArrayBuffers as supportsDirectArrayBuffersFn
-} from '@nativescript-community/ui-canvas';
+} from '@nativescript-community/arraybuffers';
 import Shape from '@nativescript-community/ui-canvas/shapes/shape';
 import { Color, ImageSource, ObservableArray, Trace } from '@nativescript/core';
 import { Screen } from '@nativescript/core/platform';
@@ -691,16 +682,16 @@ export namespace Utils {
     export const nativeArrayToArray = nativeArrayToArrayFn;
     export const arrayToNativeArray = arrayToNativeArrayFn;
 
-    const mTempArrays: { [k: string]: number[] | TypedArray } = {};
+    const mTempArrays: { [k: string]: TypedArray } = {};
     export function getTempArray(length, useInts = false, canReturnBuffer = true, optKey?: string) {
-        let key = length + '' + useInts;
+        let key = length + '' + useInts + '' + canReturnBuffer;
         if (optKey) {
             key += optKey;
         }
         if (mTempArrays[key]) {
             return mTempArrays[key];
         }
-        const buf = (mTempArrays[key] = createArrayBufferOrNativeArray(length, useInts, canReturnBuffer));
+        const buf = (mTempArrays[key] = createArrayBuffer(length, useInts, canReturnBuffer));
         return buf;
     }
 

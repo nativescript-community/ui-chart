@@ -379,7 +379,7 @@ export class ViewPortHandler {
      */
     public limitTransAndScale(matrix: Matrix, content: Rect) {
         if (!this.mMatrixBuffer) {
-            this.mMatrixBuffer = Utils.createArrayBufferOrNativeArray(9);
+            this.mMatrixBuffer = Utils.createArrayBuffer(9);
         }
         const matrixBuffer = this.mMatrixBuffer;
         matrix.getValues(matrixBuffer);
