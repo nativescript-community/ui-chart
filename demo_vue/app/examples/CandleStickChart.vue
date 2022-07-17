@@ -122,8 +122,8 @@ export default Vue.extend({
 
             set1.setDrawIcons(false);
             set1.setAxisDependency(AxisDependency.LEFT);
-            //        set1.setColor(Color.rgb(80, 80, 80));
             set1.setShadowColor('darkgray');
+            // set1.setShowCandleBar(false);
             set1.setShadowWidth(0.7);
             set1.setDecreasingColor('red');
             set1.setDecreasingPaintStyle(Style.FILL);
