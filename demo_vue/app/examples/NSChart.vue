@@ -240,7 +240,7 @@ export default Vue.extend({
         // // draw legend entries as lines
         // l.setForm(LegendForm.SQUARE);
 
-        chart.once('drawn', () => {
+        chart.on('drawn', () => {
             alert('drawn in ' + (Date.now() - this.startTime) + 'ms');
         });
         this.setData();

@@ -19,7 +19,7 @@
     "devDependencies": {
         "@babel/core": "~7.17.9",
         "@babel/preset-env": "~7.16.11",
-        "@nativescript/android": "8.2.2",
+        "@nativescript/android": "8.4.0-alpha.5",
         "@nativescript/ios": "8.2.3",
         "@nativescript/types": "^8.2.0",
         "@nativescript/webpack": "5.0.6",
