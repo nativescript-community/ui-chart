@@ -683,7 +683,8 @@ export namespace Utils {
     export const arrayToNativeArray = arrayToNativeArrayFn;
 
     const mTempArrays: { [k: string]: TypedArray } = {};
-    export function getTempArray(length, useInts = false, canReturnBuffer = true, optKey?: string) {
+    export function getTempArray(length, useInts = false, canReturnBuffer = false, optKey?: string) {
+        // temp fix for latest runtimes. default should be canReturnBuffer = true
         let key = length + '' + useInts + '' + canReturnBuffer;
         if (optKey) {
             key += optKey;
