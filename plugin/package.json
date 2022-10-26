@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-chart",
-    "version": "1.2.19",
+    "version": "1.2.20",
     "sideEffects": false,
     "description": "A powerful chart / graph plugin, supporting line, bar, pie, radar, bubble, and candlestick charts as well as scaling, panning and animations.",
     "keywords": [
