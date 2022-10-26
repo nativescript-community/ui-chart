@@ -357,7 +357,8 @@ export class Transformer {
         if (!outputPoint) {
             outputPoint = { x: 0, y: 0 };
         }
-        const buffer = Utils.getTempArray(2);
+        // temp fix for latest runtimes. Should be Utils.getTempArray(2)
+        const buffer = Utils.getTempArray(2, false, false);
         buffer[0] = x;
         buffer[1] = y;
 
