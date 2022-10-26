@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.21](https://github.com/Akylas/nativescript-chart/compare/v1.2.20...v1.2.21) (2022-10-26)
+
+### Bug Fixes
+
+-   **android:** more fixes ([ecb03be](https://github.com/Akylas/nativescript-chart/commit/ecb03be2677b2e500f7ea1997c261c9e8d4fd941))
+
 ## [1.2.20](https://github.com/Akylas/nativescript-chart/compare/v1.2.19...v1.2.20) (2022-10-26)
 
 ### Bug Fixes
