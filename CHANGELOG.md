@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.22](https://github.com/nativescript-community/ui-chart/compare/v1.2.21...v1.2.22) (2022-11-13)
+
+
+### Bug Fixes
+
+* **android:** rollback last change as runtime is fixed ([62f5225](https://github.com/nativescript-community/ui-chart/commit/62f5225d978add0241905c1892276337a78d104f))
+
+
+
+
+
 ## [1.2.21](https://github.com/Akylas/nativescript-chart/compare/v1.2.20...v1.2.21) (2022-10-26)
 
 ### Bug Fixes
