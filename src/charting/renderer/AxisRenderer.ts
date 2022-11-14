@@ -10,9 +10,13 @@ import { Renderer } from './Renderer';
 
 export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
 export type CustomRendererLimitLineFunction = (c: Canvas, renderer: AxisRenderer, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
+export type CustomRendererLabelFunction = (c: Canvas, renderer: AxisRenderer, text, x, y, paint: Paint, anchor, angleDegrees) => void;
+export type CustomRendererTickFunction = (c: Canvas, renderer: AxisRenderer, startX: number, startY: number, stopX: number, stopY: number, paint: Paint) => void;
 export interface CustomRenderer extends BaseCustomRenderer {
+    drawLabel?: CustomRendererLabelFunction;
     drawGridLine?: CustomRendererGridLineFunction;
     drawLimitLine?: CustomRendererLimitLineFunction;
+    drawMarkTicket?: CustomRendererTickFunction;
 }
 
 /**
@@ -162,8 +166,8 @@ export abstract class AxisRenderer extends Renderer {
         }
 
         // Find out how much spacing (in y value space) between axis values
-        const rawInterval = range / labelCount;
-        let interval = axis.isForceIntervalEnabled() ? axis.getForcedInterval() : Utils.roundToNextSignificant(rawInterval);
+        const rawInterval = range / (labelCount - 1);
+        let interval = axis.isForceIntervalEnabled() ? axis.getForcedInterval() : rawInterval;
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
@@ -197,6 +201,9 @@ export abstract class AxisRenderer extends Renderer {
             let v = min;
 
             for (let i = 0; i < labelCount; i++) {
+                if (axis.ensureLastLabel && i === labelCount - 1) {
+                    v = max;
+                }
                 axis.mEntries[i] = v;
                 axis.mLabels[i] = formatter.getAxisLabel(v, axis, this.mViewPortHandler);
                 v += interval;
