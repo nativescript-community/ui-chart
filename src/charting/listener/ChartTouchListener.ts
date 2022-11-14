@@ -43,53 +43,15 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
     protected mLastHighlighted: Highlight;
 
     /**
-     * the gesturedetector used for detecting taps and longpresses, ...
-     */
-    // protected mGestureDetector: GestureDetector;
-
-    /**
      * the chart the listener represents
      */
     protected mChart: T;
 
-    // abstract onLongPressGesture(event: GestureStateEventData);
     constructor(chart: T) {
         this.mChart = chart;
-
-        // this.longpressGestureHandler = manager
-        // .createGestureHandler(HandlerType.LONG_PRESS, 11233, { minPointers: 1, maxPointers: 1, minDurationMs: 800 })
-        //     .on(GestureHandlerStateEvent, this.onLongPressGesture, this);
-
-        // this.mGestureDetector = new GestureDetector(chart.getContext(), this);
     }
     dispose() {}
     init() {}
-    /**
-     * Calls the OnChartGestureListener to do the start callback
-     *
-     * @param me
-     */
-    // public startAction(MotionEvent me) {
-
-    //     OnChartGestureListener l = this.mChart.getOnChartGestureListener();
-
-    //     if (l != null)
-    //         l.onChartGestureStart(me, this.mLastGesture);
-    // }
-
-    /**
-     * Calls the OnChartGestureListener to do the end callback
-     *
-     * @param me
-     */
-    // public endAction(MotionEvent me) {
-
-    //     OnChartGestureListener l = this.mChart.getOnChartGestureListener();
-
-    //     if (l != null)
-    //         l.onChartGestureEnd(me, this.mLastGesture);
-    // }
-
     /**
      * Sets the last value that was highlighted via touch.
      *
