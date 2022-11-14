@@ -53,7 +53,7 @@ export class XAxis extends AxisBase {
      * if set to true, the chart will avoid that the first and last label entry
      * in the chart "clip" off the edge of the chart
      */
-    private mAvoidFirstLastClipping = false;
+    private mAvoidFirstLastClipping = true;
 
     /**
      * the position of the x-labels relative to the chart
