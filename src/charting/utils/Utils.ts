@@ -150,15 +150,20 @@ export namespace Utils {
         paint.getTextBounds(demoText, 0, demoText.length, mCalcTextHeightRect);
         return mCalcTextHeightRect.height();
     }
-
-    export function getLineHeight(paint: Paint, fontMetrics = mFontMetricsBuffer) {
-        paint.getFontMetrics(fontMetrics);
+    export function getLineHeightFromMetrics(fontMetrics: FontMetrics) {
         return fontMetrics.descent - fontMetrics.ascent;
     }
+    export function getLineHeight(paint: Paint, fontMetrics = mFontMetricsBuffer) {
+        paint.getFontMetrics(fontMetrics);
+        return getLineHeightFromMetrics(fontMetrics);
+    }
 
+    export function getLineSpacingFromMetrics(fontMetrics: FontMetrics) {
+        return fontMetrics.ascent - fontMetrics.top + fontMetrics.bottom;
+    }
     export function getLineSpacing(paint: Paint, fontMetrics = mFontMetricsBuffer) {
         paint.getFontMetrics(fontMetrics);
-        return fontMetrics.ascent - fontMetrics.top + fontMetrics.bottom;
+        return getLineSpacingFromMetrics(fontMetrics);
     }
 
     /**
@@ -508,7 +513,7 @@ export namespace Utils {
         drawOffsetY += -mFontMetricsBuffer.ascent;
 
         if (angleDegrees !== 0) {
-            const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
+            const lineHeight = getLineHeightFromMetrics(mFontMetricsBuffer);
             paint.getTextBounds(text, 0, text.length, mDrawTextRectBuffer);
             // Move the text drawing rect in a way that it always rotates around its center
             drawOffsetX -= mDrawTextRectBuffer.width() * 0.5;
@@ -534,7 +539,7 @@ export namespace Utils {
             c.restore();
         } else {
             if (anchor.y !== 0) {
-                const lineHeight = paint.getFontMetrics(mFontMetricsBuffer);
+                const lineHeight = getLineHeightFromMetrics(mFontMetricsBuffer);
                 drawOffsetY -= lineHeight * anchor.y;
             }
             drawOffsetX += x;
