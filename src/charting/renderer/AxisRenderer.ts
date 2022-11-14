@@ -167,8 +167,7 @@ export abstract class AxisRenderer extends Renderer {
 
         // Find out how much spacing (in y value space) between axis values
         const rawInterval = range / (labelCount - 1);
-        let interval = axis.isForceIntervalEnabled() ? axis.getForcedInterval() : rawInterval;
-
+        let interval = axis.isForceIntervalEnabled() ? axis.getForcedInterval() : axis.ensureLastLabel ? rawInterval : Utils.roundToNextSignificant(rawInterval);
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
         if (axis.isGranularityEnabled() && interval < axis.getGranularity()) {
@@ -233,9 +232,9 @@ export abstract class AxisRenderer extends Renderer {
                     ++n;
                 }
             }
-            if (axis.ensureLastLabel && (n - 1) * interval < last) {
-                n++;
-            }
+            // if (axis.ensureLastLabel && (n - 1) * interval < last) {
+            //     n++;
+            // }
 
             axis.mEntryCount = n;
 
