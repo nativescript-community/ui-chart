@@ -293,7 +293,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             this.performDrag(event, x, y);
             this.mMatrix = chart.getViewPortHandler().refresh(this.mMatrix, chart, true);
         } else if (this.mTouchMode === ChartTouchListener.NONE) {
-            const shouldPan = !chart.isFullyZoomedOut() || !chart.hasNoDragOffset();
+            const shouldPan = (!chart.isFullyZoomedOut() || !chart.hasNoDragOffset()) && (!chart.zoomedPanWith2Pointers || event.data.extraData.numberOfPointers === 2);
 
             if (shouldPan) {
                 // Disable dragging in a direction that's disallowed
