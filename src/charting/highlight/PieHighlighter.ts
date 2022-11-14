@@ -21,7 +21,7 @@ export class PieHighlighter extends PieRadarHighlighter<PieEntry, PieDataSet, Pi
             xPx: x,
             yPx: y,
             dataSetIndex: 0,
-            axis: set.getAxisDependency(),
+            axis: set.getAxisDependency()
         };
     }
 }
