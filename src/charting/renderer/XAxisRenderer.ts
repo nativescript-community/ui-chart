@@ -25,9 +25,19 @@ export class XAxisRenderer extends AxisRenderer {
         return paint;
     }
 
-    public computeAxis(min, max, inverted) {
-        // calculate the starting and entry polet of the y-labels (depending on
-        // zoom / contentrect bounds)
+    public getCurrentMinMax(min?, max?, inverted?) {
+        if (min === undefined || max === undefined || inverted === undefined) {
+            const axis = this.mAxis;
+            if (min === undefined) {
+                min = axis.mAxisMinimum;
+            }
+            if (max === undefined) {
+                max = axis.mAxisMaximum;
+            }
+            if (inverted === undefined) {
+                inverted = axis['isInverted'] ? axis['isInverted']() : false;
+            }
+        }
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         if (rect.width() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
@@ -41,8 +51,7 @@ export class XAxisRenderer extends AxisRenderer {
                 max = p2.x;
             }
         }
-
-        this.computeAxisValues(min, max);
+        return { min, max };
     }
 
     protected computeAxisValues(min, max) {

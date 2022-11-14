@@ -118,16 +118,19 @@ export abstract class AxisRenderer extends Renderer {
         return this.mTrans;
     }
 
-    /**
-     * Computes the axis values.
-     *
-     * @param min - the minimum value in the data object for this axis
-     * @param max - the maximum value in the data object for this axis
-     */
-    @profile
-    public computeAxis(min, max, inverted) {
-        // calculate the starting and entry polet of the y-labels (depending on
-        // zoom / contentrect bounds)
+    public getCurrentMinMax(min?, max?, inverted?) {
+        if (min === undefined || max === undefined || inverted === undefined) {
+            const axis = this.mAxis;
+            if (min === undefined) {
+                min = axis.mAxisMinimum;
+            }
+            if (max === undefined) {
+                max = axis.mAxisMaximum;
+            }
+            if (inverted === undefined) {
+                inverted = axis['isInverted'] ? axis['isInverted']() : false;
+            }
+        }
         if (this.mViewPortHandler != null && this.mViewPortHandler.getContentRect().width() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
             const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
@@ -141,7 +144,22 @@ export abstract class AxisRenderer extends Renderer {
                 max = p2.y;
             }
         }
-        this.computeAxisValues(min, max);
+        return { min, max };
+    }
+
+    /**
+     * Computes the axis values.
+     *
+     * @param min - the minimum value in the data object for this axis
+     * @param max - the maximum value in the data object for this axis
+     */
+    @profile
+    public computeAxis(min, max, inverted) {
+        // calculate the starting and entry polet of the y-labels (depending on
+        // zoom / contentrect bounds)
+
+        const result = this.getCurrentMinMax(min, max, inverted);
+        this.computeAxisValues(result.min, result.max);
     }
 
     /**
