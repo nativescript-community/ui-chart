@@ -185,9 +185,11 @@ export class XAxisRenderer extends AxisRenderer {
         this.mTrans.pointValuesToPixel(positions);
         const chartWidth = this.mViewPortHandler.getChartWidth();
         let offsetRight = 0;
+        let offsetLeft = 0;
         if (this.mAxis.isIgnoringOffsets()) {
         } else {
             offsetRight = this.mViewPortHandler.offsetRight();
+            offsetLeft = this.mViewPortHandler.offsetLeft();
         }
         const labels = axis.mLabels;
         const paint = this.axisLabelsPaint;
@@ -204,18 +206,18 @@ export class XAxisRenderer extends AxisRenderer {
                     // avoid clipping of the last
                     if (i / 2 === entryCount - 1 && entryCount > 1) {
                         const width = Utils.calcTextWidth(paint, label);
-
-                        if (width > offsetRight * 2 && x + width > chartWidth) {
-                            x -= width / 2;
+                        if (paint.getTextAlign() === Align.CENTER && width / 2 > offsetRight && x + width / 2 > chartWidth) {
+                            x += chartWidth - x - width / 2;
+                        } else if (paint.getTextAlign() === Align.LEFT && width > offsetRight && x + width > chartWidth) {
+                            x += chartWidth - x - width;
                         }
-
                         // avoid clipping of the first
                     } else if (i === 0) {
                         const width = Utils.calcTextWidth(paint, label);
-                        if (paint.getTextAlign() === Align.CENTER) {
-                            x += width / 2;
-                        } else if (paint.getTextAlign() === Align.RIGHT) {
-                            x += width;
+                        if (paint.getTextAlign() === Align.CENTER && width / 2 > offsetLeft && x < width / 2) {
+                            x += x - width / 2;
+                        } else if (paint.getTextAlign() === Align.RIGHT && width > offsetLeft && x < width) {
+                            x += x - width;
                         }
                     }
                 }
