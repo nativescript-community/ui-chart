@@ -615,6 +615,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         // So we need to recalculate offsets.
         this.calculateOffsets();
         this.invalidate();
+        if (this.hasListeners('zoom')) {
+            this.notify({ eventName: 'zoom', object: this, scaleX, scaleY, x, y });
+        }
     }
 
     /**

@@ -388,6 +388,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     this.mMatrix.set(this.mSavedMatrix);
                     this.mMatrix.postScale(scaleX, scaleY, t.x, t.y);
                 }
+                if (chart.hasListeners('zoom')) {
+                    chart.notify({ eventName: 'zoom', scaleX, scaleY, ...t });
+                }
             } else if (this.mTouchMode === ChartTouchListener.X_ZOOM && chart.isScaleXEnabled()) {
                 this.mLastGesture = ChartGesture.X_ZOOM;
                 const t = this.getTrans(this.mTouchPointCenter.x, this.mTouchPointCenter.y);
@@ -402,6 +405,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     this.mMatrix.set(this.mSavedMatrix);
                     this.mMatrix.postScale(scaleX, 1, t.x, t.y);
                 }
+                if (chart.hasListeners('zoom')) {
+                    chart.notify({ eventName: 'zoom', scaleX, scaleY: 1, ...t });
+                }
             } else if (this.mTouchMode === ChartTouchListener.Y_ZOOM && chart.isScaleYEnabled()) {
                 this.mLastGesture = ChartGesture.Y_ZOOM;
                 const t = this.getTrans(this.mTouchPointCenter.x, this.mTouchPointCenter.y);
@@ -414,6 +420,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 if (canZoomMoreY) {
                     this.mMatrix.set(this.mSavedMatrix);
                     this.mMatrix.postScale(1, scaleY, t.x, t.y);
+                }
+                if (chart.hasListeners('zoom')) {
+                    chart.notify({ eventName: 'zoom', scaleX: 1, scaleY, ...t });
                 }
             }
             this.mMatrix = chart.getViewPortHandler().refresh(this.mMatrix, chart, true);
