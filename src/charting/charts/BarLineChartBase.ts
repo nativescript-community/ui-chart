@@ -59,6 +59,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     protected mHighlightPerDragEnabled: boolean;
 
     /**
+     * flag that indicates zoomed pan gesture should only work with 2 pointers
+     */
+    public zoomedPanWith2Pointers: boolean = false;
+
+    /**
      * if true, dragging is enabled for the chart
      */
     private mDragXEnabled: boolean;
@@ -610,6 +615,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         // So we need to recalculate offsets.
         this.calculateOffsets();
         this.invalidate();
+        if (this.hasListeners('zoom')) {
+            this.notify({ eventName: 'zoom', object: this, scaleX, scaleY, x, y });
+        }
     }
 
     /**

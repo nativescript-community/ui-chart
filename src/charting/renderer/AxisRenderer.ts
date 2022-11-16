@@ -10,9 +10,13 @@ import { Renderer } from './Renderer';
 
 export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
 export type CustomRendererLimitLineFunction = (c: Canvas, renderer: AxisRenderer, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
+export type CustomRendererLabelFunction = (c: Canvas, renderer: AxisRenderer, text, x, y, paint: Paint, anchor, angleDegrees) => void;
+export type CustomRendererTickFunction = (c: Canvas, renderer: AxisRenderer, startX: number, startY: number, stopX: number, stopY: number, paint: Paint) => void;
 export interface CustomRenderer extends BaseCustomRenderer {
+    drawLabel?: CustomRendererLabelFunction;
     drawGridLine?: CustomRendererGridLineFunction;
     drawLimitLine?: CustomRendererLimitLineFunction;
+    drawMarkTicket?: CustomRendererTickFunction;
 }
 
 /**
@@ -114,16 +118,19 @@ export abstract class AxisRenderer extends Renderer {
         return this.mTrans;
     }
 
-    /**
-     * Computes the axis values.
-     *
-     * @param min - the minimum value in the data object for this axis
-     * @param max - the maximum value in the data object for this axis
-     */
-    @profile
-    public computeAxis(min, max, inverted) {
-        // calculate the starting and entry polet of the y-labels (depending on
-        // zoom / contentrect bounds)
+    public getCurrentMinMax(min?, max?, inverted?) {
+        if (min === undefined || max === undefined || inverted === undefined) {
+            const axis = this.mAxis;
+            if (min === undefined) {
+                min = axis.mAxisMinimum;
+            }
+            if (max === undefined) {
+                max = axis.mAxisMaximum;
+            }
+            if (inverted === undefined) {
+                inverted = axis['isInverted'] ? axis['isInverted']() : false;
+            }
+        }
         if (this.mViewPortHandler != null && this.mViewPortHandler.getContentRect().width() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
             const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
@@ -137,7 +144,22 @@ export abstract class AxisRenderer extends Renderer {
                 max = p2.y;
             }
         }
-        this.computeAxisValues(min, max);
+        return { min, max };
+    }
+
+    /**
+     * Computes the axis values.
+     *
+     * @param min - the minimum value in the data object for this axis
+     * @param max - the maximum value in the data object for this axis
+     */
+    @profile
+    public computeAxis(min, max, inverted) {
+        // calculate the starting and entry polet of the y-labels (depending on
+        // zoom / contentrect bounds)
+
+        const result = this.getCurrentMinMax(min, max, inverted);
+        this.computeAxisValues(result.min, result.max);
     }
 
     /**
@@ -162,9 +184,8 @@ export abstract class AxisRenderer extends Renderer {
         }
 
         // Find out how much spacing (in y value space) between axis values
-        const rawInterval = range / labelCount;
-        let interval = axis.isForceIntervalEnabled() ? axis.getForcedInterval() : Utils.roundToNextSignificant(rawInterval);
-
+        const rawInterval = range / (labelCount - 1);
+        let interval = axis.isForceIntervalEnabled() ? axis.getForcedInterval() : axis.ensureLastLabel ? rawInterval : Utils.roundToNextSignificant(rawInterval);
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
         if (axis.isGranularityEnabled() && interval < axis.getGranularity()) {
@@ -197,6 +218,9 @@ export abstract class AxisRenderer extends Renderer {
             let v = min;
 
             for (let i = 0; i < labelCount; i++) {
+                if (axis.ensureLastLabel && i === labelCount - 1) {
+                    v = max;
+                }
                 axis.mEntries[i] = v;
                 axis.mLabels[i] = formatter.getAxisLabel(v, axis, this.mViewPortHandler);
                 v += interval;
@@ -226,9 +250,9 @@ export abstract class AxisRenderer extends Renderer {
                     ++n;
                 }
             }
-            if (axis.ensureLastLabel && (n - 1) * interval < last) {
-                n++;
-            }
+            // if (axis.ensureLastLabel && (n - 1) * interval < last) {
+            //     n++;
+            // }
 
             axis.mEntryCount = n;
 

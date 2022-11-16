@@ -150,9 +150,9 @@ export class LegendRenderer extends Renderer {
 
         paint.setFont(this.mLegend.getFont());
         paint.setColor(this.mLegend.getTextColor());
-
-        const labelLineHeight = Utils.getLineHeight(paint, this.legendFontMetrics);
-        const labelLineSpacing = Utils.getLineSpacing(paint, this.legendFontMetrics) + this.mLegend.getYEntrySpace();
+        paint.getFontMetrics(this.legendFontMetrics);
+        const labelLineHeight = Utils.getLineHeightFromMetrics(this.legendFontMetrics);
+        const labelLineSpacing = Utils.getLineSpacingFromMetrics(this.legendFontMetrics) + this.mLegend.getYEntrySpace();
         const formYOffset = labelLineHeight - Utils.calcTextHeight(paint, 'ABC') / 2;
 
         const entries = this.mLegend.getEntries();

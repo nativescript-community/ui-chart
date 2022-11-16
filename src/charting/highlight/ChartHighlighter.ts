@@ -135,6 +135,9 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         const yKey = set.yProperty;
         const highlights: Highlight[] = [];
 
+        if (set['setIgnoreFiltered']) {
+            (set as LineDataSet).setIgnoreFiltered(true);
+        }
         //noinspection unchecked
         let entries = set.getEntriesAndIndexesForXValue(xVal);
         if (entries.length === 0) {
@@ -149,14 +152,9 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
 
         for (const r of entries) {
             const e = r.entry;
-            let index = r.index;
-            const xVal = set.getEntryXValue(e, r.index);
+            const index = r.index;
+            const xVal = set.getEntryXValue(e, index);
             const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(xVal, e[yKey]);
-            if ((set as any).isFiltered && (set as LineDataSet).isFiltered()) {
-                (set as LineDataSet).setIgnoreFiltered(true);
-                index = set.getEntryIndexForXValue(xVal, NaN, Rounding.CLOSEST);
-                (set as LineDataSet).setIgnoreFiltered(false);
-            }
 
             highlights.push({
                 entry: e,
@@ -168,6 +166,9 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
                 dataSetIndex,
                 axis: set.getAxisDependency()
             });
+        }
+        if (set['setIgnoreFiltered']) {
+            (set as LineDataSet).setIgnoreFiltered(false);
         }
 
         return highlights;

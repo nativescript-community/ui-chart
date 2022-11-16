@@ -6,7 +6,7 @@ import { MPPointF } from '../utils/MPPointF';
 import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
-import { AxisRenderer, CustomRendererGridLineFunction, CustomRendererLimitLineFunction } from './AxisRenderer';
+import { AxisRenderer, CustomRendererGridLineFunction, CustomRendererLabelFunction, CustomRendererLimitLineFunction } from './AxisRenderer';
 
 export class XAxisRenderer extends AxisRenderer {
     protected mXAxis: XAxis;
@@ -25,9 +25,19 @@ export class XAxisRenderer extends AxisRenderer {
         return paint;
     }
 
-    public computeAxis(min, max, inverted) {
-        // calculate the starting and entry polet of the y-labels (depending on
-        // zoom / contentrect bounds)
+    public getCurrentMinMax(min?, max?, inverted?) {
+        if (min === undefined || max === undefined || inverted === undefined) {
+            const axis = this.mAxis;
+            if (min === undefined) {
+                min = axis.mAxisMinimum;
+            }
+            if (max === undefined) {
+                max = axis.mAxisMaximum;
+            }
+            if (inverted === undefined) {
+                inverted = axis['isInverted'] ? axis['isInverted']() : false;
+            }
+        }
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         if (rect.width() > 10 && !this.mViewPortHandler.isFullyZoomedOutX()) {
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
@@ -41,8 +51,7 @@ export class XAxisRenderer extends AxisRenderer {
                 max = p2.x;
             }
         }
-
-        this.computeAxisValues(min, max);
+        return { min, max };
     }
 
     protected computeAxisValues(min, max) {
@@ -162,6 +171,9 @@ export class XAxisRenderer extends AxisRenderer {
         if (entryCount === 0) {
             return;
         }
+
+        const customRender = axis.getCustomRenderer();
+        const customRenderFunction = customRender && customRender.drawLabel;
         const length = entryCount * 2;
         if (!this.mLabelsPositionsBuffer || this.mLabelsPositionsBuffer.length !== length) {
             this.mLabelsPositionsBuffer = Utils.createArrayBuffer(length);
@@ -182,9 +194,11 @@ export class XAxisRenderer extends AxisRenderer {
         this.mTrans.pointValuesToPixel(positions);
         const chartWidth = this.mViewPortHandler.getChartWidth();
         let offsetRight = 0;
+        let offsetLeft = 0;
         if (this.mAxis.isIgnoringOffsets()) {
         } else {
             offsetRight = this.mViewPortHandler.offsetRight();
+            offsetLeft = this.mViewPortHandler.offsetLeft();
         }
         const labels = axis.mLabels;
         const paint = this.axisLabelsPaint;
@@ -201,28 +215,32 @@ export class XAxisRenderer extends AxisRenderer {
                     // avoid clipping of the last
                     if (i / 2 === entryCount - 1 && entryCount > 1) {
                         const width = Utils.calcTextWidth(paint, label);
-
-                        if (width > offsetRight * 2 && x + width > chartWidth) {
-                            x -= width / 2;
+                        if (paint.getTextAlign() === Align.CENTER && width / 2 > offsetRight && x + width / 2 > chartWidth) {
+                            x += chartWidth - x - width / 2;
+                        } else if (paint.getTextAlign() === Align.LEFT && width > offsetRight && x + width > chartWidth) {
+                            x += chartWidth - x - width;
                         }
-
                         // avoid clipping of the first
                     } else if (i === 0) {
                         const width = Utils.calcTextWidth(paint, label);
-                        if (paint.getTextAlign() === Align.CENTER) {
-                            x += width / 2;
-                        } else if (paint.getTextAlign() === Align.RIGHT) {
-                            x += width;
+                        if (paint.getTextAlign() === Align.CENTER && width / 2 > offsetLeft && x < width / 2) {
+                            x += x - width / 2;
+                        } else if (paint.getTextAlign() === Align.RIGHT && width > offsetLeft && x < width) {
+                            x += x - width;
                         }
                     }
                 }
-                this.drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees, paint);
+                this.drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees, paint, customRenderFunction);
             }
         }
     }
 
-    protected drawLabel(c: Canvas, formattedLabel, x, y, anchor: MPPointF, angleDegrees, paint) {
-        Utils.drawXAxisValue(c, formattedLabel, x, y, paint, anchor, angleDegrees);
+    protected drawLabel(c: Canvas, formattedLabel, x, y, anchor: MPPointF, angleDegrees, paint, customRenderFunction?: CustomRendererLabelFunction) {
+        if (customRenderFunction) {
+            customRenderFunction(c, this, formattedLabel, x, y, paint, anchor, angleDegrees);
+        } else {
+            Utils.drawXAxisValue(c, formattedLabel, x, y, paint, anchor, angleDegrees);
+        }
     }
 
     /**
@@ -232,15 +250,18 @@ export class XAxisRenderer extends AxisRenderer {
      * @param length
      */
     protected drawMarkTicket(c: Canvas, pos, ticklength) {
-        if (!this.mXAxis.isDrawMarkTicksEnabled()) return;
+        const axis = this.mXAxis;
+        if (!axis.isDrawMarkTicksEnabled()) return;
 
+        const customRender = axis.getCustomRenderer();
+        const customRenderFunction = customRender && customRender.drawMarkTicket;
         const length = this.mAxis.mEntryCount * 2;
         if (!this.mRenderGridLinesBuffer || this.mRenderGridLinesBuffer.length !== length) {
             this.mRenderGridLinesBuffer = Utils.createArrayBuffer(length);
         }
         const positionsBuffer = this.mRenderGridLinesBuffer;
         for (let i = 0; i < length; i += 2) {
-            positionsBuffer[i] = this.mXAxis.mEntries[i / 2];
+            positionsBuffer[i] = axis.mEntries[i / 2];
             if (i + 1 < length) {
                 positionsBuffer[i + 1] = 0;
             }
@@ -251,7 +272,11 @@ export class XAxisRenderer extends AxisRenderer {
         const paint = this.axisLinePaint;
         for (let i = 0; i < length; i += 2) {
             const x = points[i];
-            c.drawLine(x, pos, x, pos + ticklength, paint);
+            if (customRenderFunction) {
+                customRenderFunction(c, this, x, pos, x, pos + ticklength, paint);
+            } else {
+                c.drawLine(x, pos, x, pos + ticklength, paint);
+            }
         }
     }
 
@@ -288,7 +313,6 @@ export class XAxisRenderer extends AxisRenderer {
         const customRenderFunction = customRender && customRender.drawGridLine;
         const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         for (let i = 0; i < positions.length; i += 2) {
-            const x = positions[i];
             this.drawGridLine(c, rect, positions[i], positions[i + 1], axis.mEntries[i / 2], paint, customRenderFunction);
         }
 

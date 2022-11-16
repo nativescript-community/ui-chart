@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.23](https://github.com/nativescript-community/ui-chart/compare/v1.2.22...v1.2.23) (2022-11-14)
+
+
+### Bug Fixes
+
+* `setMaxFilterNumber` still allows to highlight non filtered points ([f02e692](https://github.com/nativescript-community/ui-chart/commit/f02e69253e27d785978ea91452a061938c086b0b))
+* axis new custom renderers ([42085e6](https://github.com/nativescript-community/ui-chart/commit/42085e61870f59f8adf67617e7a1e7c1aa05708a))
+* axis render default to avoid labels clipping ([0db8ec6](https://github.com/nativescript-community/ui-chart/commit/0db8ec64114975624acd96775680afb1c71b04dd))
+* chart notifies on zoom/pan ... ([031f55a](https://github.com/nativescript-community/ui-chart/commit/031f55aea8b26eb8e01a792d5bf6ee7d5aea9d4e))
+* correctly draw first/last label ([3567a2a](https://github.com/nativescript-community/ui-chart/commit/3567a2a9ab0c0120625a7c8961310fa124cc831e))
+* ensure we have listeners ([024a66a](https://github.com/nativescript-community/ui-chart/commit/024a66af84f52c8c623da4471c0d2f0b937d82ac))
+* ensureLastLabel fixes ([22fb4e9](https://github.com/nativescript-community/ui-chart/commit/22fb4e9ba65840278f8609e8d836f42dcf63886e))
+* refactor to expose `getCurrentMinMax` ([7eec038](https://github.com/nativescript-community/ui-chart/commit/7eec03876527596cc9e85e0a97102eaebb0efadf))
+
+
+### Features
+
+* `zoomedPanWith2Pointers` chart property ([d7f5b94](https://github.com/nativescript-community/ui-chart/commit/d7f5b9450272fadd27b7a59bacb48f663c0e2a8b))
+
+
+
+
+
+## [1.2.22](https://github.com/nativescript-community/ui-chart/compare/v1.2.21...v1.2.22) (2022-11-13)
+
+
+### Bug Fixes
+
+* **android:** rollback last change as runtime is fixed ([62f5225](https://github.com/nativescript-community/ui-chart/commit/62f5225d978add0241905c1892276337a78d104f))
+
+
+
+
+
 ## [1.2.21](https://github.com/Akylas/nativescript-chart/compare/v1.2.20...v1.2.21) (2022-10-26)
 
 ### Bug Fixes
