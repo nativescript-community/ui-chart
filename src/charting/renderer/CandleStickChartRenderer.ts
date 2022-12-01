@@ -100,7 +100,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                 const linePath = Utils.getTempPath();
                 const points = Utils.pointsFromBuffer(shadowBuffers);
-                if (global.isAndroid && Utils.supportsDirectArrayBuffers()) {
+                if (__ANDROID__ && Utils.supportsDirectArrayBuffers()) {
                     linePath['setLinesBuffer'](points);
                 } else {
                     linePath.setLines(points as number[]);

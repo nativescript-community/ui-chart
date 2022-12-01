@@ -242,7 +242,7 @@ export class Transformer {
     }
 
     public mapPoints(matrix: Matrix, pts: number[] | TypedArray) {
-        if (global.isAndroid && ArrayBuffer.isView(pts)) {
+        if (__ANDROID__ && ArrayBuffer.isView(pts)) {
             matrix['mapPointsBuffer'](pts);
         } else {
             matrix.mapPoints(pts);

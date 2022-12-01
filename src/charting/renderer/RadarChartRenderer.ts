@@ -109,7 +109,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
         float32arr[index++] = float32arr[0];
         float32arr[index++] = float32arr[1];
         const points = Utils.pointsFromBuffer(float32arr);
-        if (global.isAndroid && Utils.supportsDirectArrayBuffers()) {
+        if (__ANDROID__ && Utils.supportsDirectArrayBuffers()) {
             surface['setLinesBuffer'](points, 0, index);
         } else {
             surface.setLines(points as number[], 0, index);

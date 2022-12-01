@@ -657,7 +657,7 @@ export class PieChartRenderer extends DataRenderer {
 
             c.save();
 
-            if (global.isAndroid) {
+            if (__ANDROID__) {
                 if (android.os.Build.VERSION.SDK_INT >= 18) {
                     const path = Utils.getTempPath();
                     path.reset();

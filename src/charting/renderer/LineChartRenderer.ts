@@ -187,7 +187,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     constructor(chart: LineChart, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
         this.mChart = chart;
-        // if (global.isAndroid) {
+        // if (__ANDROID__) {
         //     this.mBitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
         // }
     }
@@ -287,7 +287,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 float32arr[index++] = cur[yKey] * phaseY;
             }
             const points = Utils.pointsFromBuffer(float32arr);
-            if (global.isAndroid && Utils.supportsDirectArrayBuffers()) {
+            if (__ANDROID__ && Utils.supportsDirectArrayBuffers()) {
                 outputPath['setCubicLinesBuffer'](points, 0, index);
             } else {
                 outputPath.setCubicLines(points as number[], 0, index);
@@ -362,7 +362,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 prev = point;
             }
             const points = Utils.pointsFromBuffer(float32arr);
-            if (global.isAndroid && Utils.supportsDirectArrayBuffers()) {
+            if (__ANDROID__ && Utils.supportsDirectArrayBuffers()) {
                 outputPath['setCubicLinesBuffer'](points, 0, index);
             } else {
                 outputPath.setCubicLines(points as number[], 0, index);
@@ -434,7 +434,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 }
             }
             const points = Utils.pointsFromBuffer(float32arr);
-            if (global.isAndroid && Utils.supportsDirectArrayBuffers()) {
+            if (__ANDROID__ && Utils.supportsDirectArrayBuffers()) {
                 outputPath['setLinesBuffer'](points, 0, index);
             } else {
                 outputPath.setLines(points as number[], 0, index);

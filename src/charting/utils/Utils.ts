@@ -499,7 +499,7 @@ export namespace Utils {
         } else {
             const drawOffsetX = x - icon.width / 2;
             const drawOffsetY = y - icon.height / 2;
-            canvas.drawBitmap(global.isAndroid ? icon.android : icon, drawOffsetX, drawOffsetY, null);
+            canvas.drawBitmap(__ANDROID__ ? icon.android : icon, drawOffsetX, drawOffsetY, null);
         }
     }
 
@@ -790,7 +790,7 @@ export namespace Utils {
     }
 
     export function clipPathSupported() {
-        if (global.isAndroid) {
+        if (__ANDROID__) {
             return getSDK() >= 18;
         }
         return false;
