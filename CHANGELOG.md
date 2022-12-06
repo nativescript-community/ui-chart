@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.25](https://github.com/Akylas/nativescript-chart/compare/v1.2.24...v1.2.25) (2022-12-06)
+
+### Bug Fixes
+
+-   **android:** chart disallow intercept touch on gestures ([7a8b9dc](https://github.com/Akylas/nativescript-chart/commit/7a8b9dcdd4a5a69faa70deaf0c78bc828a5e2a69))
+
 ## [1.2.24](https://github.com/Akylas/nativescript-chart/compare/v1.2.23...v1.2.24) (2022-12-01)
 
 ### Bug Fixes
