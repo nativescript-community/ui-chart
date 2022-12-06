@@ -1,7 +1,6 @@
 import { PanGestureHandlerOptions, PinchGestureHandlerOptions, TapGestureHandlerOptions } from '@nativescript-community/gesturehandler';
 import { Align, Canvas, CanvasView, Paint } from '@nativescript-community/ui-canvas';
-import { EventData, Trace } from '@nativescript/core';
-import { Utils } from '@nativescript/core';
+import { EventData, Utils as NUtils, Trace } from '@nativescript/core';
 import { ChartAnimator, EasingFunction } from '../animation/ChartAnimator';
 import { Description } from '../components/Description';
 import { IMarker } from '../components/IMarker';
@@ -1350,7 +1349,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         super.onLayout(left, top, right, bottom);
 
         if (__IOS__) {
-            this.onSetWidthHeight(Math.round(Utils.layout.toDeviceIndependentPixels(right - left)), Math.round(Utils.layout.toDeviceIndependentPixels(bottom - top)));
+            this.onSetWidthHeight(Math.round(NUtils.layout.toDeviceIndependentPixels(right - left)), Math.round(NUtils.layout.toDeviceIndependentPixels(bottom - top)));
         }
     }
     public onSizeChanged(w: number, h: number, oldw: number, oldh: number): void {
