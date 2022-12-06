@@ -286,7 +286,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (chart.hasListeners('pan')) {
                 chart.notify({ eventName: 'pan', data: event.data, object: chart });
             }
-
+            chart.disableScroll();
             const x = event.data.extraData.translationX;
             const y = event.data.extraData.translationY;
 
@@ -298,11 +298,13 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (shouldPan) {
                 // Disable dragging in a direction that's disallowed
                 if (chart.isDragXEnabled() && chart.isDragYEnabled()) {
+                    chart.disableScroll();
                     this.mLastGesture = ChartGesture.DRAG;
                     this.mTouchMode = ChartTouchListener.DRAG;
                 }
             } else {
                 if (chart.isHighlightPerDragEnabled()) {
+                    chart.disableScroll();
                     this.mLastGesture = ChartGesture.DRAG;
 
                     this.performHighlightDrag(event);
@@ -319,7 +321,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 this.saveTouchStart(event);
                 // get the distance between the pointers on the x-axis
                 this.mSavedXDist = BarLineChartTouchListener.getXDist(event);
-
+                chart.disableScroll();
                 // get the distance between the pointers on the y-axis
                 this.mSavedYDist = BarLineChartTouchListener.getYDist(event);
 
@@ -352,6 +354,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     chart.calculateOffsets();
                     chart.invalidate();
                 }
+                chart.enableScroll();
                 break;
         }
     }

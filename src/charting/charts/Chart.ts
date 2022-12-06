@@ -1,7 +1,7 @@
 import { PanGestureHandlerOptions, PinchGestureHandlerOptions, TapGestureHandlerOptions } from '@nativescript-community/gesturehandler';
 import { Align, Canvas, CanvasView, Paint } from '@nativescript-community/ui-canvas';
 import { EventData, Trace } from '@nativescript/core';
-import { layout } from '@nativescript/core/utils/layout-helper';
+import { Utils } from '@nativescript/core';
 import { ChartAnimator, EasingFunction } from '../animation/ChartAnimator';
 import { Description } from '../components/Description';
 import { IMarker } from '../components/IMarker';
@@ -1350,7 +1350,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         super.onLayout(left, top, right, bottom);
 
         if (__IOS__) {
-            this.onSetWidthHeight(Math.round(layout.toDeviceIndependentPixels(right - left)), Math.round(layout.toDeviceIndependentPixels(bottom - top)));
+            this.onSetWidthHeight(Math.round(Utils.layout.toDeviceIndependentPixels(right - left)), Math.round(Utils.layout.toDeviceIndependentPixels(bottom - top)));
         }
     }
     public onSizeChanged(w: number, h: number, oldw: number, oldh: number): void {
@@ -1368,5 +1368,29 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     public setHardwareAccelerationEnabled(enabled) {
         this.hardwareAccelerated = enabled;
+    }
+
+    /**
+     * disables intercept touchevents
+     */
+    disableScroll() {
+        if (__ANDROID__) {
+            const parent: android.view.ViewParent = this.nativeViewProtected?.getParent();
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(true);
+            }
+        }
+    }
+
+    /**
+     * enables intercept touchevents
+     */
+    enableScroll() {
+        if (__ANDROID__) {
+            const parent: android.view.ViewParent = this.nativeViewProtected?.getParent();
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(false);
+            }
+        }
     }
 }

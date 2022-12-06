@@ -3,15 +3,7 @@ import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { Utils } from '../utils/Utils';
 import { ChartGesture, ChartTouchListener } from './ChartTouchListener';
-import {
-    GestureHandlerStateEvent,
-    GestureState,
-    GestureStateEventData,
-    HandlerType,
-    Manager,
-    RotationGestureHandler,
-    TapGestureHandler
-} from '@nativescript-community/gesturehandler';
+import { GestureHandlerStateEvent, GestureState, GestureStateEventData, HandlerType, Manager, RotationGestureHandler, TapGestureHandler } from '@nativescript-community/gesturehandler';
 
 /**
  * TouchListener for Pie- and RadarChart with handles all
@@ -104,15 +96,17 @@ export class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
     /** GESTURE RECOGNITION BELOW */
 
     public onRotationGesture(event: GestureStateEventData) {
+        const chart = this.mChart;
         if (event.data.state === GestureState.BEGAN || event.data.state === GestureState.ACTIVE) {
             this.mLastGesture = ChartGesture.ROTATE;
-            const chart = this.mChart;
-
+            chart.disableScroll();
             if (chart.hasListeners('rotate')) {
                 chart.notify({ eventName: 'rotate', data: event.data, object: chart });
             }
 
             // TODO: Implement rotation for charts
+        } else if (event.data.state === GestureState.CANCELLED || event.data.state === GestureState.END) {
+            chart.enableScroll();
         }
     }
 
