@@ -1,5 +1,5 @@
 {
     "uses": [
-        "java.nio:FloatBuffer*"
+        "java.nio:FloatBuffer"
     ]
 }
