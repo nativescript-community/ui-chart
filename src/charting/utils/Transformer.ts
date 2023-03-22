@@ -1,4 +1,5 @@
-import { Matrix, Path, Rect, TypedArray } from '@nativescript-community/ui-canvas';
+import { Matrix, Path, Rect } from '@nativescript-community/ui-canvas';
+import { TypedArray } from '@nativescript-community/arraybuffers';
 import { BubbleDataSet } from '../data/BubbleDataSet';
 import { CandleDataSet } from '../data/CandleDataSet';
 import { CandleEntry } from '../data/CandleEntry';

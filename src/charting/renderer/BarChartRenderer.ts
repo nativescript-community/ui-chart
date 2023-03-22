@@ -1,4 +1,5 @@
-import { Canvas, Paint, RectF, TypedArray } from '@nativescript-community/ui-canvas';
+import { Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
+import { TypedArray } from '@nativescript-community/arraybuffers';
 import { profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { BarBuffer } from '../buffer/BarBuffer';

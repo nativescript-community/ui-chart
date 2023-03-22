@@ -1,4 +1,5 @@
-import { CanvasView, Matrix, Rect, RectF, TypedArray } from '@nativescript-community/ui-canvas';
+import { CanvasView, Matrix, Rect, RectF } from '@nativescript-community/ui-canvas';
+import { TypedArray } from '@nativescript-community/arraybuffers';
 import { Utils } from './Utils';
 
 /**

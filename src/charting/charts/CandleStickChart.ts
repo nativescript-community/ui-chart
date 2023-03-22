@@ -1,4 +1,5 @@
-import { Canvas, Paint, Path, TypedArray } from '@nativescript-community/ui-canvas';
+import { Canvas, Paint, Path } from '@nativescript-community/ui-canvas';
+import { TypedArray } from '@nativescript-community/arraybuffers';
 import { CandleData } from '../data/CandleData';
 import { CandleEntry } from '../data/CandleEntry';
 import { Highlight } from '../highlight/Highlight';

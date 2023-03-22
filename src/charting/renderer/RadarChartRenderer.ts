@@ -1,4 +1,5 @@
-import { Canvas, Direction, Paint, Path, Style, TypedArray } from '@nativescript-community/ui-canvas';
+import { Canvas, Direction, Paint, Path, Style } from '@nativescript-community/ui-canvas';
+import { TypedArray } from '@nativescript-community/arraybuffers';
 import { Color } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { RadarChart } from '../charts/RadarChart';

@@ -1,4 +1,5 @@
-import { Canvas, Direction, FillType, LinearGradient, Matrix, Paint, Path, Style, TileMode, TypedArray, createImage, releaseImage } from '@nativescript-community/ui-canvas';
+import { TypedArray } from '@nativescript-community/arraybuffers';
+import { Canvas, Direction, FillType, LinearGradient, Matrix, Paint, Path, Style, TileMode, createImage, releaseImage } from '@nativescript-community/ui-canvas';
 import { Color, ImageSource, Screen, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { LineChart } from '../charts';

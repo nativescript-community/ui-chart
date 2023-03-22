@@ -1,4 +1,5 @@
-import { Align, Canvas, Paint, RectF, TypedArray } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
+import { TypedArray } from '@nativescript-community/arraybuffers';
 import { profile } from '@nativescript/core';
 import { LimitLabelPosition, LimitLine } from '../components/LimitLine';
 import { XAxis, XAxisPosition } from '../components/XAxis';

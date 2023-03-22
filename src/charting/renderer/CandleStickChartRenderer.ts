@@ -1,4 +1,5 @@
-import { Canvas, Style, TypedArray } from '@nativescript-community/ui-canvas';
+import { Canvas, Style } from '@nativescript-community/ui-canvas';
+import { TypedArray } from '@nativescript-community/arraybuffers';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { CandleStickChart } from '../charts';
 import { CandleDataSet } from '../data/CandleDataSet';
