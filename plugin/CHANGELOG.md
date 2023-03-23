@@ -3,16 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [1.2.26](https://github.com/nativescript-community/ui-chart/compare/v1.2.25...v1.2.26) (2023-01-24)
+## [1.2.27](https://github.com/nativescript-community/ui-chart/compare/v1.2.26...v1.2.27) (2023-03-23)
 
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
+## [1.2.26](https://github.com/nativescript-community/ui-chart/compare/v1.2.25...v1.2.26) (2023-01-24)
 
 ### Bug Fixes
 
-* **android:** improved native-api-usage ([1894ed2](https://github.com/nativescript-community/ui-chart/commit/1894ed2e58bac9d754ac4380d51323f7ca91a6c0))
-
-
-
-
+-   **android:** improved native-api-usage ([1894ed2](https://github.com/nativescript-community/ui-chart/commit/1894ed2e58bac9d754ac4380d51323f7ca91a6c0))
 
 ## [1.2.25](https://github.com/nativescript-community/ui-chart/compare/v1.2.24...v1.2.25) (2022-12-06)
 
