@@ -563,7 +563,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
                 chart.notify({ eventName: 'doubleTap', data: event.data, object: chart, highlight: h });
             }
-            if (chart.isDoubleTapToZoomEnabled() && chart.getData().getEntryCount() > 0) {
+            if (chart.isDoubleTapToZoomEnabled() && chart.getData()?.getEntryCount() > 0) {
                 const trans = this.getTrans(event.data.extraData.x, event.data.extraData.y);
 
                 chart.zoom(chart.isScaleXEnabled() ? 1.4 : 1, chart.isScaleYEnabled() ? 1.4 : 1, trans.x, trans.y);
