@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.28](https://github.com/nativescript-community/ui-chart/compare/v1.2.27...v1.2.28) (2023-04-04)
+
+### Bug Fixes
+
+-   better render when axis force labels count is not round ([8b6984c](https://github.com/nativescript-community/ui-chart/commit/8b6984c9a64bb818f2fd81b891a442211241dd73))
+-   limit line text render fix ([5060321](https://github.com/nativescript-community/ui-chart/commit/5060321c4544019e8b1b6f650ccb7cb1351785e9))
+
 ## [1.2.27](https://github.com/nativescript-community/ui-chart/compare/v1.2.26...v1.2.27) (2023-03-23)
 
 ### Bug Fixes
