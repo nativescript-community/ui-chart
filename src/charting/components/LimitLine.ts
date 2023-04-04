@@ -30,7 +30,7 @@ export class LimitLine extends ComponentBase {
     private mLineColor: Color | string = '#ED5B5B';
 
     /** the style of the label text */
-    private mTextStyle = Style.FILL_AND_STROKE;
+    private mTextStyle = Style.FILL;
 
     /** label string that is drawn next to the limit line */
     private mLabel = '';
