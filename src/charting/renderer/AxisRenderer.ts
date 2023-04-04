@@ -207,9 +207,9 @@ export abstract class AxisRenderer extends Renderer {
         // force label count
         if (axis.isForceLabelsEnabled()) {
             interval = range / (labelCount - 1);
-            axis.mEntryCount = labelCount;
+            axis.mEntryCount = Math.floor(labelCount);
 
-            if (axis.mEntries.length < labelCount) {
+            if (axis.mEntries.length < axis.mEntryCount) {
                 // Ensure stops contains at least numStops elements.
                 axis.mEntries = [];
                 axis.mLabels = [];
@@ -217,15 +217,15 @@ export abstract class AxisRenderer extends Renderer {
 
             let v = min;
 
-            for (let i = 0; i < labelCount; i++) {
-                if (axis.ensureLastLabel && i === labelCount - 1) {
+            for (let i = 0; i < axis.mEntryCount; i++) {
+                if (axis.ensureLastLabel && i === axis.mEntryCount - 1) {
                     v = max;
                 }
                 axis.mEntries[i] = v;
                 axis.mLabels[i] = formatter.getAxisLabel(v, axis, this.mViewPortHandler);
                 v += interval;
             }
-            n = labelCount;
+            n = axis.mEntryCount;
 
             // no forced count
         } else {

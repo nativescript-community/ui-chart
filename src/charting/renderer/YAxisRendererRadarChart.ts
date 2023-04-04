@@ -54,7 +54,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
         // force label count
         if (axis.isForceLabelsEnabled()) {
             const step = range / (labelCount - 1);
-            axis.mEntryCount = labelCount;
+            axis.mEntryCount = Math.floor(labelCount);
 
             // if (this.mAxis.mEntries.length < labelCount) {
             //     // Ensure stops contains at least numStops elements.
@@ -64,13 +64,12 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
             let v = min;
 
-            for (let i = 0; i < labelCount; i++) {
+            for (let i = 0; i < axis.mEntryCount; i++) {
                 axis.mEntries[i] = v;
                 axis.mLabels[i] = formatter.getAxisLabel(v, axis, this.mViewPortHandler);
                 v += step;
             }
-
-            n = labelCount;
+            n = axis.mEntryCount;
 
             // no forced count
         } else {
