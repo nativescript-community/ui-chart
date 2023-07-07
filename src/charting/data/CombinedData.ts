@@ -164,7 +164,7 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
     public getDataSetByHighlight(highlight: Highlight) {
         if (highlight.dataIndex >= this.getAllData().length) return null;
 
-        const data = this.getDataByIndex(highlight.dataSetIndex);
+        const data = this.getDataByIndex(highlight.dataIndex);
 
         if (highlight.dataSetIndex >= data.getDataSetCount()) return null;
 
