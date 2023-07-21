@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.29](https://github.com/nativescript-community/ui-chart/compare/v1.2.28...v1.2.29) (2023-07-21)
+
+### Bug Fixes
+
+-   getDataSetByHighlight in CombinedData ([fe49d9e](https://github.com/nativescript-community/ui-chart/commit/fe49d9ea9892ca6eeeaf175e87ce09076ce84e83))
+
 ## [1.2.28](https://github.com/nativescript-community/ui-chart/compare/v1.2.27...v1.2.28) (2023-04-04)
 
 ### Bug Fixes
