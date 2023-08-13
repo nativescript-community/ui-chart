@@ -38,10 +38,10 @@
     "devDependencies": {
         "@commitlint/cli": "^17.5.0",
         "@commitlint/config-conventional": "^17.4.4",
-        "@nativescript-community/arraybuffers": "^1.1.1",
-        "@nativescript-community/gesturehandler": "^2.0.9",
+        "@nativescript-community/arraybuffers": "^1.1.3",
+        "@nativescript-community/gesturehandler": "^2.0.12",
         "@nativescript-community/tween": "0.0.14",
-        "@nativescript-community/ui-canvas": "4.4.12",
+        "@nativescript-community/ui-canvas": "4.5.1",
         "@nativescript/core": "8.4.7",
         "@nativescript/types-android": "8.4.0",
         "@nativescript/types-ios": "8.4.0",
