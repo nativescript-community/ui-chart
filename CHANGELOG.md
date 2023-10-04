@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.31](https://github.com/nativescript-community/ui-chart/compare/v1.2.30...v1.2.31) (2023-10-04)
+
+### Bug Fixes
+
+-   missing typings ([bdc7a4c](https://github.com/nativescript-community/ui-chart/commit/bdc7a4cbecb540a05c8ed8e5a4c935fb9dc7163f))
+
 ## [1.2.30](https://github.com/nativescript-community/ui-chart/compare/v1.2.29...v1.2.30) (2023-08-13)
 
 ### Bug Fixes
