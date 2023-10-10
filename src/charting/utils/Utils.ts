@@ -793,7 +793,7 @@ export namespace Utils {
         if (__ANDROID__) {
             return getSDK() >= 18;
         }
-        return false;
+        return true;
     }
 
     /**
