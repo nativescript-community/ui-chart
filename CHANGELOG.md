@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.32](https://github.com/nativescript-community/ui-chart/compare/v1.2.31...v1.2.32) (2023-10-10)
+
+### Bug Fixes
+
+-   **ios:** gradient not working ([db87108](https://github.com/nativescript-community/ui-chart/commit/db87108fb9c9c1f673611e580f27848823583982))
+
 ## [1.2.31](https://github.com/nativescript-community/ui-chart/compare/v1.2.30...v1.2.31) (2023-10-04)
 
 ### Bug Fixes
