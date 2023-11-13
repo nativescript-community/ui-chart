@@ -33,8 +33,8 @@
     "typings": "charts/index.d.ts",
     "dependencies": {
         "@nativescript-community/arraybuffers": "^1.1.3",
-        "@nativescript-community/gesturehandler": "^2.0.12",
-        "@nativescript-community/ui-canvas": "^4.5.1",
+        "@nativescript-community/gesturehandler": "^2.0.18",
+        "@nativescript-community/ui-canvas": "^4.6.9",
         "additween": "^3.0.0",
         "downsample": "^1.4.0",
         "number-format.js": "^2.0.9"
