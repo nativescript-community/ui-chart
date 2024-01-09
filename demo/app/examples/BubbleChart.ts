@@ -22,7 +22,7 @@ export function onNavigatedTo(args) {
 export function onChartLoaded(args) {
     const chart = args.object as BubbleChart;
 
-    chart.drawFameRate = true;
+    chart.drawFrameRate = true;
     // chart.setLogEnabled(true);
     chart.setScaleEnabled(true);
     chart.setDragEnabled(true);
