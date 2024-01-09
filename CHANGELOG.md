@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.35](https://github.com/Akylas/nativescript-chart/compare/v1.2.34...v1.2.35) (2024-01-09)
+
+### Bug Fixes
+
+-   ensure we dont use interval if it is <= 0 ([1a54b45](https://github.com/Akylas/nativescript-chart/commit/1a54b453c57fceeab9e76bf9b332667fb65eebee))
+-   prevent rounding issue when computing if item is in bounds ([e997894](https://github.com/Akylas/nativescript-chart/commit/e99789445f52459efc6f01e662675f029c53f41b))
+
 ## [1.2.34](https://github.com/Akylas/nativescript-chart/compare/v1.2.33...v1.2.34) (2024-01-09)
 
 ### Bug Fixes
