@@ -2,10 +2,10 @@
     <Page @navigatedTo="onNavigatedTo">
         <ActionBar title="Chart Samples" />
         <StackLayout>
-            <ListView ref="listView" rowHeight="50" for="example in examples" @itemTap="goToExample">
+            <ListView ref="listView" rowHeight="50" :items="examples">
                 <v-template>
-                    <StackLayout class="item" orientation="horizontal" height="40">
-                        <Label paddingLeft="10" :text="example.title" class="title" verticalAlignment="center" />
+                    <StackLayout class="item" orientation="horizontal" height="40"  @tap="goToExample(item)">
+                        <Label paddingLeft="10" :text="item.title" class="title" verticalAlignment="center" />
                     </StackLayout>
                 </v-template>
             </ListView>
@@ -17,22 +17,24 @@
 import BaseVueComponent from './BaseVueComponent';
 import Component from 'vue-class-component';
 import { getExamples } from './examples';
-import { GC } from '@nativescript/core/utils/utils';
 
 @Component({})
 export default class App extends BaseVueComponent {
     onNavigatedTo() {
         console.log('app', 'onNavigatedTo');
-        GC();
     }
 
     get examples() {
         return getExamples();
     }
-    goToExample({ item }) {
-        this.$navigateTo(item.component, {
-            props:{title: item.title}
-        });
+    async goToExample(example) {
+        try {
+            await this.$navigateTo(example.component, {
+                props:{title: example.title}
+            });
+        } catch (error) {
+            console.error(error, error.stack)
+        }
     }
     // onItemTap(item) {
     //     const module = require(`./examples/${item.component}.vue`).default;

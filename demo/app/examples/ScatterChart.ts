@@ -24,7 +24,7 @@ export function onNavigatedTo(args) {
 
 export function onChartLoaded(args) {
     const chart = args.object as ScatterChart;
-    chart.drawFameRate = true;
+    chart.drawFrameRate = true;
 
     chart.setDrawGridBackground(false);
     chart.setTouchEnabled(true);

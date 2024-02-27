@@ -22,8 +22,7 @@ export function onNavigatedTo(args) {
 export function onChartLoaded(args) {
     const chart = args.object as RadarChart;
 
-    chart.drawFameRate = true;
-    chart.setLogEnabled(true);
+    chart.drawFrameRate = true;
     // chart.setDrawWeb(false);
     // chart.setHardwareAccelerationEnabled(true);
 

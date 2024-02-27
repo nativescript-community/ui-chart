@@ -2,6 +2,8 @@ import { CanvasView, Matrix, Rect, RectF } from '@nativescript-community/ui-canv
 import { TypedArray } from '@nativescript-community/arraybuffers';
 import { Utils } from './Utils';
 
+const EPSILON = 0.0001;
+
 /**
  * Class that contains information about the charts current viewport settings, including offsets, scale & translation
  * levels, ...
@@ -527,21 +529,21 @@ export class ViewPortHandler {
     }
 
     public isInBoundsLeft(x) {
-        return this.mContentRect.left <= x + 1;
+        return this.mContentRect.left - (x + 1) <= EPSILON;
     }
 
     public isInBoundsRight(x) {
         x = (x * 100) / 100;
-        return this.mContentRect.right >= x - 1;
+        return this.mContentRect.right - (x - 1) >= -EPSILON;
     }
 
     public isInBoundsTop(y) {
-        return this.mContentRect.top <= y;
+        return this.mContentRect.top - y <= EPSILON;
     }
 
     public isInBoundsBottom(y) {
         y = (y * 100) / 100;
-        return this.mContentRect.bottom >= y;
+        return this.mContentRect.bottom - y >= -EPSILON;
     }
 
     /**

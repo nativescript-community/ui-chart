@@ -76,7 +76,7 @@ export function onNavigatedTo(args) {
 export function onChartLoaded(args) {
     const chart = args.object as LineChart;
 
-    chart.drawFameRate = true;
+    chart.drawFrameRate = true;
     chart.backgroundColor = 'white';
 
     // enable touch gestures

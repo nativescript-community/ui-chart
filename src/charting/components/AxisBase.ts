@@ -407,7 +407,7 @@ export abstract class AxisBase extends ComponentBase {
     public setForcedInterval(interval) {
         this.mForcedInterval = interval;
         // set this to true if it was disabled, as it makes no sense to call this method with forcedInterval disabled
-        this.mForcedIntervalEnabled = true;
+        this.mForcedIntervalEnabled = interval > 0;
     }
     /**
      * @return the force interval

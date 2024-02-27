@@ -22,8 +22,7 @@ export function onNavigatedTo(args) {
 export function onChartLoaded(args) {
     const chart = args.object as PieChart;
 
-    chart.drawFameRate = true;
-    chart.setLogEnabled(true);
+    chart.drawFrameRate = true;
     chart.setHighlightPerTapEnabled(true);
     //chart.setHoleRadius(10);
     //chart.setDrawHoleEnabled(false);
