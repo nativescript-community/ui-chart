@@ -135,7 +135,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
         }
 
         // draw the line (only if filled is disabled or alpha is below 255)
-        const lineWidth = dataSet.getLineWidth();
+        const lineWidth = dataSet.lineWidth;
         if ((!dataSet.isDrawFilledEnabled() || dataSet.getFillAlpha() < 255) && lineWidth > 0) {
             const renderPaint = this.renderPaint;
             renderPaint.setColor(dataSet.getColor());
@@ -167,7 +167,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const pIcon: MPPointF = { x: 0, y: 0 };
 
         const yoffset = 5;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let i = 0; i < data.getDataSetCount(); i++) {
             const dataSet = data.getDataSetByIndex(i);
             if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;

@@ -344,11 +344,11 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
     protected drawDescription(c: Canvas) {
         // check if description should be drawn
-        if (this.mDescription != null && this.mDescription.isEnabled()) {
-            const position = this.mDescription.getPosition();
+        if (this.mDescription != null && this.mDescription.enabled) {
+            const position = this.mDescription.position;
             const paint = Utils.getTempPaint();
-            paint.setFont(this.mDescription.getFont());
-            paint.setColor(this.mDescription.getTextColor());
+            paint.setFont(this.mDescription.typeface);
+            paint.setColor(this.mDescription.textColor);
             paint.setTextAlign(this.mDescription.getTextAlign());
 
             let x, y;
@@ -356,8 +356,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             const vph = this.mViewPortHandler;
             // if no position specified, draw on default position
             if (position == null) {
-                x = vph.getChartWidth() - vph.offsetRight() - this.mDescription.getXOffset();
-                y = vph.getChartHeight() - vph.offsetBottom() - this.mDescription.getYOffset();
+                x = vph.getChartWidth() - vph.offsetRight() - this.mDescription.xOffset;
+                y = vph.getChartHeight() - vph.offsetBottom() - this.mDescription.yOffset;
             } else {
                 x = position.x;
                 y = position.y;

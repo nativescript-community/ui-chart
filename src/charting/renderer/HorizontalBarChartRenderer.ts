@@ -103,7 +103,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             renderPaint.setColor(dataSet.getColor());
         }
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let j = 0, pos = 0; j < buffer.size(); j += 4, pos++) {
             if (!this.mViewPortHandler.isInBoundsTop(buffer.buffer[j + 3])) {
                 break;
@@ -147,7 +147,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
 
         const paint = this.valuePaint;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let i = 0; i < this.mChart.getBarData().getDataSetCount(); i++) {
             const dataSet = dataSets[i];
             if (!this.shouldDrawValues(dataSet)) {

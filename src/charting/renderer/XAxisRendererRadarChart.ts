@@ -18,15 +18,15 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
     public renderAxisLabels(c: Canvas) {
         const axis = this.mXAxis;
         const chart = this.mChart;
-        if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) return;
+        if (!axis.enabled || !axis.drawLabels) return;
 
-        const labelRotationAngleDegrees = axis.getLabelRotationAngle();
+        const labelRotationAngleDegrees = axis.labelRotationAngle;
         const drawLabelAnchor: MPPointF = { x: 0.5, y: 0.25 };
         const paint = this.axisLabelsPaint;
 
-        paint.setFont(axis.getFont());
-        paint.setTextAlign(axis.getLabelTextAlign());
-        paint.setColor(axis.getTextColor());
+        paint.setFont(axis.typeface);
+        paint.setTextAlign(axis.labelTextAlign);
+        paint.setColor(axis.textColor);
 
         const sliceangle = chart.getSliceAngle();
 

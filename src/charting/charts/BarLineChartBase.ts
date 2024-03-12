@@ -185,36 +185,36 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (!noComputeOnNextDraw && this.mAutoScaleMinMaxEnabled) {
             this.autoScale();
         }
-        const leftEnabled = this.mAxisLeft.isEnabled();
-        const rightEnabled = this.mAxisRight && this.mAxisRight.isEnabled();
-        const xEnabled = this.mXAxis.isEnabled();
-        const leftLimitEnabled = leftEnabled && this.mAxisLeft.isDrawLimitLinesEnabled();
-        const rightLimitEnabled = rightEnabled && this.mAxisRight.isDrawLimitLinesEnabled();
-        const xLimitEnabled = xEnabled && this.mXAxis.isDrawLimitLinesEnabled();
+        const leftEnabled = this.mAxisLeft.enabled;
+        const rightEnabled = this.mAxisRight && this.mAxisRight.enabled;
+        const xEnabled = this.mXAxis.enabled;
+        const leftLimitEnabled = leftEnabled && this.mAxisLeft.drawLimitLines;
+        const rightLimitEnabled = rightEnabled && this.mAxisRight.drawLimitLines;
+        const xLimitEnabled = xEnabled && this.mXAxis.drawLimitLines;
 
         if (!noComputeOnNextDraw) {
-            if (leftEnabled) this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
+            if (leftEnabled) this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.inverted);
 
-            if (rightEnabled) this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
+            if (rightEnabled) this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.inverted);
 
             if (xEnabled) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
         }
 
-        if (xEnabled && this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
-        if (leftEnabled && this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
-        if (rightEnabled && this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
+        if (xEnabled && this.mXAxis.drawGridLinesBehindData) this.mXAxisRenderer.renderGridLines(canvas);
+        if (leftEnabled && this.mAxisLeft.drawGridLinesBehindData) this.mAxisRendererLeft.renderGridLines(canvas);
+        if (rightEnabled && this.mAxisRight.drawGridLinesBehindData) this.mAxisRendererRight.renderGridLines(canvas);
 
-        if (xLimitEnabled && this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
-        if (leftLimitEnabled && this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
-        if (rightLimitEnabled && this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+        if (xLimitEnabled && this.mXAxis.drawLimitLinesBehindData) this.mXAxisRenderer.renderLimitLines(canvas);
+        if (leftLimitEnabled && this.mAxisLeft.drawLimitLinesBehindData) this.mAxisRendererLeft.renderLimitLines(canvas);
+        if (rightLimitEnabled && this.mAxisRight.drawLimitLinesBehindData) this.mAxisRendererRight.renderLimitLines(canvas);
 
         if (xEnabled) this.mXAxisRenderer.renderAxisLine(canvas);
         if (leftEnabled) this.mAxisRendererLeft.renderAxisLine(canvas);
         if (rightEnabled) this.mAxisRendererRight.renderAxisLine(canvas);
 
-        if (xEnabled && this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
-        if (leftEnabled && this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
-        if (rightEnabled && this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
+        if (xEnabled && this.mXAxis.drawLabelsBehindData) this.mXAxisRenderer.renderAxisLabels(canvas);
+        if (leftEnabled && this.mAxisLeft.drawLabelsBehindData) this.mAxisRendererLeft.renderAxisLabels(canvas);
+        if (rightEnabled && this.mAxisRight.drawLabelsBehindData) this.mAxisRendererRight.renderAxisLabels(canvas);
 
         // make sure the data cannot be drawn outside the content-rect
         if (this.isClipDataToContentEnabled()) {
@@ -225,9 +225,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             this.mRenderer.drawData(canvas);
         }
 
-        if (xEnabled && !this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
-        if (leftEnabled && !this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
-        if (rightEnabled && !this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
+        if (xEnabled && !this.mXAxis.drawGridLinesBehindData) this.mXAxisRenderer.renderGridLines(canvas);
+        if (leftEnabled && !this.mAxisLeft.drawGridLinesBehindData) this.mAxisRendererLeft.renderGridLines(canvas);
+        if (rightEnabled && !this.mAxisRight.drawGridLinesBehindData) this.mAxisRendererRight.renderGridLines(canvas);
 
         if (!this.clipHighlightToContent && this.isClipDataToContentEnabled()) {
             // restore before drawing highlight
@@ -244,13 +244,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.mRenderer.drawExtras(canvas);
 
-        if (xLimitEnabled && !this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
-        if (leftLimitEnabled && !this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
-        if (rightLimitEnabled && !this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+        if (xLimitEnabled && !this.mXAxis.drawLimitLinesBehindData) this.mXAxisRenderer.renderLimitLines(canvas);
+        if (leftLimitEnabled && !this.mAxisLeft.drawLimitLinesBehindData) this.mAxisRendererLeft.renderLimitLines(canvas);
+        if (rightLimitEnabled && !this.mAxisRight.drawLimitLinesBehindData) this.mAxisRendererRight.renderLimitLines(canvas);
 
-        if (xEnabled && !this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
-        if (leftEnabled && !this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
-        if (rightEnabled && !this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
+        if (xEnabled && !this.mXAxis.drawLabelsBehindData) this.mXAxisRenderer.renderAxisLabels(canvas);
+        if (leftEnabled && !this.mAxisLeft.drawLabelsBehindData) this.mAxisRendererLeft.renderAxisLabels(canvas);
+        if (rightEnabled && !this.mAxisRight.drawLabelsBehindData) this.mAxisRendererRight.renderAxisLabels(canvas);
 
         if (this.isClipValuesToContentEnabled()) {
             canvas.save();
@@ -290,20 +290,20 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         if (Trace.isEnabled()) {
             CLog(CLogTypes.info, LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.mXAxis.mAxisMinimum + ', xmax: ' + this.mXAxis.mAxisMaximum + ', xdelta: ' + this.mXAxis.mAxisRange);
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.enabled) {
             this.mRightAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
         }
-        if ((this.mAxisLeft && this.mAxisLeft.isEnabled()) || this.mXAxis.isEnabled()) {
+        if ((this.mAxisLeft && this.mAxisLeft.enabled) || this.mXAxis.enabled) {
             this.mLeftAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
         }
     }
 
     protected prepareOffsetMatrix() {
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
-            this.mRightAxisTransformer.prepareMatrixOffset(this.mAxisRight.isInverted());
+        if (this.mAxisRight && this.mAxisRight.enabled) {
+            this.mRightAxisTransformer.prepareMatrixOffset(this.mAxisRight.inverted);
         }
-        if ((this.mAxisLeft && this.mAxisLeft.isEnabled()) || this.mXAxis.isEnabled()) {
-            this.mLeftAxisTransformer.prepareMatrixOffset(this.mAxisLeft.isInverted());
+        if ((this.mAxisLeft && this.mAxisLeft.enabled) || this.mXAxis.enabled) {
+            this.mLeftAxisTransformer.prepareMatrixOffset(this.mAxisLeft.inverted);
         }
     }
 
@@ -328,17 +328,17 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.calcMinMax();
 
-        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
-            this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
+        if (this.mAxisLeft && this.mAxisLeft.enabled) {
+            this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.inverted);
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
-            this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
+        if (this.mAxisRight && this.mAxisRight.enabled) {
+            this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.inverted);
         }
-        if (this.mXAxis.isEnabled()) {
+        if (this.mXAxis.enabled) {
             this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
         }
 
-        if (this.mLegend != null && this.mLegend.isEnabled()) {
+        if (this.mLegend != null && this.mLegend.enabled) {
             this.mLegendRenderer.computeLegend(this.mData);
         }
 
@@ -359,11 +359,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         // calculate axis range (min / max) according to provided data
 
-        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft && this.mAxisLeft.enabled) {
             this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         }
 
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.enabled) {
             this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
         }
 
@@ -374,10 +374,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.mXAxis.calculate(this.mData.getXMin(), this.mData.getXMax());
 
         // calculate axis range (min / max) according to provided data
-        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft && this.mAxisLeft.enabled) {
             this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.enabled) {
             this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
         }
     }
@@ -389,26 +389,26 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         offsets.bottom = 0;
 
         // setup offsets for legend
-        if (this.mLegend != null && this.mLegend.isEnabled() && !this.mLegend.isDrawInsideEnabled()) {
-            switch (this.mLegend.getOrientation()) {
+        if (this.mLegend != null && this.mLegend.enabled && !this.mLegend.drawInside) {
+            switch (this.mLegend.orientation) {
                 case LegendOrientation.VERTICAL:
-                    switch (this.mLegend.getHorizontalAlignment()) {
+                    switch (this.mLegend.horizontalAlignment) {
                         case LegendHorizontalAlignment.LEFT:
-                            offsets.left += Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.getMaxSizePercent()) + this.mLegend.getXOffset();
+                            offsets.left += Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.maxSizePercent) + this.mLegend.xOffset;
                             break;
 
                         case LegendHorizontalAlignment.RIGHT:
-                            offsets.right += Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.getMaxSizePercent()) + this.mLegend.getXOffset();
+                            offsets.right += Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.maxSizePercent) + this.mLegend.xOffset;
                             break;
 
                         case LegendHorizontalAlignment.CENTER:
-                            switch (this.mLegend.getVerticalAlignment()) {
+                            switch (this.mLegend.verticalAlignment) {
                                 case LegendVerticalAlignment.TOP:
-                                    offsets.top += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()) + this.mLegend.getYOffset();
+                                    offsets.top += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.maxSizePercent) + this.mLegend.yOffset;
                                     break;
 
                                 case LegendVerticalAlignment.BOTTOM:
-                                    offsets.bottom += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()) + this.mLegend.getYOffset();
+                                    offsets.bottom += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.maxSizePercent) + this.mLegend.yOffset;
                                     break;
 
                                 default:
@@ -419,13 +419,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
                     break;
 
                 case LegendOrientation.HORIZONTAL:
-                    switch (this.mLegend.getVerticalAlignment()) {
+                    switch (this.mLegend.verticalAlignment) {
                         case LegendVerticalAlignment.TOP:
-                            offsets.top += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()) + this.mLegend.getYOffset();
+                            offsets.top += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.maxSizePercent) + this.mLegend.yOffset;
                             break;
 
                         case LegendVerticalAlignment.BOTTOM:
-                            offsets.bottom += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()) + this.mLegend.getYOffset();
+                            offsets.bottom += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.maxSizePercent) + this.mLegend.yOffset;
                             break;
 
                         default:
@@ -459,14 +459,14 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
                 offsetRight += this.mAxisRight.getRequiredWidthSpace(this.mAxisRendererRight.axisLabelsPaint);
             }
 
-            if (this.mXAxis.isEnabled() && this.mXAxis.isDrawLabelsEnabled()) {
-                const xLabelHeight = this.mXAxis.mLabelRotatedHeight + this.mXAxis.getYOffset();
+            if (this.mXAxis.enabled && this.mXAxis.drawLabels) {
+                const xLabelHeight = this.mXAxis.mLabelRotatedHeight + this.mXAxis.yOffset;
                 // offsets for x-labels
-                if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
+                if (this.mXAxis.position === XAxisPosition.BOTTOM) {
                     offsetBottom += xLabelHeight;
-                } else if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
+                } else if (this.mXAxis.position === XAxisPosition.TOP) {
                     offsetTop += xLabelHeight;
-                } else if (this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
+                } else if (this.mXAxis.position === XAxisPosition.BOTH_SIDED) {
                     offsetBottom += xLabelHeight;
                     offsetTop += xLabelHeight;
                 }
@@ -513,7 +513,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public getTransformer(which?: AxisDependency) {
         if (which === undefined) {
-            if (this.getAxisLeft().isEnabled()) {
+            if (this.getAxisLeft().enabled) {
                 return this.mLeftAxisTransformer;
             }
             return this.mRightAxisTransformer;
@@ -1515,7 +1515,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     }
 
     public isInverted(axis) {
-        return this.getAxis(axis).isInverted();
+        return this.getAxis(axis).inverted;
     }
 
     /**
@@ -1612,10 +1612,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     public getYChartMax() {
         let max = -Infinity;
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft.enabled) {
             max = Math.max(this.mAxisLeft.mAxisMaximum, max);
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.enabled) {
             max = Math.max(this.mAxisRight.mAxisMaximum, max);
         }
         return max;
@@ -1623,10 +1623,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     public getYChartMin() {
         let min = Infinity;
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft.enabled) {
             min = Math.min(this.mAxisLeft.mAxisMinimum, min);
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.enabled) {
             min = Math.min(this.mAxisRight.mAxisMinimum, min);
         }
         return min;
@@ -1638,8 +1638,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @return
      */
     public isAnyAxisInverted() {
-        if (this.mAxisLeft.isEnabled() && this.mAxisLeft.isInverted()) return true;
-        if (this.mAxisRight && this.mAxisRight.isEnabled() && this.mAxisRight.isInverted()) return true;
+        if (this.mAxisLeft.enabled && this.mAxisLeft.inverted) return true;
+        if (this.mAxisRight && this.mAxisRight.enabled && this.mAxisRight.inverted) return true;
         return false;
     }
 

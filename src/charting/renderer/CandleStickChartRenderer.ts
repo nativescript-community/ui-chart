@@ -42,7 +42,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         renderPaint.setStrokeWidth(dataSet.getShadowWidth());
         const xKey = dataSet.xProperty;
         // draw the body
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             // get the entry
             const e = dataSet.getEntryForIndex(j);
@@ -218,7 +218,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         }
         // if values are drawn
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
 
@@ -268,7 +268,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         const candleData = this.mChart.getCandleData();
 
         let entry: CandleEntry, index: number;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const paint = this.highlightPaint;
         for (const high of indices) {
             const set = candleData.getDataSetByIndex(high.dataSetIndex);

@@ -97,7 +97,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         this.calcMinMax();
 
-        this.mYAxisRenderer.computeAxis(this.mYAxis.mAxisMinimum, this.mYAxis.mAxisMaximum, this.mYAxis.isInverted());
+        this.mYAxisRenderer.computeAxis(this.mYAxis.mAxisMinimum, this.mYAxis.mAxisMaximum, this.mYAxis.inverted);
         this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
 
         if (this.mLegend != null && !this.mLegend.isLegendCustom()) this.mLegendRenderer.computeLegend(this.mData);
@@ -111,20 +111,20 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         if (this.mData == null) return;
 
-        if (this.mXAxis.isEnabled()) {
+        if (this.mXAxis.enabled) {
             this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
             this.mXAxisRenderer.renderAxisLabels(c);
         }
 
         if (this.mDrawWeb) this.mRenderer.drawExtras(c);
 
-        if (this.mYAxis && this.mYAxis.isEnabled() && this.mYAxis.isDrawLimitLinesBehindDataEnabled()) this.mYAxisRenderer.renderLimitLines(c);
+        if (this.mYAxis && this.mYAxis.enabled && this.mYAxis.drawLimitLinesBehindData) this.mYAxisRenderer.renderLimitLines(c);
 
         this.mRenderer.drawData(c);
 
         if (this.valuesToHighlight()) this.mRenderer.drawHighlighted(c, this.mIndicesToHighlight);
 
-        if (this.mYAxis.isEnabled() && !this.mYAxis.isDrawLimitLinesBehindDataEnabled()) {
+        if (this.mYAxis.enabled && !this.mYAxis.drawLimitLinesBehindData) {
             this.mYAxisRenderer.renderLimitLines(c);
             this.mYAxisRenderer.renderAxisLabels(c);
         }
@@ -309,7 +309,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
     }
 
     protected getRequiredBaseOffset() {
-        return this.mXAxis.isEnabled() && this.mXAxis.isDrawLabelsEnabled() ? this.mXAxis.mLabelRotatedWidth : 10;
+        return this.mXAxis.enabled && this.mXAxis.drawLabels ? this.mXAxis.mLabelRotatedWidth : 10;
     }
 
     public getRadius() {

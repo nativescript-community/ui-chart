@@ -19,7 +19,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
         const yMin = min;
         const yMax = max;
 
-        const labelCount = axis.getLabelCount();
+        const labelCount = axis.labelCount;
         const range = Math.abs(yMax - yMin);
 
         if (labelCount === 0 || range <= 0 || !Number.isFinite(range)) {
@@ -36,7 +36,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
-        if (axis.isGranularityEnabled()) interval = interval < axis.getGranularity() ? axis.getGranularity() : interval;
+        if (axis.granularity) interval = interval < axis.granularity ? axis.granularity : interval;
 
         // Normalize interval
         const intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10, Math.log10(interval)));
@@ -47,12 +47,12 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
             interval = Math.floor(10 * intervalMagnitude);
         }
 
-        const centeringEnabled = axis.isCenterAxisLabelsEnabled();
+        const centeringEnabled = axis.centerAxisLabels;
         let n = centeringEnabled ? 1 : 0;
 
         const formatter = axis.getValueFormatter();
         // force label count
-        if (axis.isForceLabelsEnabled()) {
+        if (axis.forceLabelsEnabled) {
             const step = range / (labelCount - 1);
             axis.mEntryCount = Math.floor(labelCount);
 
@@ -135,11 +135,11 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
     }
 
     public renderAxisLabels(c: Canvas) {
-        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled()) return;
+        if (!this.mYAxis.enabled || !this.mYAxis.drawLabels) return;
 
         const paint = this.axisLabelsPaint;
-        paint.setFont(this.mYAxis.getFont());
-        paint.setColor(this.mYAxis.getTextColor());
+        paint.setFont(this.mYAxis.typeface);
+        paint.setColor(this.mYAxis.textColor);
 
         const center = this.mChart.getCenterOffsets();
         const pOut: MPPointF = { x: 0, y: 0 };
@@ -186,14 +186,14 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
-            if (!l.isEnabled()) continue;
+            if (!l.enabled) continue;
 
             const paint = this.limitLinePaint;
-            paint.setColor(l.getLineColor());
-            paint.setPathEffect(l.getDashPathEffect());
-            paint.setStrokeWidth(l.getLineWidth());
+            paint.setColor(l.lineColor);
+            paint.setPathEffect(l.dashPathEffect);
+            paint.setStrokeWidth(l.lineWidth);
 
-            const r = (l.getLimit() - this.mChart.getYChartMin()) * factor;
+            const r = (l.limit - this.mChart.getYChartMin()) * factor;
 
             const limitPath = this.renderLimitLinesPathBuffer;
             limitPath.reset();

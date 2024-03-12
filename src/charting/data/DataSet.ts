@@ -62,7 +62,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     toString() {
-        return `${this.constructor.name}[${this.getLabel()}]`;
+        return `${this.constructor.name}[${this.label}]`;
     }
 
     init() {

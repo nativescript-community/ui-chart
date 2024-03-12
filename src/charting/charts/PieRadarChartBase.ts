@@ -72,7 +72,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
 
         this.calcMinMax();
 
-        if (this.mLegend != null && this.mLegend.isEnabled()) {
+        if (this.mLegend != null && this.mLegend.enabled) {
             this.mLegendRenderer.computeLegend(this.mData);
         }
 
@@ -85,16 +85,16 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
             legendBottom = 0,
             legendTop = 0;
 
-        if (this.mLegend != null && this.mLegend.isEnabled() && !this.mLegend.isDrawInsideEnabled()) {
-            const fullLegendWidth = Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.getMaxSizePercent());
+        if (this.mLegend != null && this.mLegend.enabled && !this.mLegend.drawInside) {
+            const fullLegendWidth = Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.maxSizePercent);
 
-            switch (this.mLegend.getOrientation()) {
+            switch (this.mLegend.orientation) {
                 case LegendOrientation.VERTICAL:
                     {
                         let xLegendOffset = 0;
 
-                        if (this.mLegend.getHorizontalAlignment() === LegendHorizontalAlignment.LEFT || this.mLegend.getHorizontalAlignment() === LegendHorizontalAlignment.RIGHT) {
-                            if (this.mLegend.getVerticalAlignment() === LegendVerticalAlignment.CENTER) {
+                        if (this.mLegend.horizontalAlignment === LegendHorizontalAlignment.LEFT || this.mLegend.horizontalAlignment === LegendHorizontalAlignment.RIGHT) {
+                            if (this.mLegend.verticalAlignment === LegendVerticalAlignment.CENTER) {
                                 // this is the space between the legend and the chart
                                 const spacing = 13;
 
@@ -108,7 +108,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
 
                                 const center = this.getCenter();
 
-                                const bottomX = this.mLegend.getHorizontalAlignment() === LegendHorizontalAlignment.RIGHT ? this.mViewPortHandler.getChartWidth() - legendWidth + 15 : legendWidth - 15;
+                                const bottomX = this.mLegend.horizontalAlignment === LegendHorizontalAlignment.RIGHT ? this.mViewPortHandler.getChartWidth() - legendWidth + 15 : legendWidth - 15;
                                 const bottomY = legendHeight + 15;
                                 const distLegend = this.distanceToCenter(bottomX, bottomY);
 
@@ -126,7 +126,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
                             }
                         }
 
-                        switch (this.mLegend.getHorizontalAlignment()) {
+                        switch (this.mLegend.horizontalAlignment) {
                             case LegendHorizontalAlignment.LEFT:
                                 legendLeft = xLegendOffset;
                                 break;
@@ -134,12 +134,12 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
                                 legendRight = xLegendOffset;
                                 break;
                             case LegendHorizontalAlignment.CENTER:
-                                switch (this.mLegend.getVerticalAlignment()) {
+                                switch (this.mLegend.verticalAlignment) {
                                     case LegendVerticalAlignment.TOP:
-                                        legendTop = Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent());
+                                        legendTop = Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.maxSizePercent);
                                         break;
                                     case LegendVerticalAlignment.BOTTOM:
-                                        legendBottom = Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent());
+                                        legendBottom = Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.maxSizePercent);
                                         break;
                                 }
                                 break;
@@ -149,15 +149,15 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
                 case LegendOrientation.HORIZONTAL:
                     let yLegendOffset = 0;
 
-                    if (this.mLegend.getVerticalAlignment() === LegendVerticalAlignment.TOP || this.mLegend.getVerticalAlignment() === LegendVerticalAlignment.BOTTOM) {
+                    if (this.mLegend.verticalAlignment === LegendVerticalAlignment.TOP || this.mLegend.verticalAlignment === LegendVerticalAlignment.BOTTOM) {
                         // It's possible that we do not need this offset anymore as it
                         //   is available through the extraOffsets, but changing it can mean
                         //   changing default visibility for existing apps.
                         const yOffset = this.getRequiredLegendOffset();
 
-                        yLegendOffset = Math.min(this.mLegend.mNeededHeight + yOffset, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent());
+                        yLegendOffset = Math.min(this.mLegend.mNeededHeight + yOffset, this.mViewPortHandler.getChartHeight() * this.mLegend.maxSizePercent);
 
-                        switch (this.mLegend.getVerticalAlignment()) {
+                        switch (this.mLegend.verticalAlignment) {
                             case LegendVerticalAlignment.TOP:
                                 legendTop = yLegendOffset;
                                 break;
@@ -181,7 +181,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
         if (!this['mCircleBox']) {
             const x = this.getXAxis();
 
-            if (x.isEnabled() && x.isDrawLabelsEnabled()) {
+            if (x.enabled && x.drawLabels) {
                 minOffset = Math.max(minOffset, x.mLabelRotatedWidth);
             }
         }

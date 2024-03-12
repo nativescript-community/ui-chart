@@ -70,7 +70,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const maxBubbleHeight = Math.abs(this.mViewPortHandler.contentBottom() - this.mViewPortHandler.contentTop());
         const referenceSize = Math.min(maxBubbleHeight, maxBubbleWidth);
         const maxSize = dataSet.getMaxSize();
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const renderPaint = this.renderPaint;
         const previousShader = renderPaint.getShader();
         const shader = dataSet.getFillShader();
@@ -116,7 +116,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const paint = this.valuePaint;
         const lineHeight = Utils.calcTextHeight(paint, '1');
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
             if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
@@ -176,7 +176,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const phaseY = this.mAnimator.getPhaseY();
 
         let entry: BubbleEntry, index: number;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const pointBuffer = Utils.getTempArray(2);
         const sizeBuffer = Utils.getTempArray(4);
         for (const high of indices) {

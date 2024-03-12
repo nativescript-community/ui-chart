@@ -47,73 +47,21 @@ export class XAxis extends AxisBase {
     /**
      * This is the angle for drawing the X axis labels (in degrees)
      */
-    protected mLabelRotationAngle = 0;
+    labelRotationAngle = 0;
 
     /**
      * if set to true, the chart will avoid that the first and last label entry
      * in the chart "clip" off the edge of the chart
      */
-    private mAvoidFirstLastClipping = true;
+    avoidFirstLastClipping = true;
 
     /**
      * the position of the x-labels relative to the chart
      */
-    private mPosition = XAxisPosition.TOP;
+    position = XAxisPosition.TOP;
 
     constructor() {
         super();
-
-        this.mYOffset = 4; // -3
-    }
-
-    /**
-     * returns the position of the x-labels
-     */
-    public getPosition() {
-        return this.mPosition;
-    }
-
-    /**
-     * sets the position of the x-labels
-     *
-     * @param pos
-     */
-    public setPosition(pos: XAxisPosition) {
-        this.mPosition = pos;
-    }
-
-    /**
-     * returns the angle for drawing the X axis labels (in degrees)
-     */
-    public getLabelRotationAngle() {
-        return this.mLabelRotationAngle;
-    }
-
-    /**
-     * sets the angle for drawing the X axis labels (in degrees)
-     *
-     * @param angle the angle in degrees
-     */
-    public setLabelRotationAngle(angle) {
-        this.mLabelRotationAngle = angle;
-    }
-
-    /**
-     * if set to true, the chart will avoid that the first and last label entry
-     * in the chart "clip" off the edge of the chart or the screen
-     *
-     * @param enabled
-     */
-    public setAvoidFirstLastClipping(enabled) {
-        this.mAvoidFirstLastClipping = enabled;
-    }
-
-    /**
-     * returns true if avoid-first-lastclipping is enabled, false if not
-     *
-     * @return
-     */
-    public isAvoidFirstLastClippingEnabled() {
-        return this.mAvoidFirstLastClipping;
+        this.yOffset = 4; // -3
     }
 }

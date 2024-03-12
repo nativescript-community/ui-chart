@@ -151,7 +151,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             renderPaint.setColor(dataSet.getColor());
         }
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let j = 0; j < buffer.size(); j += 4) {
             if (!this.mViewPortHandler.isInBoundsLeft(buffer.buffer[j + 2])) {
                 continue;
@@ -204,7 +204,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         let negOffset = 0;
         const drawValueAboveBar = this.mChart.isDrawValueAboveBarEnabled();
         const paint = this.valuePaint;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let i = 0; i < this.mChart.getBarData().getDataSetCount(); i++) {
             const dataSet = dataSets[i];
             if (!this.shouldDrawValues(dataSet)) {
@@ -446,7 +446,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             this.prepareBarHighlight(x, y1, y2, barData.getBarWidth() / 2, trans, barRect);
 
             this.setHighlightDrawPos(high, barRect);
-            const customRender = this.mChart.getCustomRenderer();
+            const customRender = this.mChart.customRenderer;
             if (customRender && customRender.drawHighlight) {
                 const rect = barRect;
                 customRender.drawHighlight(c, high, rect.left, rect.top, rect.right, rect.bottom, paint);

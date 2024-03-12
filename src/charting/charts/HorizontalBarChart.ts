@@ -64,13 +64,13 @@ export class HorizontalBarChart extends BarChart {
 
         const xlabelWidth = this.mXAxis.mLabelRotatedWidth;
 
-        if (this.mXAxis.isEnabled()) {
+        if (this.mXAxis.enabled) {
             // offsets for x-labels
-            if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
+            if (this.mXAxis.position === XAxisPosition.BOTTOM) {
                 offsetLeft += xlabelWidth;
-            } else if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
+            } else if (this.mXAxis.position === XAxisPosition.TOP) {
                 offsetRight += xlabelWidth;
-            } else if (this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
+            } else if (this.mXAxis.position === XAxisPosition.BOTH_SIDED) {
                 offsetLeft += xlabelWidth;
                 offsetRight += xlabelWidth;
             }
@@ -95,10 +95,10 @@ export class HorizontalBarChart extends BarChart {
     }
 
     protected prepareValuePxMatrix() {
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight && this.mAxisRight.enabled) {
             this.mRightAxisTransformer.prepareMatrixValuePx(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisRange, this.mXAxis.mAxisRange, this.mXAxis.mAxisMinimum);
         }
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft.enabled) {
             this.mLeftAxisTransformer.prepareMatrixValuePx(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisRange, this.mXAxis.mAxisRange, this.mXAxis.mAxisMinimum);
         }
     }

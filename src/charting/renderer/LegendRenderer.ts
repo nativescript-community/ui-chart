@@ -80,9 +80,9 @@ export class LegendRenderer extends Renderer {
                         );
                     }
 
-                    if (bds.getLabel() != null) {
+                    if (bds.label != null) {
                         // add the legend description label
-                        this.computedEntries.push(new LegendEntry(dataSet.getLabel(), LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
+                        this.computedEntries.push(new LegendEntry(dataSet.label, LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
                     }
                 } else if (dataSet.constructor.name === 'PieDataSet') {
                     const pds = dataSet as PieDataSet;
@@ -96,9 +96,9 @@ export class LegendRenderer extends Renderer {
                         this.computedEntries.push(new LegendEntry(label.toString(), dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j]));
                     }
 
-                    if (pds.getLabel() != null) {
+                    if (pds.label != null) {
                         // add the legend description label
-                        this.computedEntries.push(new LegendEntry(dataSet.getLabel(), LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
+                        this.computedEntries.push(new LegendEntry(dataSet.label, LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
                     }
                 } else if (dataSet.constructor.name === 'CandleDataSet') {
                     const dSet = dataSet as CandleDataSet;
@@ -108,7 +108,7 @@ export class LegendRenderer extends Renderer {
 
                         this.computedEntries.push(new LegendEntry(null, dSet.getForm(), dSet.getFormSize(), dSet.getFormLineWidth(), dSet.getFormLineDashEffect(), decreasingColor));
 
-                        this.computedEntries.push(new LegendEntry(dSet.getLabel(), dSet.getForm(), dSet.getFormSize(), dSet.getFormLineWidth(), dSet.getFormLineDashEffect(), increasingColor));
+                        this.computedEntries.push(new LegendEntry(dSet.label, dSet.getForm(), dSet.getFormSize(), dSet.getFormLineWidth(), dSet.getFormLineDashEffect(), increasingColor));
                     }
                 } else {
                     // all others
@@ -121,7 +121,7 @@ export class LegendRenderer extends Renderer {
                             label = null;
                         } else {
                             // add label to the last entry
-                            label = data.getDataSetByIndex(i).getLabel();
+                            label = data.getDataSetByIndex(i).label;
                         }
 
                         this.computedEntries.push(new LegendEntry(label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j]));
@@ -129,15 +129,15 @@ export class LegendRenderer extends Renderer {
                 }
             }
 
-            if (this.mLegend.getExtraEntries() != null) {
-                Array.prototype.push.apply(this.computedEntries, this.mLegend.getExtraEntries());
+            if (this.mLegend.extraEntries != null) {
+                Array.prototype.push.apply(this.computedEntries, this.mLegend.extraEntries);
                 // Collections.addAll(computedEntries, this.mLegend.getExtraEntries());
             }
 
-            this.mLegend.setEntries(this.computedEntries);
+            this.mLegend.entries = this.computedEntries;
         }
         const paint = this.labelPaint;
-        paint.setFont(this.mLegend.getFont());
+        paint.setFont(this.mLegend.typeface);
 
         // calculate all dimensions of the this.mLegend
         this.mLegend.calculateDimensions(paint, this.mViewPortHandler);
@@ -145,31 +145,31 @@ export class LegendRenderer extends Renderer {
 
     @profile
     public renderLegend(c: Canvas) {
-        if (!this.mLegend.isEnabled()) return;
+        if (!this.mLegend.enabled) return;
         const paint = this.labelPaint;
 
-        paint.setFont(this.mLegend.getFont());
-        paint.setColor(this.mLegend.getTextColor());
+        paint.setFont(this.mLegend.typeface);
+        paint.setColor(this.mLegend.textColor);
         paint.getFontMetrics(this.legendFontMetrics);
         const labelLineHeight = Utils.getLineHeightFromMetrics(this.legendFontMetrics);
-        const labelLineSpacing = Utils.getLineSpacingFromMetrics(this.legendFontMetrics) + this.mLegend.getYEntrySpace();
+        const labelLineSpacing = Utils.getLineSpacingFromMetrics(this.legendFontMetrics) + this.mLegend.yEntrySpace;
         const formYOffset = labelLineHeight - Utils.calcTextHeight(paint, 'ABC') / 2;
 
-        const entries = this.mLegend.getEntries();
+        const entries = this.mLegend.entries;
 
-        const formToTextSpace = this.mLegend.getFormToTextSpace();
-        const xEntrySpace = this.mLegend.getXEntrySpace();
-        const orientation = this.mLegend.getOrientation();
-        const horizontalAlignment = this.mLegend.getHorizontalAlignment();
-        const verticalAlignment = this.mLegend.getVerticalAlignment();
-        const direction = this.mLegend.getDirection();
-        const defaultFormSize = this.mLegend.getFormSize();
+        const formToTextSpace = this.mLegend.formToTextSpace;
+        const xEntrySpace = this.mLegend.xEntrySpace;
+        const orientation = this.mLegend.orientation;
+        const horizontalAlignment = this.mLegend.horizontalAlignment;
+        const verticalAlignment = this.mLegend.verticalAlignment;
+        const direction = this.mLegend.direction;
+        const defaultFormSize = this.mLegend.formSize;
 
         // space between the entries
-        const stackSpace = this.mLegend.getStackSpace();
+        const stackSpace = this.mLegend.stackSpace;
 
-        const yoffset = this.mLegend.getYOffset();
-        const xoffset = this.mLegend.getXOffset();
+        const yoffset = this.mLegend.yOffset;
+        const xoffset = this.mLegend.xOffset;
         let originPosX = 0;
 
         switch (horizontalAlignment) {
@@ -288,7 +288,7 @@ export class LegendRenderer extends Renderer {
                         break;
 
                     case LegendVerticalAlignment.CENTER:
-                        posY = this.mViewPortHandler.getChartHeight() / 2 - this.mLegend.mNeededHeight / 2 + this.mLegend.getYOffset();
+                        posY = this.mViewPortHandler.getChartHeight() / 2 - this.mLegend.mNeededHeight / 2 + this.mLegend.yOffset;
                         break;
                 }
 
@@ -353,10 +353,10 @@ export class LegendRenderer extends Renderer {
         const restoreCount = c.save();
 
         let form = entry.form;
-        if (form === LegendForm.DEFAULT) form = legend.getForm();
+        if (form === LegendForm.DEFAULT) form = legend.form;
         paint.setColor(entry.formColor);
 
-        const formSize = isNaN(entry.formSize) ? legend.getFormSize() : entry.formSize;
+        const formSize = isNaN(entry.formSize) ? legend.formSize : entry.formSize;
         const half = formSize / 2;
 
         switch (form) {
@@ -381,8 +381,8 @@ export class LegendRenderer extends Renderer {
 
             case LegendForm.LINE:
                 {
-                    const formLineWidth = isNaN(entry.formLineWidth) ? legend.getFormLineWidth() : entry.formLineWidth;
-                    const formLineDashEffect = entry.formLineDashEffect == null ? legend.getFormLineDashEffect() : entry.formLineDashEffect;
+                    const formLineWidth = isNaN(entry.formLineWidth) ? legend.formLineWidth : entry.formLineWidth;
+                    const formLineDashEffect = entry.formLineDashEffect == null ? legend.formLineDashEffect : entry.formLineDashEffect;
                     paint.setStyle(Style.STROKE);
                     paint.setStrokeWidth(formLineWidth);
                     paint.setPathEffect(formLineDashEffect);

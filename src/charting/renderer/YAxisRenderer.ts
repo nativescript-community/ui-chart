@@ -32,23 +32,23 @@ export class YAxisRenderer extends AxisRenderer {
     @profile
     public renderAxisLabels(c: Canvas) {
         const axis = this.mYAxis;
-        if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) return;
+        if (!axis.enabled || !axis.drawLabels) return;
 
         const positions = this.getTransformedPositions();
         const paint = this.axisLabelsPaint;
 
-        paint.setFont(axis.getFont());
-        paint.setColor(axis.getTextColor());
+        paint.setFont(axis.typeface);
+        paint.setColor(axis.textColor);
 
-        const xoffset = axis.getXOffset();
-        const yoffset = Utils.calcTextHeight(paint, 'A') / 2.5 + axis.getYOffset();
+        const xoffset = axis.xOffset;
+        const yoffset = Utils.calcTextHeight(paint, 'A') / 2.5 + axis.yOffset;
         const dependency = axis.getAxisDependency();
-        const labelPosition = axis.getLabelPosition();
+        const labelPosition = axis.position;
 
         let xPos = 0;
         let offsetLeft = 0;
         let rect: RectF;
-        if (this.mAxis.isIgnoringOffsets()) {
+        if (this.mAxis.ignoreOffsets) {
             rect = this.mViewPortHandler.getChartRect();
         } else {
             rect = this.mViewPortHandler.getContentRect();
@@ -74,21 +74,21 @@ export class YAxisRenderer extends AxisRenderer {
 
         this.drawYLabels(c, xPos, positions, yoffset);
         if (dependency === AxisDependency.LEFT) {
-            this.drawMarkTicket(c, rect.left, positions, -xoffset / 2);
+            this.drawMarkTick(c, rect.left, positions, -xoffset / 2);
         } else {
-            this.drawMarkTicket(c, rect.right, positions, +xoffset / 2);
+            this.drawMarkTick(c, rect.right, positions, +xoffset / 2);
         }
     }
 
     public renderAxisLine(c: Canvas) {
         const axis = this.mYAxis;
-        if (!axis.isEnabled() || !axis.isDrawAxisLineEnabled() || axis.getAxisLineWidth() === 0 || axis.mEntryCount === 0) return;
+        if (!axis.enabled || !axis.drawAxisLine || axis.axisLineWidth === 0 || axis.mEntryCount === 0) return;
         const paint = this.axisLinePaint;
 
-        paint.setColor(axis.getAxisLineColor());
-        paint.setStrokeWidth(axis.getAxisLineWidth());
+        paint.setColor(axis.axisLineColor);
+        paint.setStrokeWidth(axis.axisLineWidth);
 
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         if (axis.getAxisDependency() === AxisDependency.LEFT) {
             c.drawLine(rect.left, rect.top, rect.left, rect.bottom, paint);
         } else {
@@ -125,9 +125,9 @@ export class YAxisRenderer extends AxisRenderer {
      * @param length
      */
 
-    protected drawMarkTicket(c: Canvas, fixedPosition, positions, ticklength) {
+    protected drawMarkTick(c: Canvas, fixedPosition, positions, ticklength) {
         const mYAxis = this.mYAxis;
-        if (!mYAxis.isDrawMarkTicksEnabled()) return;
+        if (!mYAxis.drawMarkTicks) return;
 
         const from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
         const to = mYAxis.isDrawTopYLabelEntryEnabled() ? mYAxis.mEntryCount : mYAxis.mEntryCount - 1;
@@ -158,21 +158,21 @@ export class YAxisRenderer extends AxisRenderer {
     }
     public renderGridLines(c: Canvas) {
         const axis = this.mYAxis;
-        if (!axis.isEnabled()) return;
+        if (!axis.enabled) return;
 
-        if (axis.isDrawGridLinesEnabled()) {
+        if (axis.drawGridLines) {
             const clipRestoreCount = c.save();
             c.clipRect(this.getGridClippingRect());
 
             const positions = this.getTransformedPositions();
             const paint = this.gridPaint;
 
-            paint.setColor(axis.getGridColor());
-            paint.setStrokeWidth(axis.getGridLineWidth());
-            paint.setPathEffect(axis.getGridDashPathEffect());
+            paint.setColor(axis.gridColor);
+            paint.setStrokeWidth(axis.gridLineWidth);
+            paint.setPathEffect(axis.gridDashPathEffect);
 
-            const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
-            const customRender = axis.getCustomRenderer();
+            const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+            const customRender = axis.customRenderer;
             const customRenderFunction = customRender && customRender.drawGridLine;
             for (let i = 0; i < positions.length; i += 2) {
                 this.drawGridLine(c, rect, positions[i], positions[i + 1], axis.mEntries[i / 2], paint, customRenderFunction);
@@ -187,10 +187,10 @@ export class YAxisRenderer extends AxisRenderer {
     }
 
     public getGridClippingRect() {
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         const gridClippingRect = Utils.getTempRectF();
         gridClippingRect.set(rect);
-        gridClippingRect.inset(0, -this.mAxis.getGridLineWidth());
+        gridClippingRect.inset(0, -this.mAxis.gridLineWidth);
         return gridClippingRect;
     }
 
@@ -223,7 +223,7 @@ export class YAxisRenderer extends AxisRenderer {
     protected drawZeroLine(c: Canvas) {
         const axis = this.mYAxis;
         const clipRestoreCount = c.save();
-        const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+        const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
         const zeroLineClippingRectl = Utils.getTempRectF();
         zeroLineClippingRectl.set(rect);
         zeroLineClippingRectl.inset(0, -axis.getZeroLineWidth());
@@ -263,21 +263,21 @@ export class YAxisRenderer extends AxisRenderer {
         pts[1] = 0;
         let offsetLeft = 0;
         let rect: RectF;
-        if (axis.isIgnoringOffsets()) {
+        if (axis.ignoreOffsets) {
             rect = this.mViewPortHandler.getChartRect();
         } else {
             rect = this.mViewPortHandler.getContentRect();
             offsetLeft = this.mViewPortHandler.offsetLeft();
         }
 
-        const customRender = axis.getCustomRenderer();
+        const customRender = axis.customRenderer;
         const customRendererFunc = customRender && customRender.drawLimitLine;
         const clipToContent = axis.clipLimitLinesToContent;
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
-            if (!l.isEnabled()) continue;
-            const lineWidth = l.getLineWidth();
+            if (!l.enabled) continue;
+            const lineWidth = l.lineWidth;
             if (clipToContent) {
                 c.save();
                 const clipRect = Utils.getTempRectF();
@@ -287,11 +287,11 @@ export class YAxisRenderer extends AxisRenderer {
             }
 
             const paint = this.limitLinePaint;
-            paint.setColor(l.getLineColor());
+            paint.setColor(l.lineColor);
             paint.setStrokeWidth(lineWidth);
-            paint.setPathEffect(l.getDashPathEffect());
+            paint.setPathEffect(l.dashPathEffect);
 
-            pts[1] = l.getLimit();
+            pts[1] = l.limit;
             this.mTrans.pointValuesToPixel(pts);
 
             if (lineWidth > 0) {
@@ -302,21 +302,21 @@ export class YAxisRenderer extends AxisRenderer {
                 }
             }
 
-            const label = l.getLabel();
+            const label = l.label;
 
             // if drawing the limit-value label is enabled
             if (label && label !== '') {
-                paint.setStyle(l.getTextStyle());
+                paint.setStyle(l.textStyle);
                 paint.setPathEffect(null);
-                paint.setColor(l.getTextColor());
-                paint.setFont(l.getFont());
+                paint.setColor(l.textColor);
+                paint.setFont(l.typeface);
                 paint.setStrokeWidth(0.5);
 
                 let size = Utils.calcTextSize(paint, label);
-                const xOffset = l.getXOffset();
-                const yOffset = l.getLineWidth() + size.height + l.getYOffset();
+                const xOffset = l.xOffset;
+                const yOffset = l.lineWidth + size.height + l.yOffset;
 
-                const position = l.getLabelPosition();
+                const position = l.position;
                 const needsSize = l.ensureVisible;
 
                 if (needsSize) {

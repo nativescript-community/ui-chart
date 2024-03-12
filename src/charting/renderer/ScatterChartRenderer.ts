@@ -47,7 +47,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
         const max = Math.min(Math.ceil(dataSet.getEntryCount() * this.mAnimator.getPhaseX()), dataSet.getEntryCount());
         const yKey = dataSet.yProperty;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const renderPaint = this.renderPaint;
         const pixelBuffer = Utils.getTempArray(2)
         const previousShader = renderPaint.getShader();
@@ -85,7 +85,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         }
         // if values are drawn
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let i = 0; i < this.mChart.getScatterData().getDataSetCount(); i++) {
             const dataSet = dataSets[i];
             const yKey = dataSet.yProperty;
@@ -143,7 +143,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         const scatterData = this.mChart.getScatterData();
 
         let entry: Entry, index: number;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const paint = this.highlightPaint;
         for (const high of indices) {
             const set = scatterData.getDataSetByIndex(high.dataSetIndex);

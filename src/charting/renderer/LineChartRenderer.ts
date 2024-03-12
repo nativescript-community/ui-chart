@@ -232,8 +232,8 @@ export class LineChartRenderer extends LineRadarRenderer {
     protected drawDataSet(c: Canvas, dataSet: LineDataSet): boolean {
         if (dataSet.getEntryCount() < 1) return false;
         const renderPaint = this.renderPaint;
-        renderPaint.setStrokeWidth(dataSet.getLineWidth());
-        renderPaint.setPathEffect(dataSet.getDashPathEffect());
+        renderPaint.setStrokeWidth(dataSet.lineWidth);
+        renderPaint.setPathEffect(dataSet.dashPathEffect);
         renderPaint.setColor(dataSet.getColor());
         renderPaint.setStyle(Style.STROKE);
 
@@ -519,7 +519,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     protected draw(c: Canvas, dataSet: LineDataSet) {
         const result = false;
         const drawFilled = dataSet.isDrawFilledEnabled();
-        const drawLine = dataSet.getLineWidth() > 0;
+        const drawLine = dataSet.lineWidth > 0;
         if (!drawFilled && !drawLine) {
             return result;
         }
@@ -575,7 +575,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 oldShader = null;
             }
         }
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
 
         if (drawLine) {
             const useColorsForLine = dataSet.useColorsForLine;
@@ -648,7 +648,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         const drawValues = dataSet.isDrawValuesEnabled();
         const length = count;
         const paint = this.valuePaint;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let j = 0; j < length; j += 2) {
             const x = points[j];
             const y = points[j + 1];
@@ -776,7 +776,7 @@ export class LineChartRenderer extends LineRadarRenderer {
     public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?: boolean) {
         const lineData = this.mChart.getLineData();
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const paint = this.highlightPaint;
         for (const high of indices) {
             const set = lineData.getDataSetByIndex(high.dataSetIndex);

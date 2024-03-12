@@ -275,9 +275,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     protected getDataSetIndexByLabel(dataSets: T[], label: string, ignorecase) {
         if (ignorecase) {
             const toTest = label.toLowerCase();
-            for (let i = 0; i < dataSets.length; i++) if (toTest === dataSets[i].getLabel()?.toLowerCase()) return i;
+            for (let i = 0; i < dataSets.length; i++) if (toTest === dataSets[i].label?.toLowerCase()) return i;
         } else {
-            for (let i = 0; i < dataSets.length; i++) if (label === dataSets[i].getLabel()) return i;
+            for (let i = 0; i < dataSets.length; i++) if (label === dataSets[i].label) return i;
         }
 
         return -1;
@@ -292,7 +292,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         const types = [];
 
         for (let i = 0; i < this.mDataSets.length; i++) {
-            types[i] = this.mDataSets[i].getLabel();
+            types[i] = this.mDataSets[i].label;
         }
 
         return types;

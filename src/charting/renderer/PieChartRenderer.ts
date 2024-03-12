@@ -207,7 +207,7 @@ export class PieChartRenderer extends DataRenderer {
 
         const sliceSpace = visibleAngleCount <= 1 ? 0 : this.getSliceSpace(dataSet);
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const renderPaint = this.renderPaint;
         const pathBuffer = Utils.getTempPath();
         const previousShader = renderPaint.getShader();
@@ -379,7 +379,7 @@ export class PieChartRenderer extends DataRenderer {
 
         const paint = this.valuePaint;
         const entryLabelsPaint: Paint = drawEntryLabels ? this.entryLabelsPaint : undefined;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const valueLinePaint = Utils.getTempPaint();
         valueLinePaint.setStyle(Style.STROKE);
         for (let i = 0; i < dataSets.length; i++) {
@@ -697,7 +697,7 @@ export class PieChartRenderer extends DataRenderer {
 
         const highlightedCircleBox = Utils.getTempRectF();
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const renderPaint = this.renderPaint;
         const pathBuffer = Utils.getTempPath();
         for (let i = 0; i < indices.length; i++) {

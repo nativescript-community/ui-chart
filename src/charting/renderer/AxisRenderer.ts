@@ -16,7 +16,7 @@ export interface CustomRenderer extends BaseCustomRenderer {
     drawLabel?: CustomRendererLabelFunction;
     drawGridLine?: CustomRendererGridLineFunction;
     drawLimitLine?: CustomRendererLimitLineFunction;
-    drawMarkTicket?: CustomRendererTickFunction;
+    drawMarkTick?: CustomRendererTickFunction;
 }
 
 /**
@@ -132,7 +132,7 @@ export abstract class AxisRenderer extends Renderer {
             }
         }
         if (this.mViewPortHandler != null && this.mViewPortHandler.getContentRect().width() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
-            const rect = this.mAxis.isIgnoringOffsets() ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
+            const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.getChartRect() : this.mViewPortHandler.getContentRect();
             const p1 = this.mTrans.getValuesByTouchPoint(rect.left, rect.top);
             const p2 = this.mTrans.getValuesByTouchPoint(rect.left, rect.bottom);
 
@@ -172,7 +172,7 @@ export abstract class AxisRenderer extends Renderer {
         const yMin = min;
         const yMax = max;
 
-        const labelCount = axis.getLabelCount();
+        const labelCount = axis.labelCount;
         const range = Math.abs(yMax - yMin);
 
         if (labelCount === 0 || range <= 0 || !Number.isFinite(range)) {
@@ -185,11 +185,11 @@ export abstract class AxisRenderer extends Renderer {
 
         // Find out how much spacing (in y value space) between axis values
         const rawInterval = range / (labelCount - 1);
-        let interval = axis.isForceIntervalEnabled() ? axis.getForcedInterval() : axis.ensureLastLabel ? rawInterval : Utils.roundToNextSignificant(rawInterval);
+        let interval = axis.forcedInterval > 0 ? axis.forcedInterval : axis.ensureLastLabel ? rawInterval : Utils.roundToNextSignificant(rawInterval);
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
-        if (axis.isGranularityEnabled() && interval < axis.getGranularity()) {
-            interval = axis.getGranularity();
+        if (axis.granularity && interval < axis.granularity) {
+            interval = axis.granularity;
         }
 
         // Normalize interval
@@ -201,11 +201,11 @@ export abstract class AxisRenderer extends Renderer {
             interval = Math.floor(10 * intervalMagnitude);
         }
 
-        let n = axis.isCenterAxisLabelsEnabled() ? 1 : 0;
+        let n = axis.centerAxisLabels ? 1 : 0;
 
         const formatter = axis.getValueFormatter();
         // force label count
-        if (axis.isForceLabelsEnabled()) {
+        if (axis.forceLabelsEnabled) {
             interval = range / (labelCount - 1);
             axis.mEntryCount = Math.floor(labelCount);
 
@@ -233,7 +233,7 @@ export abstract class AxisRenderer extends Renderer {
             // then we will see 0 as axis first when it should be 20
             // let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
             let first = interval === 0 ? 0 : Math.ceil(yMin / interval) * interval;
-            if (axis.isCenterAxisLabelsEnabled()) {
+            if (axis.centerAxisLabels) {
                 first -= interval;
             }
             // use Math.floor(yMax / interval) + 1 instead of
@@ -282,7 +282,7 @@ export abstract class AxisRenderer extends Renderer {
             axis.mDecimals = 0;
         }
 
-        if (axis.isCenterAxisLabelsEnabled()) {
+        if (axis.centerAxisLabels) {
             if (axis.mCenteredEntries.length < n) {
                 axis.mCenteredEntries = [];
             }
