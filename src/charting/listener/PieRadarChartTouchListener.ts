@@ -5,6 +5,9 @@ import { Utils } from '../utils/Utils';
 import { ChartGesture, ChartTouchListener } from './ChartTouchListener';
 import { GestureHandlerStateEvent, GestureState, GestureStateEventData, HandlerType, Manager, RotationGestureHandler, TapGestureHandler } from '@nativescript-community/gesturehandler';
 
+let TAP_HANDLER_TAG = 11232000;
+let ROTATION_HANDLER_TAG = 11231000;
+
 /**
  * TouchListener for Pie- and RadarChart with handles all
  * touch interaction.
@@ -20,14 +23,26 @@ export class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
      *
      * @param chart instance of the chart
      */
+    TAP_HANDLER_TAG;
+    ROTATION_HANDLER_TAG;
     constructor(chart: PieRadarChartBase<any, any, any>) {
         super(chart);
+        this.TAP_HANDLER_TAG = TAP_HANDLER_TAG++;
+        this.ROTATION_HANDLER_TAG = ROTATION_HANDLER_TAG++;
+    }
+
+    getTapGestureOptions() {
+        return { gestureTag: this.TAP_HANDLER_TAG, ...(this.mChart.tapGestureOptions || {}) };
+    }
+    getRotationGestureOptions() {
+        return { gestureTag: this.ROTATION_HANDLER_TAG, ...(this.mChart.rotationGestureOptions || {}) };
     }
 
     getOrCreateRotationGestureHandler() {
         if (!this.rotationGestureHandler) {
             const manager = Manager.getInstance();
-            this.rotationGestureHandler = manager.createGestureHandler(HandlerType.ROTATION, 11231, {}).on(GestureHandlerStateEvent, this.onRotationGesture, this);
+            const options = this.getRotationGestureOptions();
+            this.rotationGestureHandler = manager.createGestureHandler(HandlerType.ROTATION, options.gestureTag, {}).on(GestureHandlerStateEvent, this.onRotationGesture, this);
         }
         return this.rotationGestureHandler;
     }
@@ -35,7 +50,8 @@ export class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
     getOrCreateTapGestureHandler() {
         if (!this.tapGestureHandler) {
             const manager = Manager.getInstance();
-            this.tapGestureHandler = manager.createGestureHandler(HandlerType.TAP, 11232, {}).on(GestureHandlerStateEvent, this.onTapGesture, this);
+            const options = this.getTapGestureOptions();
+            this.tapGestureHandler = manager.createGestureHandler(HandlerType.TAP, options.gestureTag, {}).on(GestureHandlerStateEvent, this.onTapGesture, this);
         }
         return this.tapGestureHandler;
     }

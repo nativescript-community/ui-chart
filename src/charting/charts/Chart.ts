@@ -1,4 +1,4 @@
-import { PanGestureHandlerOptions, PinchGestureHandlerOptions, TapGestureHandlerOptions } from '@nativescript-community/gesturehandler';
+import { PanGestureHandlerOptions, PinchGestureHandlerOptions, RotationGestureHandlerOptions, TapGestureHandlerOptions } from '@nativescript-community/gesturehandler';
 import { Align, Canvas, CanvasView, Paint } from '@nativescript-community/ui-canvas';
 import { EventData, Utils as NUtils, Trace } from '@nativescript/core';
 import { ChartAnimator, EasingFunction } from '../animation/ChartAnimator';
@@ -215,6 +215,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     public tapGestureOptions: TapGestureHandlerOptions & { gestureTag?: number };
     public doubleTapGestureOptions: TapGestureHandlerOptions & { gestureTag?: number };
     public pinchGestureOptions: PinchGestureHandlerOptions & { gestureTag?: number };
+    public rotationGestureOptions: RotationGestureHandlerOptions & { gestureTag?: number };
 
     /**
      * Sets a new data object for the chart. The data object contains all values
