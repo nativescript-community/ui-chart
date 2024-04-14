@@ -1,6 +1,6 @@
 {
     "packages": ["plugin"],
-    "version": "1.2.35",
+    "version": "1.2.36",
     "command": {
         "publish": {
             "conventionalCommits": true

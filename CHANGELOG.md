@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.36](https://github.com/nativescript-community/ui-chart/compare/v1.2.35...v1.2.36) (2024-04-14)
+
+### Bug Fixes
+
+-   **ios:** use different gesture tags ([6fb3b5d](https://github.com/nativescript-community/ui-chart/commit/6fb3b5d0c18384016765e7f669d6f36fd564b7ac))
+
 ## [1.2.35](https://github.com/Akylas/nativescript-chart/compare/v1.2.34...v1.2.35) (2024-01-09)
 
 ### Bug Fixes
