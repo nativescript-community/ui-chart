@@ -1268,6 +1268,14 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     clipHighlightToContent = true;
 
+    public setClipHighlightToContent(enabled){
+        this.clipHighlightToContent = enabled;
+    }
+
+    public isClipHighlightToContentEnabled(){
+        return this.clipHighlightToContent;
+    }
+
     public setDrawHighlight(enabled) {
         this.mDrawHighlight = enabled;
     }

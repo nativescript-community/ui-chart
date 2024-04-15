@@ -49,7 +49,7 @@ export default Vue.extend({
         onChartLoaded() {
             const chart = this.$refs.chart['nativeView'] as LineChart;
             chart.drawFrameRate = true;
-
+            // chart.setClipHighlightToContent(true);
             // chart.backgroundColor = 'white';
             // disable description text
             // chart.getDescription().setEnabled(false);
