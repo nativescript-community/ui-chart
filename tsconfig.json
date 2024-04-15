@@ -16,7 +16,6 @@
         "noEmitOnError": false,
         "noImplicitAny": false,
         "noImplicitReturns": true,
-        "noImplicitUseStrict": true,
         "noFallthroughCasesInSwitch": true,
         "skipLibCheck": true,
         "sourceRoot": "../src",
