@@ -1248,12 +1248,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript-community/gesturehandler@npm:^2.0.30":
-  version: 2.0.30
-  resolution: "@nativescript-community/gesturehandler@npm:2.0.30"
+"@nativescript-community/gesturehandler@npm:^2.0.31":
+  version: 2.0.31
+  resolution: "@nativescript-community/gesturehandler@npm:2.0.31"
   dependencies:
     "@nativescript-community/observable": "npm:^2.0.10"
-  checksum: 3ca6f8b394d3790a104484b7542cdd66b1de8a6cc604fe2dc34683c62f74b95b8ea920ef85fb5638459286482095ef16894f2397a339d85c6af6887caec1a0bb
+  checksum: fcc7aa20d4df4414a2c5a41ed8fcd9a224410867cbce0ea7fb707a80ce3e02d0587687bbd494c9613a4896ec7ead645828eb77ed66ae177ca35712d7dbb4a160
   languageName: node
   linkType: hard
 
@@ -1356,7 +1356,7 @@ __metadata:
   dependencies:
     "@nativescript-community/additween": "npm:^4.0.5"
     "@nativescript-community/arraybuffers": "npm:^1.1.5"
-    "@nativescript-community/gesturehandler": "npm:^2.0.30"
+    "@nativescript-community/gesturehandler": "npm:^2.0.31"
     "@nativescript-community/ui-canvas": "npm:^4.6.21"
     downsample: "npm:^1.4.0"
     number-format.js: "npm:^2.0.9"
@@ -11447,7 +11447,7 @@ __metadata:
   dependencies:
     "@nativescript-community/additween": "npm:^4.0.5"
     "@nativescript-community/arraybuffers": "npm:^1.1.5"
-    "@nativescript-community/gesturehandler": "npm:^2.0.30"
+    "@nativescript-community/gesturehandler": "npm:^2.0.31"
     "@nativescript-community/plugin-seed-tools": "file:tools"
     "@nativescript-community/ui-canvas": "npm:^4.6.21"
     downsample: "npm:^1.4.0"
