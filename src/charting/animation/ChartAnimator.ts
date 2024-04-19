@@ -21,25 +21,21 @@ export class ChartAnimator {
 
     private startAnim(duration, easing?: EasingFunction, listener?: (state) => void) {
         const anim = new Tween({
-            onRender: (state) => {
-                if (listener) {
-                    listener(state);
-                }
-            }
+            onRender: listener
         });
         anim.tween({ value: 0 }, { value: 1 }, duration);
         return anim;
     }
     private startXAnim(duration, easing?: EasingFunction, listener?: (state) => void) {
         return this.startAnim(duration, easing, (state) => {
-            this.setPhaseX(state.value);
+            this.phaseX = state.value;
             listener?.(state);
         });
     }
 
     private startYAnim(duration, easing?: EasingFunction, listener?: (state) => void) {
         return this.startAnim(duration, easing, (state) => {
-            this.setPhaseY(state.value);
+            this.phaseY = state.value;
             listener?.(state);
         });
     }
@@ -82,7 +78,7 @@ export class ChartAnimator {
      *
      * @return let value of {@link #mPhaseY}
      */
-    public getPhaseY() {
+    public get phaseY() {
         return this.mPhaseY;
     }
 
@@ -91,7 +87,7 @@ export class ChartAnimator {
      *
      * @param phase let value between 0 - 1
      */
-    public setPhaseY(phase) {
+    public set phaseY(phase) {
         this.mPhaseY = clamp(phase);
     }
 
@@ -100,7 +96,7 @@ export class ChartAnimator {
      *
      * @return let value of {@link #mPhaseX}
      */
-    public getPhaseX() {
+    public get phaseX() {
         return this.mPhaseX;
     }
 
@@ -109,7 +105,7 @@ export class ChartAnimator {
      *
      * @param phase let value between 0 - 1
      */
-    public setPhaseX(phase) {
+    public set phaseX(phase) {
         this.mPhaseX = clamp(phase);
     }
 }

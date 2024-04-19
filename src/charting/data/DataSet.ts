@@ -62,7 +62,7 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     toString() {
-        return `${this.constructor.name}[${this.getLabel()}]`;
+        return `${this.constructor.name}[${this.label}]`;
     }
 
     init() {
@@ -76,8 +76,18 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
             }
         }
     }
+    mCanCalculateMinMax = true;
+    batchEntryOperations(cb) {
+        this.mCanCalculateMinMax = false;
+        cb();
+        this.mCanCalculateMinMax = true;
+        this.calcMinMax();
+    }
 
     calcMinMax() {
+        if (!this.mCanCalculateMinMax) {
+            return;
+        }
         this.mYMax = -Infinity;
         this.mYMin = Infinity;
         this.mXMax = -Infinity;
@@ -149,43 +159,39 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         return this.mValues;
     }
 
-    public getEntryCount() {
+    public get entryCount() {
         return this.getInternalValues().length;
     }
 
     /**
      * Returns the array of entries that this DataSet represents.
-     *
-     * @return
      */
-    public getValues() {
+    public get values() {
         return this.mValues;
     }
 
     /**
      * Sets the array of entries that this DataSet represents, and calls notifyDataSetChanged()
-     *
-     * @return
      */
-    public setValues(values) {
+    public set values(values) {
         this.mValues = values;
         this.updateGetEntryForIndex();
         this.notifyDataSetChanged();
     }
 
-    public getYMin() {
+    public get yMin() {
         return this.mYMin;
     }
 
-    public getYMax() {
+    public get yMax() {
         return this.mYMax;
     }
 
-    public getXMin() {
+    public get xMin() {
         return this.mXMin;
     }
 
-    public getXMax() {
+    public get xMax() {
         return this.mXMax;
     }
 
@@ -215,9 +221,9 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     public addEntry(e: T) {
         if (!e) return false;
 
-        let values = this.getValues();
+        let values = this.mValues;
         if (values == null) {
-            values = [];
+            values = this.mValues = [];
         }
         const length = values.length;
         this.calcMinMaxForEntry(e, length);
@@ -236,6 +242,16 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         const index = this.mValues.indexOf(e);
 
         if (index >= 0) {
+            this.mValues.splice(index, 1);
+            this.calcMinMax();
+        }
+
+        return index >= 0;
+    }
+
+    public removeEntryAtIndex(index: number) {
+        if (this.mValues == null) return false;
+        if (index >= 0 && index < this.mValues.length) {
             this.mValues.splice(index, 1);
             this.calcMinMax();
         }
@@ -272,7 +288,8 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     public getEntryForIndex(index) {
-        return this.getInternalValues() instanceof ObservableArray ? (this.getInternalValues() as ObservableArray<T>).getItem(index) : this.getInternalValues()[index];
+        const internalValues = this.getInternalValues();
+        return internalValues instanceof ObservableArray ? internalValues.getItem(index) : internalValues[index];
     }
 
     public getEntryIndexForXValue(xValue, closestToY, rounding) {

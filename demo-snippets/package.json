@@ -1,0 +1,14 @@
+{
+    "name": "@nativescript-community/template-snippet",
+    "version": "0.0.1",
+    "private": true,
+    "nativescript": {
+        "platforms": {
+            "android": "*"
+        }
+    },
+    "dependencies": {
+        "@nativescript-community/ui-chart": "*",
+        "@nativescript-community/ui-svg": "*"
+    }
+}

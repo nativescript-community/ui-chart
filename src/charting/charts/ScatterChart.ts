@@ -32,32 +32,20 @@ export enum ScatterShape {
 
  */
 export class ScatterChart extends BarLineChartBase<Entry, IScatterDataSet, ScatterData> implements ScatterDataProvider {
-    protected mRenderer: ScatterChartRenderer;
+    renderer: ScatterChartRenderer;
 
     protected init() {
         super.init();
 
-        this.mRenderer = new ScatterChartRenderer(this, this.mAnimator, this.mViewPortHandler);
+        this.renderer = new ScatterChartRenderer(this, this.animator, this.viewPortHandler);
 
-        this.getXAxis().setSpaceMin(0.5);
-        this.getXAxis().setSpaceMax(0.5);
+        this.xAxis.spaceMin = 0.5;
+        this.xAxis.spaceMax = 0.5;
     }
 
-    public getScatterData() {
+    public get scatterData() {
         return this.mData;
     }
 
-    protected mCustomRenderer: CustomRenderer;
-    /**
-     * set a custom line renderer
-     */
-    public setCustomRenderer(renderer: CustomRenderer) {
-        this.mCustomRenderer = renderer;
-    }
-    /**
-     * get the custom line renderer
-     */
-    public getCustomRenderer() {
-        return this.mCustomRenderer;
-    }
+    customRenderer: CustomRenderer;
 }

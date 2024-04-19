@@ -9,7 +9,7 @@ import { IShapeRenderer } from './IShapeRenderer';
  */
 export class CrossShapeRenderer implements IShapeRenderer {
     public renderShape(c: Canvas, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler, posX, posY, renderPaint: Paint) {
-        const shapeHalf = dataSet.getScatterShapeSize() / 2;
+        const shapeHalf = dataSet.scatterShapeSize / 2;
 
         renderPaint.setStyle(Style.STROKE);
         renderPaint.setStrokeWidth(1);

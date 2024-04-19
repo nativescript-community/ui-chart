@@ -23,31 +23,19 @@ export interface CustomRenderer extends BaseCustomRenderer {
 
  */
 export class CandleStickChart extends BarLineChartBase<CandleEntry, ICandleDataSet, CandleData> implements CandleDataProvider {
-    protected mRenderer: CandleStickChartRenderer;
+    renderer: CandleStickChartRenderer;
     protected init() {
         super.init();
 
-        this.mRenderer = new CandleStickChartRenderer(this, this.mAnimator, this.mViewPortHandler);
+        this.renderer = new CandleStickChartRenderer(this, this.animator, this.viewPortHandler);
 
-        this.getXAxis().setSpaceMin(0.5);
-        this.getXAxis().setSpaceMax(0.5);
+        this.xAxis.spaceMin = 0.5;
+        this.xAxis.spaceMax = 0.5;
     }
 
-    public getCandleData() {
+    public get candleData() {
         return this.mData;
     }
 
-    protected mCustomRenderer: CustomRenderer;
-    /**
-     * set a custom candle renderer
-     */
-    public setCustomRenderer(renderer: CustomRenderer) {
-        this.mCustomRenderer = renderer;
-    }
-    /**
-     * get the custom candle renderer
-     */
-    public getCustomRenderer() {
-        return this.mCustomRenderer;
-    }
+    customRenderer: CustomRenderer;
 }

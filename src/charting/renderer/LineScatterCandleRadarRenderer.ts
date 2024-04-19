@@ -9,7 +9,6 @@ import { BarLineScatterCandleBubbleRenderer } from './BarLineScatterCandleBubble
  * Created by Philipp Jahoda on 11/07/15.
  */
 export abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandleBubbleRenderer {
-
     constructor(animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler);
     }
@@ -25,29 +24,29 @@ export abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandl
     protected drawHighlightLines(c: Canvas, x, y, set: ILineScatterCandleRadarDataSet<any>) {
         const paint = this.highlightPaint;
         // set color and stroke-width
-        paint.setColor(set.getHighLightColor());
-        paint.setStrokeWidth(set.getHighlightLineWidth());
+        paint.setColor(set.highLightColor);
+        paint.setStrokeWidth(set.highlightLineWidth);
 
         // draw highlighted lines (if enabled)
-        paint.setPathEffect(set.getDashPathEffectHighlight());
+        paint.setPathEffect(set.highlightDashPathEffect);
         // draw vertical highlight lines
-        if (set.isVerticalHighlightIndicatorEnabled()) {
+        if (set.drawVerticalHighlightIndicator) {
             const path = Utils.getTempPath();
             // create vertical path
             path.reset();
-            path.moveTo(x, this.mViewPortHandler.contentTop());
-            path.lineTo(x, this.mViewPortHandler.contentBottom());
+            path.moveTo(x, this.mViewPortHandler.contentTop);
+            path.lineTo(x, this.mViewPortHandler.contentBottom);
 
             c.drawPath(path, paint);
         }
 
         // draw horizontal highlight lines
-        if (set.isHorizontalHighlightIndicatorEnabled()) {
+        if (set.drawHorizontalHighlightIndicator) {
             const path = Utils.getTempPath();
             // create horizontal path
             path.reset();
-            path.moveTo(this.mViewPortHandler.contentLeft(), y);
-            path.lineTo(this.mViewPortHandler.contentRight(), y);
+            path.moveTo(this.mViewPortHandler.contentLeft, y);
+            path.lineTo(this.mViewPortHandler.contentRight, y);
 
             c.drawPath(path, paint);
         }

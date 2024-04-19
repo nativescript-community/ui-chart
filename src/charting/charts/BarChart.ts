@@ -23,47 +23,57 @@ export interface CustomRenderer extends BaseCustomRenderer {
 export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> implements BarDataProvider {
     protected mRenderer: BarChartRenderer;
     /**
-     * flag that indicates whether the highlight should be full-bar oriented, or single-value?
+     * Set this to true to make the highlight operation full-bar oriented, false to make it highlight single values (relevant
+     * only for stacked). If enabled, highlighting operations will highlight the whole bar, even if only a single stack entry
+     * was tapped.
+     * Default: false
+     *
+     * @param enabled
      */
-    protected mHighlightFullBarEnabled ;
+    highlightFullBarEnabled = false;
 
-    protected mFitBars;
+    /**
+     * Adds half of the bar width to each side of the x-axis range in order to allow the bars of the barchart to be
+     * fully displayed.
+     * Default: false
+     */
+    fitBars: boolean;
 
     /**
      * if set to true, all values are drawn above their bars, instead of below their top
      */
-    private mDrawValueAboveBar = true;
+    drawValueAboveBarEnabled = true;
 
     /**
      * if set to true, a grey area is drawn behind each bar that indicates the maximum value
      */
-    private mDrawBarShadow;
+    drawBarShadowEnabled: boolean;
 
-    private mCustomRenderer: CustomRenderer;
+    customRenderer: CustomRenderer;
 
     protected init() {
         super.init();
 
-        this.mRenderer = new BarChartRenderer(this, this.mAnimator, this.mViewPortHandler);
+        this.renderer = new BarChartRenderer(this, this.animator, this.viewPortHandler);
 
-        this.setHighlighter(new BarHighlighter(this));
+        this.highlighter = new BarHighlighter(this);
 
-        this.getXAxis().setSpaceMin(0.5);
-        this.getXAxis().setSpaceMax(0.5);
+        this.xAxis.spaceMin = 0.5;
+        this.xAxis.spaceMax = 0.5;
     }
 
     protected calcMinMax() {
-        if (this.mFitBars) {
-            this.mXAxis.calculate(this.mData.getXMin() - this.mData.getBarWidth() / 2, this.mData.getXMax() + this.mData.getBarWidth() / 2);
+        if (this.fitBars) {
+            this.xAxis.calculate(this.mData.xMin - this.mData.barWidth / 2, this.mData.xMax + this.mData.barWidth / 2);
         } else {
-            this.mXAxis.calculate(this.mData.getXMin(), this.mData.getXMax());
+            this.xAxis.calculate(this.mData.xMin, this.mData.xMax);
         }
 
         // calculate axis range (min / max) according to provided data
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft.enabled) {
             this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight?.enabled) {
             this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
         }
     }
@@ -83,8 +93,8 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
             return null;
         }
 
-        const h = this.getHighlighter().getHighlight(x, y);
-        if (h === null || !this.isHighlightFullBarEnabled()) {
+        const h = this.highlighter.getHighlight(x, y);
+        if (h === null || !this.highlightFullBarEnabled) {
             return h;
         }
 
@@ -119,7 +129,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         const x = set.getEntryXValue(e, index);
         const y = e[yKey];
 
-        const barWidth = this.mData.getBarWidth();
+        const barWidth = this.mData.barWidth;
 
         const left = x - barWidth / 2;
         const right = x + barWidth / 2;
@@ -127,65 +137,8 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         const bottom = y <= 0 ? y : 0;
 
         const outputRect = new RectF(left, top, right, bottom);
-        this.getTransformer(set.getAxisDependency()).rectValueToPixel(outputRect);
+        this.getTransformer(set.axisDependency).rectValueToPixel(outputRect);
         return outputRect;
-    }
-
-    /**
-     * If set to true, all values are drawn above their bars, instead of below their top.
-     *
-     * @param enabled
-     */
-    public setDrawValueAboveBar(enabled: boolean) {
-        this.mDrawValueAboveBar = enabled;
-    }
-
-    /**
-     * returns true if drawing values above bars is enabled, false if not
-     *
-     * @return
-     */
-    public isDrawValueAboveBarEnabled() {
-        return this.mDrawValueAboveBar;
-    }
-
-    /**
-     * If set to true, a grey area is drawn behind each bar that indicates the maximum value. Enabling his will reduce
-     * performance by about 50%.
-     *
-     * @param enabled
-     */
-    public setDrawBarShadow(enabled: boolean) {
-        this.mDrawBarShadow = enabled;
-    }
-
-    /**
-     * returns true if drawing shadows (maxvalue) for each bar is enabled, false if not
-     *
-     * @return
-     */
-    public isDrawBarShadowEnabled() {
-        return this.mDrawBarShadow;
-    }
-
-    /**
-     * Set this to true to make the highlight operation full-bar oriented, false to make it highlight single values (relevant
-     * only for stacked). If enabled, highlighting operations will highlight the whole bar, even if only a single stack entry
-     * was tapped.
-     * Default: false
-     *
-     * @param enabled
-     */
-    public setHighlightFullBarEnabled(enabled: boolean) {
-        this.mHighlightFullBarEnabled = enabled;
-    }
-
-    /**
-     * @return true the highlight operation is be full-bar oriented, false if single-value
-     */
-
-    public isHighlightFullBarEnabled() {
-        return this.mHighlightFullBarEnabled;
     }
 
     /**
@@ -201,32 +154,8 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
         this.highlight({ x, y: 0, dataSetIndex, stackIndex }, callListener);
     }
 
-    public getBarData(): BarData {
+    public get barData(): BarData {
         return this.mData;
-    }
-
-    /**
-     * Adds half of the bar width to each side of the x-axis range in order to allow the bars of the barchart to be
-     * fully displayed.
-     * Default: false
-     *
-     * @param enabled
-     */
-    public setFitBars(enabled: boolean) {
-        this.mFitBars = enabled;
-    }
-
-    /**
-     * set a custom bar renderer
-     */
-    public setCustomRenderer(renderer: CustomRenderer) {
-        this.mCustomRenderer = renderer;
-    }
-    /**
-     * get the custom bar renderer
-     */
-    public getCustomRenderer() {
-        return this.mCustomRenderer;
     }
 
     /**
@@ -240,10 +169,10 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param barSpace   the space between individual bars in values (not pixels) e.g. 0.1 for bar width 1
      */
     public groupBars(fromX, groupSpace, barSpace) {
-        if (this.getBarData() === null) {
+        if (this.barData === null) {
             throw new Error('You need to set data for the chart before grouping bars.');
         } else {
-            this.getBarData().groupBars(fromX, groupSpace, barSpace);
+            this.barData.groupBars(fromX, groupSpace, barSpace);
             this.notifyDataSetChanged();
         }
     }

@@ -1,40 +1,15 @@
 {
+    "extends": "./tools/tsconfig",
     "compilerOptions": {
-        "target": "es2020",
-        "module": "esnext",
-        "moduleResolution": "node",
-        "removeComments": true,
-        "noLib": false,
-        "emitDecoratorMetadata": false,
-        "experimentalDecorators": true,
-        "lib": [ "dom", "es2021"],
-        "sourceMap": true,
-        "pretty": true,
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
-        "noEmitHelpers": true,
-        "noEmitOnError": false,
-        "noImplicitAny": false,
-        "noImplicitReturns": true,
-        "noImplicitUseStrict": true,
-        "noFallthroughCasesInSwitch": true,
-        "skipLibCheck": true,
-        "sourceRoot": "../src",
-        "baseUrl": ".",
-        "outDir": "./plugin",
         "paths": {
-            "@nativescript/core": ["./node_modules/@nativescript/core"],
-            "@nativescript/core/*": ["./node_modules/@nativescript/core/*"],
             "@nativescript-community/ui-chart": ["src/charting"],
-            "@nativescript-community/ui-chart/*": ["src/charting/*"],
-            "*": ["node_modules/*"]
-        },
-        "plugins": [{ "transform": "@nativescript/webpack/dist/transformers/NativeClass", "type": "raw" }]
+            "@nativescript-community/ui-chart/*": ["src/charting/*"]
+        }
     },
-    "include": ["src/**/*", "./references.d.ts"],
-    "exclude": ["node_modules", "platforms"],
-    "compileOnSave": false,
-    "angularCompilerOptions": {
-        "skipTemplateCodegen": true
-    }
+    "references": [
+        {
+            //Need for IDE
+            "path": "./tsconfig.vue3.json"
+        }
+    ]
 }

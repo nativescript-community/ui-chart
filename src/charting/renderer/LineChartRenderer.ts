@@ -2,7 +2,7 @@ import { TypedArray } from '@nativescript-community/arraybuffers';
 import { Canvas, Direction, FillType, LinearGradient, Matrix, Paint, Path, Style, TileMode, createImage, releaseImage } from '@nativescript-community/ui-canvas';
 import { Color, ImageSource, Screen, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { LineChart } from '../charts';
+import { LineChart } from '..';
 import { Rounding } from '../data/DataSet';
 import { LineDataSet, Mode } from '../data/LineDataSet';
 import { Highlight } from '../highlight/Highlight';
@@ -82,7 +82,7 @@ export class DataSetImageCache {
      * @return
      */
     init(set: ILineDataSet) {
-        const size = set.getCircleColorCount();
+        const size = set.circleColors.length || 1;
         let changeRequired = false;
 
         if (this.circleBitmaps == null) {
@@ -104,15 +104,15 @@ export class DataSetImageCache {
      * @param drawTransparentCircleHole
      */
     fill(set: ILineDataSet, renderPaint: Paint, circlePaintInner: Paint, drawCircleHole: boolean, drawTransparentCircleHole: boolean) {
-        const colorCount = set.getCircleColorCount();
-        const circleRadius = set.getCircleRadius();
-        const circleHoleRadius = set.getCircleHoleRadius();
+        const colorCount = set.circleColors.length || 1;
+        const circleRadius = set.circleRadius;
+        const circleHoleRadius = set.circleHoleRadius;
         const scale = set.circleHighRes ? Screen.mainScreen.scale : 1;
 
         for (let i = 0; i < colorCount; i++) {
             const canvas = new Canvas(Math.round(circleRadius * 2 * scale), Math.round(circleRadius * 2 * scale));
             canvas.scale(scale, scale);
-            renderPaint.setColor(set.getCircleColor(i));
+            renderPaint.setColor(set.circleColors[i] || set.color);
 
             if (drawTransparentCircleHole) {
                 const circlePathBuffer = Utils.getTempPath();
@@ -202,8 +202,8 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     @profile
     public drawData(c: Canvas) {
-        const width = this.mViewPortHandler.getChartWidth();
-        const height = this.mViewPortHandler.getChartHeight();
+        const width = this.mViewPortHandler.chartWidth;
+        const height = this.mViewPortHandler.chartHeight;
 
         let drawBitmap = this.mDrawBitmap == null ? null : this.mDrawBitmap.get();
 
@@ -217,9 +217,9 @@ export class LineChartRenderer extends LineRadarRenderer {
             this.mBitmapCanvas.clear();
         }
 
-        const lineData = this.mChart.getLineData();
+        const lineData = this.mChart.lineData;
         let needsBitmapDrawing = false;
-        for (const set of lineData.getVisibleDataSets()) {
+        for (const set of lineData.visibleDataSets) {
             needsBitmapDrawing = this.drawDataSet(c, set) || needsBitmapDrawing;
         }
         if (needsBitmapDrawing) {
@@ -230,10 +230,10 @@ export class LineChartRenderer extends LineRadarRenderer {
 
     @profile
     protected drawDataSet(c: Canvas, dataSet: LineDataSet): boolean {
-        if (dataSet.getEntryCount() < 1) return false;
+        if (dataSet.entryCount < 1) return false;
         const renderPaint = this.renderPaint;
-        renderPaint.setStrokeWidth(dataSet.getLineWidth());
-        renderPaint.setPathEffect(dataSet.getDashPathEffect());
+        renderPaint.setStrokeWidth(dataSet.lineWidth);
+        renderPaint.setPathEffect(dataSet.dashPathEffect);
         renderPaint.setColor(dataSet.getColor());
         renderPaint.setStyle(Style.STROKE);
 
@@ -248,12 +248,12 @@ export class LineChartRenderer extends LineRadarRenderer {
     generateHorizontalBezierPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
             const pointsPerEntryPair = 6;
-            const entryCount = dataSet.getEntryCount();
+            const entryCount = dataSet.entryCount;
             if (!this.mLineBuffer || this.mLineBuffer.length < Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2) {
                 this.mLineBuffer = Utils.createArrayBuffer(Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2);
             }
 
-            const phaseY = this.mAnimator.getPhaseY();
+            const phaseY = this.animator.phaseY;
             const yKey = dataSet.yProperty;
 
             const firstIndex = Math.max(0, this.mXBounds.min);
@@ -304,14 +304,14 @@ export class LineChartRenderer extends LineRadarRenderer {
     generateCubicPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
             const pointsPerEntryPair = 6;
-            const entryCount = dataSet.getEntryCount();
+            const entryCount = dataSet.entryCount;
             if (!this.mLineBuffer || this.mLineBuffer.length < Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2) {
                 this.mLineBuffer = Utils.createArrayBuffer(Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2);
             }
-            const phaseY = this.mAnimator.getPhaseY();
+            const phaseY = this.animator.phaseY;
             const xKey = dataSet.xProperty;
             const yKey = dataSet.yProperty;
-            const intensity = dataSet.getCubicIntensity();
+            const intensity = dataSet.cubicIntensity;
 
             // Take an extra polet from the left, and an extra from the right.
             // That's because we need 4 points for a cubic bezier (cubic=4), otherwise we get lines moving and doing weird stuff on the edges of the chart.
@@ -341,13 +341,13 @@ export class LineChartRenderer extends LineRadarRenderer {
                 if (!prev) {
                     prev = point;
                 }
-                nextIndex = j + 1 < dataSet.getEntryCount() ? j + 1 : j;
+                nextIndex = j + 1 < dataSet.entryCount ? j + 1 : j;
                 next = getXYValue(dataSet, nextIndex);
                 if (!next) {
                     continue;
                 }
                 controlPoints = splineCurve(prev, point, next, intensity);
-                if (j === 0) {
+                if (j === firstIndex) {
                     float32arr[index++] = point.x;
                     float32arr[index++] = point.y * phaseY;
                 } else {
@@ -375,16 +375,16 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    @profile
     generateLinearPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
-            const isDrawSteppedEnabled = dataSet.getMode() === Mode.STEPPED;
-            const entryCount = dataSet.getEntryCount();
+            const isDrawSteppedEnabled = dataSet.mode === Mode.STEPPED;
+            const entryCount = dataSet.entryCount;
             const pointsPerEntryPair = isDrawSteppedEnabled ? 4 : 2;
             if (!this.mLineBuffer || this.mLineBuffer.length < Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2) {
                 this.mLineBuffer = Utils.createArrayBuffer(Math.max(entryCount * pointsPerEntryPair, pointsPerEntryPair) * 2);
             }
-            const phaseY = this.mAnimator.getPhaseY();
+            const phaseX = this.animator.phaseX;
+            const phaseY = this.animator.phaseY;
             const yKey = dataSet.yProperty;
 
             // const filled = outputPath;
@@ -457,8 +457,8 @@ export class LineChartRenderer extends LineRadarRenderer {
             const firstIndex = Math.max(0, this.mXBounds.min);
             const range = this.mXBounds.range;
             const lastIndex = firstIndex + range;
-            const width = this.mViewPortHandler.getChartWidth();
-            const chartRect = this.mViewPortHandler.getChartRect();
+            const width = this.mViewPortHandler.chartWidth;
+            const chartRect = this.mViewPortHandler.chartRect;
             let lastColor;
 
             const gradientDelta = 0;
@@ -515,20 +515,20 @@ export class LineChartRenderer extends LineRadarRenderer {
         return null;
     }
 
-    @profile
+    lastLinePath: Path;
     protected draw(c: Canvas, dataSet: LineDataSet) {
         const result = false;
-        const drawFilled = dataSet.isDrawFilledEnabled();
-        const drawLine = dataSet.getLineWidth() > 0;
+        const drawFilled = dataSet.drawFilledEnabled;
+        const drawLine = dataSet.lineWidth > 0;
         if (!drawFilled && !drawLine) {
             return result;
         }
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+        const trans = this.mChart.getTransformer(dataSet.axisDependency);
         const linePath = Utils.getTempPath();
 
-        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+        this.mXBounds.set(this.mChart, dataSet, this.animator);
         let points;
-        switch (dataSet.getMode()) {
+        switch (dataSet.mode) {
             default:
             case Mode.LINEAR:
             case Mode.STEPPED:
@@ -548,7 +548,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             return result;
         }
 
-        const colors = dataSet.getColors() as any as { color: string | Color; [k: string]: any }[];
+        const colors = dataSet.colors as any as { color: string | Color; [k: string]: any }[];
         const nbColors = colors.length;
         const renderPaint = this.renderPaint;
         let paintColorsShader;
@@ -559,7 +559,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
         let oldShader;
         if (drawFilled) {
-            const useColorsForFill = dataSet.getUseColorsForFill();
+            const useColorsForFill = dataSet.useColorsForFill;
             if (paintColorsShader && useColorsForFill) {
                 oldShader = renderPaint.getShader();
                 renderPaint.setShader(paintColorsShader);
@@ -570,12 +570,13 @@ export class LineChartRenderer extends LineRadarRenderer {
             const minEntryValue = dataSet.getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), this.mXBounds.min);
             const maxEntryValue = dataSet.getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), this.mXBounds.min + this.mXBounds.range);
             this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
+            this.lastLinePath = linePath;
             if (paintColorsShader && useColorsForFill) {
                 renderPaint.setShader(oldShader);
                 oldShader = null;
             }
         }
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
 
         if (drawLine) {
             const useColorsForLine = dataSet.useColorsForLine;
@@ -607,20 +608,23 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?, fillMin?: number) {
-        if (fillMin === undefined) {
-            fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart);
+        const fillFormatter = dataSet.fillFormatter;
+        if (fillFormatter.getFillLinePath) {
+            fillFormatter.getFillLinePath(dataSet, this.mChart, spline, this.lastLinePath);
+        } else if (fillMin === undefined) {
+            fillMin = fillFormatter.getFillLinePosition(dataSet, this.mChart);
+            spline.lineTo(max, fillMin);
+            spline.lineTo(min, fillMin);
+            spline.close();
         }
-        spline.lineTo(max, fillMin);
-        spline.lineTo(min, fillMin);
-        spline.close();
 
         trans && trans.pathValueToPixel(spline);
 
-        const drawable = dataSet.getFillDrawable();
+        const drawable = dataSet.fillDrawable;
         if (drawable != null) {
-            this.drawFilledPathBitmap(c, spline, drawable, dataSet.getFillShader());
+            this.drawFilledPathBitmap(c, spline, drawable, dataSet.fillShader);
         } else {
-            this.drawFilledPath(c, spline, color || dataSet.getFillColor(), dataSet.getFillAlpha(), dataSet.getFillShader());
+            this.drawFilledPath(c, spline, color || dataSet.fillColor, dataSet.fillAlpha, dataSet.fillShader);
         }
     }
 
@@ -629,26 +633,26 @@ export class LineChartRenderer extends LineRadarRenderer {
         const yKey = dataSet.yProperty;
         // apply the text-styling defined by the DataSet
         this.applyValueTextStyle(dataSet);
-
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+        const chart = this.mChart;
+        const trans = chart.getTransformer(dataSet.axisDependency);
 
         // make sure the values do not interfear with the circles
-        let valOffset = dataSet.getCircleRadius() * 1.75;
+        let valOffset = dataSet.circleRadius * 1.75;
 
-        if (!dataSet.isDrawCirclesEnabled()) valOffset = valOffset / 2;
+        if (!dataSet.drawCirclesEnabled) valOffset = valOffset / 2;
 
-        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+        this.mXBounds.set(chart, dataSet, this.animator);
 
-        const { points, count } = trans.generateTransformedValues(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
-        const formatter = dataSet.getValueFormatter();
+        const { points, count } = trans.generateTransformedValues(dataSet, this.animator.phaseX, this.animator.phaseY, this.mXBounds.min, this.mXBounds.max);
+        const formatter = dataSet.valueFormatter;
 
-        const iconsOffset = dataSet.getIconsOffset();
-        const valuesOffset = dataSet.getValuesOffset();
-        const drawIcons = dataSet.isDrawIconsEnabled();
-        const drawValues = dataSet.isDrawValuesEnabled();
+        const iconsOffset = dataSet.iconsOffset;
+        const valuesOffset = dataSet.valuesOffset;
+        const drawIcons = dataSet.drawIconsEnabled;
+        const drawValues = dataSet.drawValuesEnabled;
         const length = count;
         const paint = this.valuePaint;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = chart.customRenderer;
         for (let j = 0; j < length; j += 2) {
             const x = points[j];
             const y = points[j + 1];
@@ -662,27 +666,39 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (!entry) continue;
 
             if (drawValues) {
-                this.drawValue(c, formatter.getFormattedValue(entry[yKey], entry), valuesOffset.x + x, valuesOffset.y + y - valOffset, dataSet.getValueTextColor(j / 2), paint, customRender);
+                this.drawValue(
+                    c,
+                    chart,
+                    dataSet,
+                    dataSetIndex,
+                    entry,
+                    index,
+                    formatter.getFormattedValue(entry[yKey], entry),
+                    valuesOffset.x + x,
+                    valuesOffset.y + y - valOffset,
+                    dataSet.getValueTextColor(j / 2),
+                    paint,
+                    customRender
+                );
             }
 
-            if (drawIcons && entry.icon != null) {
-                const icon = entry.icon;
-                Utils.drawIcon(c, this.mChart, icon, x + iconsOffset.x, y + iconsOffset.y);
+            if (drawIcons) {
+                this.drawIcon(c, chart, dataSet, dataSetIndex, entry, index, dataSet.getEntryIcon(entry), x + iconsOffset.x, y + iconsOffset.y, customRender);
             }
         }
     }
 
     public drawValues(c: Canvas) {
-        const data = this.mChart.getLineData();
-        const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        const data = this.mChart.lineData;
+        const dataSets = data.dataSets;
+        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some((d) => d.drawValuesEnabled || d.drawIconsEnabled) === false) {
             return;
         }
 
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
 
-            if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
+            if (!this.shouldDrawValues(dataSet) || dataSet.entryCount < 1) continue;
             this.drawValuesForDataset(c, dataSet, i);
         }
     }
@@ -694,18 +710,18 @@ export class LineChartRenderer extends LineRadarRenderer {
     @profile
     protected drawCirclesForDataset(c: Canvas, dataSet: LineDataSet) {
         const paint = this.circlePaintInner;
-        paint.setColor(dataSet.getCircleHoleColor());
-        const phaseY = this.mAnimator.getPhaseY();
+        paint.setColor(dataSet.circleHoleColor);
+        const phaseY = this.animator.phaseY;
 
         const yKey = dataSet.yProperty;
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+        const trans = this.mChart.getTransformer(dataSet.axisDependency);
 
-        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+        this.mXBounds.set(this.mChart, dataSet, this.animator);
 
-        const circleRadius = dataSet.getCircleRadius();
-        const circleHoleRadius = dataSet.getCircleHoleRadius();
-        const drawCircleHole = dataSet.isDrawCircleHoleEnabled() && circleHoleRadius < circleRadius && circleHoleRadius > 0;
-        const drawTransparentCircleHole = drawCircleHole && dataSet.getCircleHoleColor() === ColorTemplate.COLOR_NONE;
+        const circleRadius = dataSet.circleRadius;
+        const circleHoleRadius = dataSet.circleHoleRadius;
+        const drawCircleHole = dataSet.drawCircleHoleEnabled && circleHoleRadius < circleRadius && circleHoleRadius > 0;
+        const drawTransparentCircleHole = drawCircleHole && dataSet.circleHoleColor === ColorTemplate.COLOR_NONE;
 
         let imageCache: DataSetImageCache;
 
@@ -755,8 +771,8 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     protected drawCircles(c: Canvas) {
-        const dataSets = this.mChart.getLineData().getVisibleDataSets();
-        if (dataSets.some((d) => d.isDrawCirclesEnabled()) === false) {
+        const dataSets = this.mChart.lineData.visibleDataSets;
+        if (dataSets.some((d) => d.drawCirclesEnabled) === false) {
             return;
         }
         const renderPaint = this.renderPaint;
@@ -768,20 +784,20 @@ export class LineChartRenderer extends LineRadarRenderer {
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
 
-            if (!dataSet.isDrawCirclesEnabled() || dataSet.getEntryCount() === 0) continue;
+            if (!dataSet.drawCirclesEnabled || dataSet.entryCount === 0) continue;
             this.drawCirclesForDataset(c, dataSet);
         }
     }
 
     public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?: boolean) {
-        const lineData = this.mChart.getLineData();
+        const lineData = this.mChart.lineData;
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const paint = this.highlightPaint;
         for (const high of indices) {
             const set = lineData.getDataSetByIndex(high.dataSetIndex);
 
-            if (set == null || !set.isHighlightEnabled()) continue;
+            if (set == null || !set.highlightEnabled) continue;
 
             const { entry, index } = lineData.getEntryAndIndexForHighlight(high);
             // let e = set.getEntryForXValue(high.x high.y);
@@ -790,7 +806,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             const yKey = set.yProperty;
 
-            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(set.getEntryXValue(entry, index), entry[yKey] * this.mAnimator.getPhaseY());
+            const pix = this.mChart.getTransformer(set.axisDependency).getPixelForValues(set.getEntryXValue(entry, index), entry[yKey] * this.animator.phaseY);
 
             high.drawX = pix.x;
             high.drawY = pix.y;

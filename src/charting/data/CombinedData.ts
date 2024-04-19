@@ -8,6 +8,7 @@ import { LineData } from './LineData';
 import { Entry } from './Entry';
 import { ChartData } from './ChartData';
 import { Highlight } from '../highlight/Highlight';
+import { DataSet } from './DataSet';
 
 /**
  * Data object that allows the combination of Line-, Bar-, Scatter-, Bubble- and
@@ -16,23 +17,23 @@ import { Highlight } from '../highlight/Highlight';
 
  */
 export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineScatterCandleBubbleDataSet<Entry>> {
-    mLineData: LineData;
-    mBarData: BarData;
-    mScatterData: ScatterData;
-    mCandleData: CandleData;
-    mBubbleData: BubbleData;
+    lineData: LineData;
+    barData: BarData;
+    scatterData: ScatterData;
+    candleData: CandleData;
+    bubbleData: BubbleData;
 
-    public setData(data: LineData | BarData | ScatterData | CandleData | BubbleData) {
+    public set data(data: LineData | BarData | ScatterData | CandleData | BubbleData) {
         if (data instanceof LineData) {
-            this.mLineData = data;
+            this.lineData = data;
         } else if (data instanceof BarData) {
-            this.mBarData = data;
+            this.barData = data;
         } else if (data instanceof ScatterData) {
-            this.mScatterData = data;
+            this.scatterData = data;
         } else if (data instanceof CandleData) {
-            this.mCandleData = data;
+            this.candleData = data;
         } else if (data instanceof BubbleData) {
-            this.mBubbleData = data;
+            this.bubbleData = data;
         }
         this.notifyDataChanged();
     }
@@ -61,16 +62,16 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
         for (const data of allData) {
             data.calcMinMax();
 
-            const sets = data.getDataSets();
+            const sets = data.dataSets;
             this.mDataSets.push(...sets);
 
-            if (data.getYMax() > this.mYMax) this.mYMax = data.getYMax();
+            if (data.yMax > this.mYMax) this.mYMax = data.yMax;
 
-            if (data.getYMin() < this.mYMin) this.mYMin = data.getYMin();
+            if (data.yMin < this.mYMin) this.mYMin = data.yMin;
 
-            if (data.getXMax() > this.mXMax) this.mXMax = data.getXMax();
+            if (data.xMax > this.mXMax) this.mXMax = data.xMax;
 
-            if (data.getXMin() < this.mXMin) this.mXMin = data.getXMin();
+            if (data.xMin < this.mXMin) this.mXMin = data.xMin;
 
             if (data.mLeftAxisMax > this.mLeftAxisMax) this.mLeftAxisMax = data.mLeftAxisMax;
 
@@ -82,40 +83,11 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
         }
     }
 
-    public getBubbleData() {
-        return this.mBubbleData;
-    }
-
-    public getLineData() {
-        return this.mLineData;
-    }
-
-    public getBarData() {
-        return this.mBarData;
-    }
-
-    public getScatterData() {
-        return this.mScatterData;
-    }
-
-    public getCandleData() {
-        return this.mCandleData;
-    }
-
     /**
      * Returns all data objects in row: line-bar-scatter-candle-bubble if not null.
-     *
-     * @return
      */
     public getAllData() {
-        const data: ChartData<any, any>[] = [];
-        if (this.mLineData != null) data.push(this.mLineData);
-        if (this.mBarData != null) data.push(this.mBarData);
-        if (this.mScatterData != null) data.push(this.mScatterData);
-        if (this.mCandleData != null) data.push(this.mCandleData);
-        if (this.mBubbleData != null) data.push(this.mBubbleData);
-
-        return data;
+        return [this.lineData, this.barData, this.scatterData, this.candleData, this.bubbleData].filter((d) => !!d) as ChartData<any, any>[];
     }
 
     public getDataByIndex(index) {
@@ -123,11 +95,11 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
     }
 
     public notifyDataChanged() {
-        if (this.mLineData != null) this.mLineData.notifyDataChanged();
-        if (this.mBarData != null) this.mBarData.notifyDataChanged();
-        if (this.mCandleData != null) this.mCandleData.notifyDataChanged();
-        if (this.mScatterData != null) this.mScatterData.notifyDataChanged();
-        if (this.mBubbleData != null) this.mBubbleData.notifyDataChanged();
+        if (this.lineData) this.lineData.notifyDataChanged();
+        if (this.barData) this.barData.notifyDataChanged();
+        if (this.candleData) this.candleData.notifyDataChanged();
+        if (this.scatterData) this.scatterData.notifyDataChanged();
+        if (this.bubbleData) this.bubbleData.notifyDataChanged();
 
         this.calcMinMax(); // recalculate everything
     }
@@ -138,19 +110,18 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
      * @param highlight
      * @return the entry that is highlighted
      */
-
     public getEntryForHighlight(highlight: Highlight) {
         if (highlight.dataIndex >= this.getAllData().length) return null;
 
         const data = this.getDataByIndex(highlight.dataIndex);
 
-        if (highlight.dataSetIndex >= data.getDataSetCount()) return null;
+        if (highlight.dataSetIndex >= data.dataSetCount) return null;
 
         // The value of the highlighted entry could be NaN -
         //   if we are not interested in highlighting a specific value.
-
-        const entries = data.getDataSetByIndex(highlight.dataSetIndex).getEntriesForXValue(highlight.x);
-        for (const entry of entries) if (entry.getY() === highlight.y || isNaN(highlight.y)) return entry;
+        const dataSet = data.getDataSetByIndex(highlight.dataSetIndex) as DataSet<any>;
+        const entries = dataSet.getEntriesForXValue(highlight.x);
+        for (const entry of entries) if (entry[dataSet.yProperty] === highlight.y || isNaN(highlight.y)) return entry;
 
         return null;
     }
@@ -166,9 +137,9 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
 
         const data = this.getDataByIndex(highlight.dataIndex);
 
-        if (highlight.dataSetIndex >= data.getDataSetCount()) return null;
+        if (highlight.dataSetIndex >= data.dataSetCount) return null;
 
-        return data.getDataSets()[highlight.dataSetIndex] as BarLineScatterCandleBubbleDataSet<any>;
+        return data.dataSets[highlight.dataSetIndex] as BarLineScatterCandleBubbleDataSet<any>;
     }
 
     public getDataIndex(data: ChartData<any, any>) {

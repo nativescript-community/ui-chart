@@ -11,12 +11,12 @@ export class AnimatedMoveViewJob extends AnimatedViewPortJob {
     public static getInstance(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin, yOrigin, duration) {
         const result = pool.get();
         result.mViewPortHandler = viewPortHandler;
-        result.mXValue = xValue;
-        result.mYValue = yValue;
-        result.mTrans = trans;
+        result.xValue = xValue;
+        result.yValue = yValue;
+        result.transformer = trans;
         result.mView = v;
-        result.mXOrigin = xOrigin;
-        result.mYOrigin = yOrigin;
+        result.xOrigin = xOrigin;
+        result.yOrigin = yOrigin;
         //result.resetAnimator();
         result.createAnimator(duration);
         return result;
@@ -32,10 +32,10 @@ export class AnimatedMoveViewJob extends AnimatedViewPortJob {
 
     public onAnimationUpdate(animation) {
         const pts = Utils.getTempArray(2);
-        pts[0] = this.mXOrigin + (this.mXValue - this.mXOrigin) * this.mPhase;
-        pts[1] = this.mYOrigin + (this.mYValue - this.mYOrigin) * this.mPhase;
+        pts[0] = this.xOrigin + (this.xValue - this.xOrigin) * this.phase;
+        pts[1] = this.yOrigin + (this.yValue - this.yOrigin) * this.phase;
 
-        this.mTrans.pointValuesToPixel(pts);
+        this.transformer.pointValuesToPixel(pts);
         this.mViewPortHandler.centerViewPort(pts, this.mView);
     }
 

@@ -7,8 +7,6 @@ import { IDataSet } from './IDataSet';
 export interface IBarLineScatterCandleBubbleDataSet<T extends Entry> extends IDataSet<T> {
     /**
      * Returns the color that is used for drawing the highlight indicators.
-     *
-     * @return
      */
-    getHighLightColor();
+    highLightColor: string | Color;
 }

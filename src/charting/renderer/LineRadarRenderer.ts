@@ -24,15 +24,15 @@ export abstract class LineRadarRenderer extends LineScatterCandleRadarRenderer {
     protected drawFilledPathBitmap(c: Canvas, filledPath: Path, drawable: ImageSource, shader) {
         if (Utils.clipPathSupported()) {
             const save = c.save();
-            // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom())
+            // c.scale(1, 1/SCALE_FACTOR, 0, this.mViewPortHandler.contentBottom)
             c.clipPath(filledPath);
 
-            // drawable.setBounds(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom());
+            // drawable.setBounds(this.mViewPortHandler.contentLeft, this.mViewPortHandler.contentTop, this.mViewPortHandler.contentRight, this.mViewPortHandler.contentBottom);
             // drawable.draw(c);
             c.drawBitmap(
                 drawable,
                 new Rect(0, 0, drawable.width, drawable.height),
-                new Rect(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom()),
+                new Rect(this.mViewPortHandler.contentLeft, this.mViewPortHandler.contentTop, this.mViewPortHandler.contentRight, this.mViewPortHandler.contentBottom),
                 null
             );
 

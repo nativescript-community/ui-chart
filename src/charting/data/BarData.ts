@@ -11,21 +11,7 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
     /**
      * the width of the bars on the x-axis, in values (not pixels)
      */
-    private mBarWidth = 0.85;
-
-    /**
-     * Sets the width each bar should have on the x-axis (in values, not pixels).
-     * Default 0.85
-     *
-     * @param this.mBarWidth
-     */
-    public setBarWidth(value) {
-        this.mBarWidth = value;
-    }
-
-    public getBarWidth() {
-        return this.mBarWidth;
-    }
+    barWidth = 0.85;
 
     /**
      * Groups all BarDataSet objects this data object holds together by modifying the x-value of their entries.
@@ -43,15 +29,14 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
             throw new Error('BarData needs to hold at least 2 BarDataSets to allow grouping.');
         }
 
-        const max = this.getMaxEntryCountSet();
-        const maxEntryCount = max.getEntryCount();
+        const max = this.maxEntryCountSet;
+        const maxEntryCount = max.entryCount;
 
         const groupSpaceWidthHalf = groupSpace / 2;
         const barSpaceHalf = barSpace / 2;
-        const barWidthHalf = this.mBarWidth / 2;
+        const barWidthHalf = this.barWidth / 2;
 
         const interval = this.getGroupWidth(groupSpace, barSpace);
-
         for (let i = 0; i < maxEntryCount; i++) {
             const start = fromX;
             fromX += groupSpaceWidthHalf;
@@ -60,11 +45,11 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
                 fromX += barSpaceHalf;
                 fromX += barWidthHalf;
 
-                if (i < set.getEntryCount()) {
+                if (i < set.entryCount) {
                     const xKey = set.xProperty;
                     const entry = set.getEntryForIndex(i);
 
-                    if (entry !== null) {
+                    if (entry) {
                         // TODO: this is bad we should not modify the entry!
                         entry[xKey] = fromX;
                     }
@@ -96,6 +81,6 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
      * @return
      */
     public getGroupWidth(groupSpace, barSpace) {
-        return this.mDataSets.length * (this.mBarWidth + barSpace) + groupSpace;
+        return this.mDataSets.length * (this.barWidth + barSpace) + groupSpace;
     }
 }

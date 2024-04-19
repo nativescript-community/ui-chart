@@ -2,7 +2,7 @@ import { EventData, Observable, Trace } from '@nativescript/core';
 import { getEventOrGestureName } from '@nativescript/core/ui/core/bindable';
 import { GestureTypes } from '@nativescript/core/ui/gestures';
 import { BarLineChartBase } from './BarLineChartBase';
-import { Chart } from '../charts/Chart';
+import { Chart } from './Chart';
 import { LegendHorizontalAlignment, LegendOrientation, LegendVerticalAlignment } from '../components/Legend';
 import { ChartData } from '../data/ChartData';
 import { Entry } from '../data/Entry';
@@ -19,7 +19,7 @@ const LOG_TAG = 'PieRadarChartBase';
 
  */
 export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, T extends ChartData<U, D>> extends Chart<U, D, T> {
-    protected mChartTouchListener: PieRadarChartTouchListener;
+    chartTouchListener: PieRadarChartTouchListener;
 
     /**
      * holds the normalized version of the current rotation angle of the chart
@@ -39,30 +39,30 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
     /**
      * Sets the minimum offset (padding) around the chart, defaults to 0
      */
-    protected mMinOffset: number = 0;
+    minOffset: number = 0;
 
     protected init() {
         super.init();
 
-        //this.mChartTouchListener = new PieRadarChartTouchListener(this);
+        //this.chartTouchListener = new PieRadarChartTouchListener(this);
     }
 
     getOrCreateTouchListener() {
-        if (!this.mChartTouchListener) {
-            this.mChartTouchListener = new PieRadarChartTouchListener(this);
+        if (!this.chartTouchListener) {
+            this.chartTouchListener = new PieRadarChartTouchListener(this);
             if (!!this.nativeViewProtected) {
-                this.mChartTouchListener.init();
+                this.chartTouchListener.init();
             }
         }
-        return this.mChartTouchListener;
+        return this.chartTouchListener;
     }
 
     protected calcMinMax() {
         //mXAxis.mAxisRange = this.mData.getXVals().length - 1;
     }
 
-    public getMaxVisibleCount() {
-        return this.mData.getEntryCount();
+    get maxVisibleValueCount() {
+        return this.mData.entryCount;
     }
 
     public notifyDataSetChanged() {
@@ -72,8 +72,8 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
 
         this.calcMinMax();
 
-        if (this.mLegend != null && this.mLegend.isEnabled()) {
-            this.mLegendRenderer.computeLegend(this.mData);
+        if (this.mLegend != null && this.mLegend.enabled) {
+            this.legendRenderer.computeLegend(this.mData);
         }
 
         this.calculateOffsets();
@@ -85,16 +85,16 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
             legendBottom = 0,
             legendTop = 0;
 
-        if (this.mLegend != null && this.mLegend.isEnabled() && !this.mLegend.isDrawInsideEnabled()) {
-            const fullLegendWidth = Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.getMaxSizePercent());
+        if (this.mLegend?.enabled && !this.mLegend.drawInside) {
+            const fullLegendWidth = Math.min(this.mLegend.mNeededWidth, this.viewPortHandler.chartWidth * this.mLegend.maxSizePercent);
 
-            switch (this.mLegend.getOrientation()) {
+            switch (this.mLegend.orientation) {
                 case LegendOrientation.VERTICAL:
                     {
                         let xLegendOffset = 0;
 
-                        if (this.mLegend.getHorizontalAlignment() === LegendHorizontalAlignment.LEFT || this.mLegend.getHorizontalAlignment() === LegendHorizontalAlignment.RIGHT) {
-                            if (this.mLegend.getVerticalAlignment() === LegendVerticalAlignment.CENTER) {
+                        if (this.mLegend.horizontalAlignment === LegendHorizontalAlignment.LEFT || this.mLegend.horizontalAlignment === LegendHorizontalAlignment.RIGHT) {
+                            if (this.mLegend.verticalAlignment === LegendVerticalAlignment.CENTER) {
                                 // this is the space between the legend and the chart
                                 const spacing = 13;
 
@@ -106,18 +106,18 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
                                 const legendWidth = fullLegendWidth + spacing;
                                 const legendHeight = this.mLegend.mNeededHeight + this.mLegend.mTextHeightMax;
 
-                                const center = this.getCenter();
+                                const center = this.center;
 
-                                const bottomX = this.mLegend.getHorizontalAlignment() === LegendHorizontalAlignment.RIGHT ? this.mViewPortHandler.getChartWidth() - legendWidth + 15 : legendWidth - 15;
+                                const bottomX = this.mLegend.horizontalAlignment === LegendHorizontalAlignment.RIGHT ? this.viewPortHandler.chartWidth - legendWidth + 15 : legendWidth - 15;
                                 const bottomY = legendHeight + 15;
                                 const distLegend = this.distanceToCenter(bottomX, bottomY);
 
-                                const reference = this.getPosition(center, this.getRadius(), this.getAngleForPoint(bottomX, bottomY));
+                                const reference = this.getPosition(center, this.radius, this.getAngleForPoint(bottomX, bottomY));
 
                                 const distReference = this.distanceToCenter(reference.x, reference.y);
                                 const minOffset = 5;
 
-                                if (bottomY >= center.y && this.mViewPortHandler.getChartHeight() - legendWidth > this.mViewPortHandler.getChartWidth()) {
+                                if (bottomY >= center.y && this.viewPortHandler.chartHeight - legendWidth > this.viewPortHandler.chartWidth) {
                                     xLegendOffset = legendWidth;
                                 } else if (distLegend < distReference) {
                                     const diff = distReference - distLegend;
@@ -126,7 +126,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
                             }
                         }
 
-                        switch (this.mLegend.getHorizontalAlignment()) {
+                        switch (this.mLegend.horizontalAlignment) {
                             case LegendHorizontalAlignment.LEFT:
                                 legendLeft = xLegendOffset;
                                 break;
@@ -134,12 +134,12 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
                                 legendRight = xLegendOffset;
                                 break;
                             case LegendHorizontalAlignment.CENTER:
-                                switch (this.mLegend.getVerticalAlignment()) {
+                                switch (this.mLegend.verticalAlignment) {
                                     case LegendVerticalAlignment.TOP:
-                                        legendTop = Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent());
+                                        legendTop = Math.min(this.mLegend.mNeededHeight, this.viewPortHandler.chartHeight * this.mLegend.maxSizePercent);
                                         break;
                                     case LegendVerticalAlignment.BOTTOM:
-                                        legendBottom = Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent());
+                                        legendBottom = Math.min(this.mLegend.mNeededHeight, this.viewPortHandler.chartHeight * this.mLegend.maxSizePercent);
                                         break;
                                 }
                                 break;
@@ -149,15 +149,15 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
                 case LegendOrientation.HORIZONTAL:
                     let yLegendOffset = 0;
 
-                    if (this.mLegend.getVerticalAlignment() === LegendVerticalAlignment.TOP || this.mLegend.getVerticalAlignment() === LegendVerticalAlignment.BOTTOM) {
+                    if (this.mLegend.verticalAlignment === LegendVerticalAlignment.TOP || this.mLegend.verticalAlignment === LegendVerticalAlignment.BOTTOM) {
                         // It's possible that we do not need this offset anymore as it
                         //   is available through the extraOffsets, but changing it can mean
                         //   changing default visibility for existing apps.
-                        const yOffset = this.getRequiredLegendOffset();
+                        const yOffset = this.requiredLegendOffset;
 
-                        yLegendOffset = Math.min(this.mLegend.mNeededHeight + yOffset, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent());
+                        yLegendOffset = Math.min(this.mLegend.mNeededHeight + yOffset, this.viewPortHandler.chartHeight * this.mLegend.maxSizePercent);
 
-                        switch (this.mLegend.getVerticalAlignment()) {
+                        switch (this.mLegend.verticalAlignment) {
                             case LegendVerticalAlignment.TOP:
                                 legendTop = yLegendOffset;
                                 break;
@@ -169,34 +169,34 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
                     break;
             }
 
-            legendLeft += this.getRequiredBaseOffset();
-            legendRight += this.getRequiredBaseOffset();
-            legendTop += this.getRequiredBaseOffset();
-            legendBottom += this.getRequiredBaseOffset();
+            legendLeft += this.requiredBaseOffset;
+            legendRight += this.requiredBaseOffset;
+            legendTop += this.requiredBaseOffset;
+            legendBottom += this.requiredBaseOffset;
         }
 
-        let minOffset = this.mMinOffset;
+        let minOffset = this.minOffset;
 
         // detect PieChart while preventing circular dep
-        if (!this['mCircleBox']) {
-            const x = this.getXAxis();
+        if (!this['circleBox']) {
+            const x = this.xAxis;
 
-            if (x.isEnabled() && x.isDrawLabelsEnabled()) {
+            if (x.enabled && x.drawLabels) {
                 minOffset = Math.max(minOffset, x.mLabelRotatedWidth);
             }
         }
 
-        legendTop += this.getExtraTopOffset();
-        legendRight += this.getExtraRightOffset();
-        legendBottom += this.getExtraBottomOffset();
-        legendLeft += this.getExtraLeftOffset();
+        legendTop += this.extraTopOffset;
+        legendRight += this.extraRightOffset;
+        legendBottom += this.extraBottomOffset;
+        legendLeft += this.extraLeftOffset;
 
         const offsetLeft = Math.max(minOffset, legendLeft);
         const offsetTop = Math.max(minOffset, legendTop);
         const offsetRight = Math.max(minOffset, legendRight);
-        const offsetBottom = Math.max(minOffset, Math.max(this.getRequiredBaseOffset(), legendBottom));
+        const offsetBottom = Math.max(minOffset, Math.max(this.requiredBaseOffset, legendBottom));
 
-        this.mViewPortHandler.restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom);
+        this.viewPortHandler.restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom);
 
         if (Trace.isEnabled()) {
             CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
@@ -213,7 +213,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      * @return
      */
     public getAngleForPoint(x, y) {
-        const c = this.getCenterOffsets();
+        const c = this.centerOffsets;
 
         const tx = x - c.x,
             ty = y - c.y;
@@ -260,7 +260,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      * @return
      */
     public distanceToCenter(x: number, y: number) {
-        const c = this.getCenterOffsets();
+        const c = this.centerOffsets;
 
         let dist = 0;
         let xDist = 0;
@@ -293,24 +293,34 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      */
     public abstract getIndexForAngle(angle);
 
-    public setHighlightPerTapEnabled(enabled) {
-        super.setHighlightPerTapEnabled(enabled);
+    set highlightPerTapEnabled(enabled) {
+        this.mHighlightPerTapEnabled = enabled;
         if (enabled) {
             this.getOrCreateTouchListener().setTap(true);
-        } else if (this.mChartTouchListener) {
-            this.mChartTouchListener.setTap(false);
+        } else if (this.chartTouchListener) {
+            this.chartTouchListener.setTap(false);
         }
     }
-
+    get highlightPerTapEnabled() {
+        return this.mHighlightPerTapEnabled;
+    }
     /**
      * Set an offset for the rotation of the RadarChart in degrees. Default 270
      * --> top (NORTH)
      *
      * @param angle
      */
-    public setRotationAngle(angle) {
+    public set rotationAngle(angle) {
         this.mRawRotationAngle = angle;
         this.mRotationAngle = Utils.getNormalizedAngle(this.mRawRotationAngle);
+    }
+
+    /**
+     * gets a normalized version of the current rotation angle of the pie chart,
+     * which will always be between 0.0 < 360.0
+     */
+    public get rotationAngle() {
+        return this.mRotationAngle;
     }
 
     /**
@@ -318,21 +328,9 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      * returned value could be any value, negative or positive, outside of the
      * 360 degrees. this is used when working with rotation direction, mainly by
      * gestures and animations.
-     *
-     * @return
      */
-    public getRawRotationAngle() {
+    public get rawRotationAngle() {
         return this.mRawRotationAngle;
-    }
-
-    /**
-     * gets a normalized version of the current rotation angle of the pie chart,
-     * which will always be between 0.0 < 360.0
-     *
-     * @return
-     */
-    public getRotationAngle() {
-        return this.mRotationAngle;
     }
 
     /**
@@ -341,80 +339,56 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      *
      * @param enabled
      */
-    public setRotationEnabled(enabled) {
+    public set rotationEnabled(enabled) {
         this.mRotateEnabled = enabled;
         if (enabled) {
             this.getOrCreateTouchListener().setRotation(true);
-        } else if (this.mChartTouchListener) {
-            this.mChartTouchListener.setRotation(false);
+        } else if (this.chartTouchListener) {
+            this.chartTouchListener.setRotation(false);
         }
     }
 
     /**
      * Returns true if rotation of the chart by touch is enabled, false if not.
-     *
-     * @return
      */
-    public isRotationEnabled() {
+    public get rotationEnabled() {
         return this.mRotateEnabled;
     }
 
     /**
-     * Gets the minimum offset (padding) around the chart, defaults to 0
-     */
-    public getMinOffset() {
-        return this.mMinOffset;
-    }
-
-    /**
-     * Sets the minimum offset (padding) around the chart, defaults to 0
-     */
-    public setMinOffset(minOffset) {
-        this.mMinOffset = minOffset;
-    }
-
-    /**
      * returns the diameter of the pie- or radar-chart
-     *
-     * @return
      */
-    public getDiameter() {
-        const content = this.mViewPortHandler.getContentRect();
-        content.left += this.getExtraLeftOffset();
-        content.top += this.getExtraTopOffset();
-        content.right -= this.getExtraRightOffset();
-        content.bottom -= this.getExtraBottomOffset();
+    public get diameter() {
+        const content = this.viewPortHandler.contentRect;
+        content.left += this.extraLeftOffset;
+        content.top += this.extraTopOffset;
+        content.right -= this.extraRightOffset;
+        content.bottom -= this.extraBottomOffset;
         return Math.min(content.width(), content.height());
     }
 
     /**
      * Returns the radius of the chart in pixels.
-     *
-     * @return
      */
-    public abstract getRadius();
+    public abstract radius: number;
 
     /**
      * Returns the required offset for the chart legend.
-     *
-     * @return
      */
-    protected abstract getRequiredLegendOffset();
+    protected abstract requiredLegendOffset: number;
 
     /**
      * Returns the base offset needed for the chart without calculating the
      * legend size.
-     *
-     * @return
      */
-    protected abstract getRequiredBaseOffset();
+    protected abstract requiredBaseOffset: number;
 
-    public getYChartMax() {
+    public get yChartMax() {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    public getYChartMin() {
+    public get yChartMin() {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -452,9 +426,9 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
             if (events.length > 0) {
                 for (let i = 0; i < events.length; i++) {
                     const evt = events[i].trim();
-                    if (arg === 'tap' && !this.isHighlightPerTapEnabled()) {
+                    if (arg === 'tap' && !this.highlightPerTapEnabled) {
                         this.getOrCreateTouchListener().setTap(false);
-                    } else if (arg === 'rotate' && !this.isRotationEnabled()) {
+                    } else if (arg === 'rotate' && !this.rotationEnabled) {
                         this.getOrCreateTouchListener().setRotation(false);
                     }
                     Observable.prototype.removeEventListener.call(this, evt, callback, thisArg);

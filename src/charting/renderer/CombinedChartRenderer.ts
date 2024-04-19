@@ -16,7 +16,7 @@ export class CombinedChartRenderer extends DataRenderer {
     /**
      * all rederers for the different kinds of data this combined-renderer can draw
      */
-    protected mRenderers: DataRenderer[] = new Array(5);
+    renderers: DataRenderer[] = new Array(5);
 
     protected mChart: WeakRef<CombinedChart>;
 
@@ -33,64 +33,74 @@ export class CombinedChartRenderer extends DataRenderer {
      * consideration.
      */
     public createRenderers() {
-        this.mRenderers = [];
+        this.renderers = [];
 
         const chart = this.mChart.get();
-        if (chart == null) return;
-
-        const orders = chart.getDrawOrder();
-
-        for (const order of orders) {
-            switch (order) {
-                case DrawOrder.BAR:
-                    if (chart.getBarData() != null) this.mRenderers.push(new BarChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
-                    break;
-                case DrawOrder.BUBBLE:
-                    if (chart.getBubbleData() != null) this.mRenderers.push(new BubbleChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
-                    break;
-                case DrawOrder.LINE:
-                    if (chart.getLineData() != null) this.mRenderers.push(new LineChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
-                    break;
-                case DrawOrder.CANDLE:
-                    if (chart.getCandleData() != null) this.mRenderers.push(new CandleStickChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
-                    break;
-                case DrawOrder.SCATTER:
-                    if (chart.getScatterData() != null) this.mRenderers.push(new ScatterChartRenderer(chart as any, this.mAnimator, this.mViewPortHandler));
-                    break;
+        if (!chart?.data) return;
+        const orders = chart.drawOrder;
+        if (orders) {
+            for (const order of orders) {
+                switch (order) {
+                    case DrawOrder.BAR:
+                        if (chart.barData) {
+                            this.renderers.push(new BarChartRenderer(chart as any, this.animator, this.mViewPortHandler));
+                        }
+                        break;
+                    case DrawOrder.BUBBLE:
+                        if (chart.bubbleData) {
+                            this.renderers.push(new BubbleChartRenderer(chart as any, this.animator, this.mViewPortHandler));
+                        }
+                        break;
+                    case DrawOrder.LINE:
+                        if (chart.lineData) {
+                            this.renderers.push(new LineChartRenderer(chart as any, this.animator, this.mViewPortHandler));
+                        }
+                        break;
+                    case DrawOrder.CANDLE:
+                        if (chart.candleData) {
+                            this.renderers.push(new CandleStickChartRenderer(chart as any, this.animator, this.mViewPortHandler));
+                        }
+                        break;
+                    case DrawOrder.SCATTER:
+                        if (chart.scatterData) {
+                            this.renderers.push(new ScatterChartRenderer(chart as any, this.animator, this.mViewPortHandler));
+                        }
+                        break;
+                }
             }
         }
     }
 
     public initBuffers() {
-        for (const renderer of this.mRenderers) renderer.initBuffers();
+        for (const renderer of this.renderers) renderer.initBuffers();
     }
 
     public drawData(c: Canvas) {
-        for (const renderer of this.mRenderers) renderer.drawData(c);
+        for (const renderer of this.renderers) renderer.drawData(c);
     }
 
     public drawValues(c: Canvas) {
-        for (const renderer of this.mRenderers) renderer.drawValues(c);
+        for (const renderer of this.renderers) renderer.drawValues(c);
     }
 
     public drawExtras(c: Canvas) {
-        for (const renderer of this.mRenderers) renderer.drawExtras(c);
+        for (const renderer of this.renderers) renderer.drawExtras(c);
     }
 
     public drawHighlighted(c: Canvas, indices: Highlight[]) {
         const chart = this.mChart.get();
         if (chart == null) return;
 
-        for (const renderer of this.mRenderers) {
+        for (const renderer of this.renderers) {
             let data = null;
 
-            if (renderer instanceof BarChartRenderer) data = renderer.mChart.getBarData();
-            else if (renderer instanceof LineChartRenderer) data = renderer.mChart.getLineData();
-            else if (renderer instanceof CandleStickChartRenderer) data = renderer.mChart.getCandleData();
-            else if (renderer instanceof ScatterChartRenderer) data = renderer.mChart.getScatterData();
-            else if (renderer instanceof BubbleChartRenderer) data = renderer.mChart.getBubbleData();
+            if (renderer instanceof BarChartRenderer) data = renderer.mChart.barData;
+            else if (renderer instanceof LineChartRenderer) data = renderer.mChart.lineData;
+            else if (renderer instanceof CandleStickChartRenderer) data = renderer.mChart.candleData;
+            else if (renderer instanceof ScatterChartRenderer) data = renderer.mChart.scatterData;
+            else if (renderer instanceof BubbleChartRenderer) data = renderer.mChart.bubbleData;
 
-            const dataIndex = data == null ? -1 : chart.getData().getAllData().indexOf(data);
+            const dataIndex = data == null ? -1 : chart.data.getAllData().indexOf(data);
 
             this.mHighlightBuffer = [];
 
@@ -109,23 +119,21 @@ export class CombinedChartRenderer extends DataRenderer {
      * @return
      */
     public getSubRenderer(index) {
-        if (index >= this.mRenderers.length || index < 0) {
+        if (index >= this.renderers.length || index < 0) {
             return null;
         } else {
-            return this.mRenderers[index];
+            return this.renderers[index];
         }
     }
 
     /**
      * Returns all sub-renderers.
-     *
-     * @return
      */
     public getSubRenderers() {
-        return this.mRenderers;
+        return this.renderers;
     }
 
     public setSubRenderers(renderers: DataRenderer[]) {
-        this.mRenderers = renderers;
+        this.renderers = renderers;
     }
 }

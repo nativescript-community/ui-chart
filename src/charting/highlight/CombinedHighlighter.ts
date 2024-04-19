@@ -18,13 +18,13 @@ export class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
         super(chart);
 
         // if there is BarData, create a BarHighlighter
-        this.barHighlighter = barChart.getBarData() == null ? null : new BarHighlighter(barChart);
+        this.barHighlighter = barChart.barData == null ? null : new BarHighlighter(barChart);
     }
 
     public getHighlightsAtXValue(xVal, x?, y?) {
         this.mHighlightBuffer = [];
 
-        const dataObjects = this.mChart.getCombinedData().getAllData();
+        const dataObjects = this.mChart.combinedData.getAllData();
 
         for (let i = 0; i < dataObjects.length; i++) {
             const dataObject = dataObjects[i];
@@ -38,11 +38,11 @@ export class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
                     this.mHighlightBuffer.push(high);
                 }
             } else {
-                for (let j = 0, dataSetCount = dataObject.getDataSetCount(); j < dataSetCount; j++) {
+                for (let j = 0, dataSetCount = dataObject.dataSetCount; j < dataSetCount; j++) {
                     const dataSet = dataObjects[i].getDataSetByIndex(j);
 
                     // don't include datasets that cannot be highlighted
-                    if (!dataSet.isHighlightEnabled()) continue;
+                    if (!dataSet.highlightEnabled) continue;
 
                     const highs = this.buildHighlights(dataSet, j, xVal, Rounding.CLOSEST);
                     for (const high of highs) {

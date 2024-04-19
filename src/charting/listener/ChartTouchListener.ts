@@ -40,42 +40,30 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
     /**
      * the last highlighted object (via touch)
      */
-    protected mLastHighlighted: Highlight;
+    lastHighlighted: Highlight;
 
     /**
      * the chart the listener represents
      */
-    protected mChart: T;
+    readonly chart: T;
 
     constructor(chart: T) {
-        this.mChart = chart;
+        this.chart = chart;
     }
     dispose() {}
     init() {}
-    /**
-     * Sets the last value that was highlighted via touch.
-     *
-     * @param high
-     */
-    public setLastHighlighted(high: Highlight) {
-        this.mLastHighlighted = high;
-    }
 
     /**
      * returns the touch mode the listener is currently in
-     *
-     * @return
      */
-    public getTouchMode() {
+    public get touchMode() {
         return this.mTouchMode;
     }
 
     /**
      * Returns the last gesture that has been performed on the chart.
-     *
-     * @return
      */
-    public getLastGesture() {
+    public get lastGesture() {
         return this.mLastGesture;
     }
 
@@ -85,12 +73,12 @@ export abstract class ChartTouchListener<T extends Chart<any, any, any>> {
      * @param e
      */
     protected performHighlight(h: Highlight) {
-        if (h == null || h === this.mLastHighlighted) {
-            this.mChart.highlight(null, true);
-            this.mLastHighlighted = null;
+        if (!h || h === this.lastHighlighted) {
+            this.chart.highlight(null, true);
+            this.lastHighlighted = null;
         } else {
-            this.mChart.highlight(h, true);
-            this.mLastHighlighted = h;
+            this.chart.highlight(h, true);
+            this.lastHighlighted = h;
         }
     }
 

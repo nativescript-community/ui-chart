@@ -14,36 +14,24 @@ export interface CustomRenderer extends BaseCustomRenderer {
 }
 
 export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {
-    mRenderer: LineChartRenderer;
+    renderer: LineChartRenderer;
     protected init() {
         super.init();
 
-        this.mRenderer = new LineChartRenderer(this, this.mAnimator, this.mViewPortHandler);
+        this.renderer = new LineChartRenderer(this, this.animator, this.viewPortHandler);
     }
 
-    public getLineData() {
+    public get lineData() {
         return this.mData;
     }
 
     _onDetachedFromWindow() {
         // releases the bitmap in the renderer to avoid oom error
-        if (this.mRenderer != null && this.mRenderer instanceof LineChartRenderer) {
-            this.mRenderer.releaseBitmap();
+        if (this.renderer != null && this.renderer instanceof LineChartRenderer) {
+            this.renderer.releaseBitmap();
         }
         // super._onDetachedFromWindow();
     }
 
-    mCustomRenderer: CustomRenderer;
-    /**
-     * set a custom line renderer
-     */
-    public setCustomRenderer(renderer: CustomRenderer) {
-        this.mCustomRenderer = renderer;
-    }
-    /**
-     * get the custom line renderer
-     */
-    public getCustomRenderer() {
-        return this.mCustomRenderer;
-    }
+    customRenderer: CustomRenderer;
 }

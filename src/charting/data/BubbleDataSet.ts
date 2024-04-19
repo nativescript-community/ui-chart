@@ -4,9 +4,9 @@ import { BubbleEntry } from './BubbleEntry';
 
 export class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry> implements IBubbleDataSet {
     mMaxSize: number;
-    mNormalizeSize: boolean;
+    normalizeSizeEnabled: boolean;
 
-    mHighlightCircleWidth = 2.5;
+    highlightCircleWidth = 2.5;
 
     /**
      * property to access the "high" value of an entry for this set
@@ -22,17 +22,10 @@ export class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry
         this.init();
     }
 
-    public setHighlightCircleWidth(width: number) {
-        this.mHighlightCircleWidth = width;
-    }
-
-    public getHighlightCircleWidth() {
-        return this.mHighlightCircleWidth;
-    }
     init() {
         // ! init is called before init of class vars
         this.mMaxSize = -Infinity;
-        this.mNormalizeSize = true;
+        this.normalizeSizeEnabled = true;
         super.init();
     }
     calcMinMax() {
@@ -47,15 +40,7 @@ export class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry
         }
     }
 
-    public getMaxSize() {
+    public get maxSize() {
         return this.mMaxSize;
-    }
-
-    public isNormalizeSizeEnabled() {
-        return this.mNormalizeSize;
-    }
-
-    public setNormalizeSizeEnabled(normalizeSize) {
-        this.mNormalizeSize = normalizeSize;
     }
 }

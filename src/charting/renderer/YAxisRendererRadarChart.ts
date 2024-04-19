@@ -19,7 +19,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
         const yMin = min;
         const yMax = max;
 
-        const labelCount = axis.getLabelCount();
+        const labelCount = axis.labelCount;
         const range = Math.abs(yMax - yMin);
 
         if (labelCount === 0 || range <= 0 || !Number.isFinite(range)) {
@@ -36,7 +36,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
-        if (axis.isGranularityEnabled()) interval = interval < axis.getGranularity() ? axis.getGranularity() : interval;
+        if (axis.granularity) interval = interval < axis.granularity ? axis.granularity : interval;
 
         // Normalize interval
         const intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10, Math.log10(interval)));
@@ -47,12 +47,12 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
             interval = Math.floor(10 * intervalMagnitude);
         }
 
-        const centeringEnabled = axis.isCenterAxisLabelsEnabled();
+        const centeringEnabled = axis.centerAxisLabels;
         let n = centeringEnabled ? 1 : 0;
 
-        const formatter = axis.getValueFormatter();
+        const formatter = axis.valueFormatter;
         // force label count
-        if (axis.isForceLabelsEnabled()) {
+        if (axis.forceLabelsEnabled) {
             const step = range / (labelCount - 1);
             axis.mEntryCount = Math.floor(labelCount);
 
@@ -66,7 +66,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
             for (let i = 0; i < axis.mEntryCount; i++) {
                 axis.mEntries[i] = v;
-                axis.mLabels[i] = formatter.getAxisLabel(v, axis, this.mViewPortHandler);
+                axis.mLabels[i] = formatter.getAxisLabel(v, axis);
                 v += step;
             }
             n = axis.mEntryCount;
@@ -106,7 +106,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
                 }
 
                 axis.mEntries[i] = f;
-                axis.mLabels[i] = formatter.getAxisLabel(f, axis, this.mViewPortHandler);
+                axis.mLabels[i] = formatter.getAxisLabel(f, axis);
             }
         }
 
@@ -135,23 +135,23 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
     }
 
     public renderAxisLabels(c: Canvas) {
-        if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled()) return;
+        if (!this.mYAxis.enabled || !this.mYAxis.drawLabels) return;
 
         const paint = this.axisLabelsPaint;
-        paint.setFont(this.mYAxis.getFont());
-        paint.setColor(this.mYAxis.getTextColor());
+        paint.setFont(this.mYAxis.typeface);
+        paint.setColor(this.mYAxis.textColor);
 
-        const center = this.mChart.getCenterOffsets();
+        const center = this.mChart.centerOffsets;
         const pOut: MPPointF = { x: 0, y: 0 };
-        const factor = this.mChart.getFactor();
+        const factor = this.mChart.factor;
 
-        const from = this.mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
-        const to = this.mYAxis.isDrawTopYLabelEntryEnabled() ? this.mYAxis.mEntryCount : this.mYAxis.mEntryCount - 1;
+        const from = this.mYAxis.drawBottomYLabelEntry ? 0 : 1;
+        const to = this.mYAxis.drawTopYLabelEntry ? this.mYAxis.mEntryCount : this.mYAxis.mEntryCount - 1;
 
         for (let j = from; j < to; j++) {
             const r = (this.mYAxis.mEntries[j] - this.mYAxis.mAxisMinimum) * factor;
 
-            Utils.getPosition(center, r, this.mChart.getRotationAngle(), pOut);
+            Utils.getPosition(center, r, this.mChart.rotationAngle, pOut);
 
             const label = this.mYAxis.getFormattedLabel(j);
             if (label) {
@@ -171,35 +171,39 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
     }
 
     public renderLimitLines(c: Canvas) {
-        const limitLines = this.mYAxis.getLimitLines();
+        const axis = this.mYAxis;
+        if (!axis.enabled) {
+            return;
+        }
+        const limitLines = axis.limitLines;
 
         if (limitLines == null) return;
 
-        const sliceangle = this.mChart.getSliceAngle();
+        const sliceangle = this.mChart.sliceAngle;
 
         // calculate the factor that is needed for transforming the value to
         // pixels
-        const factor = this.mChart.getFactor();
+        const factor = this.mChart.factor;
 
-        const center = this.mChart.getCenterOffsets();
+        const center = this.mChart.centerOffsets;
         const pOut: MPPointF = { x: 0, y: 0 };
         for (let i = 0; i < limitLines.length; i++) {
             const l = limitLines[i];
 
-            if (!l.isEnabled()) continue;
+            if (!l.enabled) continue;
 
             const paint = this.limitLinePaint;
-            paint.setColor(l.getLineColor());
-            paint.setPathEffect(l.getDashPathEffect());
-            paint.setStrokeWidth(l.getLineWidth());
+            paint.setColor(l.lineColor);
+            paint.setPathEffect(l.dashPathEffect);
+            paint.setStrokeWidth(l.lineWidth);
 
-            const r = (l.getLimit() - this.mChart.getYChartMin()) * factor;
+            const r = (l.limit - this.mChart.yChartMin) * factor;
 
             const limitPath = this.renderLimitLinesPathBuffer;
             limitPath.reset();
 
-            for (let j = 0; j < this.mChart.getData().getMaxEntryCountSet().getEntryCount(); j++) {
-                Utils.getPosition(center, r, sliceangle * j + this.mChart.getRotationAngle(), pOut);
+            for (let j = 0; j < this.mChart.data.maxEntryCountSet.entryCount; j++) {
+                Utils.getPosition(center, r, sliceangle * j + this.mChart.rotationAngle, pOut);
 
                 if (j === 0) limitPath.moveTo(pOut.x, pOut.y);
                 else limitPath.lineTo(pOut.x, pOut.y);

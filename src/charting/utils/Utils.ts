@@ -401,7 +401,6 @@ export namespace Utils {
      * @param angle  in degrees, converted to radians internally
      * @return
      */
-
     export function getPosition(center, dist, angle, outputPoint?) {
         if (outputPoint) {
             outputPoint.x = center.x + dist * Math.cos(toRadians(angle));
@@ -443,7 +442,6 @@ export namespace Utils {
      *
      * @param view
      */
-
     //    export function ostInvalidateOnAnimation(view) {
     //         if (Build.VERSION.SDK_INT >= 16) view.postInvalidateOnAnimation();
     //         else view.postInvalidateDelayed(10);
@@ -485,23 +483,6 @@ export namespace Utils {
     //     drawable.draw(canvas);
     //     canvas.restore();
     // }
-
-    export function drawIcon(canvas: Canvas, chart: Chart<any, any, any>, icon: ImageSource | Shape, x, y) {
-        if (icon instanceof Shape) {
-            const availableWidth = canvas.getWidth();
-            const availableHeight = canvas.getHeight();
-            const width = icon.getWidth(availableWidth, availableHeight);
-            const height = icon.getHeight(availableWidth, availableHeight);
-            canvas.save();
-            canvas.translate(x - width / 2, y - height / 2);
-            icon.drawMyShapeOnCanvas(canvas, chart, availableWidth, availableHeight);
-            canvas.restore();
-        } else {
-            const drawOffsetX = x - icon.width / 2;
-            const drawOffsetY = y - icon.height / 2;
-            canvas.drawBitmap(__ANDROID__ ? icon.android : icon, drawOffsetX, drawOffsetY, null);
-        }
-    }
 
     export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees) {
         let drawOffsetX = 0;
@@ -762,6 +743,7 @@ export namespace Utils {
             }
             case 'black-fill': {
                 paint = new Paint();
+                paint.setColor('black');
                 paint.setStyle(Style.FILL);
                 break;
             }

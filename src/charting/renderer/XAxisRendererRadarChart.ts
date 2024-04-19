@@ -16,35 +16,35 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
     }
 
     public renderAxisLabels(c: Canvas) {
-        const axis = this.mXAxis;
+        const axis = this.xAxis;
         const chart = this.mChart;
-        if (!axis.isEnabled() || !axis.isDrawLabelsEnabled()) return;
+        if (!axis.enabled || !axis.drawLabels) return;
 
-        const labelRotationAngleDegrees = axis.getLabelRotationAngle();
+        const labelRotationAngleDegrees = axis.labelRotationAngle;
         const drawLabelAnchor: MPPointF = { x: 0.5, y: 0.25 };
         const paint = this.axisLabelsPaint;
 
-        paint.setFont(axis.getFont());
-        paint.setTextAlign(axis.getLabelTextAlign());
-        paint.setColor(axis.getTextColor());
+        paint.setFont(axis.typeface);
+        paint.setTextAlign(axis.labelTextAlign);
+        paint.setColor(axis.textColor);
 
-        const sliceangle = chart.getSliceAngle();
+        const sliceangle = chart.sliceAngle;
 
         // calculate the factor that is needed for transforming the value to
         // pixels
-        const factor = chart.getFactor();
+        const factor = chart.factor;
 
-        const center = chart.getCenterOffsets();
+        const center = chart.centerOffsets;
         const pOut: MPPointF = { x: 0, y: 0 };
         const labels = axis.mLabels;
-        for (let i = 0; i < chart.getData().getMaxEntryCountSet().getEntryCount(); i++) {
+        for (let i = 0; i < chart.data.maxEntryCountSet.entryCount; i++) {
             const label = labels[i];
             if (!label) {
                 continue;
             }
-            const angle = (sliceangle * i + chart.getRotationAngle()) % 360;
+            const angle = (sliceangle * i + chart.rotationAngle) % 360;
 
-            Utils.getPosition(center, chart.getYRange() * factor + axis.mLabelRotatedWidth / 2, angle, pOut);
+            Utils.getPosition(center, chart.yRange * factor + axis.mLabelRotatedWidth / 2, angle, pOut);
 
             this.drawLabel(c, label, pOut.x, pOut.y - axis.mLabelRotatedHeight / 2, drawLabelAnchor, labelRotationAngleDegrees, paint);
         }
@@ -59,7 +59,6 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
      *
      * @param c
      */
-
     public renderLimitLines(c: Canvas) {
         // this space intentionally left blank
     }

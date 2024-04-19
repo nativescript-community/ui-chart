@@ -35,8 +35,6 @@ export interface CandleEntry extends Entry {
     /**
      * Returns the overall range (difference) between shadow-high and
      * shadow-low.
-     *
-     * @return
      */
     // public getShadowRange() {
     //     return Math.abs(this.mShadowHigh - this.mShadowLow);
@@ -44,8 +42,6 @@ export interface CandleEntry extends Entry {
 
     /**
      * Returns the body size (difference between open and close).
-     *
-     * @return
      */
     // public getBodyRange() {
     //     return Math.abs(this.mOpen - this.mClose);
@@ -53,8 +49,6 @@ export interface CandleEntry extends Entry {
 
     /**
      * Returns the upper shadows highest value.
-     *
-     * @return
      */
     // public getHigh() {
     //     return this.mShadowHigh;
@@ -66,8 +60,6 @@ export interface CandleEntry extends Entry {
 
     /**
      * Returns the lower shadows lowest value.
-     *
-     * @return
      */
     // public getLow() {
     //     return this.mShadowLow;
@@ -79,8 +71,6 @@ export interface CandleEntry extends Entry {
 
     /**
      * Returns the bodys close value.
-     *
-     * @return
      */
     // public getClose() {
     //     return this.mClose;
@@ -92,8 +82,6 @@ export interface CandleEntry extends Entry {
 
     /**
      * Returns the bodys open value.
-     *
-     * @return
      */
     // public getOpen() {
     //     return this.mOpen;

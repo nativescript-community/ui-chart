@@ -1,0 +1,58 @@
+{
+    "name": "@nativescript-community/ui-chart",
+    "version": "1.2.36",
+    "description": "A powerful chart / graph plugin, supporting line, bar, pie, radar, bubble, and candlestick charts as well as scaling, panning and animations.",
+    "main": "./index",
+    "sideEffects": false,
+    "typings": "./index.d.ts",
+    "scripts": {
+        "build": "npm run tsc",
+        "build.all": "npm run build",
+        "readme": "readme generate -c ../../tools/readme/blueprint.json",
+        "tsc": "cpy '**/*.d.ts' '../../packages/ui-chart' --parents --cwd=../../src/ui-chart && tsc -skipLibCheck -d",
+        "clean": "rimraf ./*.d.ts ./*.js ./*.js.map"
+    },
+    "nativescript": {
+        "platforms": {
+            "android": "6.0.0",
+            "ios": "6.0.0"
+        }
+    },
+    "keywords": [
+        "NativeScript",
+        "JavaScript",
+        "Android",
+        "iOS",
+        "chart",
+        "NativeScript UI",
+        "nativescript-community",
+        "Angular",
+        "Vue",
+        "Svelte",
+        "React",
+        "preview|https://raw.githubusercontent.com/nativescript-community/ui-chart/master/images/example1.gif|Example1",
+        "preview|https://raw.githubusercontent.com/nativescript-community/ui-chart/master/images/example2.gif|Example2"
+    ],
+    "author": {
+        "name": "Martin Guillon",
+        "email": "martin@akylas.fr"
+    },
+    "bugs": {
+        "url": "https://github.com/nativescript-community/ui-chart/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nativescript-community/ui-chart"
+    },
+    "license": "Apache-2.0",
+    "readmeFilename": "README.md",
+    "dependencies": {
+        "@nativescript-community/additween": "^4.0.5",
+        "@nativescript-community/arraybuffers": "^1.1.5",
+        "@nativescript-community/gesturehandler": "^2.0.30",
+        "@nativescript-community/ui-canvas": "^4.6.21",
+        "downsample": "^1.4.0",
+        "number-format.js": "^2.0.9"
+    },
+    "gitHead": "5c91f884f8ca30cfcff1c3ac88f90492831c73aa"
+}

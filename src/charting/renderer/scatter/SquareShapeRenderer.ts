@@ -10,14 +10,14 @@ import { IShapeRenderer } from './IShapeRenderer';
  */
 export class SquareShapeRenderer implements IShapeRenderer {
     public renderShape(c: Canvas, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler, posX, posY, renderPaint: Paint) {
-        const shapeSize = dataSet.getScatterShapeSize();
+        const shapeSize = dataSet.scatterShapeSize;
         const shapeHalf = shapeSize / 2;
-        const shapeHoleSizeHalf = dataSet.getScatterShapeHoleRadius();
+        const shapeHoleSizeHalf = dataSet.scatterShapeHoleRadius;
         const shapeHoleSize = shapeHoleSizeHalf * 2;
         const shapeStrokeSize = (shapeSize - shapeHoleSize) / 2;
         const shapeStrokeSizeHalf = shapeStrokeSize / 2;
 
-        const shapeHoleColor = dataSet.getScatterShapeHoleColor();
+        const shapeHoleColor = dataSet.scatterShapeHoleColor;
         if (shapeHoleSize > 0.0) {
             renderPaint.setStyle(Style.STROKE);
             renderPaint.setStrokeWidth(shapeStrokeSize);

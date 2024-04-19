@@ -1,78 +1,81 @@
 import { ILineScatterCandleRadarDataSet } from './ILineScatterCandleRadarDataSet';
 import { CandleEntry } from '../../data/CandleEntry';
+import { Style } from '@nativescript-community/ui-canvas';
 
 export interface ICandleDataSet extends ILineScatterCandleRadarDataSet<CandleEntry> {
     /**
-     * Returns the space that is left out on the left and right side of each
-     * candle.
+     * property to access the "high" value of an entry for this set
      *
-     * @return
      */
-    getBarSpace();
+    highProperty: string;
+    /**
+     * property to access the "low" value of an entry for this set
+     *
+     */
+    lowProperty: string;
+    /**
+     * property to access the "close" value of an entry for this set
+     *
+     */
+    closeProperty: string;
 
     /**
-     * Returns whether the candle bars should show?
-     * When false, only "ticks" will show
+     * property to access the "open" value of an entry for this set
      *
+     */
+    openProperty: string;
+
+    /**
+     * the width of the shadow of the candle
+     */
+    shadowWidth: number;
+
+    /**
+     * should the candle bars show?
+     * when false, only "ticks" will show
+     * <p/>
      * - default: true
-     *
-     * @return
      */
-    getShowCandleBar();
+    showCandleBar: boolean;
+    /**
+     * the space between the candle entries, default 0.1 (10%)
+     */
+    barSpace: number;
 
     /**
-     * Returns the width of the candle-shadow-line in pixels.
-     *
-     * @return
+     * use candle color for the shadow
      */
-    getShadowWidth();
+    shadowColorSameAsCandle: boolean;
 
     /**
-     * Returns shadow color for all entries
-     *
-     * @return
+     * palet style when open < close
+     * increasing candlesticks are traditionally hollow
      */
-    getShadowColor();
+    increasingPaintStyle: Style;
+    /**
+     * palet style when open > close
+     * descreasing candlesticks are traditionally filled
+     */
+    decreasingPaintStyle: Style;
 
     /**
-     * Returns the neutral color (for open == close)
-     *
-     * @return
+     * color for open == close
      */
-    getNeutralColor();
+    neutralColor: Color | string;
 
     /**
-     * Returns the increasing color (for open < close).
-     *
-     * @return
+     * color for open < close
      */
-    getIncreasingColor();
+    increasingColor: Color | string;
 
     /**
-     * Returns the decreasing color (for open > close).
-     *
-     * @return
+     * color for open > close
      */
-    getDecreasingColor();
+    decreasingColor: Color | string;
 
     /**
-     * Returns palet style when open < close
-     *
-     * @return
+     * shadow line color, set -1 for backward compatibility and uses default
+     * color
      */
-    getIncreasingPaintStyle();
-
-    /**
-     * Returns palet style when open > close
-     *
-     * @return
-     */
-    getDecreasingPaintStyle();
-
-    /**
-     * Is the shadow color same as the candle color?
-     *
-     * @return
-     */
-    getShadowColorSameAsCandle();
+    shadowColor: Color | string;
 }

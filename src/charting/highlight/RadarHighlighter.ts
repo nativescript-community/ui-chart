@@ -12,14 +12,14 @@ export class RadarHighlighter extends PieRadarHighlighter<RadarEntry, RadarDataS
     protected getClosestHighlight(index: number, x: number, y: number) {
         const highlights = this.getHighlightsAtIndex(index);
 
-        const distanceToCenter = this.mChart.distanceToCenter(x, y) / this.mChart.getFactor();
+        const distanceToCenter = this.mChart.distanceToCenter(x, y) / this.mChart.factor;
 
         let closest = null;
         let distance = Infinity;
 
         for (let i = 0; i < highlights.length; i++) {
             const high = highlights[i];
-            // const set = this.mChart.getData().getDataSetByIndex(high.dataSetIndex);
+            // const set = this.mChart.data.getDataSetByIndex(high.dataSetIndex);
             // const yProperty = set.yProperty;
             const cdistance = Math.abs(high.y - distanceToCenter);
             if (cdistance < distance) {
@@ -42,21 +42,21 @@ export class RadarHighlighter extends PieRadarHighlighter<RadarEntry, RadarDataS
     protected getHighlightsAtIndex(index) {
         this.mHighlightBuffer = [];
 
-        const phaseX = this.mChart.getAnimator().getPhaseX();
-        const phaseY = this.mChart.getAnimator().getPhaseY();
-        const sliceangle = this.mChart.getSliceAngle();
-        const factor = this.mChart.getFactor();
+        const phaseX = this.mChart.animator.phaseX;
+        const phaseY = this.mChart.animator.phaseY;
+        const sliceangle = this.mChart.sliceAngle;
+        const factor = this.mChart.factor;
 
         const pOut: MPPointF = { x: 0, y: 0 };
-        for (let i = 0; i < this.mChart.getData().getDataSetCount(); i++) {
-            const dataSet = this.mChart.getData().getDataSetByIndex(i);
+        for (let i = 0; i < this.mChart.data.dataSetCount; i++) {
+            const dataSet = this.mChart.data.getDataSetByIndex(i);
             const yKey = dataSet.yProperty;
 
             const entry = dataSet.getEntryForIndex(index);
 
-            const y = entry[yKey] - this.mChart.getYChartMin();
+            const y = entry[yKey] - this.mChart.yChartMin;
 
-            Utils.getPosition(this.mChart.getCenterOffsets(), y * factor * phaseY, sliceangle * index * phaseX + this.mChart.getRotationAngle(), pOut);
+            Utils.getPosition(this.mChart.centerOffsets, y * factor * phaseY, sliceangle * index * phaseX + this.mChart.rotationAngle, pOut);
 
             this.mHighlightBuffer.push({
                 entry,
@@ -65,7 +65,7 @@ export class RadarHighlighter extends PieRadarHighlighter<RadarEntry, RadarDataS
                 xPx: pOut.x,
                 yPx: pOut.y,
                 dataSetIndex: i,
-                axis: dataSet.getAxisDependency(),
+                axis: dataSet.axisDependency
             });
         }
 

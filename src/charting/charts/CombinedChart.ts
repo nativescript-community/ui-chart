@@ -33,49 +33,60 @@ export enum DrawOrder {
 
  */
 export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleBubbleDataSet<Entry>, CombinedData> implements CombinedDataProvider {
-    protected mRenderer: CombinedChartRenderer;
+    renderer: CombinedChartRenderer;
     /**
      * if set to true, all values are drawn above their bars, instead of below
      * their top
      */
-    protected mDrawValueAboveBar = true;
+    drawValueAboveBarEnabled = true;
 
     /**
      * flag that indicates whether the highlight should be full-bar oriented, or single-value?
      */
-    protected mHighlightFullBarEnabled;
+    highlightFullBarEnabled: boolean;
 
     /**
      * if set to true, a grey area is drawn behind each bar that indicates the
      * maximum value
      */
-    protected mDrawBarShadow;
+    drawBarShadowEnabled: boolean;
 
-    protected mDrawOrder: DrawOrder[];
+    /**
+     * Sets the order in which the provided data objects should be drawn. The
+     * earlier you place them in the provided array, the further they will be in
+     * the background. e.g. if you provide new DrawOrer[] { DrawOrder.BAR,
+     * DrawOrder.LINE }, the bars will be drawn behind the lines.
+     */
+    drawOrder: DrawOrder[];
 
     protected init() {
         super.init();
 
         // Default values are not ready here yet
-        this.mDrawOrder = [DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.LINE, DrawOrder.CANDLE, DrawOrder.SCATTER];
+        this.drawOrder = [DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.LINE, DrawOrder.CANDLE, DrawOrder.SCATTER];
 
-        this.setHighlighter(new CombinedHighlighter(this, this));
+        this.highlighter = new CombinedHighlighter(this, this);
 
         // Old default behaviour
-        this.setHighlightFullBarEnabled(true);
+        this.highlightFullBarEnabled = true;
 
-        this.mRenderer = new CombinedChartRenderer(this, this.mAnimator, this.mViewPortHandler);
+        this.renderer = new CombinedChartRenderer(this, this.animator, this.viewPortHandler);
     }
 
-    public getCombinedData() {
+    public get combinedData() {
         return this.mData;
     }
 
-    public setData(data: CombinedData) {
-        super.setData(data);
-        this.setHighlighter(new CombinedHighlighter(this, this));
-        this.mRenderer.createRenderers();
-        this.mRenderer.initBuffers();
+    public set data(data: CombinedData) {
+        super.data = data;
+        // this.highlighter=(new CombinedHighlighter(this, this));
+        this.renderer.createRenderers();
+        // if (this.viewPortHandler.hasChartDimens) {
+        this.renderer.initBuffers();
+        // }
+    }
+    get data() {
+        return this.mData;
     }
 
     /**
@@ -87,106 +98,37 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
      * @param y
      * @return
      */
-
     public getHighlightByTouchPoint(x, y) {
         if (this.mData == null) {
             console.error("Can't select by touch. No data set.");
             return null;
         } else {
-            const h = this.getHighlighter().getHighlight(x, y);
-            if (h == null || !this.isHighlightFullBarEnabled()) return h;
+            const h = this.highlighter.getHighlight(x, y);
+            if (h == null || !this.highlightFullBarEnabled) return h;
 
             // For isHighlightFullBarEnabled, remove stackIndex
             return Object.assign({}, h, {});
         }
     }
 
-    public getLineData() {
-        return this.mData?.getLineData();
+    public get lineData() {
+        return this.data?.lineData;
     }
 
-    public getBarData() {
-        return this.mData?.getBarData();
+    public get barData() {
+        return this.data?.barData;
     }
 
-    public getScatterData() {
-        return this.mData?.getScatterData();
+    public get scatterData() {
+        return this.data?.scatterData;
     }
 
-    public getCandleData() {
-        return this.mData?.getCandleData();
+    public get candleData() {
+        return this.data?.candleData;
     }
 
-    public getBubbleData() {
-        return this.mData?.getBubbleData();
-    }
-
-    public isDrawBarShadowEnabled() {
-        return this.mDrawBarShadow;
-    }
-
-    public isDrawValueAboveBarEnabled() {
-        return this.mDrawValueAboveBar;
-    }
-
-    /**
-     * If set to true, all values are drawn above their bars, instead of below
-     * their top.
-     *
-     * @param enabled
-     */
-    public setDrawValueAboveBar(enabled) {
-        this.mDrawValueAboveBar = enabled;
-    }
-
-    /**
-     * If set to true, a grey area is drawn behind each bar that indicates the
-     * maximum value. Enabling his will reduce performance by about 50%.
-     *
-     * @param enabled
-     */
-    public setDrawBarShadow(enabled) {
-        this.mDrawBarShadow = enabled;
-    }
-
-    /**
-     * Set this to true to make the highlight operation full-bar oriented,
-     * false to make it highlight single values (relevant only for stacked).
-     *
-     * @param enabled
-     */
-    public setHighlightFullBarEnabled(enabled) {
-        this.mHighlightFullBarEnabled = enabled;
-    }
-
-    /**
-     * @return true the highlight operation is be full-bar oriented, false if single-value
-     */
-
-    public isHighlightFullBarEnabled() {
-        return this.mHighlightFullBarEnabled;
-    }
-
-    /**
-     * Returns the currently set draw order.
-     *
-     * @return
-     */
-    public getDrawOrder() {
-        return this.mDrawOrder;
-    }
-
-    /**
-     * Sets the order in which the provided data objects should be drawn. The
-     * earlier you place them in the provided array, the further they will be in
-     * the background. e.g. if you provide new DrawOrer[] { DrawOrder.BAR,
-     * DrawOrder.LINE }, the bars will be drawn behind the lines.
-     *
-     * @param order
-     */
-    public setDrawOrder(order: DrawOrder[]) {
-        if (order == null || order.length <= 0) return;
-        this.mDrawOrder = order;
+    public get bubbleData() {
+        return this.data?.bubbleData;
     }
 
     /**
@@ -194,10 +136,10 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
      */
     protected drawMarkers(c: Canvas) {
         // if there is no marker view or drawing marker is disabled
-        if (this.mMarker == null || !this.isDrawMarkersEnabled() || !this.valuesToHighlight()) return;
+        if (this.marker == null || !this.drawMarkersEnabled || !this.hasValuesToHighlight) return;
 
-        for (let i = 0; i < this.mIndicesToHighlight.length; i++) {
-            const highlight = this.mIndicesToHighlight[i];
+        for (let i = 0; i < this.indicesToHighlight.length; i++) {
+            const highlight = this.indicesToHighlight[i];
 
             const set: IDataSet<Entry> = this.mData.getDataSetByHighlight(highlight);
 
@@ -207,32 +149,20 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
             const entryIndex = set.getEntryIndex(e);
 
             // make sure entry not null
-            if (entryIndex > set.getEntryCount() * this.mAnimator.getPhaseX()) continue;
+            if (entryIndex > set.entryCount * this.animator.phaseX) continue;
 
             const pos = this.getMarkerPosition(highlight);
 
             // check bounds
-            if (!this.mViewPortHandler.isInBounds(pos[0], pos[1])) continue;
+            if (!this.viewPortHandler.isInBounds(pos[0], pos[1])) continue;
 
             // callbacks to update the content
-            this.mMarker.refreshContent(e, highlight);
+            this.marker.refreshContent(e, highlight);
 
             // draw the marker
-            this.mMarker.draw(c, pos[0], pos[1]);
+            this.marker.draw(c, pos[0], pos[1]);
         }
     }
 
-    mCustomRenderer: CustomRenderer;
-    /**
-     * set a custom line renderer
-     */
-    public setCustomRenderer(renderer: CustomRenderer) {
-        this.mCustomRenderer = renderer;
-    }
-    /**
-     * get the custom line renderer
-     */
-    public getCustomRenderer() {
-        return this.mCustomRenderer;
-    }
+    customRenderer: CustomRenderer;
 }

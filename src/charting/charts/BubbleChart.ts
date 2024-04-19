@@ -22,28 +22,15 @@ export interface CustomRenderer extends BaseCustomRenderer {
 
  */
 export class BubbleChart extends BarLineChartBase<BubbleEntry, IBubbleDataSet, BubbleData> implements BubbleDataProvider {
-    protected mRenderer: BubbleChartRenderer;
+    renderer: BubbleChartRenderer;
     protected init() {
         super.init();
 
-        this.mRenderer = new BubbleChartRenderer(this, this.mAnimator, this.mViewPortHandler);
+        this.renderer = new BubbleChartRenderer(this, this.animator, this.viewPortHandler);
     }
 
-    public getBubbleData() {
+    public get bubbleData() {
         return this.mData;
     }
-
-    protected mCustomRenderer: CustomRenderer;
-    /**
-     * set a custom bubble renderer
-     */
-    public setCustomRenderer(renderer: CustomRenderer) {
-        this.mCustomRenderer = renderer;
-    }
-    /**
-     * get the custom bubble renderer
-     */
-    public getCustomRenderer() {
-        return this.mCustomRenderer;
-    }
+    customRenderer: CustomRenderer;
 }

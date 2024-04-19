@@ -25,36 +25,36 @@ export interface CustomRenderer extends BaseCustomRenderer {
 
  */
 export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData> {
-    protected mRenderer: RadarChartRenderer;
+    renderer: RadarChartRenderer;
     /**
      * width of the main web lines
      */
-    private mWebLineWidth = 1.5;
+    webLineWidth = 1.5;
 
     /**
      * width of the inner web lines
      */
-    private mInnerWebLineWidth = 1.5;
+    webLineWidthInner = 1.5;
 
     /**
      * color for the main web lines
      */
-    private mWebColor: Color | string = new Color(255, 122, 122, 122);
+    webColor: Color | string = new Color(255, 122, 122, 122);
 
     /**
      * color for the inner web
      */
-    private mWebColorInner: Color | string = new Color(255, 122, 122, 122);
+    webColorInner: Color | string = new Color(255, 122, 122, 122);
 
     /**
      * transparency the grid is drawn with (0-255)
      */
-    private mWebAlpha = 150;
+    webAlpha = 150;
 
     /**
      * flag indicating if the web lines should be drawn or not
      */
-    private mDrawWeb = true;
+    drawWeb = true;
 
     /**
      * modulus that determines how many labels and web-lines are skipped before the next is drawn
@@ -64,32 +64,32 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
     /**
      * the object reprsenting the y-axis labels
      */
-    private mYAxis: YAxis;
+    yAxis: YAxis;
 
     // for performance tracking
     private mTotalTime = 0;
     private mDrawCycles = 0;
 
-    protected mYAxisRenderer: YAxisRendererRadarChart;
-    protected mXAxisRenderer: XAxisRendererRadarChart;
+    protected yAxisRenderer: YAxisRendererRadarChart;
+    protected xAxisRenderer: XAxisRendererRadarChart;
 
     protected init() {
         super.init();
 
-        this.mYAxis = new YAxis(AxisDependency.LEFT);
+        this.yAxis = new YAxis(AxisDependency.LEFT);
 
-        this.mRenderer = new RadarChartRenderer(this, this.mAnimator, this.mViewPortHandler);
-        this.mYAxisRenderer = new YAxisRendererRadarChart(this.mViewPortHandler, this.mYAxis, this);
-        this.mXAxisRenderer = new XAxisRendererRadarChart(this.mViewPortHandler, this.mXAxis, this);
+        this.renderer = new RadarChartRenderer(this, this.animator, this.viewPortHandler);
+        this.yAxisRenderer = new YAxisRendererRadarChart(this.viewPortHandler, this.yAxis, this);
+        this.xAxisRenderer = new XAxisRendererRadarChart(this.viewPortHandler, this.xAxis, this);
 
-        this.mHighlighter = new RadarHighlighter(this);
+        this.highlighter = new RadarHighlighter(this);
     }
 
     protected calcMinMax() {
         super.calcMinMax();
 
-        this.mYAxis.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
-        this.mXAxis.calculate(0, this.mData.getMaxEntryCountSet().getEntryCount());
+        this.yAxis.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
+        this.xAxis.calculate(0, this.mData.maxEntryCountSet.entryCount);
     }
 
     public notifyDataSetChanged() {
@@ -97,10 +97,10 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         this.calcMinMax();
 
-        this.mYAxisRenderer.computeAxis(this.mYAxis.mAxisMinimum, this.mYAxis.mAxisMaximum, this.mYAxis.isInverted());
-        this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+        this.yAxisRenderer.computeAxis(this.yAxis.mAxisMinimum, this.yAxis.mAxisMaximum, this.yAxis.inverted);
+        this.xAxisRenderer.computeAxis(this.xAxis.mAxisMinimum, this.xAxis.mAxisMaximum, false);
 
-        if (this.mLegend != null && !this.mLegend.isLegendCustom()) this.mLegendRenderer.computeLegend(this.mData);
+        if (this.mLegend != null && !this.mLegend.isLegendCustom()) this.legendRenderer.computeLegend(this.mData);
 
         this.calculateOffsets();
     }
@@ -111,29 +111,25 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         if (this.mData == null) return;
 
-        if (this.mXAxis.isEnabled()) {
-            this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
-            this.mXAxisRenderer.renderAxisLabels(c);
+        if (this.xAxis.enabled) {
+            this.xAxisRenderer.computeAxis(this.xAxis.mAxisMinimum, this.xAxis.mAxisMaximum, false);
+            this.xAxisRenderer.renderAxisLabels(c);
         }
 
-        if (this.mDrawWeb) this.mRenderer.drawExtras(c);
+        if (this.drawWeb) this.renderer.drawExtras(c);
 
-        if (this.mYAxis && this.mYAxis.isEnabled() && this.mYAxis.isDrawLimitLinesBehindDataEnabled()) this.mYAxisRenderer.renderLimitLines(c);
+        if (this.yAxis?.drawLimitLinesBehindData) this.yAxisRenderer.renderLimitLines(c);
+        if (this.yAxis?.drawLabelsBehindData) this.yAxisRenderer.renderAxisLabels(c);
 
-        this.mRenderer.drawData(c);
+        this.renderer.drawData(c);
 
-        if (this.valuesToHighlight()) this.mRenderer.drawHighlighted(c, this.mIndicesToHighlight);
+        if (this.hasValuesToHighlight) this.renderer.drawHighlighted(c, this.indicesToHighlight);
 
-        if (this.mYAxis.isEnabled() && !this.mYAxis.isDrawLimitLinesBehindDataEnabled()) {
-            this.mYAxisRenderer.renderLimitLines(c);
-            this.mYAxisRenderer.renderAxisLabels(c);
-        }
+        if (!this.yAxis?.drawLimitLinesBehindData) this.yAxisRenderer.renderLimitLines(c);
+        if (!this.yAxis?.drawLabelsBehindData) this.yAxisRenderer.renderAxisLabels(c);
+        this.renderer.drawValues(c);
 
-        this.mRenderer.drawValues(c);
-
-        if (this.mLegendRenderer) {
-            this.mLegendRenderer.renderLegend(c);
-        }
+        this.legendRenderer?.renderLegend(c);
 
         this.drawDescription(c);
 
@@ -151,30 +147,26 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
     /**
      * Returns the factor that is needed to transform values into pixels.
-     *
-     * @return
      */
-    public getFactor() {
-        const content = this.mViewPortHandler.getContentRect();
-        return Math.min(content.width() / 2, content.height() / 2) / this.mYAxis.mAxisRange;
+    public get factor() {
+        const content = this.viewPortHandler.contentRect;
+        return Math.min(content.width() / 2, content.height() / 2) / this.yAxis.mAxisRange;
     }
 
     /**
      * Returns the angle that each slice in the radar chart occupies.
-     *
-     * @return
      */
-    public getSliceAngle() {
-        return 360 / this.mData.getMaxEntryCountSet().getEntryCount();
+    public get sliceAngle() {
+        return 360 / this.mData.maxEntryCountSet.entryCount;
     }
 
     public getIndexForAngle(angle: number) {
         // take the current angle of the chart into consideration
-        const a = Utils.getNormalizedAngle(angle - this.getRotationAngle());
+        const a = Utils.getNormalizedAngle(angle - this.rotationAngle);
 
-        const sliceangle = this.getSliceAngle();
+        const sliceangle = this.sliceAngle;
 
-        const max = this.mData.getMaxEntryCountSet().getEntryCount();
+        const max = this.mData.maxEntryCountSet.entryCount;
 
         let index = 0;
 
@@ -191,166 +183,55 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
     }
 
     /**
-     * Returns the object that represents all y-labels of the RadarChart.
-     *
-     * @return
-     */
-    public getYAxis() {
-        return this.mYAxis;
-    }
-
-    /**
-     * Sets the width of the web lines that come from the center.
-     *
-     * @param width
-     */
-    public setWebLineWidth(width: number) {
-        this.mWebLineWidth = width;
-    }
-
-    public getWebLineWidth() {
-        return this.mWebLineWidth;
-    }
-
-    /**
-     * Sets the width of the web lines that are in between the lines coming from
-     * the center.
-     *
-     * @param width
-     */
-    public setWebLineWidthInner(width: number) {
-        this.mInnerWebLineWidth = width;
-    }
-
-    public getWebLineWidthInner() {
-        return this.mInnerWebLineWidth;
-    }
-
-    /**
-     * Sets the transparency (alpha) value for all web lines, default: 150, 255
-     * = 100% opaque, 0 = 100% transparent
-     *
-     * @param alpha
-     */
-    public setWebAlpha(alpha: number) {
-        this.mWebAlpha = alpha;
-    }
-
-    /**
-     * Returns the alpha value for all web lines.
-     *
-     * @return
-     */
-    public getWebAlpha() {
-        return this.mWebAlpha;
-    }
-
-    /**
-     * Sets the color for the web lines that come from the center. Don't forget
-     * to use getResources().getColor(...) when loading a color from the
-     * resources. Default: new Color(255, 122, 122, 122)
-     *
-     * @param color
-     */
-    public setWebColor(color: Color | string) {
-        this.mWebColor = color;
-    }
-
-    public getWebColor() {
-        return this.mWebColor;
-    }
-
-    /**
-     * Sets the color for the web lines in between the lines that come from the
-     * center. Don't forget to use getResources().getColor(...) when loading a
-     * color from the resources. Default: new Color(255, 122, 122, 122)
-     *
-     * @param color
-     */
-    public setWebColorInner(color: Color | string) {
-        this.mWebColorInner = color;
-    }
-
-    public getWebColorInner() {
-        return this.mWebColorInner;
-    }
-
-    /**
-     * If set to true, drawing the web is enabled, if set to false, drawing the
-     * whole web is disabled. Default: true
-     *
-     * @param enabled
-     */
-    public setDrawWeb(enabled) {
-        this.mDrawWeb = enabled;
-    }
-
-    /**
      * Sets the number of web-lines that should be skipped on chart web before the
      * next one is drawn. This targets the lines that come from the center of the RadarChart.
      *
      * @param count if count = 1 -> 1 line is skipped in between
      */
-    public setSkipWebLineCount(count: number) {
+    public set skipWebLineCount(count: number) {
         this.mSkipWebLineCount = Math.max(0, count);
     }
 
     /**
      * Returns the modulus that is used for skipping web-lines.
-     *
-     * @return
      */
-    public getSkipWebLineCount() {
+    public get skipWebLineCount() {
         return this.mSkipWebLineCount;
     }
 
-    protected getRequiredLegendOffset() {
-        return this.mLegendRenderer.labelPaint.getTextSize() * 4;
+    protected get requiredLegendOffset() {
+        return this.legendRenderer.labelPaint.getTextSize() * 4;
     }
 
-    protected getRequiredBaseOffset() {
-        return this.mXAxis.isEnabled() && this.mXAxis.isDrawLabelsEnabled() ? this.mXAxis.mLabelRotatedWidth : 10;
+    protected get requiredBaseOffset() {
+        return this.xAxis.enabled && this.xAxis.drawLabels ? this.xAxis.mLabelRotatedWidth : 10;
     }
 
-    public getRadius() {
-        const content = this.mViewPortHandler.getContentRect();
+    public get radius() {
+        const content = this.viewPortHandler.contentRect;
         return Math.min(content.width() / 2, content.height() / 2);
     }
 
     /**
      * Returns the maximum value this chart can display on it's y-axis.
      */
-    public getYChartMax() {
-        return this.mYAxis.mAxisMaximum;
+    public get yChartMax() {
+        return this.yAxis.mAxisMaximum;
     }
 
     /**
      * Returns the minimum value this chart can display on it's y-axis.
      */
-    public getYChartMin() {
-        return this.mYAxis.mAxisMinimum;
+    public get yChartMin() {
+        return this.yAxis.mAxisMinimum;
     }
 
     /**
      * Returns the range of y-values this chart can display.
-     *
-     * @return
      */
-    public getYRange() {
-        return this.mYAxis.mAxisRange;
+    public get yRange() {
+        return this.yAxis.mAxisRange;
     }
 
-    mCustomRenderer: CustomRenderer;
-    /**
-     * set a custom line renderer
-     */
-    public setCustomRenderer(renderer: CustomRenderer) {
-        this.mCustomRenderer = renderer;
-    }
-    /**
-     * get the custom line renderer
-     */
-    public getCustomRenderer() {
-        return this.mCustomRenderer;
-    }
+    customRenderer: CustomRenderer;
 }

@@ -9,9 +9,9 @@ export class BubbleData extends BarLineScatterCandleBubbleData<BubbleEntry, Bubb
      *
      * @param width
      */
-    public setHighlightCircleWidth(width: number) {
+    public set highlightCircleWidth(width: number) {
         for (let index = 0; index < this.mDataSets.length; index++) {
-            this.mDataSets[index].setHighlightCircleWidth(width);
+            this.mDataSets[index].highlightCircleWidth = width;
         }
     }
 }

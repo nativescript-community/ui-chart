@@ -2,41 +2,21 @@ import { AbstractBuffer } from './AbstractBuffer';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
 
 export class BarBuffer extends AbstractBuffer<IBarDataSet> {
-    protected mDataSetIndex = 0;
-    protected mDataSetCount = 1;
-    protected mContainsStacks = false;
-    protected mInverted = false;
+    dataSetIndex = 0;
+    dataSetCount = 1;
+    containsStacks = false;
+    inverted = false;
 
     /** width of the bar on the x-axis, in values (not pixels) */
-    protected mBarWidth = 1;
+    barWidth = 1;
 
-    protected mYAxisMin = 0;
-    protected mYAxisMax = 0;
+    yAxisMin = 0;
+    yAxisMax = 0;
 
     constructor(size: number, dataSetCount: number, containsStacks: boolean) {
         super(size);
-        this.mDataSetCount = dataSetCount;
-        this.mContainsStacks = containsStacks;
-    }
-
-    public setBarWidth(barWidth: number) {
-        this.mBarWidth = barWidth;
-    }
-
-    public setDataSet(index: number) {
-        this.mDataSetIndex = index;
-    }
-
-    public setInverted(inverted: boolean) {
-        this.mInverted = inverted;
-    }
-
-    public setYAxisMin(min: number) {
-        this.mYAxisMin = min;
-    }
-
-    public setYAxisMax(max: number) {
-        this.mYAxisMax = max;
+        this.dataSetCount = dataSetCount;
+        this.containsStacks = containsStacks;
     }
 
     protected addBar(left, top, right, bottom) {
@@ -47,8 +27,8 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
     }
 
     public feed(data: IBarDataSet) {
-        const size = data.getEntryCount() * this.phaseX;
-        const barWidthHalf = this.mBarWidth / 2;
+        const size = data.entryCount * this.phaseX;
+        const barWidthHalf = this.barWidth / 2;
         const yKey = data.yProperty;
         for (let i = 0; i < size; i++) {
             const e = data.getEntryForIndex(i);
@@ -60,17 +40,17 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
             let y = e[yKey];
             const vals = e.yVals;
 
-            if (!this.mContainsStacks || vals == null || vals.length === 0) {
+            if (!this.containsStacks || vals == null || vals.length === 0) {
                 const left = x - barWidthHalf;
                 const right = x + barWidthHalf;
                 let bottom, top;
 
-                if (this.mInverted) {
-                    bottom = y >= 0 ? y : this.mYAxisMax <= 0 ? this.mYAxisMax : 0;
-                    top = y <= 0 ? y : this.mYAxisMin >= 0 ? this.mYAxisMin : 0;
+                if (this.inverted) {
+                    bottom = y >= 0 ? y : this.yAxisMax <= 0 ? this.yAxisMax : 0;
+                    top = y <= 0 ? y : this.yAxisMin >= 0 ? this.yAxisMin : 0;
                 } else {
-                    top = y >= 0 ? y : this.mYAxisMax <= 0 ? this.mYAxisMax : 0;
-                    bottom = y <= 0 ? y : this.mYAxisMin >= 0 ? this.mYAxisMin : 0;
+                    top = y >= 0 ? y : this.yAxisMax <= 0 ? this.yAxisMax : 0;
+                    bottom = y <= 0 ? y : this.yAxisMin >= 0 ? this.yAxisMin : 0;
                 }
 
                 // multiply the height of the rect with the phase
@@ -79,8 +59,9 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                 } else {
                     bottom = top + this.phaseY * (bottom - top);
                 }
-
-                this.addBar(left, top, right, bottom);
+                if (left !== right && top !== bottom) {
+                    this.addBar(left, top, right, bottom);
+                }
             } else {
                 let posY = 0;
                 let negY = -e.negativeSum;
@@ -108,7 +89,7 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                     const right = x + barWidthHalf;
                     let bottom, top;
 
-                    if (this.mInverted) {
+                    if (this.inverted) {
                         bottom = y >= yStart ? y : yStart;
                         top = y <= yStart ? y : yStart;
                     } else {
@@ -123,7 +104,9 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                         bottom = top + this.phaseY * (bottom - top);
                     }
 
-                    this.addBar(left, top, right, bottom);
+                    if (left !== right && top !== bottom) {
+                        this.addBar(left, top, right, bottom);
+                    }
                 }
             }
         }

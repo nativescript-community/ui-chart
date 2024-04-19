@@ -27,8 +27,6 @@ export class PieData extends ChartData<PieEntry, PieDataSet> {
     /**
      * Returns the DataSet this PieData object represents. A PieData object can
      * only contain one DataSet.
-     *
-     * @return
      */
     public getDataSet(): PieDataSet {
         return this.mDataSets[0];
@@ -40,13 +38,12 @@ export class PieData extends ChartData<PieEntry, PieDataSet> {
      * @param index
      * @return
      */
-
     public getDataSetByIndex(index): PieDataSet {
         return index === 0 ? this.getDataSet() : null;
     }
 
     public getDataSetByLabel(label: string, ignoreCase): PieDataSet {
-        return ignoreCase ? (label?.toLowerCase() === this.mDataSets[0].getLabel()?.toLowerCase() ? this.mDataSets[0] : null) : label === this.mDataSets[0].getLabel() ? this.mDataSets[0] : null;
+        return ignoreCase ? (label?.toLowerCase() === this.mDataSets[0].label?.toLowerCase() ? this.mDataSets[0] : null) : label === this.mDataSets[0].label ? this.mDataSets[0] : null;
     }
 
     public getEntryForHighlight(highlight: Highlight): Entry {
@@ -55,14 +52,12 @@ export class PieData extends ChartData<PieEntry, PieDataSet> {
 
     /**
      * Returns the sum of all values in this PieData object.
-     *
-     * @return
      */
     public getYValueSum() {
         const yKey = this.getDataSet().yProperty;
         let sum = 0;
 
-        for (let i = 0; i < this.getDataSet().getEntryCount(); i++) {
+        for (let i = 0; i < this.getDataSet().entryCount; i++) {
             sum += this.getDataSet().getEntryForIndex(i)[yKey];
         }
 

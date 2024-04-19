@@ -4,8 +4,8 @@ export abstract class AbstractBuffer<T> {
     protected index: number;
     protected phaseX: number;
     protected phaseY: number;
-    protected mFrom: number;
-    protected mTo: number;
+    protected from: number;
+    protected to: number;
 
     public buffer;
 
@@ -24,7 +24,7 @@ export abstract class AbstractBuffer<T> {
         if (from < 0) {
             from = 0;
         }
-        this.mFrom = from;
+        this.from = from;
     }
 
     /** limits the drawing on the x-axis */
@@ -32,7 +32,7 @@ export abstract class AbstractBuffer<T> {
         if (to < 0) {
             to = 0;
         }
-        this.mTo = to;
+        this.to = to;
     }
 
     /**
@@ -44,10 +44,8 @@ export abstract class AbstractBuffer<T> {
 
     /**
      * Returns the size (length) of the buffer array.
-     *
-     * @return
      */
-    public size() {
+    public get length() {
         return this.buffer.length;
     }
 

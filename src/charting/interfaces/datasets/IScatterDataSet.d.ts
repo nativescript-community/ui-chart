@@ -7,30 +7,31 @@ import { ILineScatterCandleRadarDataSet } from './ILineScatterCandleRadarDataSet
  */
 export interface IScatterDataSet extends ILineScatterCandleRadarDataSet<Entry> {
     /**
-     * Returns the currently set scatter shape size
-     *
-     * @return
+     * the size the scattershape will have, in density pixels
      */
-    getScatterShapeSize(): number;
+    scatterShapeSize: number;
 
     /**
-     * Returns radius of the hole in the shape
-     *
-     * @return
+     * Sets the ScatterShape this DataSet should be drawn with. This will search for an available IShapeRenderer and set this
+     * renderer for the DataSet.
      */
-    getScatterShapeHoleRadius(): number;
+    scatterShape: ScatterShape;
 
     /**
-     * Returns the color for the hole in the shape
-     *
-     * @return
+     * Renderer responsible for rendering this DataSet, default: square
      */
-    getScatterShapeHoleColor(): string | Color;
+    shapeRenderer: IShapeRenderer;
 
     /**
-     * Returns the IShapeRenderer responsible for rendering this DataSet.
-     *
-     * @return
+     * The radius of the hole in the shape (applies to Square, Circle and Triangle)
+     * - default: 0.0
      */
-    getShapeRenderer(): IShapeRenderer;
+    scatterShapeHoleRadius: number;
+
+    /**
+     * Color for the hole in the shape.
+     * Setting to `ColorTemplate.COLOR_NONE` will behave as transparent.
+     * - default: ColorTemplate.COLOR_NONE
+     */
+    scatterShapeHoleColor: string | Color;
 }

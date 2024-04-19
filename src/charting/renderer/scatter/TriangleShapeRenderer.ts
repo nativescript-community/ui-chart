@@ -12,13 +12,13 @@ export class TriangleShapeRenderer implements IShapeRenderer {
     static mTrianglePathBuffer = new Path();
 
     public renderShape(c: Canvas, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler, posX, posY, renderPaint: Paint) {
-        const shapeSize = dataSet.getScatterShapeSize();
+        const shapeSize = dataSet.scatterShapeSize;
         const shapeHalf = shapeSize / 2;
-        const shapeHoleSizeHalf = dataSet.getScatterShapeHoleRadius();
+        const shapeHoleSizeHalf = dataSet.scatterShapeHoleRadius;
         const shapeHoleSize = shapeHoleSizeHalf * 2;
         const shapeStrokeSize = (shapeSize - shapeHoleSize) / 2;
 
-        const shapeHoleColor = dataSet.getScatterShapeHoleColor();
+        const shapeHoleColor = dataSet.scatterShapeHoleColor;
 
         renderPaint.setStyle(Style.FILL);
 

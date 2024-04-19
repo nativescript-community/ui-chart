@@ -20,83 +20,99 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     /**
      * Drawing mode for this line dataset
      **/
-    private mMode = Mode.LINEAR;
+    mode = Mode.LINEAR;
 
     /**
      * List representing all colors that are used for the circles
      */
-    private mCircleColors: string[] | Color[] = [];
+    circleColors: string[] | Color[] = [];
 
     /**
      * the color of the inner circles
      */
-    private mCircleHoleColor = ColorTemplate.COLOR_NONE;
+    circleHoleColor = ColorTemplate.COLOR_NONE;
 
     /**
      * the radius of the circle-shaped value indicators
      */
-    private mCircleRadius = 4;
+    circleRadius = 4;
 
     /**
      * the hole radius of the circle-shaped value indicators
      */
-    private mCircleHoleRadius = 2;
+    circleHoleRadius = 2;
 
     /**
-     * sets the intensity of the cubic lines
+     * sets the intensity of the cubic lines (if enabled). Max = 1 = very cubic,
+     * Min = 0.05f = low cubic effect, Default: 0.2f
      */
-    private mCubicIntensity = 0.2;
+    cubicIntensity = 0.2;
 
     /**
      * the path effect of this DataSet that makes dashed lines possible
      */
-    private mDashPathEffect = null;
+    dashPathEffect: DashPathEffect = null;
 
     /**
      * formatter for customizing the position of the fill-line
      */
-    private mFillFormatter: IFillFormatter = new DefaultFillFormatter();
+    fillFormatter: IFillFormatter = new DefaultFillFormatter();
 
     /**
      * if true, drawing circles is enabled
      */
-    private mDrawCircles = false;
+    drawCirclesEnabled = false;
 
-    private mDrawCircleHole = true;
+    drawCircleHoleEnabled = true;
 
-    private mUseColorsForFill = false;
+    useColorsForFill = false;
 
     public useColorsForLine = false;
 
     /**
      * the max number allowed point before filtering. <= O means disabled
      */
-    private mMaxFilterNumber = 0;
+    maxFilterNumber = 0;
 
     constructor(yVals, label, xProperty?, yProperty?) {
         super(yVals, label, xProperty, yProperty);
         this.init();
     }
 
-    public getMaxFilterNumber() {
-        return this.mMaxFilterNumber;
+    public getCircleColor(index) {
+        return this.circleColors[Math.floor(index)] || this.getColor();
+    }
+
+
+    /**
+     * Sets the colors that should be used for the circles of this DataSet.
+     * Colors are reused as soon as the number of Entries the DataSet represents
+     * is higher than the size of the colors array. Make sure that the colors
+     * are already prepared (by calling getResources().getColor(...)) before
+     * adding them to the DataSet.
+     *
+     * @param colors
+     */
+    public setCircleColors(colors: string[] | Color[]) {
+        this.circleColors = colors;
     }
 
     /**
-     * Sets the max number allowed point before filtering.
+     * Sets the one and ONLY color that should be used for this DataSet.
+     * Internally, this recreates the colors array and adds the specified color.
      *
-     * @param value: number
+     * @param color
      */
-    public setMaxFilterNumber(value: number) {
-        this.mMaxFilterNumber = value;
+    public set circleColor(color) {
+        this.circleColors = [color];
     }
 
     protected mFilteredValues: Entry[] = null;
     protected mFilterFunction;
     @profile
     public applyFiltering(scaleX: number) {
-        if (this.mMaxFilterNumber > 0 && this.mValues.length / scaleX > this.mMaxFilterNumber) {
-            const filterCount = Math.round(this.mMaxFilterNumber * scaleX);
+        if (this.maxFilterNumber > 0 && this.mValues.length / scaleX > this.maxFilterNumber) {
+            const filterCount = Math.round(this.maxFilterNumber * scaleX);
             if (!this.mFilteredValues || this.mFilteredValues.length !== filterCount) {
                 if (!this.mFilterFunction) {
                     this.mFilterFunction = createLTTB({
@@ -113,76 +129,25 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     mIgnoreFiltered = false;
-    protected getInternalValues() {
+    protected get internalValues() {
         if (this.mFilteredValues && !this.mIgnoreFiltered) {
             return this.mFilteredValues;
         }
         return this.mValues;
     }
-    setIgnoreFiltered(value) {
+    set ignoreFiltered(value) {
         this.mIgnoreFiltered = value;
         this.updateGetEntryForIndex();
     }
-    setValues(values) {
+    get ignoreFiltered() {
+        return this.mIgnoreFiltered;
+    }
+    set values(values) {
         this.mFilteredValues = null;
-        super.setValues(values);
+        super.values = values;
     }
-    isFiltered() {
+    get filtered() {
         return !!this.mFilteredValues;
-    }
-
-    /**
-     * Returns the drawing mode for this line dataset
-     *
-     * @return
-     */
-
-    public getMode() {
-        return this.mMode;
-    }
-
-    /**
-     * Returns the drawing mode for this LineDataSet
-     *
-     * @return
-     */
-    public setMode(mode: Mode) {
-        this.mMode = mode;
-    }
-
-    /**
-     * Sets the intensity for cubic lines (if enabled). Max = 1 = very cubic,
-     * Min = 0.05f = low cubic effect, Default: 0.2f
-     *
-     * @param intensity
-     */
-    public setCubicIntensity(intensity) {
-        if (intensity > 1) intensity = 1;
-        if (intensity < 0.05) intensity = 0.05;
-
-        this.mCubicIntensity = intensity;
-    }
-
-    public getCubicIntensity() {
-        return this.mCubicIntensity;
-    }
-
-    /**
-     * Sets the radius of the drawn circles.
-     * Default radius = 4f, Min = 1
-     *
-     * @param radius
-     */
-    public setCircleRadius(radius) {
-        if (radius >= 1) {
-            this.mCircleRadius = radius;
-        } else {
-            console.error('LineDataSet', 'Circle radius cannot be < 1');
-        }
-    }
-
-    public getCircleRadius() {
-        return this.mCircleRadius;
     }
 
     /**
@@ -190,45 +155,6 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * Default true
      */
     circleHighRes = true;
-
-    /**
-     * Sets the hole radius of the drawn circles.
-     * Default radius = 2f, Min = 0.5f
-     *
-     * @param holeRadius
-     */
-    public setCircleHoleRadius(holeRadius) {
-        if (holeRadius >= 0.5) {
-            this.mCircleHoleRadius = holeRadius;
-        } else {
-            console.error('LineDataSet', 'Circle radius cannot be < 0.5');
-        }
-    }
-
-    public getCircleHoleRadius() {
-        return this.mCircleHoleRadius;
-    }
-
-    /**
-     * sets the size (radius) of the circle shpaed value indicators,
-     * default size = 4f
-     * <p/>
-     * This method is deprecated because of unclarity. Use setCircleRadius instead.
-     *
-     * @param size
-     */
-
-    public setCircleSize(size) {
-        this.setCircleRadius(size);
-    }
-
-    /**
-     * This function is deprecated because of unclarity. Use getCircleRadius instead.
-     */
-
-    public getCircleSize() {
-        return this.getCircleRadius();
-    }
 
     /**
      * Enables the line to be drawn in dashed mode, e.g. like this
@@ -240,146 +166,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      * @param phase       offset, in degrees (normally, use 0)
      */
     public enableDashedLine(lineLength, spaceLength, phase) {
-        this.mDashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
+        this.dashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
         // this.mDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`) ;
-    }
-
-    /**
-     * Disables the line to be drawn in dashed mode.
-     */
-    public disableDashedLine() {
-        this.mDashPathEffect = null;
-    }
-
-    public isDashedLineEnabled() {
-        return this.mDashPathEffect == null ? false : true;
-    }
-
-    public getDashPathEffect() {
-        return this.mDashPathEffect;
-    }
-
-    /**
-     * set this to true to enable the drawing of circle indicators for this
-     * DataSet, default true
-     *
-     * @param enabled
-     */
-    public setDrawCircles(enabled) {
-        this.mDrawCircles = enabled;
-    }
-
-    public isDrawCirclesEnabled() {
-        return this.mDrawCircles;
-    }
-
-    public isDrawCubicEnabled() {
-        return this.mMode === Mode.CUBIC_BEZIER;
-    }
-
-    public isDrawSteppedEnabled() {
-        return this.mMode === Mode.STEPPED;
-    }
-
-    /** ALL CODE BELOW RELATED TO CIRCLE-COLORS */
-
-    /**
-     * returns all colors specified for the circles
-     *
-     * @return
-     */
-    public getCircleColors() {
-        return this.mCircleColors;
-    }
-
-    public getCircleColor(index) {
-        return this.mCircleColors[Math.floor(index)] || this.getColor();
-    }
-
-    public getCircleColorCount() {
-        return this.mCircleColors.length || 1;
-    }
-
-    /**
-     * Sets the colors that should be used for the circles of this DataSet.
-     * Colors are reused as soon as the number of Entries the DataSet represents
-     * is higher than the size of the colors array. Make sure that the colors
-     * are already prepared (by calling getResources().getColor(...)) before
-     * adding them to the DataSet.
-     *
-     * @param colors
-     */
-    public setCircleColors(colors: string[] | Color[]) {
-        this.mCircleColors = colors;
-    }
-
-    /**
-     * Sets the one and ONLY color that should be used for this DataSet.
-     * Internally, this recreates the colors array and adds the specified color.
-     *
-     * @param color
-     */
-    public setCircleColor(color) {
-        this.resetCircleColors();
-        this.mCircleColors.push(color);
-    }
-
-    /**
-     * resets the circle-colors array and creates a new one
-     */
-    public resetCircleColors() {
-        // if (this.mCircleColors == null) {
-        this.mCircleColors = [];
-        // }
-        // this.mCircleColors.clear();
-    }
-
-    /**
-     * Sets the color of the inner circle of the line-circles.
-     *
-     * @param color
-     */
-    public setCircleHoleColor(color) {
-        this.mCircleHoleColor = color;
-    }
-
-    public getCircleHoleColor() {
-        return this.mCircleHoleColor;
-    }
-
-    /**
-     * Set this to true to allow drawing a hole in each data circle.
-     *
-     * @param enabled
-     */
-    public setDrawCircleHole(enabled) {
-        this.mDrawCircleHole = enabled;
-    }
-
-    public isDrawCircleHoleEnabled() {
-        return this.mDrawCircleHole;
-    }
-
-    /**
-     * Sets a custom IFillFormatter to the chart that handles the position of the
-     * filled-line for each DataSet. Set this to null to use the default logic.
-     *
-     * @param formatter
-     */
-    public setFillFormatter(formatter) {
-        if (formatter == null) this.mFillFormatter = new DefaultFillFormatter();
-        else this.mFillFormatter = formatter;
-    }
-
-    public getFillFormatter() {
-        return this.mFillFormatter;
-    }
-
-    getUseColorsForFill() {
-        return this.mUseColorsForFill;
-    }
-
-    setUseColorsForFill(value: boolean) {
-        this.mUseColorsForFill = value;
     }
 }

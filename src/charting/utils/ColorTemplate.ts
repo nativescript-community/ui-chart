@@ -38,15 +38,6 @@ export class ColorTemplate {
         return require('./colors/material').colors;
     }
 
-    /**
-     * Returns the Android ICS holo blue light color.
-     *
-     * @return
-     */
-    public static getHoloBlue() {
-        return 'rgb(51, 181, 229)';
-    }
-
     public static getColorInstance(c: Color | number | string) {
         return c instanceof Color ? c : new Color(c as any);
     }

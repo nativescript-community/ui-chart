@@ -9,15 +9,15 @@ import { AnimatedViewPortJob } from './AnimatedViewPortJob';
  * Created by Philipp Jahoda on 19/02/16.
  */
 export class AnimatedZoomJob extends AnimatedViewPortJob {
-    protected mZoomOriginX: number;
-    protected mZoomOriginY: number;
+    zoomOriginX: number;
+    zoomOriginY: number;
 
-    protected mZoomCenterX: number;
-    protected mZoomCenterY: number;
+    zoomCenterX: number;
+    zoomCenterY: number;
 
     protected mYAxis: YAxis;
 
-    protected mXAxisRange;
+    xAxisRange;
 
     public static getInstance(
         viewPortHandler: ViewPortHandler,
@@ -37,20 +37,20 @@ export class AnimatedZoomJob extends AnimatedViewPortJob {
     ) {
         const result = pool.get();
         result.mViewPortHandler = viewPortHandler;
-        result.mXValue = scaleX;
-        result.mYValue = scaleY;
-        result.mTrans = trans;
+        result.xValue = scaleX;
+        result.yValue = scaleY;
+        result.transformer = trans;
         result.mView = v;
-        result.mXOrigin = xOrigin;
-        result.mYOrigin = yOrigin;
+        result.xOrigin = xOrigin;
+        result.yOrigin = yOrigin;
 
-        result.mZoomCenterX = zoomCenterX;
-        result.mZoomCenterY = zoomCenterY;
-        result.mZoomOriginX = zoomOriginX;
-        result.mZoomOriginY = zoomOriginY;
+        result.zoomCenterX = zoomCenterX;
+        result.zoomCenterY = zoomCenterY;
+        result.zoomOriginX = zoomOriginX;
+        result.zoomOriginY = zoomOriginY;
 
         result.mYAxis = axis;
-        result.mXAxisRange = xAxisRange;
+        result.xAxisRange = xAxisRange;
         result.createAnimator(duration);
         return result;
     }
@@ -73,18 +73,18 @@ export class AnimatedZoomJob extends AnimatedViewPortJob {
     ) {
         super(viewPortHandler, scaleX, scaleY, trans, v, xOrigin, yOrigin, duration);
 
-        this.mZoomCenterX = zoomCenterX;
-        this.mZoomCenterY = zoomCenterY;
-        this.mZoomOriginX = zoomOriginX;
-        this.mZoomOriginY = zoomOriginY;
+        this.zoomCenterX = zoomCenterX;
+        this.zoomCenterY = zoomCenterY;
+        this.zoomOriginX = zoomOriginX;
+        this.zoomOriginY = zoomOriginY;
         // this.animator.addListener(this);
         this.mYAxis = axis;
-        this.mXAxisRange = xAxisRange;
+        this.xAxisRange = xAxisRange;
     }
 
     public onAnimationUpdate(animation) {
-        const scaleX = this.mXOrigin + (this.mXValue - this.mXOrigin) * this.mPhase;
-        const scaleY = this.mYOrigin + (this.mYValue - this.mYOrigin) * this.mPhase;
+        const scaleX = this.xOrigin + (this.xValue - this.xOrigin) * this.phase;
+        const scaleY = this.yOrigin + (this.yValue - this.yOrigin) * this.phase;
 
         const save = Utils.getTempMatrix();
         const viewPortHanlder = this.mViewPortHandler;
@@ -92,13 +92,13 @@ export class AnimatedZoomJob extends AnimatedViewPortJob {
         viewPortHanlder.refresh(save, this.mView, false);
 
         const valsInView = this.mYAxis.mAxisRange / viewPortHanlder.getScaleY();
-        const xsInView = this.mXAxisRange / viewPortHanlder.getScaleX();
+        const xsInView = this.xAxisRange / viewPortHanlder.getScaleX();
         const pts = Utils.getTempArray(2);
 
-        pts[0] = this.mZoomOriginX + (this.mZoomCenterX - xsInView / 2 - this.mZoomOriginX) * this.mPhase;
-        pts[1] = this.mZoomOriginY + (this.mZoomCenterY + valsInView / 2 - this.mZoomOriginY) * this.mPhase;
+        pts[0] = this.zoomOriginX + (this.zoomCenterX - xsInView / 2 - this.zoomOriginX) * this.phase;
+        pts[1] = this.zoomOriginY + (this.zoomCenterY + valsInView / 2 - this.zoomOriginY) * this.phase;
 
-        this.mTrans.pointValuesToPixel(pts);
+        this.transformer.pointValuesToPixel(pts);
 
         viewPortHanlder.translate(pts, save);
         viewPortHanlder.refresh(save, this.mView, true);

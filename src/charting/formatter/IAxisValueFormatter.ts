@@ -1,5 +1,4 @@
 import { AxisBase } from '../components/AxisBase';
-import { ViewPortHandler } from '../utils/ViewPortHandler';
 
 /**
  * Created by Philipp Jahoda on 20/09/15.
@@ -21,5 +20,5 @@ export interface IAxisValueFormatter {
      *
      *  Extend {@link ValueFormatter} and use {@link ValueFormatter#getAxisLabel(float, AxisBase)}
      */
-    getAxisLabel(value, axis: AxisBase, viewPortHandler: ViewPortHandler): string;
+    getAxisLabel(value, axis: AxisBase): string;
 }

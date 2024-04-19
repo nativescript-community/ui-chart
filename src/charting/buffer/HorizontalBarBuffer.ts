@@ -7,8 +7,8 @@ export class HorizontalBarBuffer extends BarBuffer {
     }
 
     public feed(data: IBarDataSet) {
-        const size = data.getEntryCount() * this.phaseX;
-        const barWidthHalf = this.mBarWidth / 2;
+        const size = data.entryCount * this.phaseX;
+        const barWidthHalf = this.barWidth / 2;
         const yKey = data.yProperty;
         for (let i = 0; i < size; i++) {
             const e = data.getEntryForIndex(i);
@@ -20,16 +20,16 @@ export class HorizontalBarBuffer extends BarBuffer {
             let y = e[yKey];
             const vals = e.yVals;
 
-            if (!this.mContainsStacks || vals == null) {
+            if (!this.containsStacks || vals == null) {
                 const bottom = x - barWidthHalf;
                 const top = x + barWidthHalf;
                 let left, right;
-                if (this.mInverted) {
-                    left = y >= 0 ? y : this.mYAxisMax <= 0 ? this.mYAxisMax : 0;
-                    right = y <= 0 ? y : this.mYAxisMin >= 0 ? this.mYAxisMin : 0;
+                if (this.inverted) {
+                    left = y >= 0 ? y : this.yAxisMax <= 0 ? this.yAxisMax : 0;
+                    right = y <= 0 ? y : this.yAxisMin >= 0 ? this.yAxisMin : 0;
                 } else {
-                    right = y >= 0 ? y : this.mYAxisMax <= 0 ? this.mYAxisMax : 0;
-                    left = y <= 0 ? y : this.mYAxisMin >= 0 ? this.mYAxisMin : 0;
+                    right = y >= 0 ? y : this.yAxisMax <= 0 ? this.yAxisMax : 0;
+                    left = y <= 0 ? y : this.yAxisMin >= 0 ? this.yAxisMin : 0;
                 }
 
                 // multiply the height of the rect with the phase
@@ -61,7 +61,7 @@ export class HorizontalBarBuffer extends BarBuffer {
                     const bottom = x - barWidthHalf;
                     const top = x + barWidthHalf;
                     let left, right;
-                    if (this.mInverted) {
+                    if (this.inverted) {
                         left = y >= yStart ? y : yStart;
                         right = y <= yStart ? y : yStart;
                     } else {

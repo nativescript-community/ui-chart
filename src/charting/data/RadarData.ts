@@ -9,23 +9,13 @@ import { RadarEntry } from './RadarEntry';
 
  */
 export class RadarData extends ChartData<RadarEntry, RadarDataSet> {
-    private mLabels: string[];
+    /**
+     * Sets the labels that should be drawn around the RadarChart at the end of each web line.
+     */
+    labels: string[];
 
     constructor(dataSets: RadarDataSet[]) {
         super(dataSets);
-    }
-
-    /**
-     * Sets the labels that should be drawn around the RadarChart at the end of each web line.
-     *
-     * @param labels
-     */
-    public setLabels(labels: string[]) {
-        this.mLabels = labels;
-    }
-
-    public getLabels() {
-        return this.mLabels;
     }
 
     public getEntryForHighlight(highlight: Highlight) {

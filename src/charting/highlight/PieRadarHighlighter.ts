@@ -25,7 +25,7 @@ export abstract class PieRadarHighlighter<E extends Entry, D extends DataSet<E>,
         const touchDistanceToCenter = this.mChart.distanceToCenter(x, y);
 
         // Check if a slice was touched
-        if (touchDistanceToCenter > this.mChart.getRadius()) {
+        if (touchDistanceToCenter > this.mChart.radius) {
             // if no slice was touched, highlight nothing
             return null;
         }
@@ -34,13 +34,13 @@ export abstract class PieRadarHighlighter<E extends Entry, D extends DataSet<E>,
 
         // detect PieChart while preventing circular dep
         if (!this.mChart['mCircleBox']) {
-            angle /= this.mChart.getAnimator().getPhaseY();
+            angle /= this.mChart.animator.phaseY;
         }
 
         const index = this.mChart.getIndexForAngle(angle);
 
         // check if the index could be found
-        if (index < 0 || index >= this.mChart.getData().getMaxEntryCountSet().getEntryCount()) {
+        if (index < 0 || index >= this.mChart.data.maxEntryCountSet.entryCount) {
             return null;
         }
         return this.getClosestHighlight(index, x, y);

@@ -1,3 +1,4 @@
+import { PathEffect } from '@nativescript-community/ui-canvas';
 import { Entry } from '../../data/Entry';
 import { IBarLineScatterCandleBubbleDataSet } from './IBarLineScatterCandleBubbleDataSet';
 
@@ -9,23 +10,23 @@ export interface ILineScatterCandleRadarDataSet<T extends Entry> extends IBarLin
      * Returns true if vertical highlight indicator lines are enabled (drawn)
      * @return
      */
-    isVerticalHighlightIndicatorEnabled();
+    drawVerticalHighlightIndicator: boolea;
 
     /**
      * Returns true if vertical highlight indicator lines are enabled (drawn)
      * @return
      */
-    isHorizontalHighlightIndicatorEnabled();
+    drawHorizontalHighlightIndicator: boolean;
 
     /**
      * Returns the line-width in which highlight lines are to be drawn.
      * @return
      */
-    getHighlightLineWidth();
+    highlightLineWidth: number;
 
     /**
      * Returns the DashPathEffect that is used for highlighting.
      * @return
      */
-    getDashPathEffectHighlight();
+    highlightDashPathEffect: PathEffect;
 }

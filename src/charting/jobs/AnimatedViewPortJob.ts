@@ -15,59 +15,43 @@ export interface AnimatorListener {
  * Created by Philipp Jahoda on 19/02/16.
  */
 export abstract class AnimatedViewPortJob extends ViewPortJob implements AnimatorUpdateListener, AnimatorListener {
-    protected mAnimator: Tween<any>;
+    animator: Tween<any>;
 
-    protected mPhase;
+    phase;
 
-    protected mXOrigin: number;
-    protected mYOrigin: number;
+    xOrigin: number;
+    yOrigin: number;
 
     constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v: BarLineChartBase<any, any, any>, xOrigin: number, yOrigin: number, private duration: number) {
         super(viewPortHandler, xValue, yValue, trans, v);
-        this.mXOrigin = xOrigin;
-        this.mYOrigin = yOrigin;
+        this.xOrigin = xOrigin;
+        this.yOrigin = yOrigin;
     }
 
     createAnimator(duration) {
-        this.mAnimator = new Tween({
+        this.animator = new Tween({
             onRender: (state) => {
-                this.mPhase = state.value;
-                this.onAnimationUpdate(this.mAnimator);
+                this.phase = state.value;
+                this.onAnimationUpdate(this.animator);
             },
-            onFinish: () => this.onAnimationEnd(this.mAnimator),
-            onCancel: () => this.onAnimationCancel(this.mAnimator)
+            onFinish: () => this.onAnimationEnd(this.animator),
+            onCancel: () => this.onAnimationCancel(this.animator)
         });
-        this.mAnimator['duration'] = duration;
+        this.animator['duration'] = duration;
     }
 
     public run() {
-        if (!this.mAnimator) {
+        if (!this.animator) {
             this.createAnimator(this.duration);
         }
 
-        this.mAnimator.tween({ value: 0 }, { value: 1 }, this.mAnimator['duration']);
-    }
-
-    public getPhase() {
-        return this.mPhase;
-    }
-
-    public setPhase(phase) {
-        this.mPhase = phase;
-    }
-
-    public getXOrigin() {
-        return this.mXOrigin;
-    }
-
-    public getYOrigin() {
-        return this.mYOrigin;
+        this.animator.tween({ value: 0 }, { value: 1 }, this.animator['duration']);
     }
 
     public abstract recycleSelf();
 
     protected resetAnimator() {
-        this.mAnimator.cancel();
+        this.animator.cancel();
     }
 
     public onAnimationStart(animation: Tween<any>) {}

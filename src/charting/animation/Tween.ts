@@ -1,8 +1,9 @@
 import { time } from '@nativescript/core/profiling';
-import { AdditiveTweening, EasingFunction } from 'additween';
+import { cancelAnimationFrame, requestAnimationFrame } from '@nativescript/core/animation-frame';
+import { AdditiveTweening, EasingFunction } from '@nativescript-community/additween';
 export { EasingFunction };
 if (!global.window) {
-    window = global.window = {
+    global.window = {
         requestAnimationFrame,
         cancelAnimationFrame,
         performance: {

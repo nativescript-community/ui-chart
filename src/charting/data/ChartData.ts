@@ -119,10 +119,10 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         this.mXMax = -Infinity;
         this.mXMin = Infinity;
 
-        const visibleDatasets = this.getVisibleDataSets();
+        const visibleDatasets = this.visibleDataSets;
 
         for (const set of visibleDatasets) {
-            if (set.isVisible()) {
+            if (set.visible) {
                 this.calcMinMaxForDataSet(set);
             }
         }
@@ -136,14 +136,14 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         const firstLeft = this.getFirstLeft(visibleDatasets);
 
         if (firstLeft != null) {
-            this.mLeftAxisMax = firstLeft.getYMax();
-            this.mLeftAxisMin = firstLeft.getYMin();
+            this.mLeftAxisMax = firstLeft.yMax;
+            this.mLeftAxisMin = firstLeft.yMin;
 
             for (const dataSet of visibleDatasets) {
-                if (dataSet.getAxisDependency() === AxisDependency.LEFT) {
-                    if (dataSet.getYMin() < this.mLeftAxisMin) this.mLeftAxisMin = dataSet.getYMin();
+                if (dataSet.axisDependency === AxisDependency.LEFT) {
+                    if (dataSet.yMin < this.mLeftAxisMin) this.mLeftAxisMin = dataSet.yMin;
 
-                    if (dataSet.getYMax() > this.mLeftAxisMax) this.mLeftAxisMax = dataSet.getYMax();
+                    if (dataSet.yMax > this.mLeftAxisMax) this.mLeftAxisMax = dataSet.yMax;
                 }
             }
         }
@@ -152,14 +152,14 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         const firstRight = this.getFirstRight(visibleDatasets);
 
         if (firstRight != null) {
-            this.mRightAxisMax = firstRight.getYMax();
-            this.mRightAxisMin = firstRight.getYMin();
+            this.mRightAxisMax = firstRight.yMax;
+            this.mRightAxisMin = firstRight.yMin;
 
             for (const dataSet of visibleDatasets) {
-                if (dataSet.getAxisDependency() === AxisDependency.RIGHT) {
-                    if (dataSet.getYMin() < this.mRightAxisMin) this.mRightAxisMin = dataSet.getYMin();
+                if (dataSet.axisDependency === AxisDependency.RIGHT) {
+                    if (dataSet.yMin < this.mRightAxisMin) this.mRightAxisMin = dataSet.yMin;
 
-                    if (dataSet.getYMax() > this.mRightAxisMax) this.mRightAxisMax = dataSet.getYMax();
+                    if (dataSet.yMax > this.mRightAxisMax) this.mRightAxisMax = dataSet.yMax;
                 }
             }
         }
@@ -169,10 +169,8 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
     /**
      * returns the number of LineDataSets this object contains
-     *
-     * @return
      */
-    public getDataSetCount() {
+    public get dataSetCount() {
         if (this.mDataSets == null) return 0;
         return this.mDataSets.length;
     }
@@ -203,7 +201,12 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             } else return this.mRightAxisMin;
         }
     }
-
+    public get yMin() {
+        return this.mYMin;
+    }
+    public get yMax() {
+        return this.mYMax;
+    }
     /**
      * Returns the maximum y-value for the specified axis.
      *
@@ -233,32 +236,26 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
     /**
      * Returns the minimum x-value this data object contains.
-     *
-     * @return
      */
-    public getXMin() {
+    public get xMin() {
         return this.mXMin;
     }
 
     /**
      * Returns the maximum x-value this data object contains.
-     *
-     * @return
      */
-    public getXMax() {
+    public get xMax() {
         return this.mXMax;
     }
 
     /**
      * Returns all DataSet objects this ChartData object holds.
-     *
-     * @return
      */
-    public getDataSets() {
+    public get dataSets() {
         return this.mDataSets;
     }
-    public getVisibleDataSets() {
-        return this.mDataSets.filter((s) => s.isVisible());
+    public get visibleDataSets() {
+        return this.mDataSets.filter((s) => s.visible);
     }
 
     /**
@@ -275,9 +272,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     protected getDataSetIndexByLabel(dataSets: T[], label: string, ignorecase) {
         if (ignorecase) {
             const toTest = label.toLowerCase();
-            for (let i = 0; i < dataSets.length; i++) if (toTest === dataSets[i].getLabel()?.toLowerCase()) return i;
+            for (let i = 0; i < dataSets.length; i++) if (toTest === dataSets[i].label?.toLowerCase()) return i;
         } else {
-            for (let i = 0; i < dataSets.length; i++) if (label === dataSets[i].getLabel()) return i;
+            for (let i = 0; i < dataSets.length; i++) if (label === dataSets[i].label) return i;
         }
 
         return -1;
@@ -285,14 +282,12 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
     /**
      * Returns the labels of all DataSets as a string array.
-     *
-     * @return
      */
     public getDataSetLabels() {
         const types = [];
 
         for (let i = 0; i < this.mDataSets.length; i++) {
-            types[i] = this.mDataSets[i].getLabel();
+            types[i] = this.mDataSets[i].label;
         }
 
         return types;
@@ -359,7 +354,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     public addDataSet(d: T) {
         if (d == null) return;
-        if (d.isVisible()) {
+        if (d.visible) {
             this.calcMinMaxForDataSet(d);
         }
 
@@ -413,11 +408,11 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         if (this.mDataSets.length > dataSetIndex && dataSetIndex >= 0) {
             const set = this.mDataSets[dataSetIndex];
             // add the entry to the dataset
-            const length = set.getEntryCount();
+            const length = set.entryCount;
             if (!set.addEntry(e)) return;
 
-            if (set.isVisible()) {
-                this.calcMinMaxForEntry(set, e, length, set.getAxisDependency());
+            if (set.visible) {
+                this.calcMinMaxForEntry(set, e, length, set.axisDependency);
             }
         } else {
             console.error('addEntry', 'Cannot add Entry because dataSetIndex too high or too low.');
@@ -456,18 +451,18 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param d
      */
     protected calcMinMaxForDataSet(d: T) {
-        if (this.mYMax < d.getYMax()) this.mYMax = d.getYMax();
-        if (this.mYMin > d.getYMin()) this.mYMin = d.getYMin();
+        if (this.mYMax < d.yMax) this.mYMax = d.yMax;
+        if (this.mYMin > d.yMin) this.mYMin = d.yMin;
 
-        if (this.mXMax < d.getXMax()) this.mXMax = d.getXMax();
-        if (this.mXMin > d.getXMin()) this.mXMin = d.getXMin();
+        if (this.mXMax < d.xMax) this.mXMax = d.xMax;
+        if (this.mXMin > d.xMin) this.mXMin = d.xMin;
 
-        if (d.getAxisDependency() === AxisDependency.LEFT) {
-            if (this.mLeftAxisMax < d.getYMax()) this.mLeftAxisMax = d.getYMax();
-            if (this.mLeftAxisMin > d.getYMin()) this.mLeftAxisMin = d.getYMin();
+        if (d.axisDependency === AxisDependency.LEFT) {
+            if (this.mLeftAxisMax < d.yMax) this.mLeftAxisMax = d.yMax;
+            if (this.mLeftAxisMin > d.yMin) this.mLeftAxisMin = d.yMin;
         } else {
-            if (this.mRightAxisMax < d.getYMax()) this.mRightAxisMax = d.getYMax();
-            if (this.mRightAxisMin > d.getYMin()) this.mRightAxisMin = d.getYMin();
+            if (this.mRightAxisMax < d.yMax) this.mRightAxisMax = d.yMax;
+            if (this.mRightAxisMin > d.yMin) this.mRightAxisMin = d.yMin;
         }
     }
 
@@ -514,6 +509,32 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
         return this.removeEntry(e, dataSetIndex);
     }
+    /**
+     * Removes the Entry object closest to the given DataSet at the
+     * specified index. Returns true if an Entry was removed, false if no Entry
+     * was found that meets the specified requirements.
+     *
+     * @param xValue
+     * @param dataSetIndex
+     * @return
+     */
+    public removeEntryAtIndex(index, dataSetIndex) {
+        // entry null, outofbounds
+        if (dataSetIndex >= this.mDataSets.length) return false;
+
+        const set = this.mDataSets[dataSetIndex];
+
+        if (set != null) {
+            // remove the entry from the dataset
+            const removed = set.removeEntryAtIndex(index);
+
+            if (removed) {
+                this.calcMinMax();
+            }
+
+            return removed;
+        } else return false;
+    }
 
     /**
      * Returns the DataSet that contains the provided Entry, or null, if no
@@ -531,7 +552,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
             const xKey = set.xProperty;
             const yKey = set.yProperty;
-            // for (let j = 0; j < set.getEntryCount(); j++) {
+            // for (let j = 0; j < set.entryCount; j++) {
             if (e === set.getEntryForXValue(e[xKey], e[yKey])) return set;
             // }
         }
@@ -555,7 +576,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
             const xKey = set.xProperty;
             const yKey = set.yProperty;
             const r = set.getEntryAndIndexForXValue(e[xKey], e[yKey]);
-            // for (let j = 0; j < set.getEntryCount(); j++) {
+            // for (let j = 0; j < set.entryCount; j++) {
             if (e === r.entry) return { set, index: r.index };
             // }
         }
@@ -566,23 +587,21 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
      * Returns all colors used across all DataSet objects this object
      * represents.
-     *
-     * @return
      */
-    public getColors() {
+    public get colors() {
         if (this.mDataSets == null) return null;
 
         let clrcnt = 0;
 
         for (let i = 0; i < this.mDataSets.length; i++) {
-            clrcnt += this.mDataSets[i].getColors().length;
+            clrcnt += this.mDataSets[i].colors.length;
         }
 
         const colors = [];
         let cnt = 0;
 
         for (let i = 0; i < this.mDataSets.length; i++) {
-            const clrs = this.mDataSets[i].getColors();
+            const clrs = this.mDataSets[i].colors;
 
             for (const clr of clrs) {
                 colors[cnt] = clr;
@@ -606,12 +625,10 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
      * Returns the first DataSet from the datasets-array that has it's dependency on the left axis.
      * Returns null if no DataSet with left dependency could be found.
-     *
-     * @return
      */
     protected getFirstLeft(sets) {
         for (const dataSet of sets) {
-            if (dataSet.getAxisDependency() === AxisDependency.LEFT) return dataSet;
+            if (dataSet.axisDependency === AxisDependency.LEFT) return dataSet;
         }
         return null;
     }
@@ -619,12 +636,10 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     /**
      * Returns the first DataSet from the datasets-array that has it's dependency on the right axis.
      * Returns null if no DataSet with right dependency could be found.
-     *
-     * @return
      */
     public getFirstRight(sets) {
         for (const dataSet of sets) {
-            if (dataSet.getAxisDependency() === AxisDependency.RIGHT) return dataSet;
+            if (dataSet.axisDependency === AxisDependency.RIGHT) return dataSet;
         }
         return null;
     }
@@ -634,12 +649,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      *
      * @param f
      */
-    public setValueFormatter(f: IValueFormatter) {
-        if (f == null) return;
-        else {
-            for (const set of this.mDataSets) {
-                set.setValueFormatter(f);
-            }
+    public set valueFormatter(f: IValueFormatter) {
+        for (const set of this.mDataSets) {
+            set.valueFormatter = f;
         }
     }
 
@@ -649,9 +661,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      *
      * @param color
      */
-    public setValueTextColor(color) {
+    public set valueTextColor(color) {
         for (const set of this.mDataSets) {
-            set.setValueTextColor(color);
+            set.valueTextColor = color;
         }
     }
 
@@ -661,9 +673,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      *
      * @param colors
      */
-    public setValueTextColors(colors) {
+    public set valueTextColors(colors) {
         for (const set of this.mDataSets) {
-            set.setValueTextColors(colors);
+            set.valueTextColors = colors;
         }
     }
 
@@ -673,9 +685,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      *
      * @param tf
      */
-    public setValueTypeface(tf) {
+    public set valueTypeface(tf) {
         for (const set of this.mDataSets) {
-            set.setValueTypeface(tf);
+            set.valueTypeface = tf;
         }
     }
 
@@ -685,9 +697,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      *
      * @param size
      */
-    public setValueTextSize(size) {
+    public set valueTextSize(size) {
         for (const set of this.mDataSets) {
-            set.setValueTextSize(size);
+            set.valueTextSize = size;
         }
     }
 
@@ -697,9 +709,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      *
      * @param enabled
      */
-    public setDrawValues(enabled) {
+    public set drawValuesEnabled(enabled) {
         for (const set of this.mDataSets) {
-            set.setDrawValues(enabled);
+            set.drawValuesEnabled = enabled;
         }
     }
 
@@ -710,19 +722,17 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     public setHighlightEnabled(enabled) {
         for (const set of this.mDataSets) {
-            set.setHighlightEnabled(enabled);
+            set.highlightEnabled = enabled;
         }
     }
 
     /**
      * Returns true if highlighting of all underlying values is enabled, false
      * if not.
-     *
-     * @return
      */
-    public isHighlightEnabled() {
+    public get highlightEnabled() {
         for (const set of this.mDataSets) {
-            if (!set.isHighlightEnabled()) return false;
+            if (!set.highlightEnabled) return false;
         }
         return true;
     }
@@ -751,14 +761,12 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
     /**
      * Returns the total entry count across all DataSet objects this data object contains.
-     *
-     * @return
      */
-    public getEntryCount() {
+    public get entryCount() {
         let count = 0;
 
         for (const set of this.mDataSets) {
-            count += set.getEntryCount();
+            count += set.entryCount;
         }
 
         return count;
@@ -766,16 +774,14 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
     /**
      * Returns the DataSet object with the maximum number of entries or null if there are no DataSets.
-     *
-     * @return
      */
-    public getMaxEntryCountSet() {
+    public get maxEntryCountSet() {
         if (this.mDataSets == null || this.mDataSets.length === 0) return null;
 
         let max = this.mDataSets[0];
 
         for (const set of this.mDataSets) {
-            if (set.getEntryCount() > max.getEntryCount()) max = set;
+            if (set.entryCount > max.entryCount) max = set;
         }
 
         return max;

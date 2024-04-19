@@ -40,7 +40,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      */
     protected getValsForTouch(x, y) {
         // take any transformer to determine the x-axis value
-        const pos = this.mChart.getTransformer().getValuesByTouchPoint(x, y);
+        const pos = this.mChart.transformer.getValuesByTouchPoint(x, y);
         return pos;
     }
 
@@ -62,7 +62,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         const rightAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.RIGHT);
 
         const axis = leftAxisMinDist < rightAxisMinDist ? AxisDependency.LEFT : AxisDependency.RIGHT;
-        const detail = this.getClosestHighlightByPixel(closestValues, x, y, axis, this.mChart.getMaxHighlightDistance());
+        const detail = this.getClosestHighlightByPixel(closestValues, x, y, axis, this.mChart.maxHighlightDistance);
 
         return detail;
     }
@@ -107,15 +107,15 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     public getHighlightsAtXValue(xVal, x?, y?) {
         this.mHighlightBuffer = [];
 
-        const data = this.getData();
+        const data = this.mChart.data;
 
         if (data == null) return this.mHighlightBuffer;
 
-        for (let i = 0, dataSetCount = data.getDataSetCount(); i < dataSetCount; i++) {
+        for (let i = 0, dataSetCount = data.dataSetCount; i < dataSetCount; i++) {
             const dataSet = data.getDataSetByIndex(i);
 
             // don't include DataSets that cannot be highlighted
-            if (!dataSet.isHighlightEnabled()) continue;
+            if (!dataSet.highlightEnabled) continue;
             this.mHighlightBuffer.push(...this.buildHighlights(dataSet, i, xVal, Rounding.CLOSEST));
         }
 
@@ -136,7 +136,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         const highlights: Highlight[] = [];
 
         if (set['setIgnoreFiltered']) {
-            (set as LineDataSet).setIgnoreFiltered(true);
+            (set as LineDataSet).ignoreFiltered = true;
         }
         //noinspection unchecked
         let entries = set.getEntriesAndIndexesForXValue(xVal);
@@ -154,7 +154,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
             const e = r.entry;
             const index = r.index;
             const xVal = set.getEntryXValue(e, index);
-            const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(xVal, e[yKey]);
+            const pixels = this.mChart.getTransformer(set.axisDependency).getPixelForValues(xVal, e[yKey]);
 
             highlights.push({
                 entry: e,
@@ -164,11 +164,11 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex,
-                axis: set.getAxisDependency()
+                axis: set.axisDependency
             });
         }
         if (set['setIgnoreFiltered']) {
-            (set as LineDataSet).setIgnoreFiltered(false);
+            (set as LineDataSet).ignoreFiltered = false;
         }
 
         return highlights;
@@ -222,6 +222,6 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     }
 
     protected getData() {
-        return this.mChart.getData();
+        return this.mChart.data;
     }
 }

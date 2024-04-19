@@ -9,48 +9,27 @@ import { ImageSource } from '@nativescript/core';
 export interface ILineRadarDataSet<T extends Entry> extends ILineScatterCandleRadarDataSet<T> {
     /**
      * Returns the color that is used for filling the line surface area.
-     *
-     * @return
      */
-    getFillColor();
+    fillColor: Color | string;
 
     /**
      * Returns the drawable used for filling the area below the line.
-     *
-     * @return
      */
-    getFillDrawable(): ImageSource;
+    fillDrawable: ImageSource;
 
     /**
      * Returns the alpha value that is used for filling the line surface,
      * default: 85
-     *
-     * @return
      */
-    getFillAlpha();
+    fillAlpha: number;
 
     /**
-     * Returns the stroke-width of the drawn line
-     *
-     * @return
+     * the stroke-width of the drawn line
      */
-    getLineWidth();
+    lineWidth: number;
 
     /**
-     * Returns true if filled drawing is enabled, false if not
-     *
-     * @return
+     * Rtrue if filled drawing is enabled, false if not
      */
-    isDrawFilledEnabled();
-
-    /**
-     * Set to true if the DataSet should be drawn filled (surface), and not just
-     * as a line, disabling this will give great performance boost. Please note that this method
-     * uses the canvas.clipPath(...) method for drawing the filled area.
-     * For devices with API level < 18 (Android 4.3), hardware acceleration of the chart should
-     * be turned off. Default: false
-     *
-     * @param enabled
-     */
-    setDrawFilled(enabled);
+    drawFilledEnabled: boolean;
 }

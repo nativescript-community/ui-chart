@@ -5,11 +5,10 @@ import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { Utils } from '../utils/Utils';
 
 export abstract class ViewPortJob extends Poolable {
-
     protected mViewPortHandler: ViewPortHandler;
-    protected mXValue = 0;
-    protected mYValue = 0;
-    protected mTrans: Transformer;
+    xValue = 0;
+    yValue = 0;
+    transformer: Transformer;
     protected mView: BarLineChartBase<any, any, any>;
 
     public abstract run();
@@ -17,17 +16,9 @@ export abstract class ViewPortJob extends Poolable {
     constructor(viewPortHandler: ViewPortHandler, xValue, yValue, trans: Transformer, v) {
         super();
         this.mViewPortHandler = viewPortHandler;
-        this.mXValue = xValue;
-        this.mYValue = yValue;
-        this.mTrans = trans;
+        this.xValue = xValue;
+        this.yValue = yValue;
+        this.transformer = trans;
         this.mView = v;
-    }
-
-    public getXValue() {
-        return this.mXValue;
-    }
-
-    public getYValue() {
-        return this.mYValue;
     }
 }

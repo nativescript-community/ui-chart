@@ -4,64 +4,46 @@ import { ValuePosition } from '../../data/PieDataSet';
 
 export interface IPieDataSet extends IDataSet<PieEntry> {
     /**
-     * Returns the space that is set to be between the piechart-slices of this
-     * DataSet, in pixels.
-     *
-     * @return
+     * the space in pixels between the chart-slices, default 0
      */
-    getSliceSpace();
+    sliceSpace: number;
 
     /**
      * When enabled, slice spacing will be 0.0 when the smallest value is going to be
-     *   smaller than the slice spacing itself.
-     *
-     * @return
+     * smaller than the slice spacing itself.
      */
-    isAutomaticallyDisableSliceSpacingEnabled();
+    automaticallyDisableSliceSpacing: boolean;
 
     /**
-     * Returns the distance a highlighted piechart slice is "shifted" away from
-     * the chart-center in dp.
-     *
-     * @return
+     * indicates the selection distance of a pie slice
      */
-    getSelectionShift();
+    selectionShift: number;
 
-    getXValuePosition(): ValuePosition;
-    getYValuePosition(): ValuePosition;
-
-    /**
-     * When valuePosition is OutsideSlice, use slice colors as line color if true
-     * */
-    isUsingSliceColorAsValueLineColor();
-
+    xValuePosition: ValuePosition;
+    yValuePosition: ValuePosition;
+    usingSliceColorAsValueLineColor: boolean;
     /**
      * When valuePosition is OutsideSlice, indicates line color
-     * */
-    getValueLineColor();
-
+     */
+    valueLineColor: Color | string;
     /**
-     *  When valuePosition is OutsideSlice, indicates line width
-     *  */
-    getValueLineWidth();
-
+     * When valuePosition is OutsideSlice, indicates line width
+     */
+    valueLineWidth: number;
     /**
      * When valuePosition is OutsideSlice, indicates offset as percentage out of the slice size
-     * */
-    getValueLinePart1OffsetPercentage();
-
+     */
+    valueLinePart1OffsetPercentage: number;
     /**
      * When valuePosition is OutsideSlice, indicates length of first half of the line
-     * */
-    getValueLinePart1Length();
-
+     */
+    valueLinePart1Length: number;
     /**
      * When valuePosition is OutsideSlice, indicates length of second half of the line
-     * */
-    getValueLinePart2Length();
-
+     */
+    valueLinePart2Length: number;
     /**
      * When valuePosition is OutsideSlice, this allows variable line length
-     * */
-    isValueLineVariableLength();
+     */
+    valueLineVariableLength: boolean;
 }

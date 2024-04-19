@@ -3,7 +3,7 @@ import { BarLineScatterCandleBubbleDataProvider } from './BarLineScatterCandleBu
 import { AxisDependency } from '../../components/YAxis';
 
 export interface LineDataProvider extends BarLineScatterCandleBubbleDataProvider {
-    getLineData(): LineData;
+    lineData: LineData;
 
     getAxis(dependency: AxisDependency);
 }

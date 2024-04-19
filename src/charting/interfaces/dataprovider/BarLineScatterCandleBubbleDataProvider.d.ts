@@ -5,10 +5,11 @@ import { Transformer } from '../../utils/Transformer';
 
 export interface BarLineScatterCandleBubbleDataProvider extends ChartInterface {
     getTransformer(axis?: AxisDependency): Transformer;
+    readonly transformer: Transformer;
     isInverted(axis: AxisDependency);
 
-    getLowestVisibleX();
-    getHighestVisibleX();
+    lowestVisibleX;
+    highestVisibleX;
 
-    getData(): BarLineScatterCandleBubbleData<any, any>;
+    data: BarLineScatterCandleBubbleData<any, any>;
 }

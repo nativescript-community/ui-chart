@@ -1,21 +1,18 @@
-import { BarChart } from './BarChart';
-import { AxisDependency } from '../components/YAxis';
+import { RectF } from '@nativescript-community/ui-canvas';
+import { Trace } from '@nativescript/core';
 import { XAxisPosition } from '../components/XAxis';
-import { BarData } from '../data/BarData';
+import { AxisDependency } from '../components/YAxis';
 import { BarEntry } from '../data/BarEntry';
-import { BarDataProvider } from '../interfaces/dataprovider/BarDataProvider';
 import { Entry } from '../data/Entry';
-import { BarDataSet } from '../data/BarDataSet';
-import { HorizontalBarHighlighter } from '../highlight/HorizontalBarHighlighter';
 import { Highlight } from '../highlight/Highlight';
+import { HorizontalBarHighlighter } from '../highlight/HorizontalBarHighlighter';
 import { HorizontalBarChartRenderer } from '../renderer/HorizontalBarChartRenderer';
-import { YAxisRendererHorizontalBarChart } from '../renderer/YAxisRendererHorizontalBarChart';
 import { XAxisRendererHorizontalBarChart } from '../renderer/XAxisRendererHorizontalBarChart';
+import { YAxisRendererHorizontalBarChart } from '../renderer/YAxisRendererHorizontalBarChart';
 import { HorizontalViewPortHandler } from '../utils/HorizontalViewPortHandler';
 import { TransformerHorizontalBarChart } from '../utils/TransformerHorizontalBarChart';
 import { CLog, CLogTypes, Utils } from '../utils/Utils';
-import { RectF } from '@nativescript-community/ui-canvas';
-import { Trace } from '@nativescript/core';
+import { BarChart } from './BarChart';
 
 const LOG_TAG = 'HorizontalBarChart';
 
@@ -23,23 +20,23 @@ export class HorizontalBarChart extends BarChart {
     mRenderer: HorizontalBarChartRenderer;
 
     protected init() {
-        this.mViewPortHandler = new HorizontalViewPortHandler();
+        this.viewPortHandler = new HorizontalViewPortHandler();
 
         super.init();
 
-        this.mLeftAxisTransformer = new TransformerHorizontalBarChart(this.mViewPortHandler);
+        this.leftAxisTransformer = new TransformerHorizontalBarChart(this.viewPortHandler);
 
-        this.mRenderer = new HorizontalBarChartRenderer(this, this.mAnimator, this.mViewPortHandler);
-        this.setHighlighter(new HorizontalBarHighlighter(this));
+        this.renderer = new HorizontalBarChartRenderer(this, this.animator, this.viewPortHandler);
+        this.highlighter = new HorizontalBarHighlighter(this);
 
-        this.mAxisRendererLeft = new YAxisRendererHorizontalBarChart(this.mViewPortHandler, this.mAxisLeft, this.mLeftAxisTransformer);
+        this.axisRendererLeft = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisLeft, this.leftAxisTransformer);
     }
 
     public get axisRight() {
         if (!this.mAxisRight) {
-            this.mAxisRendererRight = new YAxisRendererHorizontalBarChart(this.mViewPortHandler, this.mAxisRight, this.mRightAxisTransformer);
-            this.mXAxisRenderer = new XAxisRendererHorizontalBarChart(this.mViewPortHandler, this.mXAxis, this.mLeftAxisTransformer, this);
-            this.mRightAxisTransformer = new TransformerHorizontalBarChart(this.mViewPortHandler);
+            this.axisRendererRight = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisRight, this.rightAxisTransformer);
+            this.xAxisRenderer = new XAxisRendererHorizontalBarChart(this.viewPortHandler, this.xAxis, this.leftAxisTransformer, this);
+            this.rightAxisTransformer = new TransformerHorizontalBarChart(this.viewPortHandler);
         }
         return this.mAxisRight;
     }
@@ -54,40 +51,40 @@ export class HorizontalBarChart extends BarChart {
         let offsetBottom = offsetBuffer.bottom;
 
         // offsets for y-labels
-        if (this.mAxisLeft && this.mAxisLeft.needsOffset()) {
-            offsetTop += this.mAxisLeft.getRequiredHeightSpace(this.mAxisRendererLeft.axisLabelsPaint);
+        if (this.mAxisLeft?.needsOffset) {
+            offsetTop += this.mAxisLeft.getRequiredHeightSpace(this.axisRendererLeft.axisLabelsPaint);
         }
 
-        if (this.mAxisRight && this.mAxisRight.needsOffset()) {
-            offsetBottom += this.mAxisRight.getRequiredHeightSpace(this.mAxisRendererRight.axisLabelsPaint);
+        if (this.mAxisRight?.needsOffset) {
+            offsetBottom += this.mAxisRight.getRequiredHeightSpace(this.axisRendererRight.axisLabelsPaint);
         }
 
-        const xlabelWidth = this.mXAxis.mLabelRotatedWidth;
+        const xlabelWidth = this.xAxis.mLabelRotatedWidth;
 
-        if (this.mXAxis.isEnabled()) {
+        if (this.xAxis.enabled) {
             // offsets for x-labels
-            if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
+            if (this.xAxis.position === XAxisPosition.BOTTOM) {
                 offsetLeft += xlabelWidth;
-            } else if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
+            } else if (this.xAxis.position === XAxisPosition.TOP) {
                 offsetRight += xlabelWidth;
-            } else if (this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
+            } else if (this.xAxis.position === XAxisPosition.BOTH_SIDED) {
                 offsetLeft += xlabelWidth;
                 offsetRight += xlabelWidth;
             }
         }
 
-        offsetTop += this.getExtraTopOffset();
-        offsetRight += this.getExtraRightOffset();
-        offsetBottom += this.getExtraBottomOffset();
-        offsetLeft += this.getExtraLeftOffset();
+        offsetTop += this.extraTopOffset;
+        offsetRight += this.extraRightOffset;
+        offsetBottom += this.extraBottomOffset;
+        offsetLeft += this.extraLeftOffset;
 
-        const minOffset = this.mMinOffset;
+        const minOffset = this.minOffset;
 
-        this.mViewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
+        this.viewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
 
         if (Trace.isEnabled()) {
             CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
-            CLog(CLogTypes.info, LOG_TAG, 'Content: ' + this.mViewPortHandler.getContentRect().toString());
+            CLog(CLogTypes.info, LOG_TAG, 'Content: ' + this.viewPortHandler.contentRect.toString());
         }
 
         this.prepareOffsetMatrix();
@@ -95,11 +92,11 @@ export class HorizontalBarChart extends BarChart {
     }
 
     protected prepareValuePxMatrix() {
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
-            this.mRightAxisTransformer.prepareMatrixValuePx(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisRange, this.mXAxis.mAxisRange, this.mXAxis.mAxisMinimum);
+        if (this.mAxisRight?.enabled) {
+            this.rightAxisTransformer.prepareMatrixValuePx(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisRange, this.xAxis.mAxisRange, this.xAxis.mAxisMinimum);
         }
-        if (this.mAxisLeft.isEnabled()) {
-            this.mLeftAxisTransformer.prepareMatrixValuePx(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisRange, this.mXAxis.mAxisRange, this.mXAxis.mAxisMinimum);
+        if (this.mAxisLeft.enabled) {
+            this.leftAxisTransformer.prepareMatrixValuePx(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisRange, this.xAxis.mAxisRange, this.xAxis.mAxisMinimum);
         }
     }
 
@@ -127,7 +124,7 @@ export class HorizontalBarChart extends BarChart {
         const x = set.getEntryXValue(e, index);
         const y = e[yKey];
 
-        const barWidth = this.mData.getBarWidth();
+        const barWidth = this.mData.barWidth;
 
         const top = x - barWidth / 2;
         const bottom = x + barWidth / 2;
@@ -135,7 +132,7 @@ export class HorizontalBarChart extends BarChart {
         const right = y <= 0 ? y : 0;
 
         const outputRect = new RectF(left, top, right, bottom);
-        this.getTransformer(set.getAxisDependency()).rectValueToPixel(outputRect);
+        this.getTransformer(set.axisDependency).rectValueToPixel(outputRect);
         return outputRect;
     }
 
@@ -146,28 +143,27 @@ export class HorizontalBarChart extends BarChart {
      * @param axis
      * @return
      */
+    public getPosition(e: Entry, axis: AxisDependency) {
+        if (e == null) {
+            return null;
+        }
 
-    // public getPosition(e: Entry, axis: AxisDependency) {
-    //     if (e == null) {
-    //         return null;
-    //     }
+        const set = this.mData.getDataSetForEntry(e);
+        if (set === null) {
+            return null;
+        }
 
-    //     const set = this.mData.getDataSetForEntry(e);
-    //     if (set === null) {
-    //         return null;
-    //     }
+        const xKey = set.xProperty;
+        const yKey = set.yProperty;
 
-    //     const xKey = set.xProperty;
-    //     const yKey = set.yProperty;
+        const vals = Utils.getTempArray(2);
+        vals[0] = e[xKey];
+        vals[1] = e[yKey];
 
-    //     const vals = this.mGetPositionBuffer;
-    //     vals[0] = e[xKey];
-    //     vals[1] = e[yKey];
+        this.getTransformer(axis).pointValuesToPixel(vals);
 
-    //     this.getTransformer(axis).pointValuesToPixel(vals);
-
-    //     return { x: vals[0], y: vals[1] };
-    // }
+        return { x: vals[0], y: vals[1] };
+    }
 
     /**
      * Returns the Highlight object (contains x-index and DataSet index) of the selected value at the given touch point
@@ -177,7 +173,6 @@ export class HorizontalBarChart extends BarChart {
      * @param y
      * @return
      */
-
     public getHighlightByTouchPoint(x, y): Highlight {
         if (this.mData == null) {
             if (Trace.isEnabled()) {
@@ -185,52 +180,51 @@ export class HorizontalBarChart extends BarChart {
             }
             return null;
         }
-        return this.getHighlighter().getHighlight(x, y);
+        return this.highlighter.getHighlight(x, y);
     }
 
-    public getLowestVisibleX() {
-        this.getTransformer().getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.posForGetLowestVisibleX);
-        return Math.max(this.mXAxis.mAxisMinimum, this.posForGetLowestVisibleX.y);
+    public get lowestVisibleX() {
+        this.transformer.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentBottom, this.posForGetLowestVisibleX);
+        return Math.max(this.xAxis.mAxisMinimum, this.posForGetLowestVisibleX.y);
     }
 
-    public getHighestVisibleX() {
-        this.getTransformer().getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), this.posForGetHighestVisibleX);
-        return Math.min(this.mXAxis.mAxisMaximum, this.posForGetHighestVisibleX.y);
+    public get highestVisibleX() {
+        this.transformer.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentTop, this.posForGetHighestVisibleX);
+        return Math.min(this.xAxis.mAxisMaximum, this.posForGetHighestVisibleX.y);
     }
 
     /**
      * ###### VIEWPORT METHODS BELOW THIS ######
      */
-
-    public setVisibleXRangeMaximum(maxXRange) {
-        const xScale = this.mXAxis.mAxisRange / maxXRange;
-        this.mViewPortHandler.setMinimumScaleY(xScale);
+    public set visibleXRangeMaximum(maxXRange) {
+        const xScale = this.xAxis.mAxisRange / maxXRange;
+        this.viewPortHandler.setMinimumScaleY(xScale);
     }
 
-    public setVisibleXRangeMinimum(minXRange) {
-        const xScale = this.mXAxis.mAxisRange / minXRange;
-        this.mViewPortHandler.setMaximumScaleY(xScale);
+    public set visibleXRangeMinimum(minXRange) {
+        const xScale = this.xAxis.mAxisRange / minXRange;
+        this.viewPortHandler.setMaximumScaleY(xScale);
     }
 
     public setVisibleXRange(minXRange, maxXRange) {
-        const minScale = this.mXAxis.mAxisRange / minXRange;
-        const maxScale = this.mXAxis.mAxisRange / maxXRange;
-        this.mViewPortHandler.setMinMaxScaleY(minScale, maxScale);
+        const minScale = this.xAxis.mAxisRange / minXRange;
+        const maxScale = this.xAxis.mAxisRange / maxXRange;
+        this.viewPortHandler.setMinMaxScaleY(minScale, maxScale);
     }
 
     public setVisibleYRangeMaximum(maxYRange, axis: AxisDependency) {
         const yScale = this.getAxisRange(axis) / maxYRange;
-        this.mViewPortHandler.setMinimumScaleX(yScale);
+        this.viewPortHandler.setMinimumScaleX(yScale);
     }
 
     public setVisibleYRangeMinimum(minYRange, axis: AxisDependency) {
         const yScale = this.getAxisRange(axis) / minYRange;
-        this.mViewPortHandler.setMaximumScaleX(yScale);
+        this.viewPortHandler.setMaximumScaleX(yScale);
     }
 
     public setVisibleYRange(minYRange, maxYRange, axis: AxisDependency) {
         const minScale = this.getAxisRange(axis) / minYRange;
         const maxScale = this.getAxisRange(axis) / maxYRange;
-        this.mViewPortHandler.setMinMaxScaleX(minScale, maxScale);
+        this.viewPortHandler.setMinMaxScaleX(minScale, maxScale);
     }
 }

@@ -27,25 +27,25 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     extends Chart<U, D, T>
     implements BarLineScatterCandleBubbleDataProvider
 {
-    protected mChartTouchListener: BarLineChartTouchListener;
+    chartTouchListener: BarLineChartTouchListener;
 
     /**
      * the maximum number of entries to which values will be drawn
      * (entry numbers greater than this value will cause value-labels to disappear)
      */
-    protected mMaxVisibleCount = 100;
+    maxVisibleValueCount = 100;
 
     /**
      * flag that indicates if auto scaling on the y axis is enabled
      */
-    protected mAutoScaleMinMaxEnabled: boolean;
+    autoScaleMinMaxEnabled: boolean = true;
 
     /**
      * flag that indicates if pinch-zoom is enabled. if true, both x and y axis
      * can be scaled with 2 fingers, if false, x and y axis can be scaled
      * separately
      */
-    protected mPinchZoomEnabled: boolean;
+    pinchZoomEnabled: boolean;
 
     /**
      * flag that indicates if double tap zoom is enabled or not
@@ -61,14 +61,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * flag that indicates zoomed pan gesture should only work with 2 pointers
      */
-    public zoomedPanWith2Pointers: boolean = false;
+    zoomedPanWith2Pointers: boolean = false;
 
     /**
      * if true, dragging is enabled for the chart
      */
-    private mDragXEnabled: boolean;
-    private mDragYEnabled: boolean;
-    e;
+    dragXEnabled: boolean;
+    dragYEnabled: boolean;
 
     private mScaleXEnabled: boolean;
     private mScaleYEnabled: boolean;
@@ -83,25 +82,25 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * flag indicating if the grid background should be drawn or not
      */
-    protected mDrawGridBackground: boolean;
+    drawGridBackgroundEnabled: boolean;
 
-    protected mDrawBorders: boolean;
+    drawBorders: boolean;
 
-    protected mClipValuesToContent = true;
+    clipValuesToContent = true;
 
-    protected mClipDataToContent = true;
+    clipDataToContent = true;
 
-    protected mDrawHighlight = true;
+    drawHighlight = true;
 
     /**
      * Sets the minimum offset (padding) around the chart, defaults to 15
      */
-    protected mMinOffset = 15;
+    minOffset = 15;
 
     /**
      * flag indicating if the chart should stay at the same position after a rotation. Default is false.
      */
-    protected mKeepPositionOnRotation: boolean;
+    keepPositionOnRotation: boolean;
 
     /**
      * the listener for user drawing on the chart
@@ -111,20 +110,20 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * the object representing the labels on the left y-axis
      */
-    protected mAxisLeft: YAxis;
+    mAxisLeft: YAxis;
 
     /**
      * the object representing the labels on the right y-axis
      */
-    protected mAxisRight: YAxis;
+    mAxisRight: YAxis;
 
-    protected mAxisRendererLeft: YAxisRenderer;
-    protected mAxisRendererRight: YAxisRenderer;
+    protected axisRendererLeft: YAxisRenderer;
+    protected axisRendererRight: YAxisRenderer;
+    protected xAxisRenderer: XAxisRenderer;
 
-    protected mLeftAxisTransformer: Transformer;
-    protected mRightAxisTransformer: Transformer;
+    protected leftAxisTransformer: Transformer;
+    protected rightAxisTransformer: Transformer;
 
-    protected mXAxisRenderer: XAxisRenderer;
 
     // /** the approximator object used for data filtering */
     // private Approximator this.mApproximator;
@@ -134,13 +133,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         this.mAxisLeft = new YAxis(AxisDependency.LEFT);
 
-        this.mLeftAxisTransformer = new Transformer(this.mViewPortHandler);
+        this.leftAxisTransformer = new Transformer(this.viewPortHandler);
 
-        this.mAxisRendererLeft = new YAxisRenderer(this.mViewPortHandler, this.mAxisLeft, this.mLeftAxisTransformer);
+        this.axisRendererLeft = new YAxisRenderer(this.viewPortHandler, this.mAxisLeft, this.leftAxisTransformer);
 
-        this.mXAxisRenderer = new XAxisRenderer(this.mViewPortHandler, this.mXAxis, this.mLeftAxisTransformer);
+        this.xAxisRenderer = new XAxisRenderer(this.viewPortHandler, this.xAxis, this.leftAxisTransformer);
 
-        this.setHighlighter(new ChartHighlighter(this));
+        this.highlighter = new ChartHighlighter(this);
     }
 
     get gridBackgroundPaint() {
@@ -158,13 +157,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     }
 
     getOrCreateBarTouchListener() {
-        if (!this.mChartTouchListener) {
-            this.mChartTouchListener = new BarLineChartTouchListener(this, this.mViewPortHandler.getMatrixTouch(), 3);
+        if (!this.chartTouchListener) {
+            this.chartTouchListener = new BarLineChartTouchListener(this, this.viewPortHandler.getMatrixTouch(), 3);
             if (!!this.nativeViewProtected) {
-                this.mChartTouchListener.init();
+                this.chartTouchListener.init();
             }
         }
-        return this.mChartTouchListener;
+        return this.chartTouchListener;
     }
 
     // for performance tracking
@@ -175,93 +174,98 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public onDraw(canvas: Canvas) {
         const startTime = Date.now();
         super.onDraw(canvas);
-        const noComputeOnNextDraw = this.noComputeOnNextDraw;
-        this.noComputeOnNextDraw = false;
+        const noComputeAutoScaleOnNextDraw = this.noComputeAutoScaleOnNextDraw;
+        const noComputeAxisOnNextDraw = this.noComputeAxisOnNextDraw;
+        this.noComputeAxisOnNextDraw = false;
+        this.noComputeAutoScaleOnNextDraw = false;
         if (this.mData === null) return;
 
         // execute all drawing commands
         this.drawGridBackground(canvas);
+        const xAxis = this.xAxis;
+        const axisLeft = this.axisLeft;
+        const axisRight = this.axisRight;
 
-        if (!noComputeOnNextDraw && this.mAutoScaleMinMaxEnabled) {
+        // the order is important:
+        // * computeAxis needs axis.mAxisMinimum set in autoScale
+        // * calculateOffsets needs computeAxis because it needs axis longestLabel
+        if (!noComputeAutoScaleOnNextDraw && this.autoScaleMinMaxEnabled) {
             this.autoScale();
         }
-        const leftEnabled = this.mAxisLeft.isEnabled();
-        const rightEnabled = this.mAxisRight && this.mAxisRight.isEnabled();
-        const xEnabled = this.mXAxis.isEnabled();
-        const leftLimitEnabled = leftEnabled && this.mAxisLeft.isDrawLimitLinesEnabled();
-        const rightLimitEnabled = rightEnabled && this.mAxisRight.isDrawLimitLinesEnabled();
-        const xLimitEnabled = xEnabled && this.mXAxis.isDrawLimitLinesEnabled();
 
-        if (!noComputeOnNextDraw) {
-            if (leftEnabled) this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
-
-            if (rightEnabled) this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
-
-            if (xEnabled) this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+        if (!noComputeAxisOnNextDraw) {
+            this.axisRendererLeft.computeAxis(axisLeft.mAxisMinimum, axisLeft.mAxisMaximum, axisLeft.inverted);
+            this.axisRendererRight.computeAxis(axisRight.mAxisMinimum, axisRight.mAxisMaximum, axisRight.inverted);
+            this.xAxisRenderer.computeAxis(this.xAxis.mAxisMinimum, this.xAxis.mAxisMaximum, false);
         }
 
-        if (xEnabled && this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
-        if (leftEnabled && this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
-        if (rightEnabled && this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
+        if (!this.offsetsCalculated) {
+            this.calculateOffsets(false);
+            this.offsetsCalculated = true;
+        }
 
-        if (xLimitEnabled && this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
-        if (leftLimitEnabled && this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
-        if (rightLimitEnabled && this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+        if (xAxis.drawGridLinesBehindData) this.xAxisRenderer.renderGridLines(canvas);
+        if (axisLeft.drawGridLinesBehindData) this.axisRendererLeft.renderGridLines(canvas);
+        if (axisRight.drawGridLinesBehindData) this.axisRendererRight.renderGridLines(canvas);
 
-        if (xEnabled) this.mXAxisRenderer.renderAxisLine(canvas);
-        if (leftEnabled) this.mAxisRendererLeft.renderAxisLine(canvas);
-        if (rightEnabled) this.mAxisRendererRight.renderAxisLine(canvas);
+        if (xAxis.drawLimitLinesBehindData) this.xAxisRenderer.renderLimitLines(canvas);
+        if (axisLeft.drawLimitLinesBehindData) this.axisRendererLeft.renderLimitLines(canvas);
+        if (axisRight.drawLimitLinesBehindData) this.axisRendererRight.renderLimitLines(canvas);
 
-        if (xEnabled && this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
-        if (leftEnabled && this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
-        if (rightEnabled && this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
+        this.xAxisRenderer.renderAxisLine(canvas);
+        this.axisRendererLeft.renderAxisLine(canvas);
+        this.axisRendererRight.renderAxisLine(canvas);
+
+        if (xAxis.drawLabelsBehindData) this.xAxisRenderer.renderAxisLabels(canvas);
+        if (axisLeft.drawLabelsBehindData) this.axisRendererLeft.renderAxisLabels(canvas);
+        if (axisRight.drawLabelsBehindData) this.axisRendererRight.renderAxisLabels(canvas);
 
         // make sure the data cannot be drawn outside the content-rect
-        if (this.isClipDataToContentEnabled()) {
+        if (this.clipDataToContent) {
             canvas.save();
-            canvas.clipRect(this.mViewPortHandler.getContentRect());
-            this.mRenderer.drawData(canvas);
+            canvas.clipRect(this.viewPortHandler.contentRect);
+            this.renderer.drawData(canvas);
         } else {
-            this.mRenderer.drawData(canvas);
+            this.renderer.drawData(canvas);
         }
 
-        if (xEnabled && !this.mXAxis.isDrawGridLinesBehindDataEnabled()) this.mXAxisRenderer.renderGridLines(canvas);
-        if (leftEnabled && !this.mAxisLeft.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererLeft.renderGridLines(canvas);
-        if (rightEnabled && !this.mAxisRight.isDrawGridLinesBehindDataEnabled()) this.mAxisRendererRight.renderGridLines(canvas);
+        if (!xAxis.drawGridLinesBehindData) this.xAxisRenderer.renderGridLines(canvas);
+        if (!axisLeft.drawGridLinesBehindData) this.axisRendererLeft.renderGridLines(canvas);
+        if (!axisRight.drawGridLinesBehindData) this.axisRendererRight.renderGridLines(canvas);
 
-        if (!this.clipHighlightToContent && this.isClipDataToContentEnabled()) {
+        if (!this.clipHighlightToContent && this.clipDataToContent) {
             // restore before drawing highlight
             canvas.restore();
         }
-        if (this.valuesToHighlight()) {
-            this.mRenderer.drawHighlighted(canvas, this.mIndicesToHighlight, this.isDrawHighlightEnabled());
+        if (this.hasValuesToHighlight) {
+            this.renderer.drawHighlighted(canvas, this.indicesToHighlight, this.drawHighlight);
         }
 
         // Removes clipping rectangle
-        if (this.clipHighlightToContent && this.isClipDataToContentEnabled()) {
+        if (this.clipHighlightToContent && this.clipDataToContent) {
             canvas.restore();
         }
 
-        this.mRenderer.drawExtras(canvas);
+        this.renderer.drawExtras(canvas);
 
-        if (xLimitEnabled && !this.mXAxis.isDrawLimitLinesBehindDataEnabled()) this.mXAxisRenderer.renderLimitLines(canvas);
-        if (leftLimitEnabled && !this.mAxisLeft.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererLeft.renderLimitLines(canvas);
-        if (rightLimitEnabled && !this.mAxisRight.isDrawLimitLinesBehindDataEnabled()) this.mAxisRendererRight.renderLimitLines(canvas);
+        if (!xAxis.drawLimitLinesBehindData) this.xAxisRenderer.renderLimitLines(canvas);
+        if (!axisLeft.drawLimitLinesBehindData) this.axisRendererLeft.renderLimitLines(canvas);
+        if (!axisRight.drawLimitLinesBehindData) this.axisRendererRight.renderLimitLines(canvas);
 
-        if (xEnabled && !this.mXAxis.isDrawLabelsBehindDataEnabled()) this.mXAxisRenderer.renderAxisLabels(canvas);
-        if (leftEnabled && !this.mAxisLeft.isDrawLabelsBehindDataEnabled()) this.mAxisRendererLeft.renderAxisLabels(canvas);
-        if (rightEnabled && !this.mAxisRight.isDrawLabelsBehindDataEnabled()) this.mAxisRendererRight.renderAxisLabels(canvas);
+        if (!xAxis.drawLabelsBehindData) this.xAxisRenderer.renderAxisLabels(canvas);
+        if (!axisLeft.drawLabelsBehindData) this.axisRendererLeft.renderAxisLabels(canvas);
+        if (!axisRight.drawLabelsBehindData) this.axisRendererRight.renderAxisLabels(canvas);
 
-        if (this.isClipValuesToContentEnabled()) {
+        if (this.clipValuesToContent) {
             canvas.save();
-            canvas.clipRect(this.mViewPortHandler.getContentRect());
-            this.mRenderer.drawValues(canvas);
+            canvas.clipRect(this.viewPortHandler.contentRect);
+            this.renderer.drawValues(canvas);
             canvas.restore();
         } else {
-            this.mRenderer.drawValues(canvas);
+            this.renderer.drawValues(canvas);
         }
-        if (this.mLegendRenderer) {
-            this.mLegendRenderer.renderLegend(canvas);
+        if (this.legendRenderer) {
+            this.legendRenderer.renderLegend(canvas);
         }
 
         this.drawDescription(canvas);
@@ -288,32 +292,32 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected prepareValuePxMatrix() {
         if (Trace.isEnabled()) {
-            CLog(CLogTypes.info, LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.mXAxis.mAxisMinimum + ', xmax: ' + this.mXAxis.mAxisMaximum + ', xdelta: ' + this.mXAxis.mAxisRange);
+            CLog(CLogTypes.info, LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.xAxis.mAxisMinimum + ', xmax: ' + this.xAxis.mAxisMaximum + ', xdelta: ' + this.xAxis.mAxisRange);
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
-            this.mRightAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
+        if (this.mAxisRight?.enabled) {
+            this.rightAxisTransformer.prepareMatrixValuePx(this.xAxis.mAxisMinimum, this.xAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
         }
-        if ((this.mAxisLeft && this.mAxisLeft.isEnabled()) || this.mXAxis.isEnabled()) {
-            this.mLeftAxisTransformer.prepareMatrixValuePx(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
+        if (this.mAxisLeft?.enabled || this.xAxis.enabled) {
+            this.leftAxisTransformer.prepareMatrixValuePx(this.xAxis.mAxisMinimum, this.xAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
         }
     }
 
     protected prepareOffsetMatrix() {
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
-            this.mRightAxisTransformer.prepareMatrixOffset(this.mAxisRight.isInverted());
+        if (this.mAxisRight?.enabled) {
+            this.rightAxisTransformer.prepareMatrixOffset(this.mAxisRight.inverted);
         }
-        if ((this.mAxisLeft && this.mAxisLeft.isEnabled()) || this.mXAxis.isEnabled()) {
-            this.mLeftAxisTransformer.prepareMatrixOffset(this.mAxisLeft.isInverted());
+        if (this.mAxisLeft?.enabled || this.xAxis.enabled) {
+            this.leftAxisTransformer.prepareMatrixOffset(this.mAxisLeft.inverted);
         }
     }
 
     public notifyDataSetChanged() {
-        if (this.mData == null) {
+        if (!this.mData || this.mData.dataSetCount === 0) {
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.info, LOG_TAG, 'Preparing... DATA NOT SET.');
             }
             return;
-        } else if (!this.mViewPortHandler.hasChartDimens()) {
+        } else if (!this.viewPortHandler.hasChartDimens) {
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.info, LOG_TAG, 'Preparing... NOT SIZED YET.');
             }
@@ -324,22 +328,22 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             }
         }
 
-        if (this.mRenderer != null) this.mRenderer.initBuffers();
+        this.renderer?.initBuffers();
 
         this.calcMinMax();
 
-        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
-            this.mAxisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.isInverted());
+        if (this.mAxisLeft?.enabled) {
+            this.axisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.inverted);
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
-            this.mAxisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.isInverted());
+        if (this.mAxisRight?.enabled) {
+            this.axisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.inverted);
         }
-        if (this.mXAxis.isEnabled()) {
-            this.mXAxisRenderer.computeAxis(this.mXAxis.mAxisMinimum, this.mXAxis.mAxisMaximum, false);
+        if (this.xAxis.enabled) {
+            this.xAxisRenderer.computeAxis(this.xAxis.mAxisMinimum, this.xAxis.mAxisMaximum, false);
         }
 
-        if (this.mLegend != null && this.mLegend.isEnabled()) {
-            this.mLegendRenderer.computeLegend(this.mData);
+        if (this.mLegend != null && this.mLegend.enabled) {
+            this.legendRenderer.computeLegend(this.mData);
         }
 
         this.calculateOffsets(); // needs chart size
@@ -350,34 +354,32 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * Performs auto scaling of the axis by recalculating the minimum and maximum y-values based on the entries currently in view.
      */
     protected autoScale() {
-        const fromX = this.getLowestVisibleX();
-        const toX = this.getHighestVisibleX();
+        const fromX = this.lowestVisibleX;
+        const toX = this.highestVisibleX;
 
         this.mData.calcMinMaxYRange(fromX, toX);
 
-        this.mXAxis.calculate(this.mData.getXMin(), this.mData.getXMax());
+        this.xAxis.calculate(this.mData.xMin, this.mData.xMax);
 
         // calculate axis range (min / max) according to provided data
 
-        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft?.enabled) {
             this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         }
 
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight?.enabled) {
             this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
         }
-
-        this.calculateOffsets();
     }
 
     protected calcMinMax() {
-        this.mXAxis.calculate(this.mData.getXMin(), this.mData.getXMax());
+        this.xAxis.calculate(this.mData.xMin, this.mData.xMax);
 
         // calculate axis range (min / max) according to provided data
-        if (this.mAxisLeft && this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft?.enabled) {
             this.mAxisLeft.calculate(this.mData.getYMin(AxisDependency.LEFT), this.mData.getYMax(AxisDependency.LEFT));
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight?.enabled) {
             this.mAxisRight.calculate(this.mData.getYMin(AxisDependency.RIGHT), this.mData.getYMax(AxisDependency.RIGHT));
         }
     }
@@ -389,26 +391,26 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         offsets.bottom = 0;
 
         // setup offsets for legend
-        if (this.mLegend != null && this.mLegend.isEnabled() && !this.mLegend.isDrawInsideEnabled()) {
-            switch (this.mLegend.getOrientation()) {
+        if (this.mLegend != null && this.mLegend.enabled && !this.mLegend.drawInside) {
+            switch (this.mLegend.orientation) {
                 case LegendOrientation.VERTICAL:
-                    switch (this.mLegend.getHorizontalAlignment()) {
+                    switch (this.mLegend.horizontalAlignment) {
                         case LegendHorizontalAlignment.LEFT:
-                            offsets.left += Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.getMaxSizePercent()) + this.mLegend.getXOffset();
+                            offsets.left += Math.min(this.mLegend.mNeededWidth, this.viewPortHandler.chartWidth * this.mLegend.maxSizePercent) + this.mLegend.xOffset;
                             break;
 
                         case LegendHorizontalAlignment.RIGHT:
-                            offsets.right += Math.min(this.mLegend.mNeededWidth, this.mViewPortHandler.getChartWidth() * this.mLegend.getMaxSizePercent()) + this.mLegend.getXOffset();
+                            offsets.right += Math.min(this.mLegend.mNeededWidth, this.viewPortHandler.chartWidth * this.mLegend.maxSizePercent) + this.mLegend.xOffset;
                             break;
 
                         case LegendHorizontalAlignment.CENTER:
-                            switch (this.mLegend.getVerticalAlignment()) {
+                            switch (this.mLegend.verticalAlignment) {
                                 case LegendVerticalAlignment.TOP:
-                                    offsets.top += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()) + this.mLegend.getYOffset();
+                                    offsets.top += Math.min(this.mLegend.mNeededHeight, this.viewPortHandler.chartHeight * this.mLegend.maxSizePercent) + this.mLegend.yOffset;
                                     break;
 
                                 case LegendVerticalAlignment.BOTTOM:
-                                    offsets.bottom += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()) + this.mLegend.getYOffset();
+                                    offsets.bottom += Math.min(this.mLegend.mNeededHeight, this.viewPortHandler.chartHeight * this.mLegend.maxSizePercent) + this.mLegend.yOffset;
                                     break;
 
                                 default:
@@ -419,13 +421,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
                     break;
 
                 case LegendOrientation.HORIZONTAL:
-                    switch (this.mLegend.getVerticalAlignment()) {
+                    switch (this.mLegend.verticalAlignment) {
                         case LegendVerticalAlignment.TOP:
-                            offsets.top += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()) + this.mLegend.getYOffset();
+                            offsets.top += Math.min(this.mLegend.mNeededHeight, this.viewPortHandler.chartHeight * this.mLegend.maxSizePercent) + this.mLegend.yOffset;
                             break;
 
                         case LegendVerticalAlignment.BOTTOM:
-                            offsets.bottom += Math.min(this.mLegend.mNeededHeight, this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()) + this.mLegend.getYOffset();
+                            offsets.bottom += Math.min(this.mLegend.mNeededHeight, this.viewPortHandler.chartHeight * this.mLegend.maxSizePercent) + this.mLegend.yOffset;
                             break;
 
                         default:
@@ -437,10 +439,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     }
 
     public calculateOffsets(force = true) {
-        if (this.mOffsetsCalculated && !force) {
+        if (this.offsetsCalculated && !force) {
             return;
         }
-        this.mOffsetsCalculated = true;
+        this.offsetsCalculated = true;
         if (!this.mCustomViewPortEnabled) {
             const offsetBuffer = Utils.getTempRectF();
             this.calculateLegendOffsets(offsetBuffer);
@@ -451,38 +453,38 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             let offsetBottom = offsetBuffer.bottom;
 
             // offsets for y-labels
-            if (this.mAxisLeft && this.mAxisLeft.needsOffset()) {
-                offsetLeft += this.mAxisLeft.getRequiredWidthSpace(this.mAxisRendererLeft.axisLabelsPaint);
+            if (this.mAxisLeft?.needsOffset) {
+                offsetLeft += this.mAxisLeft.getRequiredWidthSpace(this.axisRendererLeft.axisLabelsPaint);
             }
 
-            if (this.mAxisRight && this.mAxisRight.needsOffset()) {
-                offsetRight += this.mAxisRight.getRequiredWidthSpace(this.mAxisRendererRight.axisLabelsPaint);
+            if (this.mAxisRight?.needsOffset) {
+                offsetRight += this.mAxisRight.getRequiredWidthSpace(this.axisRendererRight.axisLabelsPaint);
             }
 
-            if (this.mXAxis.isEnabled() && this.mXAxis.isDrawLabelsEnabled()) {
-                const xLabelHeight = this.mXAxis.mLabelRotatedHeight + this.mXAxis.getYOffset();
+            if (this.xAxis.enabled && this.xAxis.drawLabels) {
+                const xLabelHeight = this.xAxis.mLabelRotatedHeight + this.xAxis.yOffset;
                 // offsets for x-labels
-                if (this.mXAxis.getPosition() === XAxisPosition.BOTTOM) {
+                if (this.xAxis.position === XAxisPosition.BOTTOM) {
                     offsetBottom += xLabelHeight;
-                } else if (this.mXAxis.getPosition() === XAxisPosition.TOP) {
+                } else if (this.xAxis.position === XAxisPosition.TOP) {
                     offsetTop += xLabelHeight;
-                } else if (this.mXAxis.getPosition() === XAxisPosition.BOTH_SIDED) {
+                } else if (this.xAxis.position === XAxisPosition.BOTH_SIDED) {
                     offsetBottom += xLabelHeight;
                     offsetTop += xLabelHeight;
                 }
             }
 
-            offsetTop += this.getExtraTopOffset();
-            offsetRight += this.getExtraRightOffset();
-            offsetBottom += this.getExtraBottomOffset();
-            offsetLeft += this.getExtraLeftOffset();
+            offsetTop += this.extraTopOffset;
+            offsetRight += this.extraRightOffset;
+            offsetBottom += this.extraBottomOffset;
+            offsetLeft += this.extraLeftOffset;
 
-            const minOffset = this.mMinOffset;
-            this.mViewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
+            const minOffset = this.minOffset;
+            this.viewPortHandler.restrainViewPort(Math.max(minOffset, offsetLeft), Math.max(minOffset, offsetTop), Math.max(minOffset, offsetRight), Math.max(minOffset, offsetBottom));
 
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.info, LOG_TAG, 'offsetLeft: ' + offsetLeft + ', offsetTop: ' + offsetTop + ', offsetRight: ' + offsetRight + ', offsetBottom: ' + offsetBottom);
-                CLog(CLogTypes.info, LOG_TAG, 'Content: ' + this.mViewPortHandler.getContentRect().toString());
+                CLog(CLogTypes.info, LOG_TAG, 'Content: ' + this.viewPortHandler.contentRect.toString());
             }
         }
 
@@ -494,13 +496,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * draws the grid background
      */
     protected drawGridBackground(c: Canvas) {
-        if (this.mDrawGridBackground) {
+        if (this.drawGridBackgroundEnabled) {
             // draw the grid background
-            c.drawRect(this.mViewPortHandler.getContentRect(), this.gridBackgroundPaint);
+            c.drawRect(this.viewPortHandler.contentRect, this.gridBackgroundPaint);
         }
 
-        if (this.mDrawBorders) {
-            c.drawRect(this.mViewPortHandler.getContentRect(), this.borderPaint);
+        if (this.drawBorders) {
+            c.drawRect(this.viewPortHandler.contentRect, this.borderPaint);
         }
     }
 
@@ -508,18 +510,19 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * Returns the Transformer class that contains all matrices and is
      * responsible for transforming values into pixels on the screen and
      * backwards.
-     *
-     * @return
      */
     public getTransformer(which?: AxisDependency) {
         if (which === undefined) {
-            if (this.getAxisLeft().isEnabled()) {
-                return this.mLeftAxisTransformer;
-            }
-            return this.mRightAxisTransformer;
+            return this.transformer;
         }
-        if (which === AxisDependency.LEFT) return this.mLeftAxisTransformer;
-        else return this.mRightAxisTransformer;
+        if (which === AxisDependency.LEFT) return this.leftAxisTransformer;
+        else return this.rightAxisTransformer;
+    }
+    public get transformer() {
+        if (this.mAxisLeft.enabled) {
+            return this.leftAxisTransformer;
+        }
+        return this.rightAxisTransformer;
     }
 
     // public onTouchEvent( event) {
@@ -532,12 +535,12 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     //     if (!mTouchEnabled)
     //         return false;
     //     else
-    //         return this.mChartTouchListener.onTouch(this, event);
+    //         return this.chartTouchListener.onTouch(this, event);
     // }
 
     // public computeScroll() {
-    // if (this.mChartTouchListener instanceof BarLineChartTouchListener)
-    //     (this.mChartTouchListener).computeScroll();
+    // if (this.chartTouchListener instanceof BarLineChartTouchListener)
+    //     (this.chartTouchListener).computeScroll();
     // }
 
     /**
@@ -547,17 +550,16 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * CODE BELOW THIS RELATED TO SCALING AND GESTURES AND MODIFICATION OF THE
      * VIEWPORT
      */
-
     protected mZoomMatrixBuffer = new Matrix();
 
     /**
      * Zooms in by 1.4f, into the charts center.
      */
     public zoomIn() {
-        const center = this.mViewPortHandler.getContentCenter();
+        const center = this.viewPortHandler.contentCenter;
 
-        this.mViewPortHandler.zoomIn(center.x, -center.y, this.mZoomMatrixBuffer);
-        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
+        this.viewPortHandler.zoomIn(center.x, -center.y, this.mZoomMatrixBuffer);
+        this.viewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
 
         // Range might have changed, which means that Y-axis labels
         // could have changed in size, affecting Y-axis size.
@@ -570,10 +572,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * Zooms out by 0.7f, from the charts center.
      */
     public zoomOut() {
-        const center = this.mViewPortHandler.getContentCenter();
+        const center = this.viewPortHandler.contentCenter;
 
-        this.mViewPortHandler.zoomOut(center.x, -center.y, this.mZoomMatrixBuffer);
-        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
+        this.viewPortHandler.zoomOut(center.x, -center.y, this.mZoomMatrixBuffer);
+        this.viewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
 
         // Range might have changed, which means that Y-axis labels
         // could have changed in size, affecting Y-axis size.
@@ -586,9 +588,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * Zooms out to original size.
      */
     public resetZoom() {
-        this.mViewPortHandler.mMatrixTouch.reset();
-        this.mViewPortHandler.resetZoom(this.mZoomMatrixBuffer);
-        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
+        this.viewPortHandler.mMatrixTouch.reset();
+        this.viewPortHandler.resetZoom(this.mZoomMatrixBuffer);
+        this.viewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
 
         // Range might have changed, which means that Y-axis labels
         // could have changed in size, affecting Y-axis size.
@@ -607,8 +609,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param y
      */
     public zoom(scaleX, scaleY, x, y) {
-        this.mViewPortHandler.zoomAtPosition(scaleX, scaleY, x, y, this.mZoomMatrixBuffer);
-        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
+        this.viewPortHandler.zoomAtPosition(scaleX, scaleY, x, y, this.mZoomMatrixBuffer);
+        this.viewPortHandler.refresh(this.mZoomMatrixBuffer, this, false);
 
         // Range might have changed, which  means that Y-axis labels
         // could have changed in size, affecting Y-axis size.
@@ -631,7 +633,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis   the axis relative to which the zoom should take place
      */
     public zoomAtValue(scaleX, scaleY, xValue, yValue, axis) {
-        const job = ZoomJob.getInstance(this.mViewPortHandler, scaleX, scaleY, xValue, yValue, this.getTransformer(axis), axis, this);
+        const job = ZoomJob.getInstance(this.viewPortHandler, scaleX, scaleY, xValue, yValue, this.getTransformer(axis), axis, this);
         this.addViewportJob(job);
     }
 
@@ -642,10 +644,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param scaleY
      */
     public zoomToCenter(scaleX, scaleY) {
-        const center = this.getCenterOffsets();
+        const center = this.centerOffsets;
         const save = this.mZoomMatrixBuffer;
-        this.mViewPortHandler.zoomAtPosition(scaleX, scaleY, center.x, -center.y, save);
-        this.mViewPortHandler.refresh(save, this, false);
+        this.viewPortHandler.zoomAtPosition(scaleX, scaleY, center.x, -center.y, save);
+        this.viewPortHandler.refresh(save, this, false);
     }
 
     /**
@@ -659,18 +661,18 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param duration
      */
     public zoomAndCenterAnimated(scaleX, scaleY, xValue, yValue, axis, duration) {
-        const origin = this.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), axis);
+        const origin = this.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentTop, axis);
 
         const job = AnimatedZoomJob.getInstance(
-            this.mViewPortHandler,
+            this.viewPortHandler,
             this,
             this.getTransformer(axis),
             this.getAxis(axis),
-            this.mXAxis.mAxisRange,
+            this.xAxis.mAxisRange,
             scaleX,
             scaleY,
-            this.mViewPortHandler.getScaleX(),
-            this.mViewPortHandler.getScaleY(),
+            this.viewPortHandler.getScaleX(),
+            this.viewPortHandler.getScaleY(),
             xValue,
             yValue,
             origin.x,
@@ -690,25 +692,25 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis
      */
     public zoomAndCenter(scaleX, scaleY, xValue, yValue, axis) {
-        const origin = this.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), axis);
+        const origin = this.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentTop, axis);
 
         const job = AnimatedZoomJob.getInstance(
-            this.mViewPortHandler,
+            this.viewPortHandler,
             this,
             this.getTransformer(axis),
             this.getAxis(axis),
-            this.mXAxis.mAxisRange,
+            this.xAxis.mAxisRange,
             scaleX,
             scaleY,
-            this.mViewPortHandler.getScaleX(),
-            this.mViewPortHandler.getScaleY(),
+            this.viewPortHandler.getScaleX(),
+            this.viewPortHandler.getScaleY(),
             xValue,
             yValue,
             origin.x,
             origin.y,
             0
         );
-        job.setPhase(1);
+        job.phase = 1;
         job.onAnimationUpdate(0);
     }
 
@@ -720,8 +722,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public fitScreen() {
         const save = this.mFitScreenMatrixBuffer;
-        this.mViewPortHandler.fitScreen(save);
-        this.mViewPortHandler.refresh(save, this, false);
+        this.viewPortHandler.fitScreen(save);
+        this.viewPortHandler.refresh(save, this, false);
 
         this.calculateOffsets();
         this.invalidate();
@@ -735,8 +737,18 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param scaleY
      */
     public setScaleMinima(scaleX, scaleY) {
-        this.mViewPortHandler.setMinimumScaleX(scaleX);
-        this.mViewPortHandler.setMinimumScaleY(scaleY);
+        this.viewPortHandler.setMinimumScaleX(scaleX);
+        this.viewPortHandler.setMinimumScaleY(scaleY);
+    }
+    /**
+     * Sets the  scale factor. 1 =
+     * fitScreen
+     *
+     * @param scaleX
+     * @param scaleY
+     */
+    public setScale(scaleX, scaleY) {
+        this.viewPortHandler.setScale(scaleX, scaleY);
     }
 
     /**
@@ -747,9 +759,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @param maxXRange The maximum visible range of x-values.
      */
-    public setVisibleXRangeMaximum(maxXRange) {
-        const xScale = this.mXAxis.mAxisRange / maxXRange;
-        this.mViewPortHandler.setMinimumScaleX(xScale);
+    public set visibleXRangeMaximum(maxXRange) {
+        const xScale = this.xAxis.mAxisRange / maxXRange;
+        this.viewPortHandler.setMinimumScaleX(xScale);
     }
 
     /**
@@ -760,9 +772,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @param minXRange The minimum visible range of x-values.
      */
-    public setVisibleXRangeMinimum(minXRange) {
-        const xScale = this.mXAxis.mAxisRange / minXRange;
-        this.mViewPortHandler.setMaximumScaleX(xScale);
+    public set visibleXRangeMinimum(minXRange) {
+        const xScale = this.xAxis.mAxisRange / minXRange;
+        this.viewPortHandler.setMaximumScaleX(xScale);
     }
 
     /**
@@ -774,9 +786,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param maxXRange
      */
     public setVisibleXRange(minXRange, maxXRange) {
-        const minScale = this.mXAxis.mAxisRange / minXRange;
-        const maxScale = this.mXAxis.mAxisRange / maxXRange;
-        this.mViewPortHandler.setMinMaxScaleX(minScale, maxScale);
+        const minScale = this.xAxis.mAxisRange / minXRange;
+        const maxScale = this.xAxis.mAxisRange / maxXRange;
+        this.viewPortHandler.setMinMaxScaleX(minScale, maxScale);
     }
 
     /**
@@ -788,7 +800,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public setVisibleYRangeMaximum(maxYRange, axis) {
         const yScale = this.getAxisRange(axis) / maxYRange;
-        this.mViewPortHandler.setMinimumScaleY(yScale);
+        this.viewPortHandler.setMinimumScaleY(yScale);
     }
 
     /**
@@ -799,7 +811,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public setVisibleYRangeMinimum(minYRange, axis) {
         const yScale = this.getAxisRange(axis) / minYRange;
-        this.mViewPortHandler.setMaximumScaleY(yScale);
+        this.viewPortHandler.setMaximumScaleY(yScale);
     }
 
     /**
@@ -812,7 +824,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public setVisibleYRange(minYRange, maxYRange, axis) {
         const minScale = this.getAxisRange(axis) / minYRange;
         const maxScale = this.getAxisRange(axis) / maxYRange;
-        this.mViewPortHandler.setMinMaxScaleY(minScale, maxScale);
+        this.viewPortHandler.setMinMaxScaleY(minScale, maxScale);
     }
 
     /**
@@ -822,7 +834,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param xValue
      */
     public moveViewToX(xValue) {
-        const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, 0, this.getTransformer(), this);
+        const job = MoveViewJob.getInstance(this.viewPortHandler, xValue, 0, this.transformer, this);
         this.addViewportJob(job);
     }
 
@@ -836,9 +848,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis   - which axis should be used as a reference for the y-axis
      */
     public moveViewTo(xValue, yValue, axis) {
-        const yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
+        const yInView = this.getAxisRange(axis) / this.viewPortHandler.getScaleY();
 
-        const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this);
+        const job = MoveViewJob.getInstance(this.viewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this);
 
         this.addViewportJob(job);
     }
@@ -854,11 +866,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param duration the duration of the animation in milliseconds
      */
     public moveViewToAnimated(xValue, yValue, axis, duration) {
-        const bounds = this.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), axis);
+        const bounds = this.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentTop, axis);
 
-        const yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
+        const yInView = this.getAxisRange(axis) / this.viewPortHandler.getScaleY();
 
-        const job = AnimatedMoveViewJob.getInstance(this.mViewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
+        const job = AnimatedMoveViewJob.getInstance(this.viewPortHandler, xValue, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
 
         this.addViewportJob(job);
 
@@ -873,9 +885,9 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis   - which axis should be used as a reference for the y-axis
      */
     public centerViewToY(yValue, axis) {
-        const valsInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
+        const valsInView = this.getAxisRange(axis) / this.viewPortHandler.getScaleY();
 
-        const job = MoveViewJob.getInstance(this.mViewPortHandler, 0, yValue + valsInView / 2, this.getTransformer(axis), this);
+        const job = MoveViewJob.getInstance(this.viewPortHandler, 0, yValue + valsInView / 2, this.getTransformer(axis), this);
 
         this.addViewportJob(job);
     }
@@ -890,10 +902,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param axis   - which axis should be used as a reference for the y axis
      */
     public centerViewTo(xValue, yValue, axis) {
-        const yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
-        const xInView = this.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
+        const yInView = this.getAxisRange(axis) / this.viewPortHandler.getScaleY();
+        const xInView = this.xAxis.mAxisRange / this.viewPortHandler.getScaleX();
 
-        const job = MoveViewJob.getInstance(this.mViewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this);
+        const job = MoveViewJob.getInstance(this.viewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this);
 
         this.addViewportJob(job);
     }
@@ -908,12 +920,12 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param duration the duration of the animation in milliseconds
      */
     public centerViewToAnimated(xValue, yValue, axis, duration) {
-        const bounds = this.getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentTop(), axis);
+        const bounds = this.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentTop, axis);
 
-        const yInView = this.getAxisRange(axis) / this.mViewPortHandler.getScaleY();
-        const xInView = this.getXAxis().mAxisRange / this.mViewPortHandler.getScaleX();
+        const yInView = this.getAxisRange(axis) / this.viewPortHandler.getScaleY();
+        const xInView = this.xAxis.mAxisRange / this.viewPortHandler.getScaleX();
 
-        const job = AnimatedMoveViewJob.getInstance(this.mViewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
+        const job = AnimatedMoveViewJob.getInstance(this.viewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
 
         this.addViewportJob(job);
 
@@ -943,7 +955,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         //     public run() {
 
-        this.mViewPortHandler.restrainViewPort(left, top, right, bottom);
+        this.viewPortHandler.restrainViewPort(left, top, right, bottom);
         this.prepareOffsetMatrix();
         this.prepareValuePxMatrix();
         // }
@@ -976,26 +988,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     }
 
     /**
-     * Sets the OnDrawListener
-     *
-     * @param drawListener
-     */
-    // public setOnDrawListener(OnDrawListener drawListener) {
-    //     this.mDrawListener = drawListener;
-    // }
-
-    /**
-     * Gets the OnDrawListener. May be null.
-     *
-     * @return
-     */
-    // public OnDrawListener getDrawListener() {
-    //     return this.mDrawListener;
-    // }
-
-    protected mGetPositionBuffer = [];
-
-    /**
      * Returns a recyclable MPPointF instance.
      * Returns the position (in pixels) the provided Entry has inside the chart
      * view or null, if the provided Entry is null.
@@ -1003,29 +995,16 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param e
      * @return
      */
-    // public getPosition(e: U, axis) {
-    //     if (e == null) return null;
+    public getPosition(e: U, axis) {
+        if (e == null) return null;
+        const pts = Utils.getTempArray(2);
 
-    //     this.mGetPositionBuffer[0] = e.getX();
-    //     this.mGetPositionBuffer[1] = e.getY();
+        pts[0] = e.getX();
+        pts[1] = e.getY();
 
-    //     this.getTransformer(axis).pointValuesToPixel(this.mGetPositionBuffer);
+        this.getTransformer(axis).pointValuesToPixel(pts);
 
-    //     return { x: this.mGetPositionBuffer[0], y: this.mGetPositionBuffer[1] };
-    // }
-
-    /**
-     * sets the number of maximum visible drawn values on the chart only active
-     * when setDrawValues() is enabled
-     *
-     * @param count
-     */
-    public setMaxVisibleValueCount(count) {
-        this.mMaxVisibleCount = count;
-    }
-
-    public getMaxVisibleCount() {
-        return this.mMaxVisibleCount;
+        return { x: pts[0], y: pts[1] };
     }
 
     /**
@@ -1034,16 +1013,16 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @param enabled
      */
-    public setHighlightPerDragEnabled(enabled) {
+    public set highlightPerDragEnabled(enabled) {
         this.mHighlightPerDragEnabled = enabled;
         if (enabled) {
             this.getOrCreateBarTouchListener().setPan(true);
-        } else if (this.mChartTouchListener) {
-            this.mChartTouchListener.setPan(false);
+        } else if (this.chartTouchListener) {
+            this.chartTouchListener.setPan(false);
         }
     }
 
-    public isHighlightPerDragEnabled() {
+    public get highlightPerDragEnabled() {
         return this.mHighlightPerDragEnabled;
     }
 
@@ -1053,7 +1032,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @param color
      */
-    public setGridBackgroundColor(color) {
+    public set gridBackgroundColor(color) {
         this.gridBackgroundPaint.setColor(color);
     }
 
@@ -1063,59 +1042,21 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @param enabled
      */
-    public setDragEnabled(enabled) {
-        this.mDragXEnabled = enabled;
-        this.mDragYEnabled = enabled;
+    public set dragEnabled(enabled) {
+        this.dragXEnabled = enabled;
+        this.dragYEnabled = enabled;
         if (enabled) {
             this.getOrCreateBarTouchListener().setPan(true);
-        } else if (this.mChartTouchListener) {
-            this.mChartTouchListener.setPan(false);
+        } else if (this.chartTouchListener) {
+            this.chartTouchListener.setPan(false);
         }
     }
 
     /**
      * Returns true if dragging is enabled for the chart, false if not.
-     *
-     * @return
      */
-    public isDragEnabled() {
-        return this.mDragXEnabled || this.mDragYEnabled;
-    }
-
-    /**
-     * Set this to true to enable dragging on the X axis
-     *
-     * @param enabled
-     */
-    public setDragXEnabled(enabled) {
-        this.mDragXEnabled = enabled;
-    }
-
-    /**
-     * Returns true if dragging on the X axis is enabled for the chart, false if not.
-     *
-     * @return
-     */
-    public isDragXEnabled() {
-        return this.mDragXEnabled;
-    }
-
-    /**
-     * Set this to true to enable dragging on the Y axis
-     *
-     * @param enabled
-     */
-    public setDragYEnabled(enabled) {
-        this.mDragYEnabled = enabled;
-    }
-
-    /**
-     * Returns true if dragging on the Y axis is enabled for the chart, false if not.
-     *
-     * @return
-     */
-    public isDragYEnabled() {
-        return this.mDragYEnabled;
+    public get dragEnabled() {
+        return this.dragXEnabled || this.dragYEnabled;
     }
 
     /**
@@ -1124,39 +1065,37 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @param enabled
      */
-    public setScaleEnabled(enabled) {
+    public set scaleEnabled(enabled) {
         this.mScaleXEnabled = enabled;
         this.mScaleYEnabled = enabled;
         if (enabled) {
             this.getOrCreateBarTouchListener().setPinch(true);
-        } else if (this.mChartTouchListener) {
-            this.mChartTouchListener.setPinch(false);
+        } else if (this.chartTouchListener) {
+            this.chartTouchListener.setPinch(false);
         }
     }
 
-    public setScaleXEnabled(enabled) {
+    public set scaleXEnabled(enabled) {
         this.mScaleXEnabled = enabled;
         if (enabled) {
             this.getOrCreateBarTouchListener().setPinch(true);
-        } else if (!this.mScaleYEnabled && this.mChartTouchListener) {
-            this.mChartTouchListener.setPinch(false);
+        } else if (!this.mScaleYEnabled && this.chartTouchListener) {
+            this.chartTouchListener.setPinch(false);
         }
     }
-
-    public setScaleYEnabled(enabled) {
-        this.mScaleYEnabled = enabled;
-        if (enabled) {
-            this.getOrCreateBarTouchListener().setPinch(true);
-        } else if (!this.mScaleXEnabled && this.mChartTouchListener) {
-            this.mChartTouchListener.setPinch(false);
-        }
-    }
-
-    public isScaleXEnabled() {
+    public get scaleXEnabled() {
         return this.mScaleXEnabled;
     }
 
-    public isScaleYEnabled() {
+    public set scaleYEnabled(enabled) {
+        this.mScaleYEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setPinch(true);
+        } else if (!this.mScaleXEnabled && this.chartTouchListener) {
+            this.chartTouchListener.setPinch(false);
+        }
+    }
+    public get scaleYEnabled() {
         return this.mScaleYEnabled;
     }
 
@@ -1166,100 +1105,32 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      *
      * @param enabled
      */
-    public setDoubleTapToZoomEnabled(enabled) {
+    public set doubleTapToZoomEnabled(enabled) {
         this.mDoubleTapToZoomEnabled = enabled;
         if (enabled) {
             this.getOrCreateBarTouchListener().setDoubleTap(true);
-        } else if (this.mChartTouchListener) {
-            this.mChartTouchListener.setDoubleTap(false);
-        }
-    }
-
-    public setHighlightPerTapEnabled(enabled) {
-        super.setHighlightPerTapEnabled(enabled);
-        if (enabled) {
-            this.getOrCreateBarTouchListener().setTap(true);
-        } else if (this.mChartTouchListener) {
-            this.mChartTouchListener.setTap(false);
+        } else if (this.chartTouchListener) {
+            this.chartTouchListener.setDoubleTap(false);
         }
     }
 
     /**
      * Returns true if zooming via double-tap is enabled false if not.
-     *
-     * @return
      */
-    public isDoubleTapToZoomEnabled() {
+    public get doubleTapToZoomEnabled() {
         return this.mDoubleTapToZoomEnabled;
     }
 
-    /**
-     * set this to true to draw the grid background, false if not
-     *
-     * @param enabled
-     */
-    public setDrawGridBackground(enabled) {
-        this.mDrawGridBackground = enabled;
+    set highlightPerTapEnabled(enabled) {
+        this.mHighlightPerTapEnabled = enabled;
+        if (enabled) {
+            this.getOrCreateBarTouchListener().setTap(true);
+        } else if (this.chartTouchListener) {
+            this.chartTouchListener.setTap(false);
+        }
     }
-
-    /**
-     * When enabled, the borders rectangle will be rendered.
-     * If this is enabled, there is no polet drawing the axis-lines of x- and y-axis.
-     *
-     * @param enabled
-     */
-    public setDrawBorders(enabled) {
-        this.mDrawBorders = enabled;
-    }
-
-    /**
-     * When enabled, the borders rectangle will be rendered.
-     * If this is enabled, there is no polet drawing the axis-lines of x- and y-axis.
-     *
-     * @return
-     */
-    public isDrawBordersEnabled() {
-        return this.mDrawBorders;
-    }
-
-    /**
-     * When enabled, the values will be clipped to contentRect,
-     * otherwise they can bleed outside the content rect.
-     *
-     * @param enabled
-     */
-    public setClipValuesToContent(enabled) {
-        this.mClipValuesToContent = enabled;
-    }
-
-    /**
-     * When enabled, the values will be clipped to contentRect,
-     * otherwise they can bleed outside the content rect.
-     *
-     * @return
-     */
-    public isClipValuesToContentEnabled() {
-        return this.mClipValuesToContent;
-    }
-
-    /**
-     * When enabled, the data will be clipped to contentRect,
-     * otherwise they can bleed outside the content rect.
-     *
-     * @param enabled
-     */
-    public setClipDataToContent(enabled) {
-        this.mClipDataToContent = enabled;
-    }
-
-    /**
-     * When enabled, the data will be clipped to contentRect,
-     * otherwise they can bleed outside the content rect.
-     *
-     * @return
-     */
-    public isClipDataToContentEnabled() {
-        return this.mClipDataToContent;
+    get highlightPerTapEnabled() {
+        return this.mHighlightPerTapEnabled;
     }
 
     /**
@@ -1267,14 +1138,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * otherwise they can bleed outside the content rect.
      */
     clipHighlightToContent = true;
-
-    public setDrawHighlight(enabled) {
-        this.mDrawHighlight = enabled;
-    }
-
-    public isDrawHighlightEnabled() {
-        return this.mDrawHighlight;
-    }
 
     /**
      * Sets the width of the border lines in dp.
@@ -1292,34 +1155,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public setBorderColor(color) {
         this.borderPaint.setColor(color);
-    }
-
-    /**
-     * Gets the minimum offset (padding) around the chart, defaults to 15.f
-     */
-    public getMinOffset() {
-        return this.mMinOffset;
-    }
-
-    /**
-     * Sets the minimum offset (padding) around the chart, defaults to 15.f
-     */
-    public setMinOffset(minOffset) {
-        this.mMinOffset = minOffset;
-    }
-
-    /**
-     * Returns true if keeping the position on rotation is enabled and false if not.
-     */
-    public isKeepPositionOnRotation() {
-        return this.mKeepPositionOnRotation;
-    }
-
-    /**
-     * Sets whether the chart should keep its position (zoom / scroll) after a rotation (orientation change)
-     */
-    public setKeepPositionOnRotation(keepPositionOnRotation) {
-        this.mKeepPositionOnRotation = keepPositionOnRotation;
     }
 
     /**
@@ -1394,13 +1229,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * Returns the lowest x-index (value on the x-axis) that is still visible on
      * the chart.
-     *
-     * @return
      */
-
-    public getLowestVisibleX() {
-        this.getTransformer().getValuesByTouchPoint(this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom(), this.posForGetLowestVisibleX);
-        const result = Math.max(this.mXAxis.mAxisMinimum, this.posForGetLowestVisibleX.x);
+    public get lowestVisibleX() {
+        this.transformer.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentBottom, this.posForGetLowestVisibleX);
+        const result = Math.max(this.xAxis.mAxisMinimum, this.posForGetLowestVisibleX.x);
         return result;
     }
 
@@ -1412,56 +1244,52 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * Returns the highest x-index (value on the x-axis) that is still visible
      * on the chart.
-     *
-     * @return
      */
-
-    public getHighestVisibleX() {
-        this.getTransformer().getValuesByTouchPoint(this.mViewPortHandler.contentRight(), this.mViewPortHandler.contentBottom(), this.posForGetHighestVisibleX);
-        const result = Math.min(this.mXAxis.mAxisMaximum, this.posForGetHighestVisibleX.x);
-
+    public get highestVisibleX() {
+        this.transformer.getValuesByTouchPoint(this.viewPortHandler.contentRight, this.viewPortHandler.contentBottom, this.posForGetHighestVisibleX);
+        const result = Math.min(this.xAxis.mAxisMaximum, this.posForGetHighestVisibleX.x);
         return result;
     }
 
     /**
      * Returns the range visible on the x-axis.
-     *
-     * @return
      */
     public getVisibleXRange() {
-        return Math.abs(this.getHighestVisibleX() - this.getLowestVisibleX());
+        return Math.abs(this.highestVisibleX - this.lowestVisibleX);
     }
 
     /**
      * returns the current x-scale factor
      */
     public getScaleX() {
-        if (this.mViewPortHandler == null) return 1;
-        else return this.mViewPortHandler.getScaleX();
+        if (this.viewPortHandler == null) return 1;
+        else return this.viewPortHandler.getScaleX();
     }
 
     /**
      * returns the current y-scale factor
      */
     public getScaleY() {
-        if (this.mViewPortHandler == null) return 1;
-        else return this.mViewPortHandler.getScaleY();
+        if (this.viewPortHandler == null) return 1;
+        else return this.viewPortHandler.getScaleY();
     }
 
     /**
      * if the chart is fully zoomed out, return true
-     *
-     * @return
      */
     public isFullyZoomedOut() {
-        return this.mViewPortHandler.isFullyZoomedOut();
+        return this.viewPortHandler.isFullyZoomedOut();
     }
 
     /**
      * Returns the left y-axis object. In the horizontal bar-chart, this is the
      * top axis.
-     *
-     * @return
+     */
+    public get leftAxis() {
+        return this.mAxisLeft;
+    }
+    /**
+     * @deprecated use leftAxis
      */
     public get axisLeft() {
         return this.mAxisLeft;
@@ -1470,36 +1298,20 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * Returns the right y-axis object. In the horizontal bar-chart, this is the
      * bottom axis.
-     *
-     * @return
      */
-    public get axisRight() {
+    public get rightAxis() {
         if (!this.mAxisRight) {
             this.mAxisRight = new YAxis(AxisDependency.RIGHT);
-            this.mRightAxisTransformer = new Transformer(this.mViewPortHandler);
-            this.mAxisRendererRight = new YAxisRenderer(this.mViewPortHandler, this.mAxisRight, this.mRightAxisTransformer);
+            this.rightAxisTransformer = new Transformer(this.viewPortHandler);
+            this.axisRendererRight = new YAxisRenderer(this.viewPortHandler, this.mAxisRight, this.rightAxisTransformer);
         }
         return this.mAxisRight;
     }
-
     /**
-     * Returns the left y-axis object. In the horizontal bar-chart, this is the
-     * top axis.
-     *
-     * @return
+     * @deprecated use rightAxis
      */
-    public getAxisLeft() {
-        return this.axisLeft;
-    }
-
-    /**
-     * Returns the right y-axis object. In the horizontal bar-chart, this is the
-     * bottom axis.
-     *
-     * @return
-     */
-    public getAxisRight() {
-        return this.axisRight;
+    public get axisRight() {
+        return this.mAxisRight;
     }
 
     /**
@@ -1515,31 +1327,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     }
 
     public isInverted(axis) {
-        return this.getAxis(axis).isInverted();
-    }
-
-    /**
-     * If set to true, both x and y axis can be scaled simultaneously with 2 fingers, if false,
-     * x and y axis can be scaled separately. default: false
-     *
-     * @param enabled
-     */
-    public setPinchZoom(enabled) {
-        this.mPinchZoomEnabled = enabled;
-        // if (enabled) {
-        //     this.getOrCreateBarTouchListener().setPinch(true);
-        // } else if (this.mChartTouchListener) {
-        //     this.mChartTouchListener.setPinch(false);
-        // }
-    }
-
-    /**
-     * returns true if pinch-zoom is enabled, false if not
-     *
-     * @return
-     */
-    public isPinchZoomEnabled() {
-        return this.mPinchZoomEnabled;
+        return this.getAxis(axis).inverted;
     }
 
     /**
@@ -1549,7 +1337,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param offset
      */
     public setDragOffsetX(offset) {
-        this.mViewPortHandler.setDragOffsetX(offset);
+        this.viewPortHandler.setDragOffsetX(offset);
     }
 
     /**
@@ -1559,20 +1347,18 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param offset
      */
     public setDragOffsetY(offset) {
-        this.mViewPortHandler.setDragOffsetY(offset);
+        this.viewPortHandler.setDragOffsetY(offset);
     }
 
     /**
      * Returns true if both drag offsets (x and y) are zero or smaller.
-     *
-     * @return
      */
     public hasNoDragOffset() {
-        return this.mViewPortHandler.hasNoDragOffset();
+        return this.viewPortHandler.hasNoDragOffset();
     }
 
     public getRendererXAxis() {
-        return this.mXAxisRenderer;
+        return this.xAxisRenderer;
     }
 
     /**
@@ -1581,11 +1367,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param xAxisRenderer
      */
     public setXAxisRenderer(xAxisRenderer) {
-        this.mXAxisRenderer = xAxisRenderer;
+        this.xAxisRenderer = xAxisRenderer;
     }
 
     public getRendererLeftYAxis() {
-        return this.mAxisRendererLeft;
+        return this.axisRendererLeft;
     }
 
     /**
@@ -1594,11 +1380,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param rendererLeftYAxis
      */
     public setRendererLeftYAxis(rendererLeftYAxis) {
-        this.mAxisRendererLeft = rendererLeftYAxis;
+        this.axisRendererLeft = rendererLeftYAxis;
     }
 
     public getRendererRightYAxis() {
-        return this.mAxisRendererRight;
+        return this.axisRendererRight;
     }
 
     /**
@@ -1607,26 +1393,26 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param rendererRightYAxis
      */
     public setRendererRightYAxis(rendererRightYAxis) {
-        this.mAxisRendererRight = rendererRightYAxis;
+        this.axisRendererRight = rendererRightYAxis;
     }
 
-    public getYChartMax() {
+    public get yChartMax() {
         let max = -Infinity;
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft.enabled) {
             max = Math.max(this.mAxisLeft.mAxisMaximum, max);
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight?.enabled) {
             max = Math.max(this.mAxisRight.mAxisMaximum, max);
         }
         return max;
     }
 
-    public getYChartMin() {
+    public get yChartMin() {
         let min = Infinity;
-        if (this.mAxisLeft.isEnabled()) {
+        if (this.mAxisLeft.enabled) {
             min = Math.min(this.mAxisLeft.mAxisMinimum, min);
         }
-        if (this.mAxisRight && this.mAxisRight.isEnabled()) {
+        if (this.mAxisRight?.enabled) {
             min = Math.min(this.mAxisRight.mAxisMinimum, min);
         }
         return min;
@@ -1634,33 +1420,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     /**
      * Returns true if either the left or the right or both axes are inverted.
-     *
-     * @return
      */
-    public isAnyAxisInverted() {
-        if (this.mAxisLeft.isEnabled() && this.mAxisLeft.isInverted()) return true;
-        if (this.mAxisRight && this.mAxisRight.isEnabled() && this.mAxisRight.isInverted()) return true;
+    public get anyAxisInverted() {
+        if (this.mAxisLeft.enabled && this.mAxisLeft.inverted) return true;
+        if (this.mAxisRight?.enabled && this.mAxisRight.inverted) return true;
         return false;
-    }
-
-    /**
-     * Flag that indicates if auto scaling on the y axis is enabled. This is
-     * especially interesting for charts displaying financial data.
-     *
-     * @param enabled the y axis automatically adjusts to the min and max y
-     *                values of the current x axis range whenever the viewport
-     *                changes
-     */
-    public setAutoScaleMinMaxEnabled(enabled) {
-        this.mAutoScaleMinMaxEnabled = enabled;
-    }
-
-    /**
-     * @return true if auto scaling on the y axis is enabled.
-     * @default false
-     */
-    public isAutoScaleMinMaxEnabled() {
-        return this.mAutoScaleMinMaxEnabled;
     }
 
     protected mOnSizeChangedBuffer = Utils.createArrayBuffer(2);
@@ -1669,22 +1433,22 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         // Saving current position of chart.
         this.mOnSizeChangedBuffer[0] = this.mOnSizeChangedBuffer[1] = 0;
 
-        if (this.mKeepPositionOnRotation) {
-            this.mOnSizeChangedBuffer[0] = this.mViewPortHandler.contentLeft();
-            this.mOnSizeChangedBuffer[1] = this.mViewPortHandler.contentTop();
-            this.getTransformer().pixelsToValue(this.mOnSizeChangedBuffer);
+        if (this.keepPositionOnRotation) {
+            this.mOnSizeChangedBuffer[0] = this.viewPortHandler.contentLeft;
+            this.mOnSizeChangedBuffer[1] = this.viewPortHandler.contentTop;
+            this.transformer.pixelsToValue(this.mOnSizeChangedBuffer);
         }
 
         //Superclass transforms chart.
         super.onSizeChanged(w, h, oldw, oldh);
 
-        if (this.mKeepPositionOnRotation) {
+        if (this.keepPositionOnRotation) {
             //Restoring old position of chart.
-            this.getTransformer().pointValuesToPixel(this.mOnSizeChangedBuffer);
-            this.mViewPortHandler.centerViewPort(this.mOnSizeChangedBuffer, this);
+            this.transformer.pointValuesToPixel(this.mOnSizeChangedBuffer);
+            this.viewPortHandler.centerViewPort(this.mOnSizeChangedBuffer, this);
         } else {
             // a resize of the view will redraw the view anyway?
-            this.mViewPortHandler.refresh(this.mViewPortHandler.getMatrixTouch(), this, false);
+            this.viewPortHandler.refresh(this.viewPortHandler.getMatrixTouch(), this, false);
         }
     }
 
@@ -1725,14 +1489,14 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             if (events.length > 0) {
                 for (let i = 0; i < events.length; i++) {
                     const evt = events[i].trim();
-                    if (arg === 'tap' && !this.isHighlightPerTapEnabled()) {
-                        this.mChartTouchListener && this.mChartTouchListener.setTap(false);
-                    } else if (arg === 'doubleTap' && !this.isDoubleTapToZoomEnabled()) {
-                        this.mChartTouchListener && this.mChartTouchListener.setDoubleTap(false);
-                    } else if (arg === 'pan' && !this.isHighlightPerDragEnabled() && !this.isDragEnabled()) {
-                        this.mChartTouchListener && this.mChartTouchListener.setPan(false);
-                    } else if (arg === 'pinch' && !this.isPinchZoomEnabled()) {
-                        this.mChartTouchListener && this.mChartTouchListener.setPinch(false);
+                    if (arg === 'tap' && !this.highlightPerTapEnabled) {
+                        this.chartTouchListener && this.chartTouchListener.setTap(false);
+                    } else if (arg === 'doubleTap' && !this.doubleTapToZoomEnabled) {
+                        this.chartTouchListener && this.chartTouchListener.setDoubleTap(false);
+                    } else if (arg === 'pan' && !this.highlightPerDragEnabled && !this.dragEnabled) {
+                        this.chartTouchListener && this.chartTouchListener.setPan(false);
+                    } else if (arg === 'pinch' && !this.pinchZoomEnabled) {
+                        this.chartTouchListener && this.chartTouchListener.setPinch(false);
                     }
                     Observable.prototype.removeEventListener.call(this, evt, callback, thisArg);
                 }

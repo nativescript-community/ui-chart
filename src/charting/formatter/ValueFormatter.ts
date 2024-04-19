@@ -14,31 +14,6 @@ import { BaseEntry } from '../data/BaseEntry';
  * Class to format all values before they are drawn as labels.
  */
 export abstract class ValueFormatter implements IAxisValueFormatter, IValueFormatter {
-    // /**
-    //  * <b>DO NOT USE</b>, only for backwards compatibility and will be removed in future versions.
-    //  *
-    //  * @param value the value to be formatted
-    //  * @param axis  the axis the value belongs to
-    //  * @return formatted string label
-    //  */
-    // public  getFormattedValue( value,  axis):string {
-    //     return this.getFormattedValue(value);
-    // }
-
-    // /**
-    //  * <b>DO NOT USE</b>, only for backwards compatibility and will be removed in future versions.
-    //  * @param value           the value to be formatted
-    //  * @param entry           the entry the value belongs to - in e.g. BarChart, this is of class BarEntry
-    //  * @param dataSetIndex    the index of the DataSet the entry in focus belongs to
-    //  * @param viewPortHandler provides information about the current chart state (scale, translation, ...)
-    //  * @return formatted string label
-    //  */
-    //
-    //
-    // public String getFormattedValue(value, Entry entry, int dataSetIndex, viewPortHandler: ViewPortHandler) {
-    //     return getFormattedValue(value);
-    // }
-
     /**
      * Called when drawing any label, used to change numbers into formatted strings.
      *

@@ -49,8 +49,8 @@ export class Transformer {
      * @param yChartMin
      */
     public prepareMatrixValuePx(xChartMin, deltaX, deltaY, yChartMin) {
-        let scaleX = this.mViewPortHandler.getContentRect().width() / deltaX;
-        let scaleY = this.mViewPortHandler.getContentRect().height() / deltaY;
+        let scaleX = this.mViewPortHandler.contentRect.width() / deltaX;
+        let scaleY = this.mViewPortHandler.contentRect.height() / deltaY;
         if (!Number.isFinite(scaleX) || isNaN(scaleX)) {
             scaleX = 0;
         }
@@ -73,9 +73,9 @@ export class Transformer {
 
         // offset.postTranslate(mOffsetLeft, getHeight() - this.mOffsetBottom);
 
-        if (!inverted) this.mMatrixOffset.postTranslate(this.mViewPortHandler.offsetLeft(), this.mViewPortHandler.getChartHeight() - this.mViewPortHandler.offsetBottom());
+        if (!inverted) this.mMatrixOffset.postTranslate(this.mViewPortHandler.offsetLeft, this.mViewPortHandler.chartHeight - this.mViewPortHandler.offsetBottom);
         else {
-            this.mMatrixOffset.setTranslate(this.mViewPortHandler.offsetLeft(), -this.mViewPortHandler.offsetTop());
+            this.mMatrixOffset.setTranslate(this.mViewPortHandler.offsetLeft, -this.mViewPortHandler.offsetTop);
             this.mMatrixOffset.postScale(1.0, -1.0);
         }
     }
@@ -353,7 +353,6 @@ export class Transformer {
      * @param y
      * @return
      */
-
     public getValuesByTouchPoint(x, y, outputPoint?) {
         if (!outputPoint) {
             outputPoint = { x: 0, y: 0 };
@@ -397,14 +396,12 @@ export class Transformer {
         return this.mMatrixOffset;
     }
 
-
     public getValueToPixelMatrix() {
         this.mMBuffer1.set(this.mMatrixValueToPx);
         this.mMBuffer1.postConcat(this.mViewPortHandler.mMatrixTouch);
         this.mMBuffer1.postConcat(this.mMatrixOffset);
         return this.mMBuffer1;
     }
-
 
     public getPixelToValueMatrix() {
         this.getValueToPixelMatrix().invert(this.mMBuffer2);

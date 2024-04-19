@@ -34,9 +34,9 @@ export class XBounds {
      * @param dataSet
      */
     public set<T extends Entry>(chart: BarLineScatterCandleBubbleDataProvider, dataSet: BarLineScatterCandleBubbleDataSet<T>, animator: ChartAnimator) {
-        const phaseX = Math.max(0, Math.min(1, animator.getPhaseX()));
-        const low = chart.getLowestVisibleX();
-        const high = chart.getHighestVisibleX();
+        const phaseX = Math.max(0, Math.min(1, animator.phaseX));
+        const low = chart.lowestVisibleX;
+        const high = chart.highestVisibleX;
 
         const entryFrom = dataSet.getEntryForXValue(low, NaN, Rounding.DOWN);
         const entryTo = dataSet.getEntryForXValue(high, NaN, Rounding.UP);
@@ -66,7 +66,7 @@ export abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
      * @return
      */
     protected shouldDrawValues(set: IDataSet<any>) {
-        return set.isVisible() && (set.isDrawValuesEnabled() || set.isDrawIconsEnabled());
+        return set.visible && (set.drawValuesEnabled || set.drawIconsEnabled);
     }
 
     /**
@@ -81,7 +81,7 @@ export abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
 
         const entryIndex = set.getEntryIndex(e);
 
-        if (e == null || entryIndex >= set.getEntryCount() * this.mAnimator.getPhaseX()) {
+        if (e == null || entryIndex >= set.entryCount * this.animator.phaseY) {
             return false;
         } else {
             return true;

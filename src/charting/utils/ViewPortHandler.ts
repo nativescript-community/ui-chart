@@ -19,11 +19,11 @@ export class ViewPortHandler {
     /**
      * this rectangle defines the area in which graph values can be drawn
      */
-    protected mContentRect = new RectF(0, 0, 0, 0);
-    protected mChartRect = new RectF(0, 0, 0, 0);
+    readonly contentRect = new RectF(0, 0, 0, 0);
+    readonly chartRect = new RectF(0, 0, 0, 0);
 
-    protected mChartWidth = 0;
-    protected mChartHeight = 0;
+    chartWidth = 0;
+    chartHeight = 0;
 
     /**
      * buffer for storing the 9 matrix values of a 3x3 matrix
@@ -86,87 +86,68 @@ export class ViewPortHandler {
      * @param width
      * @param height
      */
-
     public setChartDimens(width, height) {
-        const offsetLeft = this.offsetLeft();
-        const offsetTop = this.offsetTop();
-        const offsetRight = this.offsetRight();
-        const offsetBottom = this.offsetBottom();
+        const offsetLeft = this.offsetLeft;
+        const offsetTop = this.offsetTop;
+        const offsetRight = this.offsetRight;
+        const offsetBottom = this.offsetBottom;
 
-        this.mChartHeight = Math.round(height);
-        this.mChartWidth = Math.round(width);
-        this.mChartRect.set(0, 0, this.mChartWidth, this.mChartHeight);
+        this.chartHeight = Math.round(height);
+        this.chartWidth = Math.round(width);
+        this.chartRect.set(0, 0, this.chartWidth, this.chartHeight);
         this.restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom);
     }
 
-    public hasChartDimens() {
-        if (this.mChartHeight > 0 && this.mChartWidth > 0) return true;
+    public get hasChartDimens() {
+        if (this.chartHeight > 0 && this.chartWidth > 0) return true;
         else return false;
     }
 
     public restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom) {
-        this.mContentRect.set(offsetLeft, offsetTop, this.mChartWidth - offsetRight, this.mChartHeight - offsetBottom);
+        this.contentRect.set(offsetLeft, offsetTop, this.chartWidth - offsetRight, this.chartHeight - offsetBottom);
     }
 
-    public offsetLeft() {
-        return this.mContentRect.left;
+    public get offsetLeft() {
+        return this.contentRect.left;
     }
 
-    public offsetRight() {
-        return this.mChartWidth - this.mContentRect.right;
+    public get offsetRight() {
+        return this.chartWidth - this.contentRect.right;
     }
 
-    public offsetTop() {
-        return this.mContentRect.top;
+    public get offsetTop() {
+        return this.contentRect.top;
     }
 
-    public offsetBottom() {
-        return this.mChartHeight - this.mContentRect.bottom;
+    public get offsetBottom() {
+        return this.chartHeight - this.contentRect.bottom;
     }
 
-    public contentTop() {
-        return this.mContentRect.top;
+    public get contentTop() {
+        return this.contentRect.top;
     }
 
-    public contentLeft() {
-        return this.mContentRect.left;
+    public get contentLeft() {
+        return this.contentRect.left;
     }
 
-    public contentRight() {
-        return this.mContentRect.right;
+    public get contentRight() {
+        return this.contentRect.right;
     }
 
-    public contentBottom() {
-        return this.mContentRect.bottom;
+    public get contentBottom() {
+        return this.contentRect.bottom;
     }
 
-    public getContentRect() {
-        return this.mContentRect;
-    }
-
-    public getChartRect() {
-        return this.mChartRect;
-    }
-
-    public getContentCenter() {
-        return { x: this.mContentRect.centerX(), y: this.mContentRect.centerY() };
-    }
-
-    public getChartHeight() {
-        return this.mChartHeight;
-    }
-
-    public getChartWidth() {
-        return this.mChartWidth;
+    public get contentCenter() {
+        return { x: this.contentRect.centerX(), y: this.contentRect.centerY() };
     }
 
     /**
      * Returns the smallest extension of the content rect (width or height).
-     *
-     * @return
      */
-    public getSmallestContentExtension() {
-        return Math.min(this.mContentRect.width(), this.mContentRect.height());
+    public get smallestContentExtension() {
+        return Math.min(this.contentRect.width(), this.contentRect.height());
     }
 
     /**
@@ -181,7 +162,6 @@ export class ViewPortHandler {
      * @param x
      * @param y
      */
-
     public zoomIn(x, y, outputMatrix) {
         if (!outputMatrix) {
             outputMatrix = new Matrix();
@@ -219,7 +199,6 @@ export class ViewPortHandler {
      * @param scaleY
      * @return
      */
-
     public zoom(scaleX, scaleY, outputMatrix) {
         if (!outputMatrix) {
             outputMatrix = new Matrix();
@@ -239,7 +218,6 @@ export class ViewPortHandler {
      * @param y
      * @return
      */
-
     public zoomAtPosition(scaleX, scaleY, x, y, outputMatrix: Matrix) {
         if (!outputMatrix) {
             outputMatrix = new Matrix();
@@ -257,7 +235,6 @@ export class ViewPortHandler {
      * @param scaleY
      * @return
      */
-
     public setZoom(scaleX, scaleY, outputMatrix) {
         if (!outputMatrix) {
             outputMatrix = new Matrix();
@@ -328,8 +305,8 @@ export class ViewPortHandler {
         }
         outputMatrix.reset();
         outputMatrix.set(this.mMatrixTouch);
-        const x = transformedPts[0] - this.offsetLeft();
-        const y = transformedPts[1] - this.offsetTop();
+        const x = transformedPts[0] - this.offsetLeft;
+        const y = transformedPts[1] - this.offsetTop;
         outputMatrix.postTranslate(-x, -y);
         return outputMatrix;
     }
@@ -349,8 +326,8 @@ export class ViewPortHandler {
         save.reset();
         save.set(this.mMatrixTouch);
 
-        const x = transformedPts[0] - this.offsetLeft();
-        const y = transformedPts[1] - this.offsetTop();
+        const x = transformedPts[0] - this.offsetLeft;
+        const y = transformedPts[1] - this.offsetTop;
 
         save.postTranslate(-x, -y);
 
@@ -367,12 +344,50 @@ export class ViewPortHandler {
         this.mMatrixTouch.set(newMatrix);
 
         // make sure scale and translation are within their bounds
-        this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
+        this.limitTransAndScale(this.mMatrixTouch, this.contentRect);
 
         if (invalidate) chart.invalidate();
 
         newMatrix.set(this.mMatrixTouch);
         return newMatrix;
+    }
+
+    public setScale(scaleX, scaleY) {
+        if (!this.mMatrixBuffer) {
+            this.mMatrixBuffer = Utils.createArrayBuffer(9);
+        }
+        const matrixBuffer = this.mMatrixBuffer;
+        this.mMatrixTouch.getValues(matrixBuffer);
+        const curTransX = matrixBuffer[Matrix.MTRANS_X];
+
+        const curTransY = matrixBuffer[Matrix.MTRANS_Y];
+
+        // min scale-x is 1
+        this.mScaleX = Math.min(Math.max(this.mMinScaleX, scaleX), this.mMaxScaleX);
+
+        // min scale-y is 1
+        this.mScaleY = Math.min(Math.max(this.mMinScaleY, scaleY), this.mMaxScaleY);
+
+        let width = 0;
+        let height = 0;
+
+        if (this.contentRect != null) {
+            width = this.contentRect.width();
+            height = this.contentRect.height();
+        }
+
+        const maxTransX = -width * (this.mScaleX - 1);
+        this.mTransX = Math.min(Math.max(curTransX, maxTransX - this.mTransOffsetX), this.mTransOffsetX);
+
+        const maxTransY = height * (this.mScaleY - 1);
+        this.mTransY = Math.max(Math.min(curTransY, maxTransY + this.mTransOffsetY), -this.mTransOffsetY);
+
+        matrixBuffer[Matrix.MTRANS_X] = this.mTransX;
+        matrixBuffer[Matrix.MSCALE_X] = this.mScaleX;
+
+        matrixBuffer[Matrix.MTRANS_Y] = this.mTransY;
+        matrixBuffer[Matrix.MSCALE_Y] = this.mScaleY;
+        this.mMatrixTouch.setValues(matrixBuffer);
     }
 
     /**
@@ -430,7 +445,7 @@ export class ViewPortHandler {
 
         this.mMinScaleX = xScale;
 
-        this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
+        this.limitTransAndScale(this.mMatrixTouch, this.contentRect);
     }
 
     /**
@@ -443,7 +458,7 @@ export class ViewPortHandler {
 
         this.mMaxScaleX = xScale;
 
-        this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
+        this.limitTransAndScale(this.mMatrixTouch, this.contentRect);
     }
 
     /**
@@ -460,7 +475,7 @@ export class ViewPortHandler {
         this.mMinScaleX = minScaleX;
         this.mMaxScaleX = maxScaleX;
 
-        this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
+        this.limitTransAndScale(this.mMatrixTouch, this.contentRect);
     }
 
     /**
@@ -473,7 +488,7 @@ export class ViewPortHandler {
 
         this.mMinScaleY = yScale;
 
-        this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
+        this.limitTransAndScale(this.mMatrixTouch, this.contentRect);
     }
 
     /**
@@ -486,7 +501,7 @@ export class ViewPortHandler {
 
         this.mMaxScaleY = yScale;
 
-        this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
+        this.limitTransAndScale(this.mMatrixTouch, this.contentRect);
     }
 
     public setMinMaxScaleY(minScaleY, maxScaleY) {
@@ -497,13 +512,11 @@ export class ViewPortHandler {
         this.mMinScaleY = minScaleY;
         this.mMaxScaleY = maxScaleY;
 
-        this.limitTransAndScale(this.mMatrixTouch, this.mContentRect);
+        this.limitTransAndScale(this.mMatrixTouch, this.contentRect);
     }
 
     /**
      * Returns the charts-touch matrix used for translation and scale on touch.
-     *
-     * @return
      */
     public getMatrixTouch() {
         return this.mMatrixTouch;
@@ -515,7 +528,6 @@ export class ViewPortHandler {
     /**
      * BELOW METHODS FOR BOUNDS CHECK
      */
-
     public isInBoundsX(x) {
         return this.isInBoundsLeft(x) && this.isInBoundsRight(x);
     }
@@ -529,21 +541,21 @@ export class ViewPortHandler {
     }
 
     public isInBoundsLeft(x) {
-        return this.mContentRect.left - (x + 1) <= EPSILON;
+        return this.contentRect.left - (x + 1) <= EPSILON;
     }
 
     public isInBoundsRight(x) {
         x = (x * 100) / 100;
-        return this.mContentRect.right - (x - 1) >= -EPSILON;
+        return this.contentRect.right - (x - 1) >= -EPSILON;
     }
 
     public isInBoundsTop(y) {
-        return this.mContentRect.top - y <= EPSILON;
+        return this.contentRect.top - y <= EPSILON;
     }
 
     public isInBoundsBottom(y) {
         y = (y * 100) / 100;
-        return this.mContentRect.bottom - y >= -EPSILON;
+        return this.contentRect.bottom - y >= -EPSILON;
     }
 
     /**
@@ -578,8 +590,6 @@ export class ViewPortHandler {
 
     /**
      * Returns the translation (drag / pan) distance on the x-axis
-     *
-     * @return
      */
     public getTransX() {
         return this.mTransX;
@@ -587,8 +597,6 @@ export class ViewPortHandler {
 
     /**
      * Returns the translation (drag / pan) distance on the y-axis
-     *
-     * @return
      */
     public getTransY() {
         return this.mTransY;
@@ -596,8 +604,6 @@ export class ViewPortHandler {
 
     /**
      * if the chart is fully zoomed out, return true
-     *
-     * @return
      */
     public isFullyZoomedOut() {
         return this.isFullyZoomedOutX() && this.isFullyZoomedOutY();
@@ -605,8 +611,6 @@ export class ViewPortHandler {
 
     /**
      * Returns true if the chart is fully zoomed out on it's y-axis (vertical).
-     *
-     * @return
      */
     public isFullyZoomedOutY() {
         return !(this.mScaleY > this.mMinScaleY || this.mMinScaleY > 1);
@@ -615,8 +619,6 @@ export class ViewPortHandler {
     /**
      * Returns true if the chart is fully zoomed out on it's x-axis
      * (horizontal).
-     *
-     * @return
      */
     public isFullyZoomedOutX() {
         return !(this.mScaleX > this.mMinScaleX || this.mMinScaleX > 1);
@@ -644,8 +646,6 @@ export class ViewPortHandler {
 
     /**
      * Returns true if both drag offsets (x and y) are zero or smaller.
-     *
-     * @return
      */
     public hasNoDragOffset() {
         return this.mTransOffsetX === 0 && this.mTransOffsetY === 0;
@@ -653,8 +653,6 @@ export class ViewPortHandler {
 
     /**
      * Returns true if the chart is not yet fully zoomed out on the x-axis
-     *
-     * @return
      */
     public canZoomOutMoreX() {
         return this.mScaleX > this.mMinScaleX;
@@ -662,8 +660,6 @@ export class ViewPortHandler {
 
     /**
      * Returns true if the chart is not yet fully zoomed in on the x-axis
-     *
-     * @return
      */
     public canZoomInMoreX() {
         return this.mScaleX < this.mMaxScaleX;
@@ -671,8 +667,6 @@ export class ViewPortHandler {
 
     /**
      * Returns true if the chart is not yet fully zoomed out on the y-axis
-     *
-     * @return
      */
     public canZoomOutMoreY() {
         return this.mScaleY > this.mMinScaleY;
@@ -680,8 +674,6 @@ export class ViewPortHandler {
 
     /**
      * Returns true if the chart is not yet fully zoomed in on the y-axis
-     *
-     * @return
      */
     public canZoomInMoreY() {
         return this.mScaleY < this.mMaxScaleY;

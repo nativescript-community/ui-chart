@@ -7,7 +7,7 @@ import { CLog, CLogTypes, Utils } from '../utils/Utils';
 import { IScatterDataSet } from '../interfaces/datasets/IScatterDataSet';
 import { Highlight } from '../highlight/Highlight';
 import { Entry } from '../data/Entry';
-import { ScatterChart } from '../charts';
+import { ScatterChart } from '..';
 import { Trace } from '@nativescript/core';
 
 export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
@@ -19,25 +19,25 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     public drawData(c: Canvas) {
-        const scatterData = this.mChart.getScatterData();
+        const scatterData = this.mChart.scatterData;
 
-        for (const set of scatterData.getDataSets()) {
-            if (set.isVisible()) {
+        for (const set of scatterData.dataSets) {
+            if (set.visible) {
                 this.drawDataSet(c, set);
             }
         }
     }
 
     protected drawDataSet(c: Canvas, dataSet: IScatterDataSet) {
-        if (dataSet.getEntryCount() < 1) return;
+        if (dataSet.entryCount < 1) return;
 
         const viewPortHandler = this.mViewPortHandler;
 
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+        const trans = this.mChart.getTransformer(dataSet.axisDependency);
 
-        const phaseY = this.mAnimator.getPhaseY();
+        const phaseY = this.animator.phaseY;
 
-        const renderer = dataSet.getShapeRenderer();
+        const renderer = dataSet.shapeRenderer;
         if (renderer == null) {
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.warning, "There's no IShapeRenderer specified for ScatterDataSet");
@@ -45,13 +45,13 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
             return;
         }
 
-        const max = Math.min(Math.ceil(dataSet.getEntryCount() * this.mAnimator.getPhaseX()), dataSet.getEntryCount());
+        const max = Math.min(Math.ceil(dataSet.entryCount * this.animator.phaseX), dataSet.entryCount);
         const yKey = dataSet.yProperty;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const renderPaint = this.renderPaint;
-        const pixelBuffer = Utils.getTempArray(2)
+        const pixelBuffer = Utils.getTempArray(2);
         const previousShader = renderPaint.getShader();
-        const shader = dataSet.getFillShader();
+        const shader = dataSet.fillShader;
         if (shader) {
             renderPaint.setShader(shader);
         }
@@ -78,37 +78,38 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     public drawValues(c: Canvas) {
-        const data = this.mChart.getScatterData();
-        const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        const chart = this.mChart;
+        const data = chart.scatterData;
+        const dataSets = data.dataSets;
+        if (!this.isDrawingValuesAllowed(chart) || dataSets.some((d) => d.drawValuesEnabled || d.drawIconsEnabled) === false) {
             return;
         }
         // if values are drawn
 
-        const customRender = this.mChart.getCustomRenderer();
-        for (let i = 0; i < this.mChart.getScatterData().getDataSetCount(); i++) {
+        const customRender = chart.customRenderer;
+        for (let i = 0; i < chart.scatterData.dataSetCount; i++) {
             const dataSet = dataSets[i];
             const yKey = dataSet.yProperty;
 
-            if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
+            if (!this.shouldDrawValues(dataSet) || dataSet.entryCount < 1) continue;
 
             // apply the text-styling defined by the DataSet
             this.applyValueTextStyle(dataSet);
 
-            this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+            this.mXBounds.set(chart, dataSet, this.animator);
 
-            const { points, count } = this.mChart
-                .getTransformer(dataSet.getAxisDependency())
-                .generateTransformedValuesScatter(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
+            const { points, count } = chart
+                .getTransformer(dataSet.axisDependency)
+                .generateTransformedValuesScatter(dataSet, this.animator.phaseX, this.animator.phaseY, this.mXBounds.min, this.mXBounds.max);
 
-            const shapeSize = dataSet.getScatterShapeSize();
+            const shapeSize = dataSet.scatterShapeSize;
 
-            const formatter = dataSet.getValueFormatter();
+            const formatter = dataSet.valueFormatter;
 
-            const iconsOffset = dataSet.getIconsOffset();
-            const valuesOffset = dataSet.getValuesOffset();
-            const drawValues = dataSet.isDrawValuesEnabled();
-            const drawIcons = dataSet.isDrawIconsEnabled();
+            const iconsOffset = dataSet.iconsOffset;
+            const valuesOffset = dataSet.valuesOffset;
+            const drawValues = dataSet.drawValuesEnabled;
+            const drawIcons = dataSet.drawIconsEnabled;
             const paint = this.valuePaint;
             for (let j = 0; j < count; j += 2) {
                 if (!this.mViewPortHandler.isInBoundsRight(points[j])) break;
@@ -116,12 +117,18 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                 // make sure the lines don't do shitty things outside bounds
                 if (!this.mViewPortHandler.isInBoundsLeft(points[j]) || !this.mViewPortHandler.isInBoundsY(points[j + 1])) continue;
 
-                const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
+                const index = j / 2 + this.mXBounds.min;
+                const entry = dataSet.getEntryForIndex(index);
 
                 if (drawValues) {
                     this.drawValue(
                         c,
-                        formatter.getPointLabel(entry[yKey], entry),
+                        chart,
+                        dataSet,
+                        i,
+                        entry,
+                        index,
+                        (formatter.getPointLabel || formatter.getFormattedValue).call(formatter, entry[yKey], entry),
                         points[j] + valuesOffset.x,
                         points[j + 1] + valuesOffset.y - shapeSize,
                         dataSet.getValueTextColor(j / 2 + this.mXBounds.min),
@@ -130,8 +137,8 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                     );
                 }
 
-                if (drawIcons && entry.icon) {
-                    Utils.drawIcon(c, this.mChart, entry.icon, points[j] + iconsOffset.x, points[j + 1] + iconsOffset.y);
+                if (drawIcons) {
+                    this.drawIcon(c, chart, dataSet, i, entry, index, dataSet.getEntryIcon(entry), points[j] + iconsOffset.x, points[j + 1] + iconsOffset.y, customRender);
                 }
             }
         }
@@ -140,16 +147,16 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
     public drawExtras(c: Canvas) {}
 
     public drawHighlighted(c: Canvas, indices: Highlight[]) {
-        const scatterData = this.mChart.getScatterData();
+        const scatterData = this.mChart.scatterData;
 
         let entry: Entry, index: number;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const paint = this.highlightPaint;
         for (const high of indices) {
             const set = scatterData.getDataSetByIndex(high.dataSetIndex);
             const yKey = set.yProperty;
 
-            if (set == null || !set.isHighlightEnabled()) continue;
+            if (set == null || !set.highlightEnabled) continue;
 
             if (high.entry) {
                 entry = high.entry;
@@ -162,7 +169,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
             if (!this.isInBoundsX(entry, set)) continue;
 
-            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(set.getEntryXValue(entry, index), entry[yKey] * this.mAnimator.getPhaseY());
+            const pix = this.mChart.getTransformer(set.axisDependency).getPixelForValues(set.getEntryXValue(entry, index), entry[yKey] * this.animator.phaseY);
 
             high.x = pix.x;
             high.y = pix.y;

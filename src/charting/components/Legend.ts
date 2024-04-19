@@ -68,76 +68,81 @@ export class Legend extends ComponentBase {
     /**
      * The legend entries array
      */
-    private mEntries: LegendEntry[] = [];
+    entries: LegendEntry[] = [];
 
     /**
      * Entries that will be appended to the end of the auto calculated entries after calculating the legend.
      * (if the legend has already been calculated, you will need to call notifyDataSetChanged() to let the changes take effect)
      */
-    private mExtraEntries: LegendEntry[];
+    extraEntries: LegendEntry[];
 
     /**
      * Are the legend labels/colors a custom value or auto calculated? If false,
      * then it's auto, if true, then custom. default false (automatic legend)
      */
-    private mIsLegendCustom = false;
+    mIsLegendCustom = false;
 
-    private mHorizontalAlignment = LegendHorizontalAlignment.LEFT;
-    private mVerticalAlignment = LegendVerticalAlignment.BOTTOM;
-    private mOrientation = LegendOrientation.HORIZONTAL;
-    private mDrawInside = false;
+    horizontalAlignment = LegendHorizontalAlignment.LEFT;
+    verticalAlignment = LegendVerticalAlignment.BOTTOM;
+    orientation = LegendOrientation.HORIZONTAL;
+    drawInside = false;
 
     /**
      * the text direction for the legend
      */
-    private mDirection = LegendDirection.LEFT_TO_RIGHT;
+    direction = LegendDirection.LEFT_TO_RIGHT;
 
     /**
      * the shape/form the legend colors are drawn in
      */
-    private mShape = LegendForm.SQUARE;
+    form = LegendForm.SQUARE;
 
     /**
      * the size of the legend forms/shapes
      */
-    private mFormSize = 8;
+    formSize = 8;
 
     /**
      * the size of the legend forms/shapes
      */
-    private mFormLineWidth = 3;
+    formLineWidth = 3;
 
     /**
      * Line dash path effect used for shapes that consist of lines.
      */
-    private mFormLineDashEffect: DashPathEffect = null;
+    formLineDashEffect: DashPathEffect = null;
 
     /**
      * the space between the legend entries on a horizontal axis, default 6f
      */
-    private mXEntrySpace = 6;
+    xEntrySpace = 6;
 
     /**
      * the space between the legend entries on a vertical axis, default 5f
      */
-    private mYEntrySpace = 0;
+    yEntrySpace = 0;
 
     /**
      * the space between the legend entries on a vertical axis, default 2f
      * private float this.mYEntrySpace = 2f; /** the space between the form and the
      * actual label/text
      */
-    private mFormToTextSpace = 5;
+    formToTextSpace = 5;
 
     /**
      * the space that should be left between stacked forms
      */
-    private mStackSpace = 3;
+    stackSpace = 3;
 
     /**
-     * the maximum relative size out of the whole chart view in percent
+     * The maximum relative size out of the whole chart view. / If the legend is
+     * to the right/left of the chart, then this affects the width of the
+     * legend. / If the legend is to the top/bottom of the chart, then this
+     * affects the height of the legend. / If the legend is the center of the
+     * piechart, then this defines the size of the rectangular bounds out of the
+     * size of the "hole". / default: 0.95f (95%)
      */
-    private mMaxSizePercent = 0.95;
+    maxSizePercent = 0.95;
 
     /**
      * Constructor. Provide entries for the legend.
@@ -146,26 +151,13 @@ export class Legend extends ComponentBase {
      */
     constructor(entries?: LegendEntry[]) {
         super();
-        this.mEnabled = false;
-        this.mTextSize = 10;
-        this.mXOffset = 5;
-        this.mYOffset = 5;
+        this.enabled = false;
+        this.textSize = 10;
+        this.xOffset = 5;
+        this.yOffset = 5;
         if (entries) {
-            this.mEntries = entries;
+            this.entries = entries;
         }
-    }
-
-    /**
-     * This method sets the automatically computed colors for the legend. Use setCustom(...) to set custom colors.
-     *
-     * @param entries
-     */
-    public setEntries(entries: LegendEntry[]) {
-        this.mEntries = entries;
-    }
-
-    public getEntries() {
-        return this.mEntries;
     }
 
     /**
@@ -178,10 +170,10 @@ export class Legend extends ComponentBase {
     public getMaximumEntryWidth(p: Paint) {
         let max = 0;
         let maxFormSize = 0;
-        const formToTextSpace = this.mFormToTextSpace;
+        const formToTextSpace = this.formToTextSpace;
 
-        for (const entry of this.mEntries) {
-            const formSize = isNaN(entry.formSize) ? this.mFormSize : entry.formSize;
+        for (const entry of this.entries) {
+            const formSize = isNaN(entry.formSize) ? this.formSize : entry.formSize;
             if (formSize > maxFormSize) maxFormSize = formSize;
 
             const label = entry.label;
@@ -204,7 +196,7 @@ export class Legend extends ComponentBase {
     public getMaximumEntryHeight(p: Paint) {
         let max = 0;
 
-        for (const entry of this.mEntries) {
+        for (const entry of this.entries) {
             const label = entry.label;
             if (label == null) continue;
 
@@ -214,14 +206,6 @@ export class Legend extends ComponentBase {
         }
 
         return max;
-    }
-
-    public getExtraEntries() {
-        return this.mExtraEntries;
-    }
-
-    public setExtraEntries(entries) {
-        this.mExtraEntries = entries || [];
     }
 
     /**
@@ -244,7 +228,7 @@ export class Legend extends ComponentBase {
             entries.push(entry);
         }
 
-        this.mExtraEntries = entries;
+        this.extraEntries = entries;
     }
 
     /**
@@ -256,7 +240,7 @@ export class Legend extends ComponentBase {
      *   notifyDataSetChanged() is needed to auto-calculate the legend again)
      */
     public setCustom(entries) {
-        this.mEntries = entries;
+        this.entries = entries;
         this.mIsLegendCustom = true;
     }
 
@@ -278,242 +262,6 @@ export class Legend extends ComponentBase {
     }
 
     /**
-     * returns the horizontal alignment of the legend
-     *
-     * @return
-     */
-    public getHorizontalAlignment() {
-        return this.mHorizontalAlignment;
-    }
-
-    /**
-     * sets the horizontal alignment of the legend
-     *
-     * @param value
-     */
-    public setHorizontalAlignment(value) {
-        this.mHorizontalAlignment = value;
-    }
-
-    /**
-     * returns the vertical alignment of the legend
-     *
-     * @return
-     */
-    public getVerticalAlignment() {
-        return this.mVerticalAlignment;
-    }
-
-    /**
-     * sets the vertical alignment of the legend
-     *
-     * @param value
-     */
-    public setVerticalAlignment(value) {
-        this.mVerticalAlignment = value;
-    }
-
-    /**
-     * returns the orientation of the legend
-     *
-     * @return
-     */
-    public getOrientation() {
-        return this.mOrientation;
-    }
-
-    /**
-     * sets the orientation of the legend
-     *
-     * @param value
-     */
-    public setOrientation(value) {
-        this.mOrientation = value;
-    }
-
-    /**
-     * returns whether the legend will draw inside the chart or outside
-     *
-     * @return
-     */
-    public isDrawInsideEnabled() {
-        return this.mDrawInside;
-    }
-
-    /**
-     * sets whether the legend will draw inside the chart or outside
-     *
-     * @param value
-     */
-    public setDrawInside(value) {
-        this.mDrawInside = value;
-    }
-
-    /**
-     * returns the text direction of the legend
-     *
-     * @return
-     */
-    public getDirection() {
-        return this.mDirection;
-    }
-
-    /**
-     * sets the text direction of the legend
-     *
-     * @param pos
-     */
-    public setDirection(pos) {
-        this.mDirection = pos;
-    }
-
-    /**
-     * returns the current form/shape that is set for the legend
-     *
-     * @return
-     */
-    public getForm() {
-        return this.mShape;
-    }
-
-    /**
-     * sets the form/shape of the legend forms
-     *
-     * @param shape
-     */
-    public setForm(shape) {
-        this.mShape = shape;
-    }
-
-    /**
-     * sets the size in dp of the legend forms, default 8f
-     *
-     * @param size
-     */
-    public setFormSize(size) {
-        this.mFormSize = size;
-    }
-
-    /**
-     * returns the size in dp of the legend forms
-     *
-     * @return
-     */
-    public getFormSize() {
-        return this.mFormSize;
-    }
-
-    /**
-     * sets the line width in dp for forms that consist of lines, default 3f
-     *
-     * @param size
-     */
-    public setFormLineWidth(size) {
-        this.mFormLineWidth = size;
-    }
-
-    /**
-     * returns the line width in dp for drawing forms that consist of lines
-     *
-     * @return
-     */
-    public getFormLineWidth() {
-        return this.mFormLineWidth;
-    }
-
-    /**
-     * Sets the line dash path effect used for shapes that consist of lines.
-     *
-     * @param dashPathEffect
-     */
-    public setFormLineDashEffect(dashPathEffect) {
-        this.mFormLineDashEffect = dashPathEffect;
-    }
-
-    /**
-     * @return The line dash path effect used for shapes that consist of lines.
-     */
-    public getFormLineDashEffect() {
-        return this.mFormLineDashEffect;
-    }
-
-    /**
-     * returns the space between the legend entries on a horizontal axis in
-     * pixels
-     *
-     * @return
-     */
-    public getXEntrySpace() {
-        return this.mXEntrySpace;
-    }
-
-    /**
-     * sets the space between the legend entries on a horizontal axis in pixels,
-     * converts to dp internally
-     *
-     * @param space
-     */
-    public setXEntrySpace(space) {
-        this.mXEntrySpace = space;
-    }
-
-    /**
-     * returns the space between the legend entries on a vertical axis in pixels
-     *
-     * @return
-     */
-    public getYEntrySpace() {
-        return this.mYEntrySpace;
-    }
-
-    /**
-     * sets the space between the legend entries on a vertical axis in pixels,
-     * converts to dp internally
-     *
-     * @param space
-     */
-    public setYEntrySpace(space) {
-        this.mYEntrySpace = space;
-    }
-
-    /**
-     * returns the space between the form and the actual label/text
-     *
-     * @return
-     */
-    public getFormToTextSpace() {
-        return this.mFormToTextSpace;
-    }
-
-    /**
-     * sets the space between the form and the actual label/text, converts to dp
-     * internally
-     *
-     * @param space
-     */
-    public setFormToTextSpace(space) {
-        this.mFormToTextSpace = space;
-    }
-
-    /**
-     * returns the space that is left out between stacked forms (with no label)
-     *
-     * @return
-     */
-    public getStackSpace() {
-        return this.mStackSpace;
-    }
-
-    /**
-     * sets the space that is left out between stacked forms (with no label)
-     *
-     * @param space
-     */
-    public setStackSpace(space) {
-        this.mStackSpace = space;
-    }
-
-    /**
      * the total width of the legend (needed width space)
      */
     public mNeededWidth = 0;
@@ -528,74 +276,17 @@ export class Legend extends ComponentBase {
     public mTextWidthMax = 0;
 
     /**
-     * flag that indicates if word wrapping is enabled
-     */
-    private mWordWrapEnabled = false;
-
-    /**
      * Should the legend word wrap? / this is currently supported only for:
      * BelowChartLeft, BelowChartRight, BelowChartCenter. / note that word
      * wrapping a legend takes a toll on performance. / you may want to set
      * maxSizePercent when word wrapping, to set the point where the text wraps.
      * / default: false
-     *
-     * @param enabled
      */
-    public setWordWrapEnabled(enabled) {
-        this.mWordWrapEnabled = enabled;
-    }
+    wordWrapEnabled = false;
 
-    /**
-     * If this is set, then word wrapping the legend is enabled. This means the
-     * legend will not be cut off if too long.
-     *
-     * @return
-     */
-    public isWordWrapEnabled() {
-        return this.mWordWrapEnabled;
-    }
-
-    /**
-     * The maximum relative size out of the whole chart view. / If the legend is
-     * to the right/left of the chart, then this affects the width of the
-     * legend. / If the legend is to the top/bottom of the chart, then this
-     * affects the height of the legend. / If the legend is the center of the
-     * piechart, then this defines the size of the rectangular bounds out of the
-     * size of the "hole". / default: 0.95f (95%)
-     *
-     * @return
-     */
-    public getMaxSizePercent() {
-        return this.mMaxSizePercent;
-    }
-
-    /**
-     * The maximum relative size out of the whole chart view. / If
-     * the legend is to the right/left of the chart, then this affects the width
-     * of the legend. / If the legend is to the top/bottom of the chart, then
-     * this affects the height of the legend. / default: 0.95f (95%)
-     *
-     * @param maxSize
-     */
-    public setMaxSizePercent(maxSize) {
-        this.mMaxSizePercent = maxSize;
-    }
-
-    private mCalculatedLabelSizes = [];
-    private mCalculatedLabelBreakPoints = [];
-    private mCalculatedLineSizes = [];
-
-    public getCalculatedLabelSizes() {
-        return this.mCalculatedLabelSizes;
-    }
-
-    public getCalculatedLabelBreakPoints() {
-        return this.mCalculatedLabelBreakPoints;
-    }
-
-    public getCalculatedLineSizes() {
-        return this.mCalculatedLineSizes;
-    }
+    calculatedLabelSizes = [];
+    calculatedLabelBreakPoints = [];
+    calculatedLineSizes = [];
 
     /**
      * Calculates the dimensions of the Legend. This includes the maximum width
@@ -605,19 +296,19 @@ export class Legend extends ComponentBase {
      * @param labelpaint
      */
     public calculateDimensions(labelpaint: Paint, viewPortHandler) {
-        const defaultFormSize = this.mFormSize;
-        const stackSpace = this.mStackSpace;
-        const formToTextSpace = this.mFormToTextSpace;
-        const xEntrySpace = this.mXEntrySpace;
-        const yEntrySpace = this.mYEntrySpace;
-        const wordWrapEnabled = this.mWordWrapEnabled;
-        const entries = this.mEntries;
+        const defaultFormSize = this.formSize;
+        const stackSpace = this.stackSpace;
+        const formToTextSpace = this.formToTextSpace;
+        const xEntrySpace = this.xEntrySpace;
+        const yEntrySpace = this.yEntrySpace;
+        const wordWrapEnabled = this.wordWrapEnabled;
+        const entries = this.entries;
         const entryCount = entries.length;
 
         this.mTextWidthMax = this.getMaximumEntryWidth(labelpaint);
         this.mTextHeightMax = this.getMaximumEntryHeight(labelpaint);
 
-        switch (this.mOrientation) {
+        switch (this.orientation) {
             case LegendOrientation.VERTICAL: {
                 let maxWidth = 0,
                     maxHeight = 0,
@@ -669,7 +360,7 @@ export class Legend extends ComponentBase {
             case LegendOrientation.HORIZONTAL: {
                 const labelLineHeight = Utils.getLineHeight(labelpaint);
                 const labelLineSpacing = Utils.getLineSpacing(labelpaint) + yEntrySpace;
-                const contentWidth = viewPortHandler.getContentRect().width() * this.mMaxSizePercent;
+                const contentWidth = viewPortHandler.contentRect.width() * this.maxSizePercent;
 
                 // Start calculating layout
                 let maxLineWidth = 0;
@@ -677,9 +368,9 @@ export class Legend extends ComponentBase {
                 let requiredWidth = 0;
                 let stackedStartIndex = -1;
 
-                this.mCalculatedLabelBreakPoints = [];
-                this.mCalculatedLabelSizes = [];
-                this.mCalculatedLineSizes = [];
+                this.calculatedLabelBreakPoints = [];
+                this.calculatedLabelSizes = [];
+                this.calculatedLineSizes = [];
 
                 for (let i = 0; i < entryCount; i++) {
                     const e = entries[i];
@@ -687,7 +378,7 @@ export class Legend extends ComponentBase {
                     const formSize = isNaN(e.formSize) ? defaultFormSize : e.formSize;
                     const label = e.label;
 
-                    this.mCalculatedLabelBreakPoints.push(false);
+                    this.calculatedLabelBreakPoints.push(false);
 
                     if (stackedStartIndex === -1) {
                         // we are not stacking, so required width is for this label
@@ -700,11 +391,11 @@ export class Legend extends ComponentBase {
 
                     // grouped forms have null labels
                     if (label != null) {
-                        this.mCalculatedLabelSizes.push(Utils.calcTextSize(labelpaint, label));
+                        this.calculatedLabelSizes.push(Utils.calcTextSize(labelpaint, label));
                         requiredWidth += drawingForm ? formToTextSpace + formSize : 0;
-                        requiredWidth += this.mCalculatedLabelSizes[i].width;
+                        requiredWidth += this.calculatedLabelSizes[i].width;
                     } else {
-                        this.mCalculatedLabelSizes.push({ x: 0, y: 0 });
+                        this.calculatedLabelSizes.push({ x: 0, y: 0 });
                         requiredWidth += drawingForm ? formSize : 0;
 
                         if (stackedStartIndex === -1) {
@@ -729,17 +420,17 @@ export class Legend extends ComponentBase {
                             // It doesn't fit, we need to wrap a line
 
                             // Add current line size to array
-                            this.mCalculatedLineSizes.push({ x: currentLineWidth, y: labelLineHeight });
+                            this.calculatedLineSizes.push({ x: currentLineWidth, y: labelLineHeight });
                             maxLineWidth = Math.max(maxLineWidth, currentLineWidth);
 
                             // Start a new line
-                            this.mCalculatedLabelBreakPoints[stackedStartIndex > -1 ? stackedStartIndex : i] = true;
+                            this.calculatedLabelBreakPoints[stackedStartIndex > -1 ? stackedStartIndex : i] = true;
                             currentLineWidth = requiredWidth;
                         }
 
                         if (i === entryCount - 1) {
                             // Add last line size to array
-                            this.mCalculatedLineSizes.push({ x: currentLineWidth, y: labelLineHeight });
+                            this.calculatedLineSizes.push({ x: currentLineWidth, y: labelLineHeight });
                             maxLineWidth = Math.max(maxLineWidth, currentLineWidth);
                         }
                     }
@@ -748,13 +439,13 @@ export class Legend extends ComponentBase {
                 }
 
                 this.mNeededWidth = maxLineWidth;
-                this.mNeededHeight = labelLineHeight * this.mCalculatedLineSizes.length + labelLineSpacing * (this.mCalculatedLineSizes.length === 0 ? 0 : this.mCalculatedLineSizes.length - 1);
+                this.mNeededHeight = labelLineHeight * this.calculatedLineSizes.length + labelLineSpacing * (this.calculatedLineSizes.length === 0 ? 0 : this.calculatedLineSizes.length - 1);
 
                 break;
             }
         }
 
-        this.mNeededHeight += this.mYOffset;
-        this.mNeededWidth += this.mXOffset;
+        this.mNeededHeight += this.yOffset;
+        this.mNeededWidth += this.xOffset;
     }
 }

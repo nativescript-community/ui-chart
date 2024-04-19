@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "../../src/ui-chart",
+        "outDir": "./"
+    },
+    "include": ["../../src/ui-chart/**/*", "../../references.d.ts", "../../tools/references.d.ts", "../../src/references.d.ts"],
+    "exclude": ["../../src/ui-chart/angular/**"],
+    "references": [
+        {
+            //Need for tsc
+            "path": "../../tsconfig.vue3.json"
+        }
+    ]
+}

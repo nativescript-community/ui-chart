@@ -25,46 +25,34 @@ export interface IDataSet<T extends Entry> {
 
     /**
      * returns the minimum y-value this DataSet holds
-     *
-     * @return
      */
-    getYMin(): number;
+    readonly yMin: number;
 
     /**
      * returns the maximum y-value this DataSet holds
-     *
-     * @return
      */
-    getYMax(): number;
+    readonly yMax: number;
 
     /**
      * returns the minimum x-value this DataSet holds
-     *
-     * @return
      */
-    getXMin(): number;
+    readonly xMin: number;
 
     /**
      * returns the maximum x-value this DataSet holds
-     *
-     * @return
      */
-    getXMax(): number;
+    readonly xMax: number;
 
     /**
      * Returns the number of y-values this DataSet represents -> the size of the y-values array
      * -> yvals.length
-     *
-     * @return
      */
-    getEntryCount(): number;
+    readonly entryCount: number;
 
     /**
      * Returns the values that belong to DataSet.
-     *
-     * @return
      */
-    getValues(): T[] | ObservableArray<T>;
+    values: T[] | ObservableArray<T>;
 
     /**
      * Calculates the minimum and maximum x and y values (mXMin, this.mXMax, this.mYMin, this.mYMax).
@@ -207,16 +195,12 @@ export interface IDataSet<T extends Entry> {
     /**
      * Removes the first Entry (at index 0) of this DataSet from the entries array.
      * Returns true if successful, false if not.
-     *
-     * @return
      */
     removeFirst(): boolean;
 
     /**
      * Removes the last Entry (at index size-1) of this DataSet from the entries array.
      * Returns true if successful, false if not.
-     *
-     * @return
      */
     removeLast(): boolean;
 
@@ -265,40 +249,20 @@ export interface IDataSet<T extends Entry> {
     /** ###### ###### STYLING RELATED (& OTHER) METHODS ###### ###### */
 
     /**
-     * Returns the label string that describes the DataSet.
-     *
-     * @return
+     * the label string that describes the DataSet.
      */
-    getLabel(): string;
+    label: string;
 
     /**
-     * Sets the label string that describes the DataSet.
-     *
-     * @param label
+     * the axis this DataSet should be plotted against.
      */
-    setLabel(label: string);
-
-    /**
-     * Returns the axis this DataSet should be plotted against.
-     *
-     * @return
-     */
-    getAxisDependency(): AxisDependency;
-
-    /**
-     * Set the y-axis this DataSet should be plotted against (either LEFT or
-     * RIGHT). Default: LEFT
-     *
-     * @param dependency
-     */
-    setAxisDependency(dependency: AxisDependency);
+    axisDependency: AxisDependency;
 
     /**
      * returns all the colors that are set for this DataSet
-     *
-     * @return
      */
-    getColors(): (string | Color)[];
+    colors: (string | Color)[];
+    color: string | Color;
 
     /**
      * Returns the color at the given index of the DataSet's color array.
@@ -310,156 +274,92 @@ export interface IDataSet<T extends Entry> {
     getColor(index?: number): string | Color;
 
     /**
-     * returns true if highlighting of values is enabled, false if not
-     *
-     * @return
-     */
-    isHighlightEnabled(): boolean;
-
-    /**
      * If set to true, value highlighting is enabled which means that values can
      * be highlighted programmatically or by touch gesture.
-     *
-     * @param enabled
      */
-    setHighlightEnabled(enabled: boolean);
+    highlightEnabled: boolean;
 
     /**
      * Sets the formatter to be used for drawing the values inside the chart. If
      * no formatter is set, the chart will automatically determine a reasonable
      * formatting (concerning decimals) for all the values that are drawn inside
-     * the chart. Use chart.getDefaultValueFormatter() to use the formatter
+     * the chart. Use chart.defaultValueFormatter to use the formatter
      * calculated by the chart.
-     *
-     * @param f
      */
-    setValueFormatter(f: IValueFormatter);
-
-    /**
-     * Returns the formatter used for drawing the values inside the chart.
-     *
-     * @return
-     */
-    getValueFormatter(): IValueFormatter;
+    valueFormatter: IValueFormatter;
 
     /**
      * Returns true if the valueFormatter object of this DataSet is null.
-     *
-     * @return
      */
-    needsFormatter(): boolean;
+    readonly needsFormatter: boolean;
 
     /**
      * Sets the color the value-labels of this DataSet should have.
      *
      * @param color
      */
-    setValueTextColor(color: number);
+    valueTextColor: Color | string;
 
     /**
      * Sets a list of colors to be used as the colors for the drawn values.
-     *
-     * @param colors
      */
-    setValueTextColors(colors: number[]);
+    valueTextColors: (Color | string)[];
 
     /**
      * Sets a Typeface for the value-labels of this DataSet.
-     *
-     * @param tf
      */
-    setValueTypeface(tf: string);
+    valueTypeface: Font;
 
     /**
      * Sets the text-size of the value-labels of this DataSet in dp.
-     *
-     * @param size
      */
-    setValueTextSize(size: number);
-
-    /**
-     * Returns the color at the specified index that is used for drawing the values inside the chart.
-     * Uses modulus internally.
-     *
-     * @param index
-     * @return
-     */
-    getValueTextColor(index?: number): string | Color;
-
-    /**
-     * Returns the typeface that is used for drawing the values inside the chart
-     *
-     * @return
-     */
-    getValueTypeface(): Font;
-
-    /**
-     * Returns the text size that is used for drawing the values inside the chart
-     *
-     * @return
-     */
-    getValueTextSize(): number;
+    valueTextSize: number;
 
     /**
      * The form to draw for this dataset in the legend.
      * <p/>
      * Return `DEFAULT` to use the default legend form.
      */
-    getForm(): LegendForm;
+    form: LegendForm;
 
     /**
      * The form size to draw for this dataset in the legend.
      * <p/>
      * Return `Float.NaN` to use the default legend form size.
      */
-    getFormSize(): number;
+    formSize: number;
 
     /**
      * The line width for drawing the form of this dataset in the legend
      * <p/>
      * Return `Float.NaN` to use the default legend form line width.
      */
-    getFormLineWidth(): number;
+    formLineWidth: number;
 
     /**
      * The line dash path effect used for shapes that consist of lines.
      * <p/>
      * Return `null` to use the default legend form line dash effect.
      */
-    getFormLineDashEffect(): DashPathEffect;
+    formLineDashEffect: DashPathEffect;
 
     /**
      * set this to true to draw y-values on the chart.
      *
-     * NOTE (for bar and line charts): if `maxVisibleCount` is reached, no values will be drawn even
+     * NOTE (for bar and line charts): if `maxVisibleValueCount` is reached, no values will be drawn even
      * if this is enabled
      * @param enabled
      */
-    setDrawValues(enabled: boolean);
-
-    /**
-     * Returns true if y-value drawing is enabled, false if not
-     *
-     * @return
-     */
-    isDrawValuesEnabled(): boolean;
+    drawValuesEnabled: boolean;
 
     /**
      * Set this to true to draw y-icons on the chart.
      *
-     * NOTE (for bar and line charts): if `maxVisibleCount` is reached, no icons will be drawn even
+     * NOTE (for bar and line charts): if `maxVisibleValueCount` is reached, no icons will be drawn even
      * if this is enabled
-     *
-     * @param enabled
      */
-    setDrawIcons(enabled: boolean);
 
-    /**
-     * Returns true if y-icon drawing is enabled, false if not
-     *
-     * @return
-     */
-    isDrawIconsEnabled(): boolean;
+    drawIconsEnabled: boolean;
 
     /**
      * Offset of icons drawn on the chart.
@@ -467,35 +367,17 @@ export interface IDataSet<T extends Entry> {
      * For all charts except Pie and Radar it will be ordinary (x offset,y offset).
      *
      * For Pie and Radar chart it will be (y offset, distance from center offset); so if you want icon to be rendered under value, you should increase X component of CGPoint, and if you want icon to be rendered closet to center, you should decrease height component of CGPoint.
-     * @param offset
      */
-    setIconsOffset(offset: MPPointF);
-
-    /**
-     * Get the offset for drawing icons.
-     */
-    getIconsOffset(): MPPointF;
+    iconsOffset: MPPointF;
 
     /**
      * Set the visibility of this DataSet. If not visible, the DataSet will not
      * be drawn to the chart upon refreshing it.
-     *
-     * @param visible
      */
-    setVisible(visible: boolean);
-
-    /**
-     * Returns true if this DataSet is visible inside the chart, or false if it
-     * is currently hidden.
-     *
-     * @return
-     */
-    isVisible(): boolean;
+    visible: boolean;
 
     /**
      * Returns the shader used for filling the area below the line.
-     *
-     * @return
      */
-    getFillShader();
+    fillShader: any;
 }

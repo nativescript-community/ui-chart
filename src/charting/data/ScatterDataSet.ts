@@ -17,95 +17,38 @@ export class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
     /**
      * the size the scattershape will have, in density pixels
      */
-    mShapeSize = 15;
+    scatterShapeSize = 15;
+
+    /**
+     * Sets the ScatterShape this DataSet should be drawn with. This will search for an available IShapeRenderer and set this
+     * renderer for the DataSet.
+     */
+    public set scatterShape(shape: ScatterShape) {
+        this.shapeRenderer = ScatterDataSet.getRendererForShape(shape);
+    }
 
     /**
      * Renderer responsible for rendering this DataSet, default: square
      */
-    mShapeRenderer = new SquareShapeRenderer();
+    shapeRenderer = new SquareShapeRenderer();
 
     /**
      * The radius of the hole in the shape (applies to Square, Circle and Triangle)
      * - default: 0.0
      */
-    mScatterShapeHoleRadius = 0;
+    scatterShapeHoleRadius = 0;
 
     /**
      * Color for the hole in the shape.
      * Setting to `ColorTemplate.COLOR_NONE` will behave as transparent.
      * - default: ColorTemplate.COLOR_NONE
      */
-    mScatterShapeHoleColor: string | Color = ColorTemplate.COLOR_NONE;
+    scatterShapeHoleColor: string | Color = ColorTemplate.COLOR_NONE;
 
     constructor(yVals, label, xProperty?, yProperty?) {
         super(yVals, label, xProperty, yProperty);
         this.init();
     }
-    /**
-     * Sets the size in density pixels the drawn scattershape will have. This
-     * only applies for non custom shapes.
-     *
-     * @param size
-     */
-    public setScatterShapeSize(size: number) {
-        this.mShapeSize = size;
-    }
-
-    public getScatterShapeSize() {
-        return this.mShapeSize;
-    }
-
-    /**
-     * Sets the ScatterShape this DataSet should be drawn with. This will search for an available IShapeRenderer and set this
-     * renderer for the DataSet.
-     *
-     * @param shape
-     */
-    public setScatterShape(shape: ScatterShape) {
-        this.mShapeRenderer = ScatterDataSet.getRendererForShape(shape);
-    }
-
-    /**
-     * Sets a new IShapeRenderer responsible for drawing this DataSet.
-     * This can also be used to set a custom IShapeRenderer aside from the default ones.
-     *
-     * @param shapeRenderer
-     */
-    public setShapeRenderer(shapeRenderer: IShapeRenderer) {
-        this.mShapeRenderer = shapeRenderer;
-    }
-
-    public getShapeRenderer(): IShapeRenderer {
-        return this.mShapeRenderer;
-    }
-
-    /**
-     * Sets the radius of the hole in the shape (applies to Square, Circle and Triangle)
-     * Set this to <= 0 to remove holes.
-     *
-     * @param holeRadius
-     */
-    public setScatterShapeHoleRadius(holeRadius: number) {
-        this.mScatterShapeHoleRadius = holeRadius;
-    }
-
-    public getScatterShapeHoleRadius() {
-        return this.mScatterShapeHoleRadius;
-    }
-
-    /**
-     * Sets the color for the hole in the shape.
-     *
-     * @param holeColor
-     */
-    public setScatterShapeHoleColor(holeColor: string | Color) {
-        this.mScatterShapeHoleColor = holeColor;
-    }
-
-    public getScatterShapeHoleColor() {
-        return this.mScatterShapeHoleColor;
-    }
-
     public static getRendererForShape(shape: ScatterShape) {
         switch (shape) {
             case ScatterShape.SQUARE:

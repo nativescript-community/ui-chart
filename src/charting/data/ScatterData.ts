@@ -5,13 +5,11 @@ import { Entry } from './Entry';
 export class ScatterData extends BarLineScatterCandleBubbleData<Entry, ScatterDataSet> {
     /**
      * Returns the maximum shape-size across all DataSets.
-     *
-     * @return
      */
-    public getGreatestShapeSize() {
+    public get greatestShapeSize() {
         let max = 0;
         for (let index = 0; index < this.mDataSets.length; index++) {
-            const size = this.mDataSets[index].getScatterShapeSize();
+            const size = this.mDataSets[index].scatterShapeSize;
 
             if (size > max) {
                 max = size;

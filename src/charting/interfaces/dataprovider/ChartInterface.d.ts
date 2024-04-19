@@ -12,54 +12,44 @@ import { Rect } from '@nativescript-community/ui-canvas';
 export interface ChartInterface {
     /**
      * Returns the minimum x value of the chart, regardless of zoom or translation.
-     *
-     * @return
      */
-    getXChartMin();
+    xChartMin: number;
 
     /**
      * Returns the maximum x value of the chart, regardless of zoom or translation.
-     *
-     * @return
      */
-    getXChartMax();
+    xChartMax: number;
 
-    getXRange();
+    xRange: number;
 
     /**
      * Returns the minimum y value of the chart, regardless of zoom or translation.
-     *
-     * @return
      */
-    getYChartMin();
+    yChartMin: number;
 
     /**
      * Returns the maximum y value of the chart, regardless of zoom or translation.
-     *
-     * @return
      */
-    getYChartMax();
+    yChartMax: number;
 
     /**
      * Returns the maximum distance in scren dp a touch can be away from an entry to cause it to get highlighted.
-     *
-     * @return
      */
-    getMaxHighlightDistance();
+    maxHighlightDistance: number;
 
     getMeasuredWidth();
 
     getMeasuredHeight();
 
-    getCenterOfView(): MPPointF;
+    centerOfView: MPPointF;
 
-    getCenterOffsets(): MPPointF;
+    centerOffsets: MPPointF;
 
-    getContentRect(): Rect;
+    contentRect: Rect;
 
-    getDefaultValueFormatter(): ValueFormatter;
+    defaultValueFormatter: ValueFormatter;
 
-    getData(): ChartData<any, any>;
+    data: ChartData<any, any>;
 
-    getMaxVisibleCount();
+    maxVisibleValueCount: number;
 }

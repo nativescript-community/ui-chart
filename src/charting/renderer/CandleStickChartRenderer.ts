@@ -1,7 +1,7 @@
 import { Canvas, Style } from '@nativescript-community/ui-canvas';
 import { TypedArray } from '@nativescript-community/arraybuffers';
 import { ChartAnimator } from '../animation/ChartAnimator';
-import { CandleStickChart } from '../charts';
+import { CandleStickChart } from '..';
 import { CandleDataSet } from '../data/CandleDataSet';
 import { CandleEntry } from '../data/CandleEntry';
 import { Highlight } from '../highlight/Highlight';
@@ -20,29 +20,29 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     public drawData(c: Canvas) {
-        const candleData = this.mChart.getCandleData();
+        const candleData = this.mChart.candleData;
 
-        for (const set of candleData.getDataSets()) {
-            if (set.isVisible()) {
+        for (const set of candleData.dataSets) {
+            if (set.visible) {
                 this.drawDataSet(c, set);
             }
         }
     }
 
     protected drawDataSet(c: Canvas, dataSet: CandleDataSet) {
-        const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+        const trans = this.mChart.getTransformer(dataSet.axisDependency);
 
-        const phaseY = this.mAnimator.getPhaseY();
-        const barSpace = dataSet.getBarSpace();
-        const showCandleBar = dataSet.getShowCandleBar();
+        const phaseY = this.animator.phaseY;
+        const barSpace = dataSet.barSpace;
+        const showCandleBar = dataSet.showCandleBar;
 
-        this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+        this.mXBounds.set(this.mChart, dataSet, this.animator);
 
         const renderPaint = this.renderPaint;
-        renderPaint.setStrokeWidth(dataSet.getShadowWidth());
+        renderPaint.setStrokeWidth(dataSet.shadowWidth);
         const xKey = dataSet.xProperty;
         // draw the body
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         for (let j = this.mXBounds.min; j <= this.mXBounds.range + this.mXBounds.min; j++) {
             // get the entry
             const e = dataSet.getEntryForIndex(j);
@@ -88,13 +88,13 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                 // draw the shadows
 
-                if (dataSet.getShadowColorSameAsCandle()) {
+                if (dataSet.shadowColorSameAsCandle) {
                     if (open > close) {
-                        renderPaint.setColor(!dataSet.getDecreasingColor() || dataSet.getDecreasingColor() === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.getDecreasingColor());
-                    } else if (open < close) renderPaint.setColor(dataSet.getIncreasingColor() === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.getIncreasingColor());
-                    else renderPaint.setColor(dataSet.getNeutralColor() === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.getNeutralColor());
+                        renderPaint.setColor(!dataSet.decreasingColor || dataSet.decreasingColor === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.decreasingColor);
+                    } else if (open < close) renderPaint.setColor(dataSet.increasingColor === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.increasingColor);
+                    else renderPaint.setColor(dataSet.neutralColor === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.neutralColor);
                 } else {
-                    renderPaint.setColor(dataSet.getShadowColor() === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.getShadowColor());
+                    renderPaint.setColor(dataSet.shadowColor === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.shadowColor);
                 }
 
                 renderPaint.setStyle(Style.STROKE);
@@ -126,13 +126,13 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 if (open > close) {
                     // decreasing
 
-                    if (dataSet.getDecreasingColor() === ColorTemplate.COLOR_NONE) {
+                    if (dataSet.decreasingColor === ColorTemplate.COLOR_NONE) {
                         renderPaint.setColor(dataSet.getColor(j));
                     } else {
-                        renderPaint.setColor(dataSet.getDecreasingColor());
+                        renderPaint.setColor(dataSet.decreasingColor);
                     }
 
-                    renderPaint.setStyle(dataSet.getDecreasingPaintStyle());
+                    renderPaint.setStyle(dataSet.decreasingPaintStyle);
 
                     if (customRender && customRender.drawOpened) {
                         customRender.drawOpened(c, e, bodyBuffers[0], bodyBuffers[3], bodyBuffers[2], bodyBuffers[1], renderPaint);
@@ -140,13 +140,13 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                         c.drawRect(bodyBuffers[0], bodyBuffers[3], bodyBuffers[2], bodyBuffers[1], renderPaint);
                     }
                 } else if (open < close) {
-                    if (dataSet.getIncreasingColor() === ColorTemplate.COLOR_NONE) {
+                    if (dataSet.increasingColor === ColorTemplate.COLOR_NONE) {
                         renderPaint.setColor(dataSet.getColor(j));
                     } else {
-                        renderPaint.setColor(dataSet.getIncreasingColor());
+                        renderPaint.setColor(dataSet.increasingColor);
                     }
 
-                    renderPaint.setStyle(dataSet.getIncreasingPaintStyle());
+                    renderPaint.setStyle(dataSet.increasingPaintStyle);
 
                     if (customRender && customRender.drawClosed) {
                         customRender.drawClosed(c, e, bodyBuffers[0], bodyBuffers[1], bodyBuffers[2], bodyBuffers[3], renderPaint);
@@ -156,10 +156,10 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 } else {
                     // equal values
 
-                    if (dataSet.getNeutralColor() === ColorTemplate.COLOR_NONE) {
+                    if (dataSet.neutralColor === ColorTemplate.COLOR_NONE) {
                         renderPaint.setColor(dataSet.getColor(j));
                     } else {
-                        renderPaint.setColor(dataSet.getNeutralColor());
+                        renderPaint.setColor(dataSet.neutralColor);
                     }
                     if (customRender && customRender.drawEqual) {
                         customRender.drawEqual(c, e, bodyBuffers[0], bodyBuffers[1], bodyBuffers[2], bodyBuffers[3], renderPaint);
@@ -193,9 +193,9 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
                 // draw the ranges
                 let barColor;
 
-                if (open > close) barColor = dataSet.getDecreasingColor() === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.getDecreasingColor();
-                else if (open < close) barColor = dataSet.getIncreasingColor() === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.getIncreasingColor();
-                else barColor = dataSet.getNeutralColor() === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.getNeutralColor();
+                if (open > close) barColor = dataSet.decreasingColor === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.decreasingColor;
+                else if (open < close) barColor = dataSet.increasingColor === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.increasingColor;
+                else barColor = dataSet.neutralColor === ColorTemplate.COLOR_NONE ? dataSet.getColor(j) : dataSet.neutralColor;
 
                 renderPaint.setColor(barColor);
 
@@ -211,34 +211,35 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     }
 
     public drawValues(c: Canvas) {
-        const data = this.mChart.getCandleData();
-        const dataSets = data.getDataSets();
-        if (!this.isDrawingValuesAllowed(this.mChart) || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        const chart = this.mChart;
+        const data = this.mChart.candleData;
+        const dataSets = data.dataSets;
+        if (!this.isDrawingValuesAllowed(chart) || dataSets.some((d) => d.drawValuesEnabled || d.drawIconsEnabled) === false) {
             return;
         }
         // if values are drawn
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = chart.customRenderer;
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
 
-            if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
+            if (!this.shouldDrawValues(dataSet) || dataSet.entryCount < 1) continue;
 
             // apply the text-styling defined by the DataSet
             this.applyValueTextStyle(dataSet);
 
-            const trans = this.mChart.getTransformer(dataSet.getAxisDependency());
+            const trans = chart.getTransformer(dataSet.axisDependency);
 
-            this.mXBounds.set(this.mChart, dataSet, this.mAnimator);
+            this.mXBounds.set(chart, dataSet, this.animator);
 
-            const { points, count } = trans.generateTransformedValuesCandle(dataSet, this.mAnimator.getPhaseX(), this.mAnimator.getPhaseY(), this.mXBounds.min, this.mXBounds.max);
+            const { points, count } = trans.generateTransformedValuesCandle(dataSet, this.animator.phaseX, this.animator.phaseY, this.mXBounds.min, this.mXBounds.max);
 
             const yOffset = 5;
 
-            const formatter = dataSet.getValueFormatter();
+            const formatter = dataSet.valueFormatter;
 
-            const iconsOffset = dataSet.getIconsOffset();
-            const valuesOffset = dataSet.getValuesOffset();
+            const iconsOffset = dataSet.iconsOffset;
+            const valuesOffset = dataSet.valuesOffset;
 
             const paint = this.valuePaint;
             for (let j = 0; j < count; j += 2) {
@@ -249,14 +250,28 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
                 if (!this.mViewPortHandler.isInBoundsLeft(x) || !this.mViewPortHandler.isInBoundsY(y)) continue;
 
-                const entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds.min);
+                const index = j / 2 + this.mXBounds.min;
+                const entry = dataSet.getEntryForIndex(index);
 
-                if (dataSet.isDrawValuesEnabled()) {
-                    this.drawValue(c, formatter.getCandleLabel(entry.high, entry), x + valuesOffset.x, y - yOffset + valuesOffset.y, dataSet.getValueTextColor(j / 2), paint, customRender);
+                if (dataSet.drawValuesEnabled) {
+                    this.drawValue(
+                        c,
+                        chart,
+                        dataSet,
+                        i,
+                        entry,
+                        index,
+                        (formatter.getCandleLabel || formatter.getFormattedValue).call(formatter, entry.high, entry),
+                        x + valuesOffset.x,
+                        y - yOffset + valuesOffset.y,
+                        dataSet.getValueTextColor(j / 2),
+                        paint,
+                        customRender
+                    );
                 }
 
-                if (entry.icon && dataSet.isDrawIconsEnabled()) {
-                    Utils.drawIcon(c, this.mChart, entry.icon, x + iconsOffset.x, y + iconsOffset.y);
+                if (dataSet.drawIconsEnabled) {
+                    this.drawIcon(c, chart, dataSet, i, entry, index, dataSet.getEntryIcon(entry), x + iconsOffset.x, y + iconsOffset.y, customRender);
                 }
             }
         }
@@ -265,15 +280,15 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
     public drawExtras(c: Canvas) {}
 
     public drawHighlighted(c: Canvas, indices: Highlight[]) {
-        const candleData = this.mChart.getCandleData();
+        const candleData = this.mChart.candleData;
 
         let entry: CandleEntry, index: number;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = this.mChart.customRenderer;
         const paint = this.highlightPaint;
         for (const high of indices) {
             const set = candleData.getDataSetByIndex(high.dataSetIndex);
 
-            if (set == null || !set.isHighlightEnabled()) continue;
+            if (set == null || !set.highlightEnabled) continue;
 
             if (high.entry) {
                 entry = high.entry as CandleEntry;
@@ -285,11 +300,11 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
             }
             if (!this.isInBoundsX(entry, set)) continue;
 
-            const lowValue = (entry[set.lowProperty] || 0) * this.mAnimator.getPhaseY();
-            const highValue = (entry[set.highProperty] || 0) * this.mAnimator.getPhaseY();
+            const lowValue = (entry[set.lowProperty] || 0) * this.animator.phaseY;
+            const highValue = (entry[set.highProperty] || 0) * this.animator.phaseY;
             const y = (lowValue + highValue) / 2;
 
-            const pix = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(set.getEntryXValue(entry, index), y);
+            const pix = this.mChart.getTransformer(set.axisDependency).getPixelForValues(set.getEntryXValue(entry, index), y);
 
             high.drawX = pix.x;
             high.drawY = pix.y;

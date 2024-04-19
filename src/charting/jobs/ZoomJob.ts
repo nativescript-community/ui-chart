@@ -15,12 +15,12 @@ export class ZoomJob extends ViewPortJob {
 
     public static getInstance(viewPortHandler: ViewPortHandler, scaleX, scaleY, xValue, yValue, trans: Transformer, axis: AxisDependency, v: BarLineChartBase<any, any, any>) {
         const result = pool.get();
-        result.mXValue = xValue;
-        result.mYValue = yValue;
+        result.xValue = xValue;
+        result.yValue = yValue;
         result.mScaleX = scaleX;
         result.mScaleY = scaleY;
         result.mViewPortHandler = viewPortHandler;
-        result.mTrans = trans;
+        result.transformer = trans;
         result.mAxisDependency = axis;
         result.mView = v;
         return result;
@@ -30,7 +30,6 @@ export class ZoomJob extends ViewPortJob {
         pool.recycle(instance);
     }
 
-
     constructor(viewPortHandler: ViewPortHandler, scaleX, scaleY, xValue, yValue, trans: Transformer, axis: AxisDependency, v: BarLineChartBase<any, any, any>) {
         super(viewPortHandler, xValue, yValue, trans, v);
 
@@ -39,7 +38,6 @@ export class ZoomJob extends ViewPortJob {
         this.mAxisDependency = axis;
     }
 
-
     public run() {
         const save = Utils.getTempMatrix();
         const viewPortHanlder = this.mViewPortHandler;
@@ -47,13 +45,13 @@ export class ZoomJob extends ViewPortJob {
         viewPortHanlder.refresh(save, this.mView, false);
 
         const yValsInView = this.mView.getAxis(this.mAxisDependency).mAxisRange / viewPortHanlder.getScaleY();
-        const xValsInView = this.mView.getXAxis().mAxisRange / viewPortHanlder.getScaleX();
+        const xValsInView = this.mView.xAxis.mAxisRange / viewPortHanlder.getScaleX();
         const pts = Utils.getTempArray(2);
 
-        pts[0] = this.mXValue - xValsInView / 2;
-        pts[1] = this.mYValue + yValsInView / 2;
+        pts[0] = this.xValue - xValsInView / 2;
+        pts[1] = this.yValue + yValsInView / 2;
 
-        this.mTrans.pointValuesToPixel(pts);
+        this.transformer.pointValuesToPixel(pts);
 
         viewPortHanlder.translate(pts, save);
         viewPortHanlder.refresh(save, this.mView, false);

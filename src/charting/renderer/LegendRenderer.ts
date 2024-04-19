@@ -63,26 +63,24 @@ export class LegendRenderer extends Renderer {
             this.computedEntries = [];
 
             // loop for building up the colors and labels used in the legend
-            for (let i = 0; i < data.getDataSetCount(); i++) {
+            for (let i = 0; i < data.dataSetCount; i++) {
                 const dataSet = data.getDataSetByIndex(i);
 
-                const clrs = dataSet.getColors();
-                const entryCount = dataSet.getEntryCount();
+                const clrs = dataSet.colors;
+                const entryCount = dataSet.entryCount;
 
                 // if we have a barchart with stacked bars
-                if (dataSet instanceof BarDataSet && dataSet.isStacked()) {
+                if (dataSet instanceof BarDataSet && dataSet.stacked) {
                     const bds = dataSet;
-                    const sLabels = bds.getStackLabels();
+                    const sLabels = bds.stackLabels;
 
-                    for (let j = 0; j < clrs.length && j < bds.getStackSize(); j++) {
-                        this.computedEntries.push(
-                            new LegendEntry(sLabels[j % sLabels.length], dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j])
-                        );
+                    for (let j = 0; j < clrs.length && j < bds.stackSize; j++) {
+                        this.computedEntries.push(new LegendEntry(sLabels[j % sLabels.length], dataSet.form, dataSet.formSize, dataSet.formLineWidth, dataSet.formLineDashEffect, clrs[j]));
                     }
 
-                    if (bds.getLabel() != null) {
+                    if (bds.label != null) {
                         // add the legend description label
-                        this.computedEntries.push(new LegendEntry(dataSet.getLabel(), LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
+                        this.computedEntries.push(new LegendEntry(dataSet.label, LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
                     }
                 } else if (dataSet.constructor.name === 'PieDataSet') {
                     const pds = dataSet as PieDataSet;
@@ -93,22 +91,22 @@ export class LegendRenderer extends Renderer {
                             continue;
                         }
 
-                        this.computedEntries.push(new LegendEntry(label.toString(), dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j]));
+                        this.computedEntries.push(new LegendEntry(label.toString(), dataSet.form, dataSet.formSize, dataSet.formLineWidth, dataSet.formLineDashEffect, clrs[j]));
                     }
 
-                    if (pds.getLabel() != null) {
+                    if (pds.label != null) {
                         // add the legend description label
-                        this.computedEntries.push(new LegendEntry(dataSet.getLabel(), LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
+                        this.computedEntries.push(new LegendEntry(dataSet.label, LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
                     }
                 } else if (dataSet.constructor.name === 'CandleDataSet') {
                     const dSet = dataSet as CandleDataSet;
-                    if (dSet.getDecreasingColor() !== ColorTemplate.COLOR_NONE) {
-                        const decreasingColor = dSet.getDecreasingColor();
-                        const increasingColor = dSet.getIncreasingColor();
+                    if (dSet.decreasingColor !== ColorTemplate.COLOR_NONE) {
+                        const decreasingColor = dSet.decreasingColor;
+                        const increasingColor = dSet.increasingColor;
 
-                        this.computedEntries.push(new LegendEntry(null, dSet.getForm(), dSet.getFormSize(), dSet.getFormLineWidth(), dSet.getFormLineDashEffect(), decreasingColor));
+                        this.computedEntries.push(new LegendEntry(null, dSet.form, dSet.formSize, dSet.formLineWidth, dSet.formLineDashEffect, decreasingColor));
 
-                        this.computedEntries.push(new LegendEntry(dSet.getLabel(), dSet.getForm(), dSet.getFormSize(), dSet.getFormLineWidth(), dSet.getFormLineDashEffect(), increasingColor));
+                        this.computedEntries.push(new LegendEntry(dSet.label, dSet.form, dSet.formSize, dSet.formLineWidth, dSet.formLineDashEffect, increasingColor));
                     }
                 } else {
                     // all others
@@ -121,23 +119,23 @@ export class LegendRenderer extends Renderer {
                             label = null;
                         } else {
                             // add label to the last entry
-                            label = data.getDataSetByIndex(i).getLabel();
+                            label = data.getDataSetByIndex(i).label;
                         }
 
-                        this.computedEntries.push(new LegendEntry(label, dataSet.getForm(), dataSet.getFormSize(), dataSet.getFormLineWidth(), dataSet.getFormLineDashEffect(), clrs[j]));
+                        this.computedEntries.push(new LegendEntry(label, dataSet.form, dataSet.formSize, dataSet.formLineWidth, dataSet.formLineDashEffect, clrs[j]));
                     }
                 }
             }
 
-            if (this.mLegend.getExtraEntries() != null) {
-                Array.prototype.push.apply(this.computedEntries, this.mLegend.getExtraEntries());
+            if (this.mLegend.extraEntries != null) {
+                Array.prototype.push.apply(this.computedEntries, this.mLegend.extraEntries);
                 // Collections.addAll(computedEntries, this.mLegend.getExtraEntries());
             }
 
-            this.mLegend.setEntries(this.computedEntries);
+            this.mLegend.entries = this.computedEntries;
         }
         const paint = this.labelPaint;
-        paint.setFont(this.mLegend.getFont());
+        paint.setFont(this.mLegend.typeface);
 
         // calculate all dimensions of the this.mLegend
         this.mLegend.calculateDimensions(paint, this.mViewPortHandler);
@@ -145,53 +143,53 @@ export class LegendRenderer extends Renderer {
 
     @profile
     public renderLegend(c: Canvas) {
-        if (!this.mLegend.isEnabled()) return;
+        if (!this.mLegend.enabled) return;
         const paint = this.labelPaint;
 
-        paint.setFont(this.mLegend.getFont());
-        paint.setColor(this.mLegend.getTextColor());
+        paint.setFont(this.mLegend.typeface);
+        paint.setColor(this.mLegend.textColor);
         paint.getFontMetrics(this.legendFontMetrics);
         const labelLineHeight = Utils.getLineHeightFromMetrics(this.legendFontMetrics);
-        const labelLineSpacing = Utils.getLineSpacingFromMetrics(this.legendFontMetrics) + this.mLegend.getYEntrySpace();
+        const labelLineSpacing = Utils.getLineSpacingFromMetrics(this.legendFontMetrics) + this.mLegend.yEntrySpace;
         const formYOffset = labelLineHeight - Utils.calcTextHeight(paint, 'ABC') / 2;
 
-        const entries = this.mLegend.getEntries();
+        const entries = this.mLegend.entries;
 
-        const formToTextSpace = this.mLegend.getFormToTextSpace();
-        const xEntrySpace = this.mLegend.getXEntrySpace();
-        const orientation = this.mLegend.getOrientation();
-        const horizontalAlignment = this.mLegend.getHorizontalAlignment();
-        const verticalAlignment = this.mLegend.getVerticalAlignment();
-        const direction = this.mLegend.getDirection();
-        const defaultFormSize = this.mLegend.getFormSize();
+        const formToTextSpace = this.mLegend.formToTextSpace;
+        const xEntrySpace = this.mLegend.xEntrySpace;
+        const orientation = this.mLegend.orientation;
+        const horizontalAlignment = this.mLegend.horizontalAlignment;
+        const verticalAlignment = this.mLegend.verticalAlignment;
+        const direction = this.mLegend.direction;
+        const defaultFormSize = this.mLegend.formSize;
 
         // space between the entries
-        const stackSpace = this.mLegend.getStackSpace();
+        const stackSpace = this.mLegend.stackSpace;
 
-        const yoffset = this.mLegend.getYOffset();
-        const xoffset = this.mLegend.getXOffset();
+        const yoffset = this.mLegend.yOffset;
+        const xoffset = this.mLegend.xOffset;
         let originPosX = 0;
 
         switch (horizontalAlignment) {
             case LegendHorizontalAlignment.LEFT:
                 if (orientation === LegendOrientation.VERTICAL) originPosX = xoffset;
-                else originPosX = this.mViewPortHandler.contentLeft() + xoffset;
+                else originPosX = this.mViewPortHandler.contentLeft + xoffset;
 
                 if (direction === LegendDirection.RIGHT_TO_LEFT) originPosX += this.mLegend.mNeededWidth;
 
                 break;
 
             case LegendHorizontalAlignment.RIGHT:
-                if (orientation === LegendOrientation.VERTICAL) originPosX = this.mViewPortHandler.getChartWidth() - xoffset;
-                else originPosX = this.mViewPortHandler.contentRight() - xoffset;
+                if (orientation === LegendOrientation.VERTICAL) originPosX = this.mViewPortHandler.chartWidth - xoffset;
+                else originPosX = this.mViewPortHandler.contentRight - xoffset;
 
                 if (direction === LegendDirection.LEFT_TO_RIGHT) originPosX -= this.mLegend.mNeededWidth;
 
                 break;
 
             case LegendHorizontalAlignment.CENTER:
-                if (orientation === LegendOrientation.VERTICAL) originPosX = this.mViewPortHandler.getChartWidth() / 2;
-                else originPosX = this.mViewPortHandler.contentLeft() + this.mViewPortHandler.getContentRect().width() / 2;
+                if (orientation === LegendOrientation.VERTICAL) originPosX = this.mViewPortHandler.chartWidth / 2;
+                else originPosX = this.mViewPortHandler.contentLeft + this.mViewPortHandler.contentRect.width() / 2;
 
                 originPosX += direction === LegendDirection.LEFT_TO_RIGHT ? +xoffset : -xoffset;
 
@@ -206,9 +204,9 @@ export class LegendRenderer extends Renderer {
 
         switch (orientation) {
             case LegendOrientation.HORIZONTAL: {
-                const calculatedLineSizes = this.mLegend.getCalculatedLineSizes();
-                const calculatedLabelSizes = this.mLegend.getCalculatedLabelSizes();
-                const calculatedLabelBreakPoints = this.mLegend.getCalculatedLabelBreakPoints();
+                const calculatedLineSizes = this.mLegend.calculatedLineSizes;
+                const calculatedLabelSizes = this.mLegend.calculatedLabelSizes;
+                const calculatedLabelBreakPoints = this.mLegend.calculatedLabelBreakPoints;
 
                 let posX = originPosX;
                 let posY = 0;
@@ -219,11 +217,11 @@ export class LegendRenderer extends Renderer {
                         break;
 
                     case LegendVerticalAlignment.BOTTOM:
-                        posY = this.mViewPortHandler.getChartHeight() - this.mLegend.mNeededHeight;
+                        posY = this.mViewPortHandler.chartHeight - this.mLegend.mNeededHeight;
                         break;
 
                     case LegendVerticalAlignment.CENTER:
-                        posY = (this.mViewPortHandler.getChartHeight() - this.mLegend.mNeededHeight) / 2 + yoffset;
+                        posY = (this.mViewPortHandler.chartHeight - this.mLegend.mNeededHeight) / 2 + yoffset;
                         break;
                 }
 
@@ -278,17 +276,17 @@ export class LegendRenderer extends Renderer {
 
                 switch (verticalAlignment) {
                     case LegendVerticalAlignment.TOP:
-                        posY = horizontalAlignment === LegendHorizontalAlignment.CENTER ? 0 : this.mViewPortHandler.contentTop();
+                        posY = horizontalAlignment === LegendHorizontalAlignment.CENTER ? 0 : this.mViewPortHandler.contentTop;
                         posY += yoffset;
                         break;
 
                     case LegendVerticalAlignment.BOTTOM:
-                        posY = horizontalAlignment === LegendHorizontalAlignment.CENTER ? this.mViewPortHandler.getChartHeight() : this.mViewPortHandler.contentBottom();
+                        posY = horizontalAlignment === LegendHorizontalAlignment.CENTER ? this.mViewPortHandler.chartHeight : this.mViewPortHandler.contentBottom;
                         posY -= this.mLegend.mNeededHeight + yoffset;
                         break;
 
                     case LegendVerticalAlignment.CENTER:
-                        posY = this.mViewPortHandler.getChartHeight() / 2 - this.mLegend.mNeededHeight / 2 + this.mLegend.getYOffset();
+                        posY = this.mViewPortHandler.chartHeight / 2 - this.mLegend.mNeededHeight / 2 + this.mLegend.yOffset;
                         break;
                 }
 
@@ -353,10 +351,10 @@ export class LegendRenderer extends Renderer {
         const restoreCount = c.save();
 
         let form = entry.form;
-        if (form === LegendForm.DEFAULT) form = legend.getForm();
+        if (form === LegendForm.DEFAULT) form = legend.form;
         paint.setColor(entry.formColor);
 
-        const formSize = isNaN(entry.formSize) ? legend.getFormSize() : entry.formSize;
+        const formSize = isNaN(entry.formSize) ? legend.formSize : entry.formSize;
         const half = formSize / 2;
 
         switch (form) {
@@ -381,8 +379,8 @@ export class LegendRenderer extends Renderer {
 
             case LegendForm.LINE:
                 {
-                    const formLineWidth = isNaN(entry.formLineWidth) ? legend.getFormLineWidth() : entry.formLineWidth;
-                    const formLineDashEffect = entry.formLineDashEffect == null ? legend.getFormLineDashEffect() : entry.formLineDashEffect;
+                    const formLineWidth = isNaN(entry.formLineWidth) ? legend.formLineWidth : entry.formLineWidth;
+                    const formLineDashEffect = entry.formLineDashEffect == null ? legend.formLineDashEffect : entry.formLineDashEffect;
                     paint.setStyle(Style.STROKE);
                     paint.setStrokeWidth(formLineWidth);
                     paint.setPathEffect(formLineDashEffect);

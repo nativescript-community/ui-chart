@@ -11,15 +11,9 @@ export interface IBubbleDataSet extends IBarLineScatterCandleBubbleDataSet<Bubbl
      *
      * @param width
      */
-    setHighlightCircleWidth(width: number);
+    highlightCircleWidth: number;
 
-    getMaxSize(): number;
+    readonly maxSize: number;
 
-    isNormalizeSizeEnabled(): boolean;
-
-    /**
-     * Returns the width of the highlight-circle that surrounds the bubble
-     * @return
-     */
-    getHighlightCircleWidth(): number;
+    normalizeSizeEnabled: boolean;
 }

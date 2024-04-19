@@ -103,7 +103,7 @@ onChartLoaded() {
     chart.setPinchZoom(true);
 
     // disable dual axis (only use LEFT axis)
-    chart.getAxisRight().setEnabled(false);
+    chart.axisRight.setEnabled(false);
 
     const myData = new Array(500).fill(0).map((v, i) => ({
         index: i,
@@ -157,7 +157,7 @@ onChartLoaded(args) {
     chart.setPinchZoom(true);
 
     // disable dual axis (only use LEFT axis)
-    chart.getAxisRight().setEnabled(false);
+    chart.axisRight.setEnabled(false);
 
     const myData = new Array(500).fill(0).map((v, i) => ({
         index: i,

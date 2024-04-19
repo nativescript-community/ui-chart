@@ -2,8 +2,8 @@ import { BarLineScatterCandleBubbleDataProvider } from './BarLineScatterCandleBu
 import { BarData } from '../../data/BarData';
 
 export interface BarDataProvider extends BarLineScatterCandleBubbleDataProvider {
-    getBarData(): BarData;
-    isDrawBarShadowEnabled(): boolean;
-    isDrawValueAboveBarEnabled(): boolean;
-    isHighlightFullBarEnabled(): boolean;
+    barData: BarData;
+    drawBarShadowEnabled: boolean;
+    drawValueAboveBarEnabled: boolean;
+    highlightFullBarEnabled: boolean;
 }

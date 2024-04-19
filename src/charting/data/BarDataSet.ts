@@ -14,16 +14,23 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
     /**
      * the color used for drawing the bar shadows
      */
-    private mBarShadowColor: string | Color = '#D7D7D7';
+    barShadowColor: string | Color = '#D7D7D7';
 
-    private mBarBorderWidth = 0.0;
+    /**
+     * Sets the width used for drawing borders around the bars.
+     * If borderWidth == 0, no border will be drawn.
+     */
+    barBorderWidth = 0.0;
 
-    private mBarBorderColor: string | Color = 'black';
+    /**
+     * Sets the color drawing borders around the bars.
+     */
+    barBorderColor: string | Color = 'black';
 
     /**
      * the alpha value used to draw the highlight indicator bar
      */
-    private mHighLightAlpha = 120;
+    highLightAlpha = 120;
 
     /**
      * the overall entry count, including counting each stack-value individually
@@ -33,11 +40,11 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
     /**
      * array of labels used to describe the different values of the stacked bars
      */
-    private mStackLabels = ['Stack'];
+    stackLabels = ['Stack'];
 
     constructor(values, label, xProperty?, yProperty?) {
         super(values, label, xProperty, yProperty);
-        this.mHighLightColor = 'black';
+        this.highLightColor = 'black';
         this.init();
     }
 
@@ -99,11 +106,11 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
     protected calcMinMaxForEntry(e?: BarEntry, index?: number) {
         if (!e) return;
         const yProperty = this.yProperty;
-        if (e != null && !isNaN(e[yProperty])) {
+        const yVal = e?.[yProperty];
+        if (e && !isNaN(yVal)) {
             if (e.yVals == null) {
-                if (e[yProperty] < this.mYMin) this.mYMin = e[yProperty];
-
-                if (e[yProperty] > this.mYMax) this.mYMax = e[yProperty];
+                if (yVal < this.mYMin) this.mYMin = yVal;
+                if (yVal > this.mYMax) this.mYMax = yVal;
             } else {
                 if (-e.negativeSum < this.mYMin) this.mYMin = -e.negativeSum;
 
@@ -114,103 +121,19 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         }
     }
 
-    public getStackSize() {
+    public get stackSize() {
         return this.mStackSize;
     }
 
-    public isStacked() {
-        return this.mStackSize > 1 ? true : false;
+    public get stacked() {
+        return this.mStackSize > 1;
     }
 
     /**
      * returns the overall entry count, including counting each stack-value
      * individually
-     *
-     * @return
      */
-    public getEntryCountStacks() {
+    public get entryCountStacks() {
         return this.mEntryCountStacks;
-    }
-
-    /**
-     * Sets the color used for drawing the bar-shadows. The bar shadows is a
-     * surface behind the bar that indicates the maximum value. Don't for get to
-     * use getResources().getColor(...) to set this. Or new Color(255, ...).
-     *
-     * @param color
-     */
-    public setBarShadowColor(color: string | Color) {
-        this.mBarShadowColor = color;
-    }
-
-    public getBarShadowColor() {
-        return this.mBarShadowColor;
-    }
-
-    /**
-     * Sets the width used for drawing borders around the bars.
-     * If borderWidth == 0, no border will be drawn.
-     *
-     * @return
-     */
-    public setBarBorderWidth(width) {
-        this.mBarBorderWidth = width;
-    }
-
-    /**
-     * Returns the width used for drawing borders around the bars.
-     * If borderWidth == 0, no border will be drawn.
-     *
-     * @return
-     */
-
-    public getBarBorderWidth() {
-        return this.mBarBorderWidth;
-    }
-
-    /**
-     * Sets the color drawing borders around the bars.
-     *
-     * @return
-     */
-    public setBarBorderColor(color: string | Color) {
-        this.mBarBorderColor = color;
-    }
-
-    /**
-     * Returns the color drawing borders around the bars.
-     *
-     * @return
-     */
-
-    public getBarBorderColor() {
-        return this.mBarBorderColor;
-    }
-
-    /**
-     * Set the alpha value (transparency) that is used for drawing the highlight
-     * indicator bar. min = 0 (fully transparent), max = 255 (fully opaque)
-     *
-     * @param alpha
-     */
-    public setHighLightAlpha(alpha) {
-        this.mHighLightAlpha = alpha;
-    }
-
-    public getHighLightAlpha() {
-        return this.mHighLightAlpha;
-    }
-
-    /**
-     * Sets labels for different values of bar-stacks, in case there are one.
-     *
-     * @param labels
-     */
-    public setStackLabels(labels) {
-        this.mStackLabels = labels;
-    }
-
-    public getStackLabels() {
-        return this.mStackLabels;
     }
 }

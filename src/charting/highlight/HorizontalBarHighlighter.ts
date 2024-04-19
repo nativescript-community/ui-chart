@@ -15,9 +15,9 @@ export class HorizontalBarHighlighter extends BarHighlighter {
             return null;
         }
 
-        const barData = this.mChart.getBarData();
+        const barData = this.mChart.barData;
         const set = barData.getDataSetByIndex(high.dataSetIndex);
-        if (set.isStacked()) {
+        if (set.stacked) {
             return this.getStackedHighlight(high, set, pos.y, pos.x);
         }
 
@@ -46,7 +46,7 @@ export class HorizontalBarHighlighter extends BarHighlighter {
         for (const r of entries) {
             const e = r.entry;
             const xVal = set.getEntryXValue(e, r.index);
-            const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(e[yKey], xVal);
+            const pixels = this.mChart.getTransformer(set.axisDependency).getPixelForValues(e[yKey], xVal);
 
             highlights.push({
                 entry: e,
@@ -56,7 +56,7 @@ export class HorizontalBarHighlighter extends BarHighlighter {
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex,
-                axis: set.getAxisDependency()
+                axis: set.axisDependency
             });
         }
 

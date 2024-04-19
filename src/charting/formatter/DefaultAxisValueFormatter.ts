@@ -13,7 +13,7 @@ export class DefaultAxisValueFormatter extends ValueFormatter {
     /**
      * the number of decimal digits this formatter uses
      */
-    protected digits;
+    decimalDigits;
 
     /**
      * Constructor that specifies to how many digits the value should be
@@ -27,7 +27,7 @@ export class DefaultAxisValueFormatter extends ValueFormatter {
     }
 
     setup(digits) {
-        this.digits = digits;
+        this.decimalDigits = digits;
 
         let b = '';
         for (let i = 0; i < digits; i++) {
@@ -39,14 +39,5 @@ export class DefaultAxisValueFormatter extends ValueFormatter {
 
     public getFormattedValue(value) {
         return format(this.mFormat, value);
-    }
-
-    /**
-     * Returns the number of decimal digits this formatter uses or -1, if unspecified.
-     *
-     * @return
-     */
-    public getDecimalDigits() {
-        return this.digits;
     }
 }

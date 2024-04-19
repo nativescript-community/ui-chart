@@ -17,12 +17,9 @@ export class TransformerHorizontalBarChart extends Transformer {
         // offset.postTranslate(mOffsetLeft, getHeight() - this.mOffsetBottom);
 
         if (!inverted) {
-            this.mMatrixOffset.postTranslate(this.mViewPortHandler.offsetLeft(), this.mViewPortHandler.getChartHeight() - this.mViewPortHandler.offsetBottom());
+            this.mMatrixOffset.postTranslate(this.mViewPortHandler.offsetLeft, this.mViewPortHandler.chartHeight - this.mViewPortHandler.offsetBottom);
         } else {
-            this.mMatrixOffset.setTranslate(
-                -(this.mViewPortHandler.getChartWidth() - this.mViewPortHandler.offsetRight()),
-                this.mViewPortHandler.getChartHeight() - this.mViewPortHandler.offsetBottom()
-            );
+            this.mMatrixOffset.setTranslate(-(this.mViewPortHandler.chartWidth - this.mViewPortHandler.offsetRight), this.mViewPortHandler.chartHeight - this.mViewPortHandler.offsetBottom);
             this.mMatrixOffset.postScale(-1.0, 1.0);
         }
 

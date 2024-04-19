@@ -100,8 +100,8 @@ export class PieChartRenderer extends DataRenderer {
 
     @profile
     public drawData(c: Canvas) {
-        const width = this.mViewPortHandler.getChartWidth();
-        const height = this.mViewPortHandler.getChartHeight();
+        const width = this.mViewPortHandler.chartWidth;
+        const height = this.mViewPortHandler.chartHeight;
 
         let drawBitmap = this.mDrawBitmap == null ? null : this.mDrawBitmap.get();
 
@@ -118,8 +118,8 @@ export class PieChartRenderer extends DataRenderer {
         }
 
         let needsBitmapDrawing = false;
-        const pieData = this.mChart.getData();
-        for (const set of pieData.getDataSets()) {
+        const pieData = this.mChart.data;
+        for (const set of pieData.dataSets) {
             needsBitmapDrawing = this.drawDataSet(c, set) || needsBitmapDrawing;
         }
         if (needsBitmapDrawing) {
@@ -163,39 +163,40 @@ export class PieChartRenderer extends DataRenderer {
      * @return
      */
     protected getSliceSpace(dataSet: IPieDataSet) {
-        if (!dataSet.isAutomaticallyDisableSliceSpacingEnabled()) {
-            return dataSet.getSliceSpace();
+        if (!dataSet.automaticallyDisableSliceSpacing) {
+            return dataSet.sliceSpace;
         }
 
-        const spaceSizeRatio = dataSet.getSliceSpace() / this.mViewPortHandler.getSmallestContentExtension();
-        const minValueRatio = (dataSet.getYMin() / this.mChart.getData().getYValueSum()) * 2;
+        const spaceSizeRatio = dataSet.sliceSpace / this.mViewPortHandler.smallestContentExtension;
+        const minValueRatio = (dataSet.yMin / this.mChart.data.getYValueSum()) * 2;
 
-        const sliceSpace = spaceSizeRatio > minValueRatio ? 0 : dataSet.getSliceSpace();
+        const sliceSpace = spaceSizeRatio > minValueRatio ? 0 : dataSet.sliceSpace;
 
         return sliceSpace;
     }
 
     protected drawDataSet(c: Canvas, dataSet: IPieDataSet) {
+        const chart = this.mChart;
         const result = false;
         let angle = 0;
 
         const yKey = dataSet.yProperty;
-        const rotationAngle = this.mChart.getRotationAngle();
+        const rotationAngle = chart.rotationAngle;
 
-        const phaseX = this.mAnimator.getPhaseX();
-        const phaseY = this.mAnimator.getPhaseY();
+        const phaseX = this.animator.phaseX;
+        const phaseY = this.animator.phaseY;
 
-        const circleBox = this.mChart.getCircleBox();
+        const circleBox = chart.circleBox;
 
-        const entryCount = dataSet.getEntryCount();
-        const drawAngles = this.mChart.getDrawAngles();
-        const center = this.mChart.getCenterCircleBox();
-        const radius = this.mChart.getRadius();
-        const drawInnerArc = this.mChart.isDrawHoleEnabled() && !this.mChart.isDrawSlicesUnderHoleEnabled();
-        const userInnerRadius = drawInnerArc ? radius * (this.mChart.getHoleRadius() / 100) : 0;
-        const roundedRadius = (radius - (radius * this.mChart.getHoleRadius()) / 100) / 2;
+        const entryCount = dataSet.entryCount;
+        const drawAngles = chart.drawAngles;
+        const center = chart.centerCircleBox;
+        const radius = chart.radius;
+        const drawInnerArc = chart.drawHoleEnabled && !chart.drawSlicesUnderHoleEnabled;
+        const userInnerRadius = drawInnerArc ? radius * (chart.holeRadius / 100) : 0;
+        const roundedRadius = (radius - (radius * chart.holeRadius) / 100) / 2;
         const roundedCircleBox = new RectF(0, 0, 0, 0);
-        const drawRoundedSlices = drawInnerArc && this.mChart.isDrawRoundedSlicesEnabled();
+        const drawRoundedSlices = drawInnerArc && chart.drawRoundedSlices;
 
         let visibleAngleCount = 0;
         for (let j = 0; j < entryCount; j++) {
@@ -207,11 +208,11 @@ export class PieChartRenderer extends DataRenderer {
 
         const sliceSpace = visibleAngleCount <= 1 ? 0 : this.getSliceSpace(dataSet);
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = chart.customRenderer;
         const renderPaint = this.renderPaint;
         const pathBuffer = Utils.getTempPath();
         const previousShader = renderPaint.getShader();
-        const shader = dataSet.getFillShader();
+        const shader = dataSet.fillShader;
         if (shader) {
             renderPaint.setShader(shader);
         }
@@ -228,7 +229,7 @@ export class PieChartRenderer extends DataRenderer {
             }
 
             // Don't draw if it's highlighted, unless the chart uses rounded slices
-            if (this.mChart.needsHighlight(j) && !drawRoundedSlices) {
+            if (chart.needsHighlight(j) && !drawRoundedSlices) {
                 angle += sliceAngle * phaseX;
                 continue;
             }
@@ -336,31 +337,32 @@ export class PieChartRenderer extends DataRenderer {
     }
 
     public drawValues(c: Canvas) {
-        const drawEntryLabels = this.mChart.isDrawEntryLabelsEnabled();
-        const data = this.mChart.getData();
-        const dataSets = data.getDataSets();
-        if (!drawEntryLabels || dataSets.some((d) => d.isDrawValuesEnabled() || d.isDrawIconsEnabled()) === false) {
+        const chart = this.mChart;
+        const drawEntryLabels = chart.drawEntryLabels;
+        const data = chart.data;
+        const dataSets = data.dataSets;
+        if (!drawEntryLabels || dataSets.some((d) => d.drawValuesEnabled || d.drawIconsEnabled) === false) {
             return;
         }
-        const center = this.mChart.getCenterCircleBox();
+        const center = chart.centerCircleBox;
 
         // Get whole the radius
-        const radius = this.mChart.getRadius();
-        let rotationAngle = this.mChart.getRotationAngle();
-        const drawAngles = this.mChart.getDrawAngles();
-        const absoluteAngles = this.mChart.getAbsoluteAngles();
+        const radius = chart.radius;
+        let rotationAngle = chart.rotationAngle;
+        const drawAngles = chart.drawAngles;
+        const absoluteAngles = chart.absoluteAngles;
 
-        const phaseX = this.mAnimator.getPhaseX();
-        const phaseY = this.mAnimator.getPhaseY();
+        const phaseX = this.animator.phaseX;
+        const phaseY = this.animator.phaseY;
 
-        const roundedRadius = (radius - (radius * this.mChart.getHoleRadius()) / 100) / 2;
-        const holeRadiusPercent = this.mChart.getHoleRadius() / 100;
+        const roundedRadius = (radius - (radius * chart.holeRadius) / 100) / 2;
+        const holeRadiusPercent = chart.holeRadius / 100;
         let labelRadiusOffset = (radius / 10) * 3.6;
 
-        if (this.mChart.isDrawHoleEnabled()) {
+        if (chart.drawHoleEnabled) {
             labelRadiusOffset = (radius - radius * holeRadiusPercent) / 2;
 
-            if (!this.mChart.isDrawSlicesUnderHoleEnabled() && this.mChart.isDrawRoundedSlicesEnabled()) {
+            if (!chart.drawSlicesUnderHoleEnabled && chart.drawRoundedSlices) {
                 // Add curved circle slice and spacing to rotation angle, so that it sits nicely inside
                 rotationAngle += (roundedRadius * 360) / (Math.PI * 2 * radius);
             }
@@ -379,39 +381,39 @@ export class PieChartRenderer extends DataRenderer {
 
         const paint = this.valuePaint;
         const entryLabelsPaint: Paint = drawEntryLabels ? this.entryLabelsPaint : undefined;
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = chart.customRenderer;
         const valueLinePaint = Utils.getTempPaint();
         valueLinePaint.setStyle(Style.STROKE);
         for (let i = 0; i < dataSets.length; i++) {
             const dataSet = dataSets[i];
-            const drawValues = dataSet.isDrawValuesEnabled();
+            const drawValues = dataSet.drawValuesEnabled;
 
             if (!drawValues) {
                 continue;
             }
 
             const yKey = dataSet.yProperty;
-            const xValuePosition = dataSet.getXValuePosition();
-            const yValuePosition = dataSet.getYValuePosition();
+            const xValuePosition = dataSet.xValuePosition;
+            const yValuePosition = dataSet.yValuePosition;
 
             // Apply the text-styling defined by the DataSet
             this.applyValueTextStyle(dataSet);
 
             const lineHeight = Utils.calcTextHeight(paint, 'Q') + 4;
 
-            const formatter = dataSet.getValueFormatter();
+            const formatter = dataSet.valueFormatter;
 
-            const entryCount = dataSet.getEntryCount();
+            const entryCount = dataSet.entryCount;
 
-            valueLinePaint.setColor(dataSet.getValueLineColor());
-            valueLinePaint.setStrokeWidth(dataSet.getValueLineWidth());
+            valueLinePaint.setColor(dataSet.valueLineColor);
+            valueLinePaint.setStrokeWidth(dataSet.valueLineWidth);
 
             const sliceSpace = this.getSliceSpace(dataSet);
 
-            const iconsOffset = dataSet.getIconsOffset();
-            const valuesOffset = dataSet.getValuesOffset();
+            const iconsOffset = dataSet.iconsOffset;
+            const valuesOffset = dataSet.valuesOffset;
 
-            const isDrawIconsEnabled = dataSet.isDrawIconsEnabled();
+            const isDrawIconsEnabled = dataSet.drawIconsEnabled;
             for (let j = 0; j < entryCount; j++) {
                 const entry = dataSet.getEntryForIndex(j);
 
@@ -431,8 +433,8 @@ export class PieChartRenderer extends DataRenderer {
 
                 const transformedAngle = rotationAngle + angle * phaseY;
 
-                const value = this.mChart.isUsePercentValuesEnabled() ? (entry[yKey] / yValueSum) * 100 : entry[yKey];
-                const formattedValue = formatter.getPieLabel(value, entry);
+                const value = chart.usePercentValues ? (entry[yKey] / yValueSum) * 100 : entry[yKey];
+                const formattedValue = (formatter.getPieLabel || formatter.getFormattedValue)(value, entry);
                 const entryLabel = entry.label;
 
                 const sliceXBase = Math.cos(transformedAngle * Utils.DEG2RAD);
@@ -444,22 +446,22 @@ export class PieChartRenderer extends DataRenderer {
                 const drawYInside = drawValues && yValuePosition === ValuePosition.INSIDE_SLICE;
 
                 if (drawXOutside || drawYOutside) {
-                    const valueLineLength1 = dataSet.getValueLinePart1Length();
-                    const valueLineLength2 = dataSet.getValueLinePart2Length();
-                    const valueLinePart1OffsetPercentage = dataSet.getValueLinePart1OffsetPercentage() / 100;
+                    const valueLineLength1 = dataSet.valueLinePart1Length;
+                    const valueLineLength2 = dataSet.valueLinePart2Length;
+                    const valueLinePart1OffsetPercentage = dataSet.valueLinePart1OffsetPercentage / 100;
 
                     let pt2x, pt2y;
                     let labelPtx, labelPty;
 
                     let line1Radius;
 
-                    if (this.mChart.isDrawHoleEnabled()) {
+                    if (chart.drawHoleEnabled) {
                         line1Radius = (radius - radius * holeRadiusPercent) * valueLinePart1OffsetPercentage + radius * holeRadiusPercent;
                     } else {
                         line1Radius = radius * valueLinePart1OffsetPercentage;
                     }
 
-                    const polyline2Width = dataSet.isValueLineVariableLength() ? labelRadius * valueLineLength2 * Math.abs(Math.sin(transformedAngle * Utils.DEG2RAD)) : labelRadius * valueLineLength2;
+                    const polyline2Width = dataSet.valueLineVariableLength ? labelRadius * valueLineLength2 * Math.abs(Math.sin(transformedAngle * Utils.DEG2RAD)) : labelRadius * valueLineLength2;
 
                     const pt0x = line1Radius * sliceXBase + center.x;
                     const pt0y = line1Radius * sliceYBase + center.y;
@@ -492,8 +494,8 @@ export class PieChartRenderer extends DataRenderer {
                         labelPty = pt2y;
                     }
 
-                    if (dataSet.getValueLineColor() !== ColorTemplate.COLOR_NONE) {
-                        if (dataSet.isUsingSliceColorAsValueLineColor()) {
+                    if (dataSet.valueLineColor !== ColorTemplate.COLOR_NONE) {
+                        if (dataSet.usingSliceColorAsValueLineColor) {
                             valueLinePaint.setColor(dataSet.getColor(j));
                         }
 
@@ -503,17 +505,30 @@ export class PieChartRenderer extends DataRenderer {
 
                     // draw everything, depending on settings
                     if (drawXOutside && drawYOutside) {
-                        this.drawValue(c, formattedValue, labelPtx + valuesOffset.x, labelPty + valuesOffset.y, dataSet.getValueTextColor(j), paint, customRender);
+                        this.drawValue(c, chart, dataSet, i, entry, j, formattedValue, labelPtx + valuesOffset.x, labelPty + valuesOffset.y, dataSet.getValueTextColor(j), paint, customRender);
 
-                        if (j < data.getEntryCount() && entryLabel != null) {
+                        if (j < data.entryCount && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight, entryLabelsPaint);
                         }
                     } else if (drawXOutside) {
-                        if (j < data.getEntryCount() && entryLabel != null) {
+                        if (j < data.entryCount && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight / 2, entryLabelsPaint);
                         }
                     } else if (drawYOutside) {
-                        this.drawValue(c, formattedValue, labelPtx + valuesOffset.x, labelPty + valuesOffset.y + lineHeight / 2, dataSet.getValueTextColor(j), paint, customRender);
+                        this.drawValue(
+                            c,
+                            chart,
+                            dataSet,
+                            i,
+                            entry,
+                            j,
+                            formattedValue,
+                            labelPtx + valuesOffset.x,
+                            labelPty + valuesOffset.y + lineHeight / 2,
+                            dataSet.getValueTextColor(j),
+                            paint,
+                            customRender
+                        );
                     }
                 }
 
@@ -526,28 +541,26 @@ export class PieChartRenderer extends DataRenderer {
 
                     // draw everything, depending on settings
                     if (drawXInside && drawYInside) {
-                        this.drawValue(c, formattedValue, x + valuesOffset.x, y + valuesOffset.y, dataSet.getValueTextColor(j), paint, customRender);
+                        this.drawValue(c, chart, dataSet, i, entry, j, formattedValue, x + valuesOffset.x, y + valuesOffset.y, dataSet.getValueTextColor(j), paint, customRender);
 
-                        if (j < data.getEntryCount() && entryLabel != null) {
+                        if (j < data.entryCount && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight, entryLabelsPaint);
                         }
                     } else if (drawXInside) {
-                        if (j < data.getEntryCount() && entryLabel != null) {
+                        if (j < data.entryCount && entryLabel != null) {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight / 2, entryLabelsPaint);
                         }
                     } else if (drawYInside) {
-                        this.drawValue(c, formattedValue, x + valuesOffset.x, y + valuesOffset.y + lineHeight / 2, dataSet.getValueTextColor(j), paint, customRender);
+                        this.drawValue(c, chart, dataSet, i, entry, j, formattedValue, x + valuesOffset.x, y + valuesOffset.y + lineHeight / 2, dataSet.getValueTextColor(j), paint, customRender);
                     }
                 }
 
-                if (isDrawIconsEnabled && entry.icon != null) {
-                    const icon = entry.icon;
-
+                if (isDrawIconsEnabled) {
                     const x = (labelRadius + iconsOffset.y) * sliceXBase + center.x;
                     let y = (labelRadius + iconsOffset.y) * sliceYBase + center.y;
                     y += iconsOffset.x;
 
-                    Utils.drawIcon(c, this.mChart, icon, x, y);
+                    this.drawIcon(c, chart, dataSet, i, entry, j, dataSet.getEntryIcon(entry), x, y, customRender);
                 }
 
                 xIndex++;
@@ -581,10 +594,11 @@ export class PieChartRenderer extends DataRenderer {
      * hole.
      */
     protected drawHole(c: Canvas) {
-        if (this.mChart.isDrawHoleEnabled()) {
-            const radius = this.mChart.getRadius();
-            const holeRadius = radius * (this.mChart.getHoleRadius() / 100);
-            const center = this.mChart.getCenterCircleBox();
+        const chart = this.mChart;
+        if (chart.drawHoleEnabled) {
+            const radius = chart.radius;
+            const holeRadius = radius * (chart.holeRadius / 100);
+            const center = chart.centerCircleBox;
             const paint = this.holePaint;
             if (ColorTemplate.getColorInstance(paint.getColor()).a > 0) {
                 // draw the hole-circle
@@ -592,11 +606,11 @@ export class PieChartRenderer extends DataRenderer {
             }
             const transparentCirclePaint = this.transparentCirclePaint;
             // only draw the circle if it can be seen (not covered by the hole)
-            if (ColorTemplate.getColorInstance(transparentCirclePaint.getColor()).a > 0 && this.mChart.getTransparentCircleRadius() > this.mChart.getHoleRadius()) {
+            if (ColorTemplate.getColorInstance(transparentCirclePaint.getColor()).a > 0 && chart.transparentCircleRadiusPercent > chart.holeRadius) {
                 const alpha = transparentCirclePaint.getAlpha();
-                const secondHoleRadius = radius * (this.mChart.getTransparentCircleRadius() / 100);
+                const secondHoleRadius = radius * (chart.transparentCircleRadiusPercent / 100);
 
-                transparentCirclePaint.setAlpha(alpha * this.mAnimator.getPhaseX() * this.mAnimator.getPhaseY());
+                transparentCirclePaint.setAlpha(alpha * this.animator.phaseX * this.animator.phaseY);
 
                 // draw the transparent-circle
                 const path = Utils.getTempPath();
@@ -616,17 +630,17 @@ export class PieChartRenderer extends DataRenderer {
      * sense when center-hole is enabled.
      */
     protected drawCenterText(c: Canvas) {
-        const centerText = this.mChart.getCenterText();
+        const chart = this.mChart;
+        const centerText = chart.centerText;
 
-        if (this.mChart.isDrawCenterTextEnabled() && centerText != null) {
-            const center = this.mChart.getCenterCircleBox();
-            const offset = this.mChart.getCenterTextOffset();
+        if (centerText && chart.drawCenterText) {
+            const center = chart.centerCircleBox;
+            const offset = chart.centerTextOffset;
 
             const x = center.x + offset.x;
             const y = center.y + offset.y;
 
-            const innerRadius =
-                this.mChart.isDrawHoleEnabled() && !this.mChart.isDrawSlicesUnderHoleEnabled() ? this.mChart.getRadius() * (this.mChart.getHoleRadius() / 100) : this.mChart.getRadius();
+            const innerRadius = chart.drawHoleEnabled && !chart.drawSlicesUnderHoleEnabled ? chart.radius * (chart.holeRadius / 100) : chart.radius;
             const rectBuffer = this.rectBuffer;
             const holeRect = rectBuffer[0];
             holeRect.left = x - innerRadius;
@@ -636,12 +650,12 @@ export class PieChartRenderer extends DataRenderer {
             const boundingRect = rectBuffer[1];
             boundingRect.set(holeRect);
 
-            const radiusPercent = this.mChart.getCenterTextRadiusPercent() / 100;
+            const radiusPercent = chart.centerTextRadiusPercent / 100;
             if (radiusPercent > 0.0) {
                 boundingRect.inset((boundingRect.width() - boundingRect.width() * radiusPercent) / 2, (boundingRect.height() - boundingRect.height() * radiusPercent) / 2);
             }
             const centerTextLastBounds = this.centerTextLastBounds;
-            if (centerText !== this.mCenterTextLastValue || boundingRect !== centerTextLastBounds) {
+            if (!this.mCenterTextLayout || centerText !== this.mCenterTextLastValue || boundingRect !== centerTextLastBounds) {
                 // Next time we won't recalculate StaticLayout...
                 centerTextLastBounds.set(boundingRect);
                 this.mCenterTextLastValue = centerText;
@@ -678,26 +692,27 @@ export class PieChartRenderer extends DataRenderer {
          * in this way.
          * TODO: add support for changing slice color with highlighting rather than only shifting the slice
          */
-        const drawInnerArc = this.mChart.isDrawHoleEnabled() && !this.mChart.isDrawSlicesUnderHoleEnabled();
-        if (drawInnerArc && this.mChart.isDrawRoundedSlicesEnabled()) {
+        const chart = this.mChart;
+        const drawInnerArc = chart.drawHoleEnabled && !chart.drawSlicesUnderHoleEnabled;
+        if (drawInnerArc && chart.drawRoundedSlices) {
             return;
         }
 
-        const phaseX = this.mAnimator.getPhaseX();
-        const phaseY = this.mAnimator.getPhaseY();
+        const phaseX = this.animator.phaseX;
+        const phaseY = this.animator.phaseY;
 
         let angle;
-        const rotationAngle = this.mChart.getRotationAngle();
+        const rotationAngle = chart.rotationAngle;
 
-        const drawAngles = this.mChart.getDrawAngles();
-        const absoluteAngles = this.mChart.getAbsoluteAngles();
-        const center = this.mChart.getCenterCircleBox();
-        const radius = this.mChart.getRadius();
-        const userInnerRadius = drawInnerArc ? radius * (this.mChart.getHoleRadius() / 100) : 0;
+        const drawAngles = chart.drawAngles;
+        const absoluteAngles = chart.absoluteAngles;
+        const center = chart.centerCircleBox;
+        const radius = chart.radius;
+        const userInnerRadius = drawInnerArc ? radius * (chart.holeRadius / 100) : 0;
 
         const highlightedCircleBox = Utils.getTempRectF();
 
-        const customRender = this.mChart.getCustomRenderer();
+        const customRender = chart.customRenderer;
         const renderPaint = this.renderPaint;
         const pathBuffer = Utils.getTempPath();
         for (let i = 0; i < indices.length; i++) {
@@ -709,14 +724,14 @@ export class PieChartRenderer extends DataRenderer {
                 continue;
             }
 
-            const set = this.mChart.getData().getDataSetByIndex(high.dataSetIndex);
+            const set = chart.data.getDataSetByIndex(high.dataSetIndex);
 
-            if (set == null || !set.isHighlightEnabled()) {
+            if (set == null || !set.highlightEnabled) {
                 continue;
             }
 
             const yKey = set.yProperty;
-            const entryCount = set.getEntryCount();
+            const entryCount = set.entryCount;
 
             let visibleAngleCount = 0;
             for (let j = 0; j < entryCount; j++) {
@@ -732,14 +747,14 @@ export class PieChartRenderer extends DataRenderer {
                 angle = absoluteAngles[index - 1] * phaseX;
             }
 
-            const sliceSpace = visibleAngleCount <= 1 ? 0 : set.getSliceSpace();
+            const sliceSpace = visibleAngleCount <= 1 ? 0 : set.sliceSpace;
 
             const sliceAngle = drawAngles[index];
             let innerRadius = userInnerRadius;
 
-            const shift = set.getSelectionShift();
+            const shift = set.selectionShift;
             const highlightedRadius = radius + shift;
-            highlightedCircleBox.set(this.mChart.getCircleBox());
+            highlightedCircleBox.set(chart.circleBox);
             highlightedCircleBox.inset(-shift, -shift);
 
             const accountForSliceSpacing = sliceSpace > 0 && sliceAngle <= 180;
@@ -842,31 +857,32 @@ export class PieChartRenderer extends DataRenderer {
      * @param c
      */
     protected drawRoundedSlices(c: Canvas) {
-        if (!this.mChart.isDrawRoundedSlicesEnabled()) {
+        const chart = this.mChart;
+        if (!chart.drawRoundedSlices) {
             return;
         }
 
-        const dataSet = this.mChart.getData().getDataSet();
+        const dataSet = chart.data.getDataSet();
 
-        if (!dataSet.isVisible()) {
+        if (!dataSet.visible) {
             return;
         }
 
         const yKey = dataSet.yProperty;
-        const phaseX = this.mAnimator.getPhaseX();
-        const phaseY = this.mAnimator.getPhaseY();
+        const phaseX = this.animator.phaseX;
+        const phaseY = this.animator.phaseY;
 
-        const center = this.mChart.getCenterCircleBox();
-        const r = this.mChart.getRadius();
+        const center = chart.centerCircleBox;
+        const r = chart.radius;
 
         // calculate the radius of the "slice-circle"
-        const circleRadius = (r - (r * this.mChart.getHoleRadius()) / 100) / 2;
+        const circleRadius = (r - (r * chart.holeRadius) / 100) / 2;
 
-        const drawAngles = this.mChart.getDrawAngles();
-        let angle = this.mChart.getRotationAngle();
+        const drawAngles = chart.drawAngles;
+        let angle = chart.rotationAngle;
 
         const renderPaint = this.renderPaint;
-        for (let j = 0; j < dataSet.getEntryCount(); j++) {
+        for (let j = 0; j < dataSet.entryCount; j++) {
             const sliceAngle = drawAngles[j];
 
             const e = dataSet.getEntryForIndex(j);

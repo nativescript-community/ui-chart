@@ -16,10 +16,10 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
         }
 
         const pos = this.getValsForTouch(x, y);
-        const barData = this.mChart.getBarData();
+        const barData = this.mChart.barData;
 
         const set = barData.getDataSetByIndex(high.dataSetIndex);
-        if (set.isStacked()) {
+        if (set.stacked) {
             return this.getStackedHighlight(high, set, pos.x, pos.y);
         }
 
@@ -53,7 +53,7 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
         if (ranges.length > 0) {
             const yKey = set.yProperty;
             const stackIndex = this.getClosestStackIndex(ranges, yVal);
-            const pixels = this.mChart.getTransformer(set.getAxisDependency()).getPixelForValues(high.x, ranges[stackIndex][1]);
+            const pixels = this.mChart.getTransformer(set.axisDependency).getPixelForValues(high.x, ranges[stackIndex][1]);
 
             //MPPointD.recycleInstance(pixels);
 
@@ -64,7 +64,7 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
                 yPx: pixels.y,
                 dataSetIndex: high.dataSetIndex,
                 stackIndex,
-                axis: high.axis,
+                axis: high.axis
             };
         }
 
@@ -100,6 +100,6 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
     }
 
     protected getData(): BarData {
-        return this.mChart.getBarData();
+        return this.mChart.barData;
     }
 }

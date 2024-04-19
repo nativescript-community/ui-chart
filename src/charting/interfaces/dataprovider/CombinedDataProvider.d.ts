@@ -9,5 +9,5 @@ import { BarDataProvider } from './BarDataProvider';
  * Created by philipp on 11/06/16.
  */
 export interface CombinedDataProvider extends LineDataProvider, BarDataProvider, BubbleDataProvider, CandleDataProvider, ScatterDataProvider {
-    getCombinedData(): CombinedData;
+    combinedData: CombinedData;
 }
