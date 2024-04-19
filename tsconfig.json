@@ -2,8 +2,8 @@
     "extends": "./tools/tsconfig",
     "compilerOptions": {
         "paths": {
-            "@nativescript-community/ui-chart": ["src/charting"],
-            "@nativescript-community/ui-chart/*": ["src/charting/*"]
+            "@nativescript-community/ui-chart": ["src/ui-chart"],
+            "@nativescript-community/ui-chart/*": ["src/ui-chart/*"]
         }
     },
     "references": [

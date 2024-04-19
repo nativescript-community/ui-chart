@@ -1,5 +1,5 @@
-import { Mode } from 'src/charting/data/LineDataSet';
-import { IFillFormatter } from 'src/charting/formatter/IFillFormatter';
+import { Mode } from 'src/ui-chart/data/LineDataSet';
+import { IFillFormatter } from 'src/ui-chart/formatter/IFillFormatter';
 import { Entry } from '../../data/Entry';
 import { ILineRadarDataSet } from './ILineRadarDataSet';
 
