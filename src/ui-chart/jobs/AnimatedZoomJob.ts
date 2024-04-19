@@ -91,7 +91,7 @@ export class AnimatedZoomJob extends AnimatedViewPortJob {
         viewPortHanlder.setZoom(scaleX, scaleY, save);
         viewPortHanlder.refresh(save, this.mView, false);
 
-        const valsInView = this.mYAxis.mAxisRange / viewPortHanlder.getScaleY();
+        const valsInView = this.mYAxis.axisRange / viewPortHanlder.getScaleY();
         const xsInView = this.xAxisRange / viewPortHanlder.getScaleX();
         const pts = Utils.getTempArray(2);
 

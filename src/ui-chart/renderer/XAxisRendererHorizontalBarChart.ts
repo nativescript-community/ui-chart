@@ -111,6 +111,8 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     protected drawLabels(c: Canvas, pos, anchor: MPPointF) {
         const axis = this.xAxis;
         const labelRotationAngleDegrees = axis.labelRotationAngle;
+        const customRender = axis.customRenderer;
+        const customRenderFunction = customRender && customRender.drawLabel;
         const centeringEnabled = axis.centerAxisLabels;
         const entryCount = axis.mEntryCount;
         if (entryCount === 0) {
@@ -143,7 +145,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
                 continue;
             }
             if (this.mViewPortHandler.isInBoundsY(y)) {
-                this.drawLabel(c, label, pos, y, anchor, labelRotationAngleDegrees, paint);
+                this.drawLabel(c, label, pos, y, anchor, labelRotationAngleDegrees, paint, customRenderFunction);
             }
         }
     }

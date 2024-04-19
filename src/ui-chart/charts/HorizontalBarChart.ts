@@ -93,10 +93,10 @@ export class HorizontalBarChart extends BarChart {
 
     protected prepareValuePxMatrix() {
         if (this.mAxisRight?.enabled) {
-            this.rightAxisTransformer.prepareMatrixValuePx(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisRange, this.xAxis.mAxisRange, this.xAxis.mAxisMinimum);
+            this.rightAxisTransformer.prepareMatrixValuePx(this.mAxisRight.axisMinimum, this.mAxisRight.axisRange, this.xAxis.axisRange, this.xAxis.axisMinimum);
         }
         if (this.mAxisLeft.enabled) {
-            this.leftAxisTransformer.prepareMatrixValuePx(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisRange, this.xAxis.mAxisRange, this.xAxis.mAxisMinimum);
+            this.leftAxisTransformer.prepareMatrixValuePx(this.mAxisLeft.axisMinimum, this.mAxisLeft.axisRange, this.xAxis.axisRange, this.xAxis.axisMinimum);
         }
     }
 
@@ -185,30 +185,30 @@ export class HorizontalBarChart extends BarChart {
 
     public get lowestVisibleX() {
         this.transformer.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentBottom, this.posForGetLowestVisibleX);
-        return Math.max(this.xAxis.mAxisMinimum, this.posForGetLowestVisibleX.y);
+        return Math.max(this.xAxis.axisMinimum, this.posForGetLowestVisibleX.y);
     }
 
     public get highestVisibleX() {
         this.transformer.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentTop, this.posForGetHighestVisibleX);
-        return Math.min(this.xAxis.mAxisMaximum, this.posForGetHighestVisibleX.y);
+        return Math.min(this.xAxis.axisMaximum, this.posForGetHighestVisibleX.y);
     }
 
     /**
      * ###### VIEWPORT METHODS BELOW THIS ######
      */
     public set visibleXRangeMaximum(maxXRange) {
-        const xScale = this.xAxis.mAxisRange / maxXRange;
+        const xScale = this.xAxis.axisRange / maxXRange;
         this.viewPortHandler.setMinimumScaleY(xScale);
     }
 
     public set visibleXRangeMinimum(minXRange) {
-        const xScale = this.xAxis.mAxisRange / minXRange;
+        const xScale = this.xAxis.axisRange / minXRange;
         this.viewPortHandler.setMaximumScaleY(xScale);
     }
 
     public setVisibleXRange(minXRange, maxXRange) {
-        const minScale = this.xAxis.mAxisRange / minXRange;
-        const maxScale = this.xAxis.mAxisRange / maxXRange;
+        const minScale = this.xAxis.axisRange / minXRange;
+        const maxScale = this.xAxis.axisRange / maxXRange;
         this.viewPortHandler.setMinMaxScaleY(minScale, maxScale);
     }
 

@@ -7,10 +7,11 @@ import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { BaseCustomRenderer } from './DataRenderer';
 import { Renderer } from './Renderer';
+import { MPPointF } from '../utils/MPPointF';
 
 export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
 export type CustomRendererLimitLineFunction = (c: Canvas, renderer: AxisRenderer, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
-export type CustomRendererLabelFunction = (c: Canvas, renderer: AxisRenderer, text, x, y, paint: Paint, anchor, angleDegrees) => void;
+export type CustomRendererLabelFunction = (c: Canvas, axis: AxisBase, text: string, x: number, y: number, paint: Paint, anchor?: MPPointF, angleDegrees?: number) => void;
 export type CustomRendererTickFunction = (c: Canvas, renderer: AxisRenderer, startX: number, startY: number, stopX: number, stopY: number, paint: Paint) => void;
 export interface CustomRenderer extends BaseCustomRenderer {
     drawLabel?: CustomRendererLabelFunction;
@@ -107,10 +108,10 @@ export abstract class AxisRenderer extends Renderer {
         if (min === undefined || max === undefined || inverted === undefined) {
             const axis = this.mAxis;
             if (min === undefined) {
-                min = axis.mAxisMinimum;
+                min = axis.axisMinimum;
             }
             if (max === undefined) {
-                max = axis.mAxisMaximum;
+                max = axis.axisMaximum;
             }
             if (inverted === undefined) {
                 inverted = axis['isInverted'] ? axis['isInverted']() : false;

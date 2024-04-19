@@ -43,8 +43,8 @@ export class ZoomJob extends ViewPortJob {
         viewPortHanlder.zoom(this.mScaleX, this.mScaleY, save);
         viewPortHanlder.refresh(save, this.mView, false);
 
-        const yValsInView = this.mView.getAxis(this.mAxisDependency).mAxisRange / viewPortHanlder.getScaleY();
-        const xValsInView = this.mView.xAxis.mAxisRange / viewPortHanlder.getScaleX();
+        const yValsInView = this.mView.getAxis(this.mAxisDependency).axisRange / viewPortHanlder.getScaleY();
+        const xValsInView = this.mView.xAxis.axisRange / viewPortHanlder.getScaleX();
         const pts = Utils.getTempArray(2);
 
         pts[0] = this.xValue - xValsInView / 2;

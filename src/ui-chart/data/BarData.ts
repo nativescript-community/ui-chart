@@ -14,6 +14,11 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
     barWidth = 0.85;
 
     /**
+     * if set to true, bar keep the same size with zoom scale
+     */
+    fixedBarScale: boolean = false;
+
+    /**
      * Groups all BarDataSet objects this data object holds together by modifying the x-value of their entries.
      * Previously set x-values of entries will be overwritten. Leaves space between bars and groups as specified
      * by the parameters.

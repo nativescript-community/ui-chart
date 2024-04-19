@@ -8,11 +8,13 @@ import {
     pointsFromBuffer as pointsFromBufferFn,
     supportsDirectArrayBuffers as supportsDirectArrayBuffersFn
 } from '@nativescript-community/arraybuffers';
-import { Align, Canvas, FontMetrics, Matrix, Paint, Path, Rect, RectF, StaticLayout, Style } from '@nativescript-community/ui-canvas';
-import { ObservableArray, Trace } from '@nativescript/core';
+import { Align, Canvas, FontMetrics, LayoutAlignment, Matrix, Paint, Path, Rect, RectF, StaticLayout, Style } from '@nativescript-community/ui-canvas';
+import { ImageSource, ObservableArray, Trace } from '@nativescript/core';
 import { Screen } from '@nativescript/core/platform';
 import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { ValueFormatter } from '../formatter/ValueFormatter';
+import { MPPointF } from './MPPointF';
+import { MPSize } from './MPSize';
 
 export const ChartTraceCategory = 'NativescriptChart';
 
@@ -298,52 +300,6 @@ export namespace Utils {
         return Math.ceil(-Math.log10(i)) + 2;
     }
 
-    // /**
-    //  * Converts the provided Integer List to an int array.
-    //  *
-    //  * @param integers
-    //  * @return
-    //  */
-    //export function convertIntegers(integers: number[]) {
-
-    //     const ret = [];
-
-    //     copyIntegers(integers, ret);
-
-    //     return ret;
-    // }
-
-    //export function copyIntegers(from: number[],  to){
-    //     const count = to.length < from.length ? to.length : from.length;
-    //     for(let i = 0 ; i < count ; i++){
-    //         to[i] = from.get(i);
-    //     }
-    // }
-
-    // /**
-    //  * Converts the provided String List to a String array.
-    //  *
-    //  * @param strings
-    //  * @return
-    //  */
-    // function[] convertStrings(List<String> strings) {
-
-    //     String[] ret = new String[strings.length];
-
-    //     for (let i = 0; i < ret.length; i++) {
-    //         ret[i] = strings.get(i);
-    //     }
-
-    //     return ret;
-    // }
-
-    // copyStrings(List<String> from, String[] to){
-    //     int count = to.length < from.length ? to.length : from.length;
-    //     for(let i = 0 ; i < count ; i++){
-    //         to[i] = from.get(i);
-    //     }
-    // }
-
     /**
      * Replacement for the Math.nextUp(...) method that is only available in
      * HONEYCOMB and higher. Dat's some seeeeek sheeet.
@@ -407,48 +363,6 @@ export namespace Utils {
         };
     }
 
-    // export function velocityTrackerPointerUpCleanUpIfNecessary(ev, tracker) {
-    //     // Check the dot product of current velocities.
-    //     // If the pointer that left was opposing another velocity vector, clear.
-    //     tracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
-    //     const upIndex = ev.getActionIndex();
-    //     const id1 = ev.getPointerId(upIndex);
-    //     const x1 = tracker.getXVelocity(id1);
-    //     const y1 = tracker.getYVelocity(id1);
-    //     for (let i = 0, count = ev.getPointerCount(); i < count; i++) {
-    //         if (i == upIndex) continue;
-
-    //         const id2 = ev.getPointerId(i);
-    //         const x = x1 * tracker.getXVelocity(id2);
-    //         const y = y1 * tracker.getYVelocity(id2);
-
-    //         const dot = x + y;
-    //         if (dot < 0) {
-    //             tracker.clear();
-    //             break;
-    //         }
-    //     }
-    // }
-
-    /**
-     * Original method view.postInvalidateOnAnimation() only supportd in API >=
-     * 16, This is a replica of the code from ViewCompat.
-     *
-     * @param view
-     */
-    //    export function ostInvalidateOnAnimation(view) {
-    //         if (Build.VERSION.SDK_INT >= 16) view.postInvalidateOnAnimation();
-    //         else view.postInvalidateDelayed(10);
-    //     }
-
-    // export function getMinimumFlingVelocity() {
-    //     return mMinimumFlingVelocity;
-    // }
-
-    // export function getMaximumFlingVelocity() {
-    //     return mMaximumFlingVelocity;
-    // }
-
     /**
      * returns an angle between 0 < 360 (not less than zero, less than 360)
      */
@@ -458,18 +372,14 @@ export namespace Utils {
         return angle % 360;
     }
 
-    // let mDrawableBoundsCache = new Rect(0,0,0,0);
+    // const mDrawableBoundsCache = new Rect(0, 0, 0, 0);
 
-    // export function drawImage(canvas: Canvas, drawable, x, y, width, height) {
-    //     const drawOffsetx = x - (width / 2);
-    //     const drawOffsety = y - (height / 2);
+    // export function drawImage(canvas: Canvas, drawable: ImageSource, x, y, width, height) {
+    //     const drawOffsetx = x - width / 2;
+    //     const drawOffsety = y - height / 2;
 
     //     drawable.copyBounds(mDrawableBoundsCache);
-    //     drawable.setBounds(
-    //             this.mDrawableBoundsCache.left,
-    //             this.mDrawableBoundsCache.top,
-    //             this.mDrawableBoundsCache.left + width,
-    //             this.mDrawableBoundsCache.top + width);
+    //     drawable.setBounds(this.mDrawableBoundsCache.left, this.mDrawableBoundsCache.top, this.mDrawableBoundsCache.left + width, this.mDrawableBoundsCache.top + width);
 
     //     canvas.save();
     //     // translate to the correct position and draw
@@ -478,7 +388,7 @@ export namespace Utils {
     //     canvas.restore();
     // }
 
-    export function drawXAxisValue(c: Canvas, text, x, y, paint: Paint, anchor, angleDegrees) {
+    export function drawXAxisValue(c: Canvas, text: string, x: number, y: number, paint: Paint, anchor: MPPointF, angleDegrees: number) {
         let drawOffsetX = 0;
         let drawOffsetY = 0;
 
@@ -524,7 +434,7 @@ export namespace Utils {
         // paint.setTextAlign(originalTextAlign);
     }
 
-    export function drawMultilineText(c: Canvas, textLayout, x, y, textpaint: Paint, anchor, angleDegrees, lineHeight) {
+    export function drawMultilineText(c: Canvas, textLayout, x: number, y: number, anchor: MPPointF, angleDegrees: number, lineHeight: number) {
         let drawOffsetX = 0;
         let drawOffsetY = 0;
 
@@ -588,10 +498,10 @@ export namespace Utils {
         // paint.setTextAlign(originalTextAlign);
     }
 
-    export function drawMultilineTextConstrained(c: Canvas, text, x, y, paint: Paint, constrainedToSize, anchor, angleDegrees, lineHeight) {
-        const textLayout = new StaticLayout(text, paint, Math.max(Math.ceil(constrainedToSize.width), 1), 0 /*Layout.Alignment.ALIGN_NORMAL*/, 1, 0, false);
+    export function drawMultilineTextConstrained(c: Canvas, text: string, x: number, y: number, paint: Paint, constrainedToSize: MPSize, anchor: MPPointF, angleDegrees: number, lineHeight: number) {
+        const textLayout = new StaticLayout(text, paint, Math.max(Math.ceil(constrainedToSize.width), 1), LayoutAlignment.ALIGN_NORMAL, 1, 0, false);
 
-        drawMultilineText(c, textLayout, x, y, paint, anchor, angleDegrees, lineHeight);
+        drawMultilineText(c, textLayout, x, y, anchor, angleDegrees, lineHeight);
     }
 
     /**

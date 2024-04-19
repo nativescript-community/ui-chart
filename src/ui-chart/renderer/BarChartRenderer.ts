@@ -78,7 +78,8 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     }
 
     protected drawDataSet(c: Canvas, dataSet: IBarDataSet, index: number): boolean {
-        const trans = this.mChart.getTransformer(dataSet.axisDependency);
+        const chart = this.mChart;
+        const trans = chart.getTransformer(dataSet.axisDependency);
 
         const drawBorder = dataSet.barBorderWidth > 0;
         let borderPaint: Paint;
@@ -90,15 +91,18 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
         const phaseX = this.animator.phaseX;
         const phaseY = this.animator.phaseY;
+        const barData = chart.barData;
+        let barWidth = barData.barWidth;
+        if (barData.fixedBarScale) {
+            const scaleX = chart.viewPortScaleX;
+            barWidth /= scaleX;
+        }
 
         // draw the bar shadow before the values
-        if (this.mChart.drawBarShadowEnabled) {
+        if (chart.drawBarShadowEnabled) {
             const paint = this.shadowPaint;
             paint.setColor(dataSet.barShadowColor);
 
-            const barData = this.mChart.barData;
-
-            const barWidth = barData.barWidth;
             const barWidthHalf = barWidth / 2;
             let x;
 
@@ -130,17 +134,18 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         const buffer = this.mBarBuffers[index];
         buffer.setPhases(phaseX, phaseY);
         buffer.dataSetIndex = index;
-        buffer.inverted = this.mChart.isInverted(dataSet.axisDependency);
-        buffer.barWidth = this.mChart.barData.barWidth;
-        buffer.yAxisMin = this.mChart.getAxis(dataSet.axisDependency).axisMinimum;
-        buffer.yAxisMax = this.mChart.getAxis(dataSet.axisDependency).axisMaximum;
+        buffer.inverted = chart.isInverted(dataSet.axisDependency);
+
+        buffer.barWidth = barWidth;
+        buffer.yAxisMin = chart.getAxis(dataSet.axisDependency).axisMinimum;
+        buffer.yAxisMax = chart.getAxis(dataSet.axisDependency).axisMaximum;
 
         buffer.feed(dataSet);
 
         trans.pointValuesToPixel(buffer.buffer);
 
         const isSingleColor = dataSet.colors.length === 1;
-        // const isInverted = this.mChart.isInverted(dataSet.axisDependency);
+        // const isInverted = chart.isInverted(dataSet.axisDependency);
         const renderPaint = this.renderPaint;
         const previousShader = renderPaint.getShader();
         const shader = dataSet.fillShader;
@@ -151,7 +156,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             renderPaint.setColor(dataSet.getColor());
         }
 
-        const customRender = this.mChart.customRenderer;
+        const customRender = chart.customRenderer;
         for (let j = 0; j < buffer.length; j += 4) {
             if (!this.mViewPortHandler.isInBoundsLeft(buffer.buffer[j + 2])) {
                 continue;

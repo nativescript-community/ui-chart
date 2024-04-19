@@ -182,20 +182,20 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         // execute all drawing commands
         this.drawGridBackground(canvas);
         const xAxis = this.xAxis;
-        const axisLeft = this.axisLeft;
-        const axisRight = this.axisRight;
+        const axisLeft = this.mAxisLeft;
+        const axisRight = this.mAxisRight;
 
         // the order is important:
-        // * computeAxis needs axis.mAxisMinimum set in autoScale
+        // * computeAxis needs axis.axisMinimum set in autoScale
         // * calculateOffsets needs computeAxis because it needs axis longestLabel
         if (!noComputeAutoScaleOnNextDraw && this.autoScaleMinMaxEnabled) {
             this.autoScale();
         }
 
         if (!noComputeAxisOnNextDraw) {
-            this.axisRendererLeft.computeAxis(axisLeft.mAxisMinimum, axisLeft.mAxisMaximum, axisLeft.inverted);
-            this.axisRendererRight.computeAxis(axisRight.mAxisMinimum, axisRight.mAxisMaximum, axisRight.inverted);
-            this.xAxisRenderer.computeAxis(this.xAxis.mAxisMinimum, this.xAxis.mAxisMaximum, false);
+            this.axisRendererLeft?.computeAxis(axisLeft.axisMinimum, axisLeft.axisMaximum, axisLeft.inverted);
+            this.axisRendererRight?.computeAxis(axisRight.axisMinimum, axisRight.axisMaximum, axisRight.inverted);
+            this.xAxisRenderer?.computeAxis(this.xAxis.axisMinimum, this.xAxis.axisMaximum, false);
         }
 
         if (!this.offsetsCalculated) {
@@ -205,19 +205,19 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         if (xAxis.drawGridLinesBehindData) this.xAxisRenderer.renderGridLines(canvas);
         if (axisLeft.drawGridLinesBehindData) this.axisRendererLeft.renderGridLines(canvas);
-        if (axisRight.drawGridLinesBehindData) this.axisRendererRight.renderGridLines(canvas);
+        if (axisRight?.drawGridLinesBehindData) this.axisRendererRight.renderGridLines(canvas);
 
         if (xAxis.drawLimitLinesBehindData) this.xAxisRenderer.renderLimitLines(canvas);
         if (axisLeft.drawLimitLinesBehindData) this.axisRendererLeft.renderLimitLines(canvas);
-        if (axisRight.drawLimitLinesBehindData) this.axisRendererRight.renderLimitLines(canvas);
+        if (axisRight?.drawLimitLinesBehindData) this.axisRendererRight.renderLimitLines(canvas);
 
         this.xAxisRenderer.renderAxisLine(canvas);
         this.axisRendererLeft.renderAxisLine(canvas);
-        this.axisRendererRight.renderAxisLine(canvas);
+        this.axisRendererRight?.renderAxisLine(canvas);
 
         if (xAxis.drawLabelsBehindData) this.xAxisRenderer.renderAxisLabels(canvas);
         if (axisLeft.drawLabelsBehindData) this.axisRendererLeft.renderAxisLabels(canvas);
-        if (axisRight.drawLabelsBehindData) this.axisRendererRight.renderAxisLabels(canvas);
+        if (axisRight?.drawLabelsBehindData) this.axisRendererRight.renderAxisLabels(canvas);
 
         // make sure the data cannot be drawn outside the content-rect
         if (this.clipDataToContent) {
@@ -230,7 +230,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         if (!xAxis.drawGridLinesBehindData) this.xAxisRenderer.renderGridLines(canvas);
         if (!axisLeft.drawGridLinesBehindData) this.axisRendererLeft.renderGridLines(canvas);
-        if (!axisRight.drawGridLinesBehindData) this.axisRendererRight.renderGridLines(canvas);
+        if (axisRight?.drawGridLinesBehindData === false) this.axisRendererRight.renderGridLines(canvas);
 
         if (!this.clipHighlightToContent && this.clipDataToContent) {
             // restore before drawing highlight
@@ -249,11 +249,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         if (!xAxis.drawLimitLinesBehindData) this.xAxisRenderer.renderLimitLines(canvas);
         if (!axisLeft.drawLimitLinesBehindData) this.axisRendererLeft.renderLimitLines(canvas);
-        if (!axisRight.drawLimitLinesBehindData) this.axisRendererRight.renderLimitLines(canvas);
+        if (axisRight?.drawLimitLinesBehindData === false) this.axisRendererRight.renderLimitLines(canvas);
 
         if (!xAxis.drawLabelsBehindData) this.xAxisRenderer.renderAxisLabels(canvas);
         if (!axisLeft.drawLabelsBehindData) this.axisRendererLeft.renderAxisLabels(canvas);
-        if (!axisRight.drawLabelsBehindData) this.axisRendererRight.renderAxisLabels(canvas);
+        if (axisRight?.drawLabelsBehindData === false) this.axisRendererRight.renderAxisLabels(canvas);
 
         if (this.clipValuesToContent) {
             canvas.save();
@@ -291,13 +291,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
     protected prepareValuePxMatrix() {
         if (Trace.isEnabled()) {
-            CLog(CLogTypes.info, LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.xAxis.mAxisMinimum + ', xmax: ' + this.xAxis.mAxisMaximum + ', xdelta: ' + this.xAxis.mAxisRange);
+            CLog(CLogTypes.info, LOG_TAG, 'Preparing Value-Px Matrix, xmin: ' + this.xAxis.axisMinimum + ', xmax: ' + this.xAxis.axisMaximum + ', xdelta: ' + this.xAxis.axisRange);
         }
         if (this.mAxisRight?.enabled) {
-            this.rightAxisTransformer.prepareMatrixValuePx(this.xAxis.mAxisMinimum, this.xAxis.mAxisRange, this.mAxisRight.mAxisRange, this.mAxisRight.mAxisMinimum);
+            this.rightAxisTransformer.prepareMatrixValuePx(this.xAxis.axisMinimum, this.xAxis.axisRange, this.mAxisRight.axisRange, this.mAxisRight.axisMinimum);
         }
         if (this.mAxisLeft?.enabled || this.xAxis.enabled) {
-            this.leftAxisTransformer.prepareMatrixValuePx(this.xAxis.mAxisMinimum, this.xAxis.mAxisRange, this.mAxisLeft.mAxisRange, this.mAxisLeft.mAxisMinimum);
+            this.leftAxisTransformer.prepareMatrixValuePx(this.xAxis.axisMinimum, this.xAxis.axisRange, this.mAxisLeft.axisRange, this.mAxisLeft.axisMinimum);
         }
     }
 
@@ -332,13 +332,13 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.calcMinMax();
 
         if (this.mAxisLeft?.enabled) {
-            this.axisRendererLeft.computeAxis(this.mAxisLeft.mAxisMinimum, this.mAxisLeft.mAxisMaximum, this.mAxisLeft.inverted);
+            this.axisRendererLeft.computeAxis(this.mAxisLeft.axisMinimum, this.mAxisLeft.axisMaximum, this.mAxisLeft.inverted);
         }
         if (this.mAxisRight?.enabled) {
-            this.axisRendererRight.computeAxis(this.mAxisRight.mAxisMinimum, this.mAxisRight.mAxisMaximum, this.mAxisRight.inverted);
+            this.axisRendererRight.computeAxis(this.mAxisRight.axisMinimum, this.mAxisRight.axisMaximum, this.mAxisRight.inverted);
         }
         if (this.xAxis.enabled) {
-            this.xAxisRenderer.computeAxis(this.xAxis.mAxisMinimum, this.xAxis.mAxisMaximum, false);
+            this.xAxisRenderer.computeAxis(this.xAxis.axisMinimum, this.xAxis.axisMaximum, false);
         }
 
         if (this.mLegend != null && this.mLegend.enabled) {
@@ -667,7 +667,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             this,
             this.getTransformer(axis),
             this.getAxis(axis),
-            this.xAxis.mAxisRange,
+            this.xAxis.axisRange,
             scaleX,
             scaleY,
             this.viewPortHandler.getScaleX(),
@@ -698,7 +698,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
             this,
             this.getTransformer(axis),
             this.getAxis(axis),
-            this.xAxis.mAxisRange,
+            this.xAxis.axisRange,
             scaleX,
             scaleY,
             this.viewPortHandler.getScaleX(),
@@ -759,7 +759,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param maxXRange The maximum visible range of x-values.
      */
     public set visibleXRangeMaximum(maxXRange) {
-        const xScale = this.xAxis.mAxisRange / maxXRange;
+        const xScale = this.xAxis.axisRange / maxXRange;
         this.viewPortHandler.setMinimumScaleX(xScale);
     }
 
@@ -772,7 +772,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param minXRange The minimum visible range of x-values.
      */
     public set visibleXRangeMinimum(minXRange) {
-        const xScale = this.xAxis.mAxisRange / minXRange;
+        const xScale = this.xAxis.axisRange / minXRange;
         this.viewPortHandler.setMaximumScaleX(xScale);
     }
 
@@ -785,8 +785,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @param maxXRange
      */
     public setVisibleXRange(minXRange, maxXRange) {
-        const minScale = this.xAxis.mAxisRange / minXRange;
-        const maxScale = this.xAxis.mAxisRange / maxXRange;
+        const minScale = this.xAxis.axisRange / minXRange;
+        const maxScale = this.xAxis.axisRange / maxXRange;
         this.viewPortHandler.setMinMaxScaleX(minScale, maxScale);
     }
 
@@ -902,7 +902,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public centerViewTo(xValue, yValue, axis) {
         const yInView = this.getAxisRange(axis) / this.viewPortHandler.getScaleY();
-        const xInView = this.xAxis.mAxisRange / this.viewPortHandler.getScaleX();
+        const xInView = this.xAxis.axisRange / this.viewPortHandler.getScaleX();
 
         const job = MoveViewJob.getInstance(this.viewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this);
 
@@ -922,7 +922,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         const bounds = this.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentTop, axis);
 
         const yInView = this.getAxisRange(axis) / this.viewPortHandler.getScaleY();
-        const xInView = this.xAxis.mAxisRange / this.viewPortHandler.getScaleX();
+        const xInView = this.xAxis.axisRange / this.viewPortHandler.getScaleX();
 
         const job = AnimatedMoveViewJob.getInstance(this.viewPortHandler, xValue - xInView / 2, yValue + yInView / 2, this.getTransformer(axis), this, bounds.x, bounds.y, duration);
 
@@ -982,8 +982,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      * @return
      */
     protected getAxisRange(axis) {
-        if (axis === AxisDependency.LEFT) return this.mAxisLeft.mAxisRange;
-        else return this.mAxisRight && this.mAxisRight.mAxisRange;
+        if (axis === AxisDependency.LEFT) return this.mAxisLeft.axisRange;
+        else return this.mAxisRight && this.mAxisRight.axisRange;
     }
 
     /**
@@ -1231,7 +1231,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public get lowestVisibleX() {
         this.transformer.getValuesByTouchPoint(this.viewPortHandler.contentLeft, this.viewPortHandler.contentBottom, this.posForGetLowestVisibleX);
-        const result = Math.max(this.xAxis.mAxisMinimum, this.posForGetLowestVisibleX.x);
+        const result = Math.max(this.xAxis.axisMinimum, this.posForGetLowestVisibleX.x);
         return result;
     }
 
@@ -1246,7 +1246,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public get highestVisibleX() {
         this.transformer.getValuesByTouchPoint(this.viewPortHandler.contentRight, this.viewPortHandler.contentBottom, this.posForGetHighestVisibleX);
-        const result = Math.min(this.xAxis.mAxisMaximum, this.posForGetHighestVisibleX.x);
+        const result = Math.min(this.xAxis.axisMaximum, this.posForGetHighestVisibleX.x);
         return result;
     }
 
@@ -1398,10 +1398,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public get yChartMax() {
         let max = -Infinity;
         if (this.mAxisLeft.enabled) {
-            max = Math.max(this.mAxisLeft.mAxisMaximum, max);
+            max = Math.max(this.mAxisLeft.axisMaximum, max);
         }
         if (this.mAxisRight?.enabled) {
-            max = Math.max(this.mAxisRight.mAxisMaximum, max);
+            max = Math.max(this.mAxisRight.axisMaximum, max);
         }
         return max;
     }
@@ -1409,10 +1409,10 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     public get yChartMin() {
         let min = Infinity;
         if (this.mAxisLeft.enabled) {
-            min = Math.min(this.mAxisLeft.mAxisMinimum, min);
+            min = Math.min(this.mAxisLeft.axisMinimum, min);
         }
         if (this.mAxisRight?.enabled) {
-            min = Math.min(this.mAxisRight.mAxisMinimum, min);
+            min = Math.min(this.mAxisRight.axisMinimum, min);
         }
         return min;
     }

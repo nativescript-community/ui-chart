@@ -258,6 +258,14 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         return this.mData;
     }
 
+    get viewPortScaleX() {
+        return this.viewPortHandler.scaleX;
+    }
+
+    get viewPortScaleY() {
+        return this.viewPortHandler.scaleY;
+    }
+
     /**
      * Clears the chart from all data (sets it to null) and refreshes it (by
      * calling invalidate()).
@@ -706,15 +714,15 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     }
 
     public get xChartMax() {
-        return this.xAxis.mAxisMaximum;
+        return this.xAxis.axisMaximum;
     }
 
     public get xChartMin() {
-        return this.xAxis.mAxisMinimum;
+        return this.xAxis.axisMinimum;
     }
 
     public get xRange() {
-        return this.xAxis.mAxisRange;
+        return this.xAxis.axisRange;
     }
 
     /**

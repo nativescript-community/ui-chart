@@ -129,9 +129,9 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
             }
         }
 
-        this.mAxis.mAxisMinimum = this.mAxis.mEntries[0];
-        this.mAxis.mAxisMaximum = this.mAxis.mEntries[n - 1];
-        this.mAxis.mAxisRange = Math.abs(this.mAxis.mAxisMaximum - this.mAxis.mAxisMinimum);
+        this.mAxis.axisMinimum = this.mAxis.mEntries[0];
+        this.mAxis.axisMaximum = this.mAxis.mEntries[n - 1];
+        this.mAxis.axisRange = Math.abs(this.mAxis.axisMaximum - this.mAxis.axisMinimum);
     }
 
     public renderAxisLabels(c: Canvas) {
@@ -149,7 +149,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
         const to = this.mYAxis.drawTopYLabelEntry ? this.mYAxis.mEntryCount : this.mYAxis.mEntryCount - 1;
 
         for (let j = from; j < to; j++) {
-            const r = (this.mYAxis.mEntries[j] - this.mYAxis.mAxisMinimum) * factor;
+            const r = (this.mYAxis.mEntries[j] - this.mYAxis.axisMinimum) * factor;
 
             Utils.getPosition(center, r, this.mChart.rotationAngle, pOut);
 

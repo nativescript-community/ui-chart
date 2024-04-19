@@ -97,8 +97,8 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
 
         this.calcMinMax();
 
-        this.yAxisRenderer.computeAxis(this.yAxis.mAxisMinimum, this.yAxis.mAxisMaximum, this.yAxis.inverted);
-        this.xAxisRenderer.computeAxis(this.xAxis.mAxisMinimum, this.xAxis.mAxisMaximum, false);
+        this.yAxisRenderer.computeAxis(this.yAxis.axisMinimum, this.yAxis.axisMaximum, this.yAxis.inverted);
+        this.xAxisRenderer.computeAxis(this.xAxis.axisMinimum, this.xAxis.axisMaximum, false);
 
         if (this.mLegend != null && !this.mLegend.isLegendCustom()) this.legendRenderer.computeLegend(this.mData);
 
@@ -112,7 +112,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
         if (this.mData == null) return;
 
         if (this.xAxis.enabled) {
-            this.xAxisRenderer.computeAxis(this.xAxis.mAxisMinimum, this.xAxis.mAxisMaximum, false);
+            this.xAxisRenderer.computeAxis(this.xAxis.axisMinimum, this.xAxis.axisMaximum, false);
             this.xAxisRenderer.renderAxisLabels(c);
         }
 
@@ -150,7 +150,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
      */
     public get factor() {
         const content = this.viewPortHandler.contentRect;
-        return Math.min(content.width() / 2, content.height() / 2) / this.yAxis.mAxisRange;
+        return Math.min(content.width() / 2, content.height() / 2) / this.yAxis.axisRange;
     }
 
     /**
@@ -216,21 +216,21 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
      * Returns the maximum value this chart can display on it's y-axis.
      */
     public get yChartMax() {
-        return this.yAxis.mAxisMaximum;
+        return this.yAxis.axisMaximum;
     }
 
     /**
      * Returns the minimum value this chart can display on it's y-axis.
      */
     public get yChartMin() {
-        return this.yAxis.mAxisMinimum;
+        return this.yAxis.axisMinimum;
     }
 
     /**
      * Returns the range of y-values this chart can display.
      */
     public get yRange() {
-        return this.yAxis.mAxisRange;
+        return this.yAxis.axisRange;
     }
 
     customRenderer: CustomRenderer;

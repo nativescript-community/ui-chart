@@ -390,6 +390,18 @@ export class ViewPortHandler {
         this.mMatrixTouch.setValues(matrixBuffer);
     }
 
+    get scaleX() {
+        const matrixBuffer = this.mMatrixBuffer;
+        this.mMatrixTouch.getValues(matrixBuffer);
+        return matrixBuffer[Matrix.MSCALE_X];
+    }
+
+    get scaleY() {
+        const matrixBuffer = this.mMatrixBuffer;
+        this.mMatrixTouch.getValues(matrixBuffer);
+        return matrixBuffer[Matrix.MSCALE_Y];
+    }
+
     /**
      * limits the maximum scale and X translation of the given matrix
      *

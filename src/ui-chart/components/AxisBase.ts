@@ -185,12 +185,12 @@ export abstract class AxisBase extends ComponentBase {
     /**
      * don't touch this direclty, use setter
      */
-    public mAxisMaximum = 0;
+    protected mAxisMaximum = 0;
 
     /**
      * don't touch this directly, use setter
      */
-    public mAxisMinimum = 0;
+    protected mAxisMinimum = 0;
 
     /**
      * Set a suggested maximum value for this axis. If set, this will be used
@@ -207,7 +207,7 @@ export abstract class AxisBase extends ComponentBase {
     /**
      * the total range of values this axis covers
      */
-    public mAxisRange = 0;
+    axisRange = 0;
     /**
      * the total range of values this axis covers
      */
@@ -391,9 +391,8 @@ export abstract class AxisBase extends ComponentBase {
     public set axisMinimum(min) {
         this.mCustomAxisMin = true;
         this.mAxisMinimum = min;
-        this.mAxisRange = Math.abs(this.mAxisMaximum - min);
+        this.axisRange = Math.abs(this.mAxisMaximum - min);
     }
-
     public get axisMinimum() {
         return this.mAxisMinimum;
     }
@@ -401,7 +400,6 @@ export abstract class AxisBase extends ComponentBase {
     public get axisMaximum() {
         return this.mAxisMaximum;
     }
-
     /**
      * Set a custom maximum value for this axis. If set, this value will not be calculated
      * automatically depending on
@@ -412,7 +410,7 @@ export abstract class AxisBase extends ComponentBase {
     public set axisMaximum(max) {
         this.mCustomAxisMax = true;
         this.mAxisMaximum = max;
-        this.mAxisRange = Math.abs(max - this.mAxisMinimum);
+        this.axisRange = Math.abs(max - this.mAxisMinimum);
     }
 
     /**
@@ -452,6 +450,6 @@ export abstract class AxisBase extends ComponentBase {
         this.mAxisMinimum = min;
         this.mAxisMaximum = max;
         // actual range
-        this.mAxisRange = range;
+        this.axisRange = range;
     }
 }

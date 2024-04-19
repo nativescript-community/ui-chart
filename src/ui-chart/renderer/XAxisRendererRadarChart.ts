@@ -20,6 +20,8 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
         const chart = this.mChart;
         if (!axis.enabled || !axis.drawLabels) return;
 
+        const customRender = axis.customRenderer;
+        const customRenderFunction = customRender && customRender.drawLabel;
         const labelRotationAngleDegrees = axis.labelRotationAngle;
         const drawLabelAnchor: MPPointF = { x: 0.5, y: 0.25 };
         const paint = this.axisLabelsPaint;
@@ -46,7 +48,7 @@ export class XAxisRendererRadarChart extends XAxisRenderer {
 
             Utils.getPosition(center, chart.yRange * factor + axis.mLabelRotatedWidth / 2, angle, pOut);
 
-            this.drawLabel(c, label, pOut.x, pOut.y - axis.mLabelRotatedHeight / 2, drawLabelAnchor, labelRotationAngleDegrees, paint);
+            this.drawLabel(c, label, pOut.x, pOut.y - axis.mLabelRotatedHeight / 2, drawLabelAnchor, labelRotationAngleDegrees, paint, customRenderFunction);
         }
 
         // MPPointF.recycleInstance(center);

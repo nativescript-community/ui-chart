@@ -231,6 +231,6 @@ export class YAxis extends AxisBase {
         if (!this.mCustomAxisMax) {
             delta += (range / 100) * this.spaceTop;
         }
-        this.mAxisRange = range + delta;
+        this.axisRange = range + delta;
     }
 }

@@ -58,7 +58,7 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
     }
 
     protected calcMinMax() {
-        //mXAxis.mAxisRange = this.mData.getXVals().length - 1;
+        //mXAxis.axisRange = this.mData.getXVals().length - 1;
     }
 
     get maxVisibleValueCount() {

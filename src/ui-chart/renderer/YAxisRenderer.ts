@@ -104,15 +104,24 @@ export class YAxisRenderer extends AxisRenderer {
      */
     @profile
     protected drawYLabels(c: Canvas, fixedPosition, positions, offset) {
-        const mYAxis = this.mYAxis;
-        const from = mYAxis.drawBottomYLabelEntry ? 0 : 1;
-        const to = mYAxis.drawTopYLabelEntry ? mYAxis.mEntryCount : mYAxis.mEntryCount - 1;
+        const axis = this.mYAxis;
+        const customRender = axis.customRenderer;
+        const customRenderFunction = customRender && customRender.drawLabel;
+        const from = axis.drawBottomYLabelEntry ? 0 : 1;
+        const to = axis.drawTopYLabelEntry ? axis.mEntryCount : axis.mEntryCount - 1;
         // draw
         const paint = this.axisLabelsPaint;
+        const x = fixedPosition;
         for (let i = from; i < to; i++) {
-            const text = mYAxis.getFormattedLabel(i);
+            const text = axis.getFormattedLabel(i);
             if (text) {
-                c.drawText(text + '', fixedPosition, positions[i * 2 + 1] + offset, paint);
+                const y = positions[i * 2 + 1] + offset;
+                if (customRenderFunction) {
+                    customRenderFunction(c, axis, text, x, y, paint);
+                } else {
+                    // Utils.drawXAxisValue(c, text, x, y, paint, anchor, angleDegrees);
+                    c.drawText(text, x, y, paint);
+                }
             }
         }
     }

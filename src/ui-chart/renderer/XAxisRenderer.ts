@@ -7,6 +7,7 @@ import { Transformer } from '../utils/Transformer';
 import { Utils } from '../utils/Utils';
 import { ViewPortHandler } from '../utils/ViewPortHandler';
 import { AxisRenderer, CustomRendererGridLineFunction, CustomRendererLabelFunction, CustomRendererLimitLineFunction } from './AxisRenderer';
+import { MPSize } from '../utils/MPSize';
 
 export class XAxisRenderer extends AxisRenderer {
     protected xAxis: XAxis;
@@ -29,10 +30,10 @@ export class XAxisRenderer extends AxisRenderer {
         if (min === undefined || max === undefined || inverted === undefined) {
             const axis = this.mAxis;
             if (min === undefined) {
-                min = axis.mAxisMinimum;
+                min = axis.axisMinimum;
             }
             if (max === undefined) {
-                max = axis.mAxisMaximum;
+                max = axis.axisMaximum;
             }
             if (inverted === undefined) {
                 inverted = axis['isInverted'] ? axis['isInverted']() : false;
@@ -232,9 +233,9 @@ export class XAxisRenderer extends AxisRenderer {
         }
     }
 
-    protected drawLabel(c: Canvas, formattedLabel, x, y, anchor: MPPointF, angleDegrees, paint, customRenderFunction?: CustomRendererLabelFunction) {
+    protected drawLabel(c: Canvas, formattedLabel: string, x: number, y: number, anchor: MPPointF, angleDegrees: number, paint: Paint, customRenderFunction?: CustomRendererLabelFunction) {
         if (customRenderFunction) {
-            customRenderFunction(c, this, formattedLabel, x, y, paint, anchor, angleDegrees);
+            customRenderFunction(c, this.xAxis, formattedLabel, x, y, paint, anchor, angleDegrees);
         } else {
             Utils.drawXAxisValue(c, formattedLabel, x, y, paint, anchor, angleDegrees);
         }
@@ -423,7 +424,7 @@ export class XAxisRenderer extends AxisRenderer {
             const labelPosition = limitLine.labelPosition;
             const needsSize =
                 limitLine.ensureVisible || labelPosition === LimitLabelPosition.CENTER_TOP || labelPosition === LimitLabelPosition.RIGHT_TOP || labelPosition === LimitLabelPosition.LEFT_TOP;
-            let size: { width: number; height: number };
+            let size: MPSize;
 
             if (needsSize) {
                 size = Utils.calcTextSize(paint, label);
