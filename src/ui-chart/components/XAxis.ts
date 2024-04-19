@@ -1,5 +1,6 @@
 import { AxisBase } from './AxisBase';
 import { Utils } from '../utils/Utils';
+import { Chart } from '../charts/Chart';
 
 /**
  * enum for the position of the x-labels relative to the chart
@@ -60,8 +61,8 @@ export class XAxis extends AxisBase {
      */
     position = XAxisPosition.TOP;
 
-    constructor() {
-        super();
-        this.yOffset = 4; // -3
+    constructor(chart: WeakRef<Chart<any, any, any>>) {
+        super(chart);
+        this.yOffset = 4;
     }
 }

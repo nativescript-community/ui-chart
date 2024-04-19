@@ -202,7 +202,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             this.invalidate();
         });
 
-        this.xAxis = new XAxis();
+        this.xAxis = new XAxis(new WeakRef(this));
 
         if (Trace.isEnabled()) {
             CLog(CLogTypes.log, this.constructor.name, 'init()');
