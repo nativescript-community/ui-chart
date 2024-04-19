@@ -1242,7 +1242,7 @@ __metadata:
 
 "@nativescript-community/plugin-seed-tools@file:tools::locator=root-workspace-0b6124%40workspace%3A.":
   version: 1.0.0
-  resolution: "@nativescript-community/plugin-seed-tools@file:tools#tools::hash=80c054&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/plugin-seed-tools@file:tools#tools::hash=5a5f23&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@angular/animations": "npm:~17.3.3"
     "@angular/common": "npm:~17.3.3"
@@ -1300,11 +1300,12 @@ __metadata:
     ts-patch: "npm:3.1.2"
     tslib: "npm:2.6.2"
     typedoc: "npm:~0.25.13"
+    typedoc-plugin-remove-references: "npm:0.0.6"
     typescript: "npm:~5.2.2"
     vue: "npm:^2.7.16"
     yargs: "npm:^17.7.2"
     zone.js: "npm:~0.14.4"
-  checksum: 32e7ef126af555fc17758a7a4d1a6db2d2d7fd25a02e66c21121821f68913a9c2087eb0f4252aae4612c22db8a7af5083c7fa43d46cae73cda53a4f3b0f5d329
+  checksum: 9c5ea3c9c50fca91cf67873020f65e779940710522768c4bffacc251be89c8eb8375799668953537e824460a9a14c5d99c9bf0ea2d1222ca360e30475b449e10
   languageName: node
   linkType: hard
 
@@ -12108,6 +12109,13 @@ __metadata:
   dependencies:
     is-typedarray: "npm:^1.0.0"
   checksum: 7c850c3433fbdf4d04f04edfc751743b8f577828b8e1eb93b95a3bce782d156e267d83e20fb32b3b47813e69a69ab5e9b5342653332f7d21c7d1210661a7a72c
+  languageName: node
+  linkType: hard
+
+"typedoc-plugin-remove-references@npm:0.0.6":
+  version: 0.0.6
+  resolution: "typedoc-plugin-remove-references@npm:0.0.6"
+  checksum: 7bfa040b97db4d0ec7bf84e0f640e25eb9bcd67f5fb668d3afd95947825ddba19226ec49d10cc31b5ec9530e8c3de2f1409bd4056c2011d79ba07be16d5cde0c
   languageName: node
   linkType: hard
 

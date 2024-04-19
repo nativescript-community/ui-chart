@@ -3,5 +3,11 @@
     "angular": false,
     "demos": [
         "vue"
-    ]
+    ],
+    "doc": {
+        "plugin": [
+            "typedoc-plugin-remove-references"
+        ],
+        "includeSubDirDefinitions": true
+    }
 }
