@@ -10,6 +10,12 @@
 
 ---
 
+## Migration to 2.x
+
+In 2.x most methods like `setColor`/`getColor` have been changed to properties like `color`
+You can either to it manually and update them all (you should get tsc errors for removed or renamed methods), or you can use a regexp like `/set([A-Z])(\w*?)\(/` to search and replace (first group should be lowercase in the replace) with something like `\L$1$2=(`
+Then use typings to fix potential name change
+
 ## Usage
 
 For gestures to work, make sure to add the following code block inside main application file (e.g. app.ts):
