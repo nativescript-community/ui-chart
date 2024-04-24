@@ -251,7 +251,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                     // we still draw stacked bars, but there is one
                     // non-stacked
                     // in between
-                    if (vals == null) {
+                    if (!vals) {
                         if (!this.mViewPortHandler.isInBoundsTop(buffer.buffer[bufferIndex + 1])) {
                             break;
                         }
@@ -375,7 +375,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
                         }
                     }
 
-                    bufferIndex = vals == null ? bufferIndex + 4 : bufferIndex + 4 * vals.length;
+                    bufferIndex = !vals ? bufferIndex + 4 : bufferIndex + 4 * vals.length;
                     index++;
                 }
             }
@@ -398,10 +398,10 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
      * @param high
      * @param bar
      */
-    protected setHighlightDrawPos(high: Highlight, bar: RectF) {
-        high.drawX = bar.centerY();
-        high.drawY = bar.right;
-    }
+    // protected setHighlightDrawPos(high: Highlight, bar: RectF) {
+    //     high.drawX = bar.centerY();
+    //     high.drawY = bar.right;
+    // }
 
     protected isDrawingValuesAllowed(chart: ChartInterface) {
         return chart.data.entryCount < chart.maxVisibleValueCount * this.mViewPortHandler.getScaleY();

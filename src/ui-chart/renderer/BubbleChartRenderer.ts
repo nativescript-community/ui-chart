@@ -198,7 +198,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const set = bubbleData.getDataSetByIndex(high.dataSetIndex);
             const yKey = set.yProperty;
 
-            if (set == null || !set.highlightEnabled) {
+            if (!set || !set.highlightEnabled) {
                 continue;
             }
 
@@ -252,7 +252,7 @@ export class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
             }
 
             const paint = this.highlightPaint;
-            paint.setColor(set.highLightColor);
+            paint.setColor(set.highlightColor);
             paint.setStrokeWidth(set.highlightCircleWidth);
 
             if (customRender && customRender.drawHighlight) {

@@ -41,6 +41,8 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
      */
     minOffset: number = 0;
 
+    drawHighlight = true;
+
     protected init() {
         super.init();
 
@@ -66,13 +68,13 @@ export abstract class PieRadarChartBase<U extends Entry, D extends IDataSet<U>, 
     }
 
     public notifyDataSetChanged() {
-        if (this.mData == null) {
+        if (!this.mData) {
             return;
         }
 
         this.calcMinMax();
 
-        if (this.mLegend != null && this.mLegend.enabled) {
+        if (this.mLegend?.enabled) {
             this.legendRenderer.computeLegend(this.mData);
         }
 

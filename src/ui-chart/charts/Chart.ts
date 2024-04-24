@@ -170,6 +170,10 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     maxHighlightDistance = 500;
 
     /**
+     * Wether to filter highlights by axis. Default is true
+     */
+    highlightsFilterByAxis = true;
+    /**
      * tasks to be done after the view is setup
      */
     protected jobs = [];
@@ -234,7 +238,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.mData = data;
         this.offsetsCalculated = false;
 
-        if (data == null) {
+        if (!data) {
             return;
         }
 
@@ -294,7 +298,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * null or contains no entries).
      */
     public get length() {
-        if (this.mData == null) return true;
+        if (!this.mData) return true;
         else {
             if (this.mData.entryCount <= 0) return true;
             else return false;
@@ -328,7 +332,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     protected setupDefaultFormatter(min, max) {
         let reference = 0;
 
-        if (this.mData == null || this.mData.entryCount < 2) {
+        if (!this.mData || this.mData.entryCount < 2) {
             reference = Math.max(Math.abs(min), Math.abs(max));
         } else {
             reference = Math.abs(max - min);
@@ -343,7 +347,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     public onDraw(canvas: Canvas) {
         super.onDraw(canvas);
 
-        if (this.mData === null) {
+        if (!this.mData) {
             const hasText = this.noDataText && this.noDataText.length > 0;
 
             if (hasText) {
@@ -359,7 +363,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     protected drawDescription(c: Canvas) {
         // check if description should be drawn
-        if (this.mDescription != null && this.mDescription.enabled) {
+        if (this.mDescription?.enabled) {
             const position = this.mDescription.position;
             const paint = Utils.getTempPaint();
             paint.setFont(this.mDescription.typeface);
@@ -370,7 +374,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
 
             const vph = this.viewPortHandler;
             // if no position specified, draw on default position
-            if (position == null) {
+            if (!position) {
                 x = vph.chartWidth - vph.offsetRight - this.mDescription.xOffset;
                 y = vph.chartHeight - vph.offsetBottom - this.mDescription.yOffset;
             } else {
@@ -494,27 +498,26 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @param high         - the highlight object
      * @param callListener - call the listener
      */
-    public highlight(high: Highlight, callListener = false) {
+    public highlight(high: Highlight | Highlight[], callListener = false) {
         let e: Entry = null;
-
-        if (high == null) {
+        let highlight = Array.isArray(high) ? high[0] : high;
+        if (!high) {
             this.indicesToHighlight = null;
         } else {
-            e = this.mData.getEntryForHighlight(high);
-            if (e == null) {
+            e = this.mData.getEntryForHighlight(highlight);
+            if (!e) {
                 this.indicesToHighlight = null;
-                high = null;
+                highlight = null;
             } else {
-                high.entry = e;
+                highlight.entry = e;
                 // set the indices to highlight
-                this.indicesToHighlight = [high];
+                this.indicesToHighlight = [highlight];
             }
         }
-
         this.lastHighlighted = this.indicesToHighlight;
 
         if (callListener) {
-            this.notify({ eventName: 'highlight', object: this, entry: e, highlight: high } as HighlightEventData);
+            this.notify({ eventName: 'highlight', object: this, entry: e, highlight, highlights: Array.isArray(high) ? high : [highlight] } as HighlightEventData);
         }
 
         // redraw the chart
@@ -523,6 +526,54 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         this.invalidate();
     }
 
+    /**
+     * Highlights the value selected by touch gesture. Unlike
+     * highlightValues(...), this generates a callback to the
+     * OnChartValueSelectedListener.
+     *
+     * @param high         - the highlight object
+     * @param callListener - call the listener
+     */
+    public highlights(highs: Highlight[], callListener = false) {
+        const e: Entry = null;
+
+        if (highs.length === 0) {
+            this.indicesToHighlight = null;
+        } else {
+            highs = highs
+                .map((h) => {
+                    if (!h.entry) {
+                        h.entry = this.mData.getEntryForHighlight(h);
+                    }
+                    return h;
+                })
+                .filter((h) => !!h.entry);
+            this.indicesToHighlight = highs.length ? highs : null;
+        }
+        this.lastHighlighted = this.indicesToHighlight;
+
+        if (callListener) {
+            this.notify({ eventName: 'highlight', object: this, entry: highs?.[0]?.entry, highlight: highs?.[0], highlights: highs } as HighlightEventData);
+        }
+
+        // redraw the chart
+        this.noComputeAutoScaleOnNextDraw = true;
+        this.noComputeAxisOnNextDraw = true;
+        this.invalidate();
+    }
+
+    /**
+     * Returns the Highlights (contains x-index and DataSet index) of the
+     * selected value at the given touch polet inside the Line-, Scatter-, or
+     * CandleStick-Chart.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public getHighlightsByTouchPoint(x, y) {
+        return this.highlighter.getHighlight(x, y);
+    }
     /**
      * Returns the Highlight object (contains x-index and DataSet index) of the
      * selected value at the given touch polet inside the Line-, Scatter-, or
@@ -533,10 +584,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @return
      */
     public getHighlightByTouchPoint(x, y) {
-        if (this.mData == null) {
-            console.error(LOG_TAG, "Can't select by touch. No data set.");
-            return null;
-        } else return this.highlighter.getHighlight(x, y);
+        return this.getHighlightsByTouchPoint(x, y)?.[0];
     }
     /**
      * Returns the Highlight object (contains x-index and DataSet index) of the
@@ -548,7 +596,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * @return
      */
     public getHighlightByXValue(xValue) {
-        if (this.mData == null) {
+        if (!this.mData) {
             return null;
         } else {
             return this.highlighter.getHighlightsAtXValue(xValue);
@@ -594,7 +642,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      */
     protected drawMarkers(canvas: Canvas) {
         // if there is no marker view or drawing marker is disabled
-        if (this.marker == null || !this.drawMarkersEnabled || !this.hasValuesToHighlight) return;
+        if (!this.marker || !this.drawMarkersEnabled || !this.hasValuesToHighlight) return;
 
         for (let i = 0; i < this.indicesToHighlight.length; i++) {
             const highlight = this.indicesToHighlight[i];
@@ -605,7 +653,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
             const entryIndex = set.getEntryIndex(e as any);
 
             // make sure entry not null
-            if (e == null || entryIndex > set.entryCount * this.animator.phaseX) continue;
+            if (!e || entryIndex > set.entryCount * this.animator.phaseX) continue;
 
             const pos = this.getMarkerPosition(highlight);
 
@@ -898,7 +946,8 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         if (needsDataSetChanged) {
             this.notifyDataSetChanged();
         } else {
-            this.calculateOffsets(); // needs chart size
+            this.offsetsCalculated = false;
+            this.invalidate(); // needs chart size
         }
 
         for (const r of this.jobs) {
@@ -940,9 +989,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     disableScroll() {
         if (__ANDROID__) {
             const parent: android.view.ViewParent = this.nativeViewProtected?.getParent();
-            if (parent != null) {
-                parent.requestDisallowInterceptTouchEvent(true);
-            }
+            parent?.requestDisallowInterceptTouchEvent(true);
         }
     }
 
@@ -952,9 +999,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     enableScroll() {
         if (__ANDROID__) {
             const parent: android.view.ViewParent = this.nativeViewProtected?.getParent();
-            if (parent != null) {
-                parent.requestDisallowInterceptTouchEvent(false);
-            }
+            parent?.requestDisallowInterceptTouchEvent(false);
         }
     }
 }

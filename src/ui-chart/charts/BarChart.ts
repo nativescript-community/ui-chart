@@ -87,26 +87,35 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param y
      * @return
      */
-    public getHighlightByTouchPoint(x: number, y: number): Highlight {
-        if (this.mData == null) {
+    public getHighlightsByTouchPoint(x: number, y: number) {
+        if (!this.mData) {
             console.error(LOG_TAG, "Can't select by touch. No data set.");
             return null;
         }
-
-        const h = this.highlighter.getHighlight(x, y);
-        if (h === null || !this.highlightFullBarEnabled) {
-            return h;
-        }
-
+        return this.highlighter.getHighlight(x, y);
+    }
+    /**
+     * Returns the Highlight object (contains x-index and DataSet index) of the selected value at the given touch
+     * point
+     * inside the BarChart.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public getHighlightByTouchPoint(x: number, y: number): Highlight {
+        // if (h === null || !this.highlightFullBarEnabled) {
+        return this.getHighlightsByTouchPoint(x, y)?.[0];
+        // }
         // For isHighlightFullBarEnabled, remove stackIndex
-        return {
-            x: h.x,
-            y: h.y,
-            xPx: h.xPx,
-            yPx: h.yPx,
-            dataSetIndex: h.dataSetIndex,
-            axis: h.axis
-        };
+        // return {
+        //     x: h.x,
+        //     y: h.y,
+        //     xPx: h.xPx,
+        //     yPx: h.yPx,
+        //     dataSetIndex: h.dataSetIndex,
+        //     axis: h.axis
+        // };
     }
 
     /**
@@ -119,7 +128,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
     public getBarBounds(e: BarEntry): RectF {
         // WARNING: wont work if index is used as xKey(xKey not set)
         const { set, index } = this.mData.getDataSetAndIndexForEntry(e);
-        if (set === null) {
+        if (!set) {
             return new RectF(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
         }
 
@@ -169,11 +178,7 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param barSpace   the space between individual bars in values (not pixels) e.g. 0.1 for bar width 1
      */
     public groupBars(fromX, groupSpace, barSpace) {
-        if (this.barData === null) {
-            throw new Error('You need to set data for the chart before grouping bars.');
-        } else {
-            this.barData.groupBars(fromX, groupSpace, barSpace);
-            this.notifyDataSetChanged();
-        }
+        this.barData.groupBars(fromX, groupSpace, barSpace);
+        this.notifyDataSetChanged();
     }
 }

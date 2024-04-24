@@ -11,6 +11,6 @@ export interface IHighlighter {
      * @param y
      * @return
      */
-    getHighlight(x, y): Highlight;
+    getHighlight(x, y): Highlight[];
     getHighlightsAtXValue(xVal, x?, y?): Highlight[];
 }

@@ -302,7 +302,7 @@ export abstract class AxisBase extends ComponentBase {
      * @param f
      */
     public set valueFormatter(f: IAxisValueFormatter) {
-        if (f == null) this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);
+        if (!f) this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);
         else this.mAxisValueFormatter = f;
     }
 
@@ -310,7 +310,7 @@ export abstract class AxisBase extends ComponentBase {
      * Returns the formatter used for formatting the axis labels.
      */
     public get valueFormatter() {
-        if (this.mAxisValueFormatter == null || (this.mAxisValueFormatter instanceof DefaultAxisValueFormatter && this.mAxisValueFormatter.decimalDigits !== this.mDecimals)) {
+        if (!this.mAxisValueFormatter || (this.mAxisValueFormatter instanceof DefaultAxisValueFormatter && this.mAxisValueFormatter.decimalDigits !== this.mDecimals)) {
             this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals);
         }
 

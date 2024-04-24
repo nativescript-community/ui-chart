@@ -18,7 +18,7 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
 
     /**
      * Sets the width used for drawing borders around the bars.
-     * If borderWidth == 0, no border will be drawn.
+     * If borderWidth === 0, no border will be drawn.
      */
     barBorderWidth = 0.0;
 
@@ -44,14 +44,14 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
 
     constructor(values, label, xProperty?, yProperty?) {
         super(values, label, xProperty, yProperty);
-        this.highLightColor = 'black';
+        this.highlightColor = 'black';
         this.init();
     }
 
     private calcEntryRanges(e: BarEntry) {
         const values = e.yVals;
 
-        if (values == null || values.length === 0) return;
+        if (!values || values.length === 0) return;
 
         e.ranges = [];
 
@@ -108,7 +108,7 @@ export class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         const yProperty = this.yProperty;
         const yVal = e?.[yProperty];
         if (e && !isNaN(yVal)) {
-            if (e.yVals == null) {
+            if (!e.yVals) {
                 if (yVal < this.mYMin) this.mYMin = yVal;
                 if (yVal > this.mYMax) this.mYMax = yVal;
             } else {

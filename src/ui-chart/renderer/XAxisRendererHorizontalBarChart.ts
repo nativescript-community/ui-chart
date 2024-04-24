@@ -152,7 +152,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
     protected drawGridLine(c: Canvas, rect: RectF, x, y, axisValue, paint: Paint, customRendererFunc: CustomRendererGridLineFunction) {
         if (customRendererFunc) {
-            customRendererFunc(c, this, rect, x, y, axisValue, paint);
+            customRendererFunc(c, this.mAxis, rect, x, y, axisValue, paint);
         } else {
             c.drawLine(rect.right, y, rect.left, y, paint);
         }
@@ -188,7 +188,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         const axis = this.xAxis;
         const limitLines = axis.limitLines;
 
-        if (limitLines == null || limitLines.length <= 0) return;
+        if (!limitLines || limitLines.length <= 0) return;
 
         const pts = Utils.getTempArray(2);
         pts[0] = 0;
@@ -232,7 +232,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
             if (lineWidth > 0) {
                 if (customRendererFunc) {
-                    customRendererFunc(c, this, l, rect, pts[1], paint);
+                    customRendererFunc(c, axis, l, rect, pts[1], paint);
                 } else {
                     c.drawLine(rect.left, pts[1], rect.right, pts[1], paint);
                 }
@@ -246,7 +246,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
             const label = l.label;
 
             // if drawing the limit-value label is enabled
-            if (label != null && label !== '') {
+            if (label?.length) {
                 paint.setStyle(l.textStyle);
                 paint.setPathEffect(null);
                 paint.setColor(l.textColor);

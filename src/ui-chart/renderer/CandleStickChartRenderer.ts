@@ -47,7 +47,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
             // get the entry
             const e = dataSet.getEntryForIndex(j);
 
-            if (e == null) continue;
+            if (!e) continue;
 
             const xPos = dataSet.getEntryXValue(e, j);
 
@@ -288,7 +288,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
         for (const high of indices) {
             const set = candleData.getDataSetByIndex(high.dataSetIndex);
 
-            if (set == null || !set.highlightEnabled) continue;
+            if (!set || !set.highlightEnabled) continue;
 
             if (high.entry) {
                 entry = high.entry as CandleEntry;
@@ -312,7 +312,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
             if (customRender && customRender.drawHighlight) {
                 customRender.drawHighlight(c, high, set, paint);
             } else {
-                this.drawHighlightLines(c, pix.x, pix.y, set);
+                this.drawHighlightLines(c, high.xPx, high.yPx, set);
             }
         }
     }

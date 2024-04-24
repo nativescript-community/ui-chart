@@ -308,7 +308,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                     // we still draw stacked bars, but there is one
                     // non-stacked
                     // in between
-                    if (vals == null) {
+                    if (!vals) {
                         if (!this.mViewPortHandler.isInBoundsRight(x)) {
                             break;
                         }
@@ -334,7 +334,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             );
                         }
 
-                        if (isDrawIconsEnabled && entry.icon != null) {
+                        if (isDrawIconsEnabled && entry.icon) {
                             const icon = entry.icon;
 
                             let px = x;
@@ -412,7 +412,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         }
                     }
 
-                    bufferIndex = vals == null ? bufferIndex + 4 : bufferIndex + 4 * vals.length;
+                    bufferIndex = !vals ? bufferIndex + 4 : bufferIndex + 4 * vals.length;
                     index++;
                 }
             }
@@ -427,7 +427,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const high = indices[i];
             const set = barData.getDataSetByIndex(high.dataSetIndex);
 
-            if (set === null || !set.highlightEnabled) {
+            if (!set || !set.highlightEnabled) {
                 continue;
             }
             if (high.entry) {
@@ -446,7 +446,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const trans = this.mChart.getTransformer(set.axisDependency);
 
             const paint = this.highlightPaint;
-            paint.setColor(set.highLightColor);
+            paint.setColor(set.highlightColor);
             paint.setAlpha(set.highLightAlpha);
 
             const isStack = high.stackIndex >= 0 && entry.isStacked ? true : false;
@@ -471,7 +471,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const x = set.getEntryXValue(entry, index);
             this.prepareBarHighlight(x, y1, y2, barData.barWidth / 2, trans, barRect);
 
-            this.setHighlightDrawPos(high, barRect);
+            // this.setHighlightDrawPos(high, barRect);
             const customRender = this.mChart.customRenderer;
             if (customRender && customRender.drawHighlight) {
                 const rect = barRect;

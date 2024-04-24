@@ -9,23 +9,26 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
         super(chart);
     }
 
-    public getHighlight(x: number, y: number): Highlight {
-        const high = super.getHighlight(x, y);
-        if (high === null) {
-            return null;
-        }
+    protected getChartData() {
+        return this.mChart.barData;
+    }
 
+    public getHighlight(x: number, y: number) {
         const pos = this.getValsForTouch(x, y);
-        const barData = this.mChart.barData;
+        const xVal = pos.x;
 
-        const set = barData.getDataSetByIndex(high.dataSetIndex);
-        if (set.stacked) {
-            return this.getStackedHighlight(high, set, pos.x, pos.y);
-        }
+        return this.getHighlightForX(xVal, x, y).map((high) => {
+            const barData = this.getChartData();
 
-        // MPPointD.recycleInstance(pos);
+            const set = barData.getDataSetByIndex(high.dataSetIndex);
+            if (set.stacked) {
+                return this.getStackedHighlight(high, set, x, y, xVal, pos.y);
+            }
 
-        return high;
+            // MPPointD.recycleInstance(pos);
+
+            return high;
+        });
     }
 
     /**
@@ -38,14 +41,14 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
      * @param yVal
      * @return
      */
-    public getStackedHighlight(high: Highlight, set: IBarDataSet, xVal, yVal): Highlight {
+    public getStackedHighlight(high: Highlight, set: IBarDataSet, touchX, touchY, xVal, yVal): Highlight {
         const { entry, index } = set.getEntryAndIndexForXValue(xVal, yVal);
-        if (entry == null) {
+        if (!entry) {
             return null;
         }
 
         // not stacked
-        if (entry.yVals == null) {
+        if (!entry.yVals) {
             return high;
         }
 
@@ -60,6 +63,8 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
             return {
                 x: set.getEntryXValue(entry, index),
                 y: entry[yKey],
+                xTouchPx: touchX,
+                yTouchPx: touchY,
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex: high.dataSetIndex,
@@ -81,7 +86,7 @@ export class BarHighlighter extends ChartHighlighter<BarDataProvider> {
      * @return
      */
     protected getClosestStackIndex(ranges: any[], value): number {
-        if (ranges === null || ranges.length === 0) {
+        if (!ranges || ranges.length === 0) {
             return 0;
         }
 

@@ -59,7 +59,7 @@ export class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
     }
 
     protected calcMinMaxForEntry(e?: PieEntry, index?: number) {
-        if (e === null) return;
+        if (!e) return;
 
         this.calcMinMaxY(e, index);
     }

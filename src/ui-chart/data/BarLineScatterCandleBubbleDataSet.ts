@@ -14,5 +14,5 @@ export abstract class BarLineScatterCandleBubbleDataSet<T extends Entry> extends
      * forget to resolve the color using getResources().getColor(...) or
      * new Color(255, ...).
      */
-    highLightColor: string | Color = '#FFBB73';
+    highlightColor: string | Color = '#FFBB73';
 }

@@ -48,7 +48,8 @@ export interface IDataSet<T extends Entry> {
      */
     readonly entryCount: number;
 
-    /**
+    /**getEntryYValue
+     *
      * Returns the values that belong to DataSet.
      */
     values: T[] | ObservableArray<T>;
@@ -57,6 +58,8 @@ export interface IDataSet<T extends Entry> {
      * Calculates the minimum and maximum x and y values (mXMin, this.mXMax, this.mYMin, this.mYMax).
      */
     calcMinMax();
+
+    getEntryYValue(e: T): number;
 
     /**
      * Calculates the min and max y-values from the Entry closest to the given fromX to the Entry closest to the given toX value.

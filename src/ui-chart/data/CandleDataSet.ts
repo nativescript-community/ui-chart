@@ -65,7 +65,7 @@ export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
     decreasingPaintStyle = Style.FILL;
 
     /**
-     * color for open == close
+     * color for open === close
      */
     neutralColor: Color | string = ColorTemplate.COLOR_SKIP;
 
@@ -100,6 +100,12 @@ export class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
             this.closeProperty = closeProperty;
         }
         this.init();
+    }
+
+    public getEntryYValue(e: CandleEntry) {
+        const lowValue = e[this.lowProperty] || 0;
+        const highValue = e[this.highProperty] || 0;
+        return (lowValue + highValue) / 2;
     }
 
     protected calcMinMaxForEntry(e?: CandleEntry, index?: number) {

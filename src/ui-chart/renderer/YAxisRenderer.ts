@@ -159,7 +159,7 @@ export class YAxisRenderer extends AxisRenderer {
      */
     protected drawGridLine(c: Canvas, rect: RectF, x, y, axisValue, paint: Paint, customRendererFunc: CustomRendererGridLineFunction) {
         if (customRendererFunc) {
-            customRendererFunc(c, this, rect, x, y, axisValue, paint);
+            customRendererFunc(c, this.mAxis, rect, x, y, axisValue, paint);
         } else {
             c.drawLine(rect.left, y, rect.right, y, paint);
         }
@@ -266,7 +266,7 @@ export class YAxisRenderer extends AxisRenderer {
         }
         const limitLines = axis.limitLines;
 
-        if (limitLines == null || limitLines.length <= 0) return;
+        if (!limitLines || limitLines.length <= 0) return;
 
         const pts = Utils.getTempArray(2);
         pts[0] = 0;
@@ -306,7 +306,7 @@ export class YAxisRenderer extends AxisRenderer {
 
             if (lineWidth > 0) {
                 if (customRendererFunc) {
-                    customRendererFunc(c, this, l, rect, pts[1], paint);
+                    customRendererFunc(c, axis, l, rect, pts[1], paint);
                 } else {
                     c.drawLine(rect.left, pts[1], rect.right, pts[1], paint);
                 }

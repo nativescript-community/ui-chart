@@ -18,37 +18,50 @@ export class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
         super(chart);
 
         // if there is BarData, create a BarHighlighter
-        this.barHighlighter = barChart.barData == null ? null : new BarHighlighter(barChart);
+        this.barHighlighter = !barChart.barData ? null : new BarHighlighter(barChart);
     }
 
     public getHighlightsAtXValue(xVal, x?, y?) {
         this.mHighlightBuffer = [];
 
-        const dataObjects = this.mChart.combinedData.allData;
+        const dataObjects = this.mChart.combinedData.datas;
+        const datasArray = this.mChart.combinedData.datasArray;
+        const keys = Object.keys(dataObjects);
 
-        for (let i = 0; i < dataObjects.length; i++) {
-            const dataObject = dataObjects[i];
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            const dataObject = dataObjects[key];
+            if (!dataObject) {
+                continue;
+            }
 
             // in case of BarData, let the BarHighlighter take over
-            if (this.barHighlighter != null && dataObject instanceof BarData && x !== undefined) {
+            if (this.barHighlighter && dataObject instanceof BarData && x !== undefined) {
                 const high = this.barHighlighter.getHighlight(x, y);
 
-                if (high != null) {
-                    high.dataIndex = i;
-                    this.mHighlightBuffer.push(high);
+                if (high) {
+                    this.mHighlightBuffer.push(
+                        ...this.barHighlighter.getHighlight(x, y).map((h) => {
+                            h.dataIndex = datasArray.indexOf(dataObject);
+                            h.dataType = key;
+                            return h;
+                        })
+                    );
                 }
             } else {
                 for (let j = 0, dataSetCount = dataObject.dataSetCount; j < dataSetCount; j++) {
-                    const dataSet = dataObjects[i].getDataSetByIndex(j);
+                    const dataSet = dataObject.getDataSetByIndex(j);
 
                     // don't include datasets that cannot be highlighted
                     if (!dataSet.highlightEnabled) continue;
 
-                    const highs = this.buildHighlights(dataSet, j, xVal, Rounding.CLOSEST);
-                    for (const high of highs) {
-                        high.dataIndex = i;
-                        this.mHighlightBuffer.push(high);
-                    }
+                    this.mHighlightBuffer.push(
+                        ...this.buildHighlights(dataSet, j, x, y, xVal, Rounding.CLOSEST).map((h) => {
+                            h.dataIndex = datasArray.indexOf(dataObject);
+                            h.dataType = key;
+                            return h;
+                        })
+                    );
                 }
             }
         }
@@ -63,7 +76,7 @@ export class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
     //
     //        for (Highlight high : highs) {
     //
-    //            if (high == null)
+    //            if (high === null)
     //                continue;
     //
     //            let tempDistance = getDistance(x, y, high.getXPx(), high.getYPx());

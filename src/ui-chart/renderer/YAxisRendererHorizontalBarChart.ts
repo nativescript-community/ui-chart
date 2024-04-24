@@ -178,7 +178,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         const axis = this.mYAxis;
         const limitLines = axis.limitLines;
 
-        if (limitLines == null || limitLines.length <= 0) {
+        if (!limitLines || limitLines.length <= 0) {
             return;
         }
 
@@ -219,7 +219,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
             if (lineWidth > 0) {
                 if (customRendererFunc) {
-                    customRendererFunc(c, this, l, rect, pts[0], paint);
+                    customRendererFunc(c, axis, l, rect, pts[0], paint);
                 } else {
                     c.drawLine(pts[0], rect.bottom, pts[0], rect.top, paint);
                 }
@@ -228,7 +228,7 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
             const label = l.label;
 
             // if drawing the limit-value label is enabled
-            if (label != null && label !== '') {
+            if (label?.length) {
                 paint.setStyle(l.textStyle);
                 paint.setPathEffect(null);
                 paint.setColor(l.textColor);

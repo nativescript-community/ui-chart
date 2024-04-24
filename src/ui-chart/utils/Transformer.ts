@@ -100,7 +100,7 @@ export class Transformer {
             const index = j / 2 + from;
             const e = dataSet.getEntryForIndex(index);
 
-            if (e != null) {
+            if (e) {
                 valuePoints[j] = dataSet.getEntryXValue(e, index);
                 valuePoints[j + 1] = e[yKey] * phaseY;
             } else {
@@ -134,7 +134,7 @@ export class Transformer {
             const index = j / 2 + from;
             const e = dataSet.getEntryForIndex(index);
 
-            if (e != null) {
+            if (e) {
                 valuePoints[j] = dataSet.getEntryXValue(e, index);
                 valuePoints[j + 1] = e[yKey] * phaseY;
             } else {

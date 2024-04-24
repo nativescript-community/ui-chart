@@ -8,5 +8,5 @@ export interface IBarLineScatterCandleBubbleDataSet<T extends Entry> extends IDa
     /**
      * Returns the color that is used for drawing the highlight indicators.
      */
-    highLightColor: string | Color;
+    highlightColor: string | Color;
 }

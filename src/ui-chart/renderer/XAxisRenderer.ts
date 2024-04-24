@@ -337,7 +337,7 @@ export class XAxisRenderer extends AxisRenderer {
      */
     protected drawGridLine(c: Canvas, rect: RectF, x, y, axisValue, paint: Paint, customRendererFunc: CustomRendererGridLineFunction) {
         if (customRendererFunc) {
-            customRendererFunc(c, this, rect, x, y, axisValue, paint);
+            customRendererFunc(c, this.mAxis, rect, x, y, axisValue, paint);
         } else {
             c.drawLine(x, rect.bottom, x, rect.top, paint);
         }
@@ -355,7 +355,7 @@ export class XAxisRenderer extends AxisRenderer {
         }
         const limitLines = axis.limitLines;
 
-        if (limitLines == null || limitLines.length <= 0) return;
+        if (!limitLines || limitLines.length <= 0) return;
 
         const position = Utils.getTempArray(2);
         position[0] = 0;
@@ -400,7 +400,7 @@ export class XAxisRenderer extends AxisRenderer {
         paint.setStrokeWidth(limitLine.lineWidth);
         paint.setPathEffect(limitLine.dashPathEffect);
         if (customRendererFunc) {
-            customRendererFunc(c, this, limitLine, rect, x, paint);
+            customRendererFunc(c, this.mAxis, limitLine, rect, x, paint);
         } else {
             c.drawLine(x, rect.bottom, x, rect.top, paint);
         }

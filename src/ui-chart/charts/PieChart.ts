@@ -121,13 +121,13 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
         const startTime = Date.now();
         super.onDraw(canvas);
 
-        if (this.mData == null) {
+        if (!this.mData) {
             return;
         }
 
         this.renderer.drawData(canvas);
 
-        if (this.hasValuesToHighlight) {
+        if (this.hasValuesToHighlight && this.drawHighlight) {
             this.renderer.drawHighlighted(canvas, this.indicesToHighlight);
         }
 
@@ -156,7 +156,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
         super.calculateOffsets();
 
         // prevent nullpointer when no data set
-        if (this.mData == null) {
+        if (!this.mData) {
             return;
         }
 
@@ -330,7 +330,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
         const dataSets = this.mData.dataSets;
 
         for (let i = 0; i < dataSets.length; i++) {
-            if (dataSets[i].getEntryForXValue(xIndex, NaN) != null) {
+            if (dataSets[i].getEntryForXValue(xIndex, NaN)) {
                 return i;
             }
         }
@@ -377,7 +377,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
     }
 
     public get radius() {
-        if (this.circleBox == null) {
+        if (!this.circleBox) {
             return 0;
         } else {
             return Math.min(this.circleBox.width() / 2, this.circleBox.height() / 2);
@@ -562,7 +562,7 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
 
     public _onDetachedFromWindow() {
         // releases the bitmap in the renderer to avoid oom error
-        if (this.renderer != null && this.renderer instanceof PieChartRenderer) {
+        if (this.renderer instanceof PieChartRenderer) {
             this.renderer.releaseBitmap();
         }
         //super.onDetachedFromWindow();

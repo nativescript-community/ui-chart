@@ -8,20 +8,16 @@ export class HorizontalBarHighlighter extends BarHighlighter {
         super(chart);
     }
 
-    public getHighlight(x: number, y: number): Highlight {
+    public getHighlight(x: number, y: number) {
         const pos = this.getValsForTouch(x, y);
-        const high = this.getHighlightForX(pos.y, y, x);
-        if (high === null) {
-            return null;
-        }
-
         const barData = this.mChart.barData;
-        const set = barData.getDataSetByIndex(high.dataSetIndex);
-        if (set.stacked) {
-            return this.getStackedHighlight(high, set, pos.y, pos.x);
-        }
-
-        return high;
+        return this.getHighlightForX(pos.y, y, x).map((h) => {
+            const set = barData.getDataSetByIndex(h.dataSetIndex);
+            if (set.stacked) {
+                return this.getStackedHighlight(h, set, x, y, pos.y, pos.x);
+            }
+            return h;
+        });
     }
 
     protected buildHighlights(set: IBarDataSet, dataSetIndex, xVal, rounding) {
@@ -33,7 +29,7 @@ export class HorizontalBarHighlighter extends BarHighlighter {
         if (entries.length === 0) {
             // Try to find closest x-value and take all entries for that x-value
             const closest = set.getEntryAndIndexForXValue(xVal, NaN, rounding);
-            if (closest !== null) {
+            if (closest) {
                 //noinspection unchecked
                 entries = set.getEntriesAndIndexesForXValue(set.getEntryXValue(closest.entry, closest.index));
             }

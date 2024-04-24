@@ -56,7 +56,7 @@ public class MarkerView extends RelativeLayout implements IMarker {
     public setOffset(MPPointF offset) {
         this.mOffset = offset;
 
-        if (mOffset == null) {
+        if (!mOffset === null) {
             this.mOffset = new MPPointF();
         }
     }
@@ -76,7 +76,7 @@ public class MarkerView extends RelativeLayout implements IMarker {
     }
 
     public Chart getChartView() {
-        return this.mWeakChart == null ? null : this.mWeakChart.get();
+        return this.mWeakChart === null ? null : this.mWeakChart.get();
     }
 
     
@@ -93,13 +93,13 @@ public class MarkerView extends RelativeLayout implements IMarker {
 
         if (posX + this.mOffset2.x < 0) {
             this.mOffset2.x = - posX;
-        } else if (chart != null && posX + width + this.mOffset2.x > chart.getWidth()) {
+        } else if (chart !== null && posX + width + this.mOffset2.x > chart.getWidth()) {
             this.mOffset2.x = chart.getWidth() - posX - width;
         }
 
         if (posY + this.mOffset2.y < 0) {
             this.mOffset2.y = - posY;
-        } else if (chart != null && posY + height + this.mOffset2.y > chart.getHeight()) {
+        } else if (chart !== null && posY + height + this.mOffset2.y > chart.getHeight()) {
             this.mOffset2.y = chart.getHeight() - posY - height;
         }
 

@@ -32,7 +32,7 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
         const yKey = data.yProperty;
         for (let i = 0; i < size; i++) {
             const e = data.getEntryForIndex(i);
-            if (e == null) {
+            if (!e) {
                 continue;
             }
 
@@ -40,7 +40,10 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
             let y = e[yKey];
             const vals = e.yVals;
 
-            if (!this.containsStacks || vals == null || vals.length === 0) {
+            if (!this.containsStacks || !vals || vals.length === 0) {
+                if (y === undefined || y === null) {
+                    continue;
+                }
                 const left = x - barWidthHalf;
                 const right = x + barWidthHalf;
                 let bottom, top;

@@ -84,11 +84,14 @@ export class RadarChartRenderer extends LineRadarRenderer {
         }
         const float32arr = this.mLineBuffer;
         let index = 0;
+        const yProperty = dataSet.yProperty;
         for (let j = 0; j < dataSet.entryCount; j++) {
             const e = dataSet.getEntryForIndex(j);
-            const yProperty = dataSet.yProperty;
-
-            Utils.getPosition(center, (e[yProperty] - minVal) * factor * phaseY, sliceangle * j * phaseX + angle, pOut);
+            const yVal = e[yProperty];
+            if (yVal === undefined || yVal === null) {
+                continue;
+            }
+            Utils.getPosition(center, (yVal - minVal) * factor * phaseY, sliceangle * j * phaseX + angle, pOut);
 
             if (isNaN(pOut.x)) continue;
 
@@ -126,7 +129,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
                 renderPaint.setShader(shader);
             }
             const drawable = dataSet.fillDrawable;
-            if (drawable != null) {
+            if (drawable) {
                 this.drawFilledPathBitmap(c, surface, drawable, dataSet.fillShader);
             } else {
                 this.drawFilledPath(c, surface, dataSet.fillColor, dataSet.fillAlpha);
@@ -192,8 +195,11 @@ export class RadarChartRenderer extends LineRadarRenderer {
             const paint = this.valuePaint;
             for (let j = 0; j < dataSet.entryCount; j++) {
                 const entry = dataSet.getEntryForIndex(j);
-
-                Utils.getPosition(center, (entry[yProperty] - chart.yChartMin) * factor * phaseY, sliceangle * j * phaseX + chart.rotationAngle, pOut);
+                const yVal = entry[yProperty];
+                if (yVal === undefined || yVal === null) {
+                    continue;
+                }
+                Utils.getPosition(center, (yVal - chart.yChartMin) * factor * phaseY, sliceangle * j * phaseX + chart.rotationAngle, pOut);
 
                 if (drawValues) {
                     this.drawValue(
@@ -203,7 +209,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
                         i,
                         entry,
                         j,
-                        (formatter.getRadarLabel || formatter.getFormattedValue).call(formatter, entry[yProperty], entry),
+                        (formatter.getRadarLabel || formatter.getFormattedValue).call(formatter, yVal, entry),
                         pOut.x + valuesOffset.x,
                         pOut.y + valuesOffset.y - yoffset,
                         dataSet.getValueTextColor(j),
@@ -213,7 +219,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
                 }
 
                 if (drawIcons) {
-                    Utils.getPosition(center, entry[yProperty] * factor * phaseY + iconsOffset.y, sliceangle * j * phaseX + chart.rotationAngle, pIcon);
+                    Utils.getPosition(center, yVal * factor * phaseY + iconsOffset.y, sliceangle * j * phaseX + chart.rotationAngle, pIcon);
 
                     //noinspection SuspiciousNameCombination
                     pIcon.y += iconsOffset.x;
@@ -309,7 +315,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
             const set = radarData.getDataSetByIndex(high.dataSetIndex);
             const yProperty = set.yProperty;
 
-            if (set == null || !set.highlightEnabled) continue;
+            if (!set || !set.highlightEnabled) continue;
 
             const e = set.getEntryForIndex(high.x);
 

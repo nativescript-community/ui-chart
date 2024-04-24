@@ -78,7 +78,7 @@ export class LegendRenderer extends Renderer {
                         this.computedEntries.push(new LegendEntry(sLabels[j % sLabels.length], dataSet.form, dataSet.formSize, dataSet.formLineWidth, dataSet.formLineDashEffect, clrs[j]));
                     }
 
-                    if (bds.label != null) {
+                    if (bds.label) {
                         // add the legend description label
                         this.computedEntries.push(new LegendEntry(dataSet.label, LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
                     }
@@ -87,14 +87,14 @@ export class LegendRenderer extends Renderer {
 
                     for (let j = 0; j < clrs.length && j < entryCount; j++) {
                         const label = pds.getEntryForIndex(j).label;
-                        if (label == null) {
+                        if (!label) {
                             continue;
                         }
 
                         this.computedEntries.push(new LegendEntry(label.toString(), dataSet.form, dataSet.formSize, dataSet.formLineWidth, dataSet.formLineDashEffect, clrs[j]));
                     }
 
-                    if (pds.label != null) {
+                    if (pds.label) {
                         // add the legend description label
                         this.computedEntries.push(new LegendEntry(dataSet.label, LegendForm.NONE, NaN, NaN, null, ColorTemplate.COLOR_NONE));
                     }
@@ -127,7 +127,7 @@ export class LegendRenderer extends Renderer {
                 }
             }
 
-            if (this.mLegend.extraEntries != null) {
+            if (this.mLegend.extraEntries) {
                 Array.prototype.push.apply(this.computedEntries, this.mLegend.extraEntries);
                 // Collections.addAll(computedEntries, this.mLegend.getExtraEntries());
             }
@@ -242,7 +242,7 @@ export class LegendRenderer extends Renderer {
                         lineIndex++;
                     }
 
-                    const isStacked = e.label == null; // grouped forms have null labels
+                    const isStacked = !e.label; // grouped forms have null labels
 
                     if (drawingForm) {
                         if (direction === LegendDirection.RIGHT_TO_LEFT) posX -= formSize;
@@ -306,7 +306,7 @@ export class LegendRenderer extends Renderer {
                         if (direction === LegendDirection.LEFT_TO_RIGHT) posX += formSize;
                     }
 
-                    if (e.label != null) {
+                    if (e.label) {
                         if (drawingForm && !wasStacked) posX += direction === LegendDirection.LEFT_TO_RIGHT ? formToTextSpace : -formToTextSpace;
                         else if (wasStacked) posX = originPosX;
 
@@ -346,7 +346,7 @@ export class LegendRenderer extends Renderer {
      * @param legend the legend context
      */
     protected drawForm(c: Canvas, x, y, entry: LegendEntry, legend: Legend, paint: Paint) {
-        if (entry.formColor === ColorTemplate.COLOR_SKIP || entry.formColor === ColorTemplate.COLOR_NONE || entry.formColor === null) return;
+        if (entry.formColor === ColorTemplate.COLOR_SKIP || entry.formColor === ColorTemplate.COLOR_NONE || !entry.formColor) return;
 
         const restoreCount = c.save();
 
@@ -380,7 +380,7 @@ export class LegendRenderer extends Renderer {
             case LegendForm.LINE:
                 {
                     const formLineWidth = isNaN(entry.formLineWidth) ? legend.formLineWidth : entry.formLineWidth;
-                    const formLineDashEffect = entry.formLineDashEffect == null ? legend.formLineDashEffect : entry.formLineDashEffect;
+                    const formLineDashEffect = entry.formLineDashEffect || legend.formLineDashEffect;
                     paint.setStyle(Style.STROKE);
                     paint.setStrokeWidth(formLineWidth);
                     paint.setPathEffect(formLineDashEffect);

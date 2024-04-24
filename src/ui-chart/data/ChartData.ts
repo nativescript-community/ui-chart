@@ -112,7 +112,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * Calc minimum and maximum values (both x and y) over all DataSets.
      */
     calcMinMax() {
-        if (this.mDataSets == null) return;
+        if (!this.mDataSets) return;
 
         this.mYMax = -Infinity;
         this.mYMin = Infinity;
@@ -135,7 +135,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         // left axis
         const firstLeft = this.getFirstLeft(visibleDatasets);
 
-        if (firstLeft != null) {
+        if (firstLeft) {
             this.mLeftAxisMax = firstLeft.yMax;
             this.mLeftAxisMin = firstLeft.yMin;
 
@@ -151,7 +151,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         // right axis
         const firstRight = this.getFirstRight(visibleDatasets);
 
-        if (firstRight != null) {
+        if (firstRight) {
             this.mRightAxisMax = firstRight.yMax;
             this.mRightAxisMin = firstRight.yMin;
 
@@ -171,7 +171,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * returns the number of LineDataSets this object contains
      */
     public get dataSetCount() {
-        if (this.mDataSets == null) return 0;
+        if (!this.mDataSets) return 0;
         return this.mDataSets.length;
     }
 
@@ -342,7 +342,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
     }
 
     public getDataSetByIndex(index: number) {
-        if (this.mDataSets == null || index < 0 || index >= this.mDataSets.length) return null;
+        if (!this.mDataSets || index < 0 || index >= this.mDataSets.length) return null;
 
         return this.mDataSets[index];
     }
@@ -353,7 +353,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param d
      */
     public addDataSet(d: T) {
-        if (d == null) return;
+        if (!d) return;
         if (d.visible) {
             this.calcMinMaxForDataSet(d);
         }
@@ -369,7 +369,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param d
      */
     public removeDataSet(d: T) {
-        if (d == null) return false;
+        if (!d) return false;
 
         const index = this.mDataSets.indexOf(d);
 
@@ -474,11 +474,11 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     public removeEntry(e, dataSetIndex) {
         // entry null, outofbounds
-        if (e == null || dataSetIndex >= this.mDataSets.length) return false;
+        if (!e || dataSetIndex >= this.mDataSets.length) return false;
 
         const set = this.mDataSets[dataSetIndex];
 
-        if (set != null) {
+        if (set) {
             // remove the entry from the dataset
             const removed = set.removeEntry(e);
 
@@ -505,7 +505,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         const dataSet = this.mDataSets[dataSetIndex];
         const e = dataSet.getEntryForXValue(xValue, NaN);
 
-        if (e == null) return false;
+        if (!e) return false;
 
         return this.removeEntry(e, dataSetIndex);
     }
@@ -524,7 +524,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
 
         const set = this.mDataSets[dataSetIndex];
 
-        if (set != null) {
+        if (set) {
             // remove the entry from the dataset
             const removed = set.removeEntryAtIndex(index);
 
@@ -545,7 +545,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     public getDataSetForEntry(e: Entry) {
         // WARNING: wont work if index is used as xKey(xKey not set)
-        if (e == null) return null;
+        if (!e) return null;
 
         for (let i = 0; i < this.mDataSets.length; i++) {
             const set = this.mDataSets[i];
@@ -568,7 +568,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      */
     public getDataSetAndIndexForEntry(e: Entry) {
         // WARNING: wont work if index is used as xKey(xKey not set)
-        if (e == null) return null;
+        if (!e) return null;
 
         for (let i = 0; i < this.mDataSets.length; i++) {
             const set = this.mDataSets[i];
@@ -589,7 +589,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * represents.
      */
     public get colors() {
-        if (this.mDataSets == null) return null;
+        if (!this.mDataSets) return null;
 
         let clrcnt = 0;
 
@@ -618,7 +618,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param dataSet
      * @return
      */
-    public getIndexOfDataSet(dataSet) {
+    public getIndexOfDataSet(dataSet: T) {
         return this.mDataSets.indexOf(dataSet);
     }
 
@@ -626,7 +626,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * Returns the first DataSet from the datasets-array that has it's dependency on the left axis.
      * Returns null if no DataSet with left dependency could be found.
      */
-    protected getFirstLeft(sets) {
+    protected getFirstLeft(sets: T[]) {
         for (const dataSet of sets) {
             if (dataSet.axisDependency === AxisDependency.LEFT) return dataSet;
         }
@@ -637,7 +637,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * Returns the first DataSet from the datasets-array that has it's dependency on the right axis.
      * Returns null if no DataSet with right dependency could be found.
      */
-    public getFirstRight(sets) {
+    public getFirstRight(sets: T[]) {
         for (const dataSet of sets) {
             if (dataSet.axisDependency === AxisDependency.RIGHT) return dataSet;
         }
@@ -742,7 +742,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * forget to invalidate the chart after this.
      */
     public clearValues() {
-        if (this.mDataSets != null) {
+        if (this.mDataSets) {
             this.mDataSets = [];
         }
         this.notifyDataChanged();
@@ -776,7 +776,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * Returns the DataSet object with the maximum number of entries or null if there are no DataSets.
      */
     public get maxEntryCountSet() {
-        if (this.mDataSets == null || this.mDataSets.length === 0) return null;
+        if (!this.mDataSets || this.mDataSets.length === 0) return null;
 
         let max = this.mDataSets[0];
 

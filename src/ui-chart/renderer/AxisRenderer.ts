@@ -9,8 +9,8 @@ import { BaseCustomRenderer } from './DataRenderer';
 import { Renderer } from './Renderer';
 import { MPPointF } from '../utils/MPPointF';
 
-export type CustomRendererGridLineFunction = (c: Canvas, renderer: AxisRenderer, rect: RectF, x, y, axisValue, paint: Paint) => void;
-export type CustomRendererLimitLineFunction = (c: Canvas, renderer: AxisRenderer, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
+export type CustomRendererGridLineFunction = (c: Canvas, axis: AxisBase, rect: RectF, x, y, axisValue, paint: Paint) => void;
+export type CustomRendererLimitLineFunction = (c: Canvas, axis: AxisBase, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
 export type CustomRendererLabelFunction = (c: Canvas, axis: AxisBase, text: string, x: number, y: number, paint: Paint, anchor?: MPPointF, angleDegrees?: number) => void;
 export type CustomRendererTickFunction = (c: Canvas, renderer: AxisRenderer, startX: number, startY: number, stopX: number, stopY: number, paint: Paint) => void;
 export interface CustomRenderer extends BaseCustomRenderer {
@@ -117,7 +117,7 @@ export abstract class AxisRenderer extends Renderer {
                 inverted = axis['isInverted'] ? axis['isInverted']() : false;
             }
         }
-        if (this.mViewPortHandler != null && this.mViewPortHandler.contentRect.width() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
+        if (this.mViewPortHandler && this.mViewPortHandler.contentRect.width() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
             const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.chartRect : this.mViewPortHandler.contentRect;
             const p1 = this.transformer.getValuesByTouchPoint(rect.left, rect.top);
             const p2 = this.transformer.getValuesByTouchPoint(rect.left, rect.bottom);
@@ -252,7 +252,7 @@ export abstract class AxisRenderer extends Renderer {
 
             for (f = first, i = 0; i <= n; f += interval, ++i) {
                 if (f === 0.0) {
-                    // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
+                    // Fix for negative zero case (Where value === -0.0, and 0.0 === -0.0)
                     f = 0.0;
                 } else if (!axis.allowLastLabelAboveMax && f > max) {
                     f = max;

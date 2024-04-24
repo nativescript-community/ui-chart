@@ -371,7 +371,7 @@ export class ViewPortHandler {
         let width = 0;
         let height = 0;
 
-        if (this.contentRect != null) {
+        if (this.contentRect) {
             width = this.contentRect.width();
             height = this.contentRect.height();
         }
@@ -428,7 +428,7 @@ export class ViewPortHandler {
         let width = 0;
         let height = 0;
 
-        if (content != null) {
+        if (content) {
             width = content.width();
             height = content.height();
         }

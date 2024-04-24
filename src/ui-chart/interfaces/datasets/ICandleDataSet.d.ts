@@ -59,7 +59,7 @@ export interface ICandleDataSet extends ILineScatterCandleRadarDataSet<CandleEnt
     decreasingPaintStyle: Style;
 
     /**
-     * color for open == close
+     * color for open === close
      */
     neutralColor: Color | string;
 

@@ -89,7 +89,8 @@ export class CombinedChartRenderer extends DataRenderer {
 
     public drawHighlighted(c: Canvas, indices: Highlight[]) {
         const chart = this.mChart.get();
-        if (chart == null) return;
+        if (!chart) return;
+        const datas = chart.data.datasArray;
 
         for (const renderer of this.renderers) {
             let data = null;
@@ -99,8 +100,10 @@ export class CombinedChartRenderer extends DataRenderer {
             else if (renderer instanceof CandleStickChartRenderer) data = renderer.mChart.candleData;
             else if (renderer instanceof ScatterChartRenderer) data = renderer.mChart.scatterData;
             else if (renderer instanceof BubbleChartRenderer) data = renderer.mChart.bubbleData;
-
-            const dataIndex = data == null ? -1 : chart.data.allData.indexOf(data);
+            if (!data) {
+                continue;
+            }
+            const dataIndex = datas.indexOf(data);
 
             this.mHighlightBuffer = [];
 

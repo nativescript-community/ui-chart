@@ -101,7 +101,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
 
             for (f = first, i = 0; i < n; f += interval, ++i) {
                 if (f === 0.0) {
-                    // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
+                    // Fix for negative zero case (Where value === -0.0, and 0.0 === -0.0)
                     f = 0.0;
                 }
 
@@ -177,7 +177,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
         }
         const limitLines = axis.limitLines;
 
-        if (limitLines == null) return;
+        if (!limitLines) return;
 
         const sliceangle = this.mChart.sliceAngle;
 

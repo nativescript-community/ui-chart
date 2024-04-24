@@ -24,7 +24,7 @@ export class LimitLine extends ComponentBase {
     limit = 0;
 
     /** the width of the limit line
-     * thinner line == better performance, thicker line == worse performance
+     * thinner line === better performance, thicker line === worse performance
      */
     lineWidth = 2;
 

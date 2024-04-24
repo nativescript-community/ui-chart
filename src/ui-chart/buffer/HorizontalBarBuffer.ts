@@ -12,7 +12,7 @@ export class HorizontalBarBuffer extends BarBuffer {
         const yKey = data.yProperty;
         for (let i = 0; i < size; i++) {
             const e = data.getEntryForIndex(i);
-            if (e == null) {
+            if (!e) {
                 continue;
             }
 
@@ -20,7 +20,7 @@ export class HorizontalBarBuffer extends BarBuffer {
             let y = e[yKey];
             const vals = e.yVals;
 
-            if (!this.containsStacks || vals == null) {
+            if (!this.containsStacks || !vals) {
                 const bottom = x - barWidthHalf;
                 const top = x + barWidthHalf;
                 let left, right;

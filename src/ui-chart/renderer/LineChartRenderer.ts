@@ -64,7 +64,8 @@ export function splineCurve(firstPoint: XYPoint, middlePoint: XYPoint, afterPoin
 function getXYValue(dataSet, index) {
     const yKey = dataSet.yProperty;
     const entry = dataSet.getEntryForIndex(index);
-    if (entry[yKey] === undefined || entry[yKey] === null) {
+    const yVal = entry[yKey];
+    if (yVal === undefined || yVal === null) {
         return null;
     }
     return { x: dataSet.getEntryXValue(entry, index), y: entry[yKey] };
@@ -85,7 +86,7 @@ export class DataSetImageCache {
         const size = set.circleColors.length || 1;
         let changeRequired = false;
 
-        if (this.circleBitmaps == null) {
+        if (!this.circleBitmaps) {
             this.circleBitmaps = [];
             changeRequired = true;
         } else if (this.circleBitmaps.length !== size) {
@@ -205,9 +206,9 @@ export class LineChartRenderer extends LineRadarRenderer {
         const width = this.mViewPortHandler.chartWidth;
         const height = this.mViewPortHandler.chartHeight;
 
-        let drawBitmap = this.mDrawBitmap == null ? null : this.mDrawBitmap.get();
+        let drawBitmap = this.mDrawBitmap?.get();
 
-        if (drawBitmap == null || drawBitmap.width !== width || drawBitmap.height !== height) {
+        if (!drawBitmap || drawBitmap.width !== width || drawBitmap.height !== height) {
             if (width > 0 && height > 0) {
                 this.mBitmapCanvas = new Canvas(width, height);
                 drawBitmap = this.mBitmapCanvas.getImage();
@@ -256,10 +257,16 @@ export class LineChartRenderer extends LineRadarRenderer {
             const phaseY = this.animator.phaseY;
             const yKey = dataSet.yProperty;
 
-            const firstIndex = Math.max(0, this.mXBounds.min);
+            let firstIndex = Math.max(0, this.mXBounds.min);
             // let firstIndex = this.mXBounds.min + 1;
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
             let prev = dataSet.getEntryForIndex(firstIndex);
+            let yVal = prev[yKey];
+            while (firstIndex < lastIndex && (yVal === undefined || yVal === null)) {
+                firstIndex++;
+                prev = dataSet.getEntryForIndex(firstIndex);
+                yVal = prev[yKey];
+            }
             let prevXVal = dataSet.getEntryXValue(prev, firstIndex);
             let cur = prev;
             let curXVal = prevXVal;
@@ -271,7 +278,8 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             for (let j = firstIndex + 1; j <= lastIndex; j++) {
                 const newEntry = dataSet.getEntryForIndex(j);
-                if (newEntry[yKey] === undefined || newEntry[yKey] === null) {
+                const yVal = newEntry[yKey];
+                if (yVal === undefined || yVal === null) {
                     continue;
                 }
                 prev = cur;
@@ -333,9 +341,9 @@ export class LineChartRenderer extends LineRadarRenderer {
             for (let j = firstIndex; j <= lastIndex; j++) {
                 point = getXYValue(dataSet, j);
                 if (!point) {
-                    if (j === 0) {
-                        return [];
-                    }
+                    // if (j === 0) {
+                    //     return [];
+                    // }
                     continue;
                 }
                 if (!prev) {
@@ -390,14 +398,20 @@ export class LineChartRenderer extends LineRadarRenderer {
             // const filled = outputPath;
             // outputPath.reset();
 
-            const firstIndex = Math.max(0, this.mXBounds.min);
+            let firstIndex = Math.max(0, this.mXBounds.min);
             const lastIndex = this.mXBounds.min + this.mXBounds.range;
-            const entry = dataSet.getEntryForIndex(firstIndex);
-            const entryXVal = dataSet.getEntryXValue(entry, firstIndex);
-
+            let firstEntry = dataSet.getEntryForIndex(firstIndex);
+            let entryXVal = dataSet.getEntryXValue(firstEntry, firstIndex);
+            let yVal = firstEntry[yKey];
+            while (firstIndex < lastIndex && (yVal === undefined || yVal === null)) {
+                firstIndex++;
+                firstEntry = dataSet.getEntryForIndex(firstIndex);
+                entryXVal = dataSet.getEntryXValue(firstEntry, firstIndex);
+                yVal = firstEntry[yKey];
+            }
             const float32arr = this.mLineBuffer;
             float32arr[0] = entryXVal;
-            float32arr[1] = entry[yKey] * phaseY;
+            float32arr[1] = firstEntry[yKey] * phaseY;
             let index = 2;
             // create a new path
             let currentEntry = null;
@@ -471,7 +485,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     (dataSet as any).setIgnoreFiltered(true);
                     const entry = dataSet.getEntryForIndex(colorIndex);
                     (dataSet as any).setIgnoreFiltered(false);
-                    if (entry !== null) {
+                    if (entry) {
                         colorIndex = dataSet.getEntryIndexForXValue(dataSet.getEntryXValue(entry, colorIndex), NaN, Rounding.CLOSEST);
                     }
                 }
@@ -621,7 +635,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         trans && trans.pathValueToPixel(spline);
 
         const drawable = dataSet.fillDrawable;
-        if (drawable != null) {
+        if (drawable) {
             this.drawFilledPathBitmap(c, spline, drawable, dataSet.fillShader);
         } else {
             this.drawFilledPath(c, spline, color || dataSet.fillColor, dataSet.fillAlpha, dataSet.fillShader);
@@ -664,7 +678,10 @@ export class LineChartRenderer extends LineRadarRenderer {
             const index = j / 2 + this.mXBounds.min;
             const entry = dataSet.getEntryForIndex(index);
             if (!entry) continue;
-
+            const yVal = entry[yKey];
+            if (yVal === undefined || yVal === null) {
+                continue;
+            }
             if (drawValues) {
                 this.drawValue(
                     c,
@@ -673,7 +690,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                     dataSetIndex,
                     entry,
                     index,
-                    formatter.getFormattedValue(entry[yKey], entry),
+                    formatter.getFormattedValue(yVal, entry),
                     valuesOffset.x + x,
                     valuesOffset.y + y - valOffset,
                     dataSet.getValueTextColor(j / 2),
@@ -746,9 +763,9 @@ export class LineChartRenderer extends LineRadarRenderer {
         for (let j = this.mXBounds.min; j <= boundsRangeCount; j++) {
             const e = dataSet.getEntryForIndex(j);
 
-            if (e == null) continue;
+            if (!e) continue;
             const yVal = e[yKey];
-            if (yVal == null || yVal === undefined) continue;
+            if (yVal === null || yVal === undefined) continue;
             circleBuffer[0] = dataSet.getEntryXValue(e, j);
             circleBuffer[1] = yVal * phaseY;
 
@@ -763,7 +780,7 @@ export class LineChartRenderer extends LineRadarRenderer {
 
             const circleBitmap = imageCache.getBitmap(j);
 
-            if (circleBitmap != null) {
+            if (circleBitmap) {
                 destRect.set(cx - circleRadius, cy - circleRadius, cx - circleRadius + 2 * circleRadius, cy - circleRadius + 2 * circleRadius);
                 c.drawBitmap(circleBitmap, null, destRect, null);
             }
@@ -789,7 +806,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw?: boolean) {
+    public drawHighlighted(c: Canvas, indices: Highlight[], actualDraw: boolean = true) {
         const lineData = this.mChart.lineData;
 
         const customRender = this.mChart.customRenderer;
@@ -797,7 +814,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         for (const high of indices) {
             const set = lineData.getDataSetByIndex(high.dataSetIndex);
 
-            if (set == null || !set.highlightEnabled) continue;
+            if (!set || !set.highlightEnabled) continue;
 
             const { entry, index } = lineData.getEntryAndIndexForHighlight(high);
             // let e = set.getEntryForXValue(high.x high.y);
@@ -816,7 +833,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (customRender && customRender.drawHighlight) {
                 customRender.drawHighlight(c, high, set, paint);
             } else {
-                this.drawHighlightLines(c, pix.x, pix.y, set);
+                this.drawHighlightLines(c, high.xPx, high.yPx, set);
             }
         }
     }
@@ -825,16 +842,15 @@ export class LineChartRenderer extends LineRadarRenderer {
      * Releases the drawing bitmap. This should be called when {@link LineChart#onDetachedFromWindow()}.
      */
     public releaseBitmap() {
-        if (this.mBitmapCanvas != null) {
+        if (this.mBitmapCanvas) {
             this.mBitmapCanvas.setBitmap(null);
             this.mBitmapCanvas = null;
         }
-        if (this.mDrawBitmap != null) {
+        if (this.mDrawBitmap) {
             const drawBitmap = this.mDrawBitmap.get();
-            if (drawBitmap != null) {
+            if (drawBitmap) {
                 releaseImage(drawBitmap);
             }
-            this.mDrawBitmap.clear();
             this.mDrawBitmap = null;
         }
     }

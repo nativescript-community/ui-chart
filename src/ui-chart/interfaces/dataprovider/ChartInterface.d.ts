@@ -37,6 +37,11 @@ export interface ChartInterface {
      */
     maxHighlightDistance: number;
 
+    /**
+     * Wether to filter highlights by axis. Default is true
+     */
+    highlightsFilterByAxis: boolean;
+
     getMeasuredWidth();
 
     getMeasuredHeight();

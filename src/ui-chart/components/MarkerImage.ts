@@ -91,7 +91,7 @@ class MarkerImage implements IMarker {
     refreshContent(e: Entry, highlight: Highlight) {}
 
     public draw(c: Canvas, posX, posY) {
-        if (this.imageSource == null) return;
+        if (!this.imageSource) return;
 
         const offset = this.getOffsetForDrawingAtPoint(posX, posY);
 

@@ -21,7 +21,7 @@ export abstract class PieRadarHighlighter<E extends Entry, D extends DataSet<E>,
         return null;
     }
 
-    public getHighlight(x: number, y: number): Highlight {
+    public getHighlight(x: number, y: number) {
         const touchDistanceToCenter = this.mChart.distanceToCenter(x, y);
 
         // Check if a slice was touched
@@ -43,7 +43,7 @@ export abstract class PieRadarHighlighter<E extends Entry, D extends DataSet<E>,
         if (index < 0 || index >= this.mChart.data.maxEntryCountSet.entryCount) {
             return null;
         }
-        return this.getClosestHighlight(index, x, y);
+        return [this.getClosestHighlight(index, x, y)];
     }
 
     /**

@@ -7,11 +7,11 @@ import { CombinedDataProvider } from '../interfaces/dataprovider/CombinedDataPro
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { BarLineChartBase } from './BarLineChartBase';
 import { CombinedChartRenderer } from '../renderer/CombinedChartRenderer';
-import { CustomRenderer as BBCustomRenderer } from './BubbleChart';
-import { CustomRenderer as CSCustomRenderer } from './CandleStickChart';
-import { CustomRenderer as BCustomRenderer } from './BarChart';
-import { CustomRenderer as LCustomRenderer } from './LineChart';
-import { CustomRenderer as SCustomRenderer } from './ScatterChart';
+import type { CustomRenderer as BBCustomRenderer } from './BubbleChart';
+import type { CustomRenderer as CSCustomRenderer } from './CandleStickChart';
+import type { CustomRenderer as BCustomRenderer } from './BarChart';
+import type { CustomRenderer as LCustomRenderer } from './LineChart';
+import type { CustomRenderer as SCustomRenderer } from './ScatterChart';
 
 export type CustomRenderer = BBCustomRenderer & CSCustomRenderer & BCustomRenderer & LCustomRenderer & SCustomRenderer;
 
@@ -101,15 +101,13 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
      * @return
      */
     public getHighlightByTouchPoint(x, y) {
-        if (this.mData == null) {
+        if (!this.mData) {
             console.error("Can't select by touch. No data set.");
             return null;
         } else {
-            const h = this.highlighter.getHighlight(x, y);
-            if (h == null || !this.highlightFullBarEnabled) return h;
-
+            return this.highlighter.getHighlight(x, y)?.[0];
             // For isHighlightFullBarEnabled, remove stackIndex
-            return Object.assign({}, h, {});
+            // return Object.assign({}, h, {});
         }
     }
 
@@ -138,7 +136,7 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
      */
     protected drawMarkers(c: Canvas) {
         // if there is no marker view or drawing marker is disabled
-        if (this.marker == null || !this.drawMarkersEnabled || !this.hasValuesToHighlight) return;
+        if (!this.marker || !this.drawMarkersEnabled || !this.hasValuesToHighlight) return;
 
         for (let i = 0; i < this.indicesToHighlight.length; i++) {
             const highlight = this.indicesToHighlight[i];
@@ -146,7 +144,7 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
             const set: IDataSet<Entry> = this.mData.getDataSetByHighlight(highlight);
 
             const e = this.mData.getEntryForHighlight(highlight);
-            if (e == null) continue;
+            if (!e) continue;
 
             const entryIndex = set.getEntryIndex(e);
 

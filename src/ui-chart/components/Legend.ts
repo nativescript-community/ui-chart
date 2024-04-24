@@ -177,7 +177,7 @@ export class Legend extends ComponentBase {
             if (formSize > maxFormSize) maxFormSize = formSize;
 
             const label = entry.label;
-            if (label == null) continue;
+            if (!label) continue;
 
             const length = Utils.calcTextWidth(p, label);
 
@@ -198,7 +198,7 @@ export class Legend extends ComponentBase {
 
         for (const entry of this.entries) {
             const label = entry.label;
-            if (label == null) continue;
+            if (!label) continue;
 
             const length = Utils.calcTextHeight(p, label);
 
@@ -222,7 +222,7 @@ export class Legend extends ComponentBase {
             // entry.formColor = colors[i];
             // entry.label = labels[i];
 
-            if (entry.formColor === ColorTemplate.COLOR_SKIP || entry.formColor == null) entry.form = LegendForm.NONE;
+            if (entry.formColor === ColorTemplate.COLOR_SKIP || !entry.formColor) entry.form = LegendForm.NONE;
             else if (entry.formColor === ColorTemplate.COLOR_NONE) entry.form = LegendForm.EMPTY;
 
             entries.push(entry);
@@ -330,7 +330,7 @@ export class Legend extends ComponentBase {
                     }
 
                     // grouped forms have null labels
-                    if (label != null) {
+                    if (label) {
                         // make a step to the left
                         if (drawingForm && !wasStacked) width += formToTextSpace;
                         else if (wasStacked) {
@@ -390,7 +390,7 @@ export class Legend extends ComponentBase {
                     }
 
                     // grouped forms have null labels
-                    if (label != null) {
+                    if (label) {
                         this.calculatedLabelSizes.push(Utils.calcTextSize(labelpaint, label));
                         requiredWidth += drawingForm ? formToTextSpace + formSize : 0;
                         requiredWidth += this.calculatedLabelSizes[i].width;
@@ -404,7 +404,7 @@ export class Legend extends ComponentBase {
                         }
                     }
 
-                    if (label != null || i === entryCount - 1) {
+                    if (label || i === entryCount - 1) {
                         const requiredSpacing = currentLineWidth === 0 ? 0 : xEntrySpace;
 
                         if (
@@ -435,7 +435,7 @@ export class Legend extends ComponentBase {
                         }
                     }
 
-                    stackedStartIndex = label != null ? -1 : stackedStartIndex;
+                    stackedStartIndex = label ? -1 : stackedStartIndex;
                 }
 
                 this.mNeededWidth = maxLineWidth;

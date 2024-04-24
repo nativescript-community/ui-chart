@@ -103,9 +103,9 @@ export class PieChartRenderer extends DataRenderer {
         const width = this.mViewPortHandler.chartWidth;
         const height = this.mViewPortHandler.chartHeight;
 
-        let drawBitmap = this.mDrawBitmap == null ? null : this.mDrawBitmap.get();
+        let drawBitmap = this.mDrawBitmap?.get();
 
-        if (drawBitmap == null || drawBitmap.width !== width || drawBitmap.height !== height) {
+        if (!drawBitmap || drawBitmap.width !== width || drawBitmap.height !== height) {
             if (width > 0 && height > 0) {
                 this.mBitmapCanvas = new Canvas(width, height);
                 drawBitmap = this.mBitmapCanvas.getImage();
@@ -507,11 +507,11 @@ export class PieChartRenderer extends DataRenderer {
                     if (drawXOutside && drawYOutside) {
                         this.drawValue(c, chart, dataSet, i, entry, j, formattedValue, labelPtx + valuesOffset.x, labelPty + valuesOffset.y, dataSet.getValueTextColor(j), paint, customRender);
 
-                        if (j < data.entryCount && entryLabel != null) {
+                        if (j < data.entryCount && entryLabel) {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight, entryLabelsPaint);
                         }
                     } else if (drawXOutside) {
-                        if (j < data.entryCount && entryLabel != null) {
+                        if (j < data.entryCount && entryLabel) {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight / 2, entryLabelsPaint);
                         }
                     } else if (drawYOutside) {
@@ -543,11 +543,11 @@ export class PieChartRenderer extends DataRenderer {
                     if (drawXInside && drawYInside) {
                         this.drawValue(c, chart, dataSet, i, entry, j, formattedValue, x + valuesOffset.x, y + valuesOffset.y, dataSet.getValueTextColor(j), paint, customRender);
 
-                        if (j < data.entryCount && entryLabel != null) {
+                        if (j < data.entryCount && entryLabel) {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight, entryLabelsPaint);
                         }
                     } else if (drawXInside) {
-                        if (j < data.entryCount && entryLabel != null) {
+                        if (j < data.entryCount && entryLabel) {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight / 2, entryLabelsPaint);
                         }
                     } else if (drawYInside) {
@@ -726,7 +726,7 @@ export class PieChartRenderer extends DataRenderer {
 
             const set = chart.data.getDataSetByIndex(high.dataSetIndex);
 
-            if (set == null || !set.highlightEnabled) {
+            if (!set || !set.highlightEnabled) {
                 continue;
             }
 
@@ -904,16 +904,15 @@ export class PieChartRenderer extends DataRenderer {
      * Releases the drawing bitmap.
      */
     public releaseBitmap() {
-        if (this.mBitmapCanvas != null) {
+        if (this.mBitmapCanvas) {
             this.mBitmapCanvas.setBitmap(null);
             this.mBitmapCanvas = null;
         }
-        if (this.mDrawBitmap != null) {
+        if (this.mDrawBitmap) {
             const drawBitmap = this.mDrawBitmap.get();
-            if (drawBitmap != null) {
+            if (drawBitmap) {
                 releaseImage(drawBitmap);
             }
-            this.mDrawBitmap.clear();
             this.mDrawBitmap = null;
         }
     }

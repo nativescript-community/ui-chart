@@ -24,7 +24,7 @@ export abstract class LineScatterCandleRadarRenderer extends BarLineScatterCandl
     protected drawHighlightLines(c: Canvas, x, y, set: ILineScatterCandleRadarDataSet<any>) {
         const paint = this.highlightPaint;
         // set color and stroke-width
-        paint.setColor(set.highLightColor);
+        paint.setColor(set.highlightColor);
         paint.setStrokeWidth(set.highlightLineWidth);
 
         // draw highlighted lines (if enabled)

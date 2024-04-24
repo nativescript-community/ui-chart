@@ -26,8 +26,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         const pos = this.getValsForTouch(x, y);
         const xVal = pos.x;
 
-        const high = this.getHighlightForX(xVal, x, y);
-        return high;
+        return this.getHighlightForX(xVal, x, y);
     }
 
     /**
@@ -55,16 +54,20 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     protected getHighlightForX(xVal, x, y) {
         const closestValues = this.getHighlightsAtXValue(xVal, x, y);
         if (closestValues.length <= 1) {
-            return closestValues[0];
+            return closestValues;
         }
+        const chart = this.mChart;
+        let axis: AxisDependency;
+        if (chart.highlightsFilterByAxis) {
+            const leftAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.LEFT);
+            const rightAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.RIGHT);
 
-        const leftAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.LEFT);
-        const rightAxisMinDist = this.getMinimumDistance(closestValues, y, AxisDependency.RIGHT);
+            axis = leftAxisMinDist < rightAxisMinDist ? AxisDependency.LEFT : AxisDependency.RIGHT;
+        }
+        // const detail = this.getClosestHighlightByPixel(closestValues, x, y, chart.maxHighlightDistance, axis);
 
-        const axis = leftAxisMinDist < rightAxisMinDist ? AxisDependency.LEFT : AxisDependency.RIGHT;
-        const detail = this.getClosestHighlightByPixel(closestValues, x, y, axis, this.mChart.maxHighlightDistance);
-
-        return detail;
+        // return [detail];
+        return this.sortedHighlights(closestValues, x, y, chart.maxHighlightDistance, axis);
     }
 
     /**
@@ -97,6 +100,10 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         return h.yPx;
     }
 
+    protected getChartData() {
+        return this.mChart.data;
+    }
+
     /**
      * Returns a list of Highlight objects representing the entries closest to the given xVal.
      * The returned list contains two objects per DataSet (closest rounding up, closest rounding down).
@@ -107,16 +114,16 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     public getHighlightsAtXValue(xVal, x?, y?) {
         this.mHighlightBuffer = [];
 
-        const data = this.mChart.data;
+        const data = this.getChartData();
 
-        if (data == null) return this.mHighlightBuffer;
+        if (!data) return this.mHighlightBuffer;
 
         for (let i = 0, dataSetCount = data.dataSetCount; i < dataSetCount; i++) {
             const dataSet = data.getDataSetByIndex(i);
 
             // don't include DataSets that cannot be highlighted
             if (!dataSet.highlightEnabled) continue;
-            this.mHighlightBuffer.push(...this.buildHighlights(dataSet, i, xVal, Rounding.CLOSEST));
+            this.mHighlightBuffer.push(...this.buildHighlights(dataSet, i, x, y, xVal, Rounding.CLOSEST));
         }
 
         return this.mHighlightBuffer;
@@ -131,7 +138,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * @param rounding
      * @return
      */
-    protected buildHighlights(set: IDataSet<Entry>, dataSetIndex, xVal, rounding) {
+    protected buildHighlights(set: IDataSet<Entry>, dataSetIndex, touchX, touchY, xVal, rounding) {
         const yKey = set.yProperty;
         const highlights: Highlight[] = [];
 
@@ -143,7 +150,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         if (entries.length === 0) {
             // Try to find closest x-value and take all entries for that x-value
             const closest = set.getEntryAndIndexForXValue(xVal, NaN, rounding);
-            if (closest !== null) {
+            if (closest) {
                 //noinspection unchecked
                 entries = set.getEntriesAndIndexesForXValue(set.getEntryXValue(closest.entry, closest.index));
             }
@@ -154,13 +161,15 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
             const e = r.entry;
             const index = r.index;
             const xVal = set.getEntryXValue(e, index);
-            const pixels = this.mChart.getTransformer(set.axisDependency).getPixelForValues(xVal, e[yKey]);
-
+            // const pixels = this.mChart.getTransformer(set.axisDependency).getPixelForValues(xVal, e[yKey]);
+            const pixels = this.mChart.getPixelForEntry(set, e, index);
             highlights.push({
                 entry: e,
                 entryIndex: index,
                 x: xVal,
                 y: e[yKey],
+                xTouchPx: touchX,
+                yTouchPx: touchY,
                 xPx: pixels.x,
                 yPx: pixels.y,
                 dataSetIndex,
@@ -182,20 +191,19 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      *                             rounding up an down)
      * @param x
      * @param y
-     * @param axis                 the closest axis
      * @param minSelectionDistance
+     * @param axis                 the closest axis
      * @return
      */
-    public getClosestHighlightByPixel(closestValues: Highlight[], x, y, axis, minSelectionDistance) {
-        let closest = null;
+    public getClosestHighlightByPixel(closestValues: Highlight[], x: number, y: number, minSelectionDistance: number, axis?: AxisDependency) {
+        let closest: Highlight = null;
         let distance = minSelectionDistance;
 
         for (let i = 0; i < closestValues.length; i++) {
             const high = closestValues[i];
 
-            if (axis == null || high.axis === axis) {
+            if (axis !== undefined || high.axis === axis) {
                 const cDistance = this.getDistance(x, y, high.xPx, high.yPx);
-
                 if (cDistance < distance) {
                     closest = high;
                     distance = cDistance;
@@ -204,6 +212,27 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
         }
 
         return closest;
+    }
+    /**
+     * Returns sorted highlights based on distance to touch x,y
+     *
+     * @param closestValues        contains two Highlight objects per DataSet closest to the selected x-position (determined by
+     *                             rounding up an down)
+     * @param x
+     * @param y
+     * @param minSelectionDistance
+     * @param axis                 the closest axis
+     * @return
+     */
+    public sortedHighlights(closestValues: Highlight[], x: number, y: number, minSelectionDistance: number, axis?: AxisDependency) {
+        if (axis !== undefined) {
+            closestValues = closestValues.filter((h) => h.axis === axis);
+        }
+        return closestValues
+            .map((h) => ({ h, d: this.getDistance(x, y, h.xPx, h.yPx) }))
+            .sort((h1, h2) => h1.d - h2.d)
+            .filter((v) => v.d < minSelectionDistance)
+            .map((v) => v.h);
     }
 
     /**
@@ -215,7 +244,7 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
      * @param y2
      * @return
      */
-    protected getDistance(x1, y1, x2, y2) {
+    protected getDistance(x1: number, y1: number, x2: number, y2: number) {
         //return Math.abs(y1 - y2);
         //return Math.abs(x1 - x2);
         return Math.hypot(x1 - x2, y1 - y2);

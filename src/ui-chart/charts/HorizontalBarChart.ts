@@ -29,13 +29,13 @@ export class HorizontalBarChart extends BarChart {
         this.renderer = new HorizontalBarChartRenderer(this, this.animator, this.viewPortHandler);
         this.highlighter = new HorizontalBarHighlighter(this);
 
-        this.axisRendererLeft = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisLeft, this.leftAxisTransformer);
+        this.rendererLeftYAxis = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisLeft, this.leftAxisTransformer);
     }
 
     public get axisRight() {
         if (!this.mAxisRight) {
-            this.axisRendererRight = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisRight, this.rightAxisTransformer);
-            this.xAxisRenderer = new XAxisRendererHorizontalBarChart(this.viewPortHandler, this.xAxis, this.leftAxisTransformer, this);
+            this.rendererRightYAxis = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisRight, this.rightAxisTransformer);
+            this.rendererXAxis = new XAxisRendererHorizontalBarChart(this.viewPortHandler, this.xAxis, this.leftAxisTransformer, this);
             this.rightAxisTransformer = new TransformerHorizontalBarChart(this.viewPortHandler);
         }
         return this.mAxisRight;
@@ -52,11 +52,11 @@ export class HorizontalBarChart extends BarChart {
 
         // offsets for y-labels
         if (this.mAxisLeft?.needsOffset) {
-            offsetTop += this.mAxisLeft.getRequiredHeightSpace(this.axisRendererLeft.axisLabelsPaint);
+            offsetTop += this.mAxisLeft.getRequiredHeightSpace(this.rendererLeftYAxis.axisLabelsPaint);
         }
 
         if (this.mAxisRight?.needsOffset) {
-            offsetBottom += this.mAxisRight.getRequiredHeightSpace(this.axisRendererRight.axisLabelsPaint);
+            offsetBottom += this.mAxisRight.getRequiredHeightSpace(this.rendererRightYAxis.axisLabelsPaint);
         }
 
         const xlabelWidth = this.xAxis.mLabelRotatedWidth;
@@ -114,7 +114,7 @@ export class HorizontalBarChart extends BarChart {
     public getBarBounds(e: BarEntry): RectF {
         // WARNING: wont work if index is used as xKey(xKey not set)
         const { set, index } = this.mData.getDataSetAndIndexForEntry(e);
-        if (set === null) {
+        if (!set) {
             return new RectF(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
         }
 
@@ -144,12 +144,12 @@ export class HorizontalBarChart extends BarChart {
      * @return
      */
     public getPosition(e: Entry, axis: AxisDependency) {
-        if (e == null) {
+        if (!e) {
             return null;
         }
 
         const set = this.mData.getDataSetForEntry(e);
-        if (set === null) {
+        if (!set) {
             return null;
         }
 
@@ -173,14 +173,8 @@ export class HorizontalBarChart extends BarChart {
      * @param y
      * @return
      */
-    public getHighlightByTouchPoint(x, y): Highlight {
-        if (this.mData == null) {
-            if (Trace.isEnabled()) {
-                CLog(CLogTypes.error, LOG_TAG, "Can't select by touch. No data set.");
-            }
-            return null;
-        }
-        return this.highlighter.getHighlight(x, y);
+    public getHighlightByTouchPoint(x, y) {
+        return this.highlighter.getHighlight(x, y)?.[0];
     }
 
     public get lowestVisibleX() {

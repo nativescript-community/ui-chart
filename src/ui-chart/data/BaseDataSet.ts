@@ -23,6 +23,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     abstract getEntriesForXValue(xValue: number): T[] | ObservableArray<T>;
     abstract getEntriesAndIndexesForXValue(xValue: number): { entry: T; index: number }[];
     abstract getEntryIndexForXValue(xValue: number, closestToY: number, rounding?: Rounding): number;
+    abstract getEntryYValue(e: T): number;
     abstract getEntryIndex(e: T): number;
     abstract addEntry(e: T): boolean;
     abstract addEntryOrdered(e: T);
@@ -137,7 +138,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
             this.yProperty = yProperty;
         }
 
-        if (this.xProperty === undefined || this.xProperty === null) {
+        if (!this.xProperty) {
             this.getEntryXValue = function (e: T, entryIndex: number) {
                 return entryIndex;
             };
@@ -150,7 +151,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getEntryXValue(e: T, entryIndex: number) {
-        if (this.xProperty === undefined || this.xProperty === null) {
+        if (!this.xProperty) {
             return entryIndex;
         }
         return e[this.xProperty];
@@ -184,7 +185,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * @param color
      */
     public addColor(value: string | Color) {
-        if (this.colors == null) this.colors = [];
+        if (!this.colors) this.colors = [];
         this.colors.push(value);
     }
 
@@ -229,7 +230,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      */
 
     public get needsFormatter() {
-        return this.valueFormatter == null;
+        return !this.valueFormatter;
     }
 
     public set valueTextColor(color) {

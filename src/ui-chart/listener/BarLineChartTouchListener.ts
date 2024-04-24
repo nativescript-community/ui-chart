@@ -26,7 +26,7 @@ let PAN_HANDLER_TAG = 12453000;
 
 /**
  * TouchListener for Bar-, Line-, Scatter- and CandleStickChart with handles all
- * touch interaction. Longpress == Zoom out. Double-Tap == Zoom in.
+ * touch interaction. Longpress === Zoom out. Double-Tap === Zoom in.
  *
 
  */
@@ -475,11 +475,29 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * @param e
      */
     private performHighlightDrag(event: GestureTouchEventData) {
-        const h = this.chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
+        // const highlights = this.chart.getHighlightsByTouchPoint(event.data.extraData.x, event.data.extraData.y);
+        // const h = highlights[0];
+        // if (h && h !== this.lastHighlighted) {
+        //     this.chart.highlights(highlights, true);
+        // }
+        this.handleTouchHighlight(event, true);
+    }
+    /**
+     * Highlights upon dragging, generates callbacks for the selection-listener.
+     *
+     * @param e
+     */
+    private handleTouchHighlight(event: GestureTouchEventData, highlightInChart: boolean, checkForLast: boolean = true, eventName?: string) {
+        const highlights = this.chart.getHighlightsByTouchPoint(event.data.extraData.x, event.data.extraData.y);
 
-        if (h != null && h !== this.lastHighlighted) {
-            this.lastHighlighted = h;
-            this.chart.highlight(h, true);
+        const h = highlights[0];
+        if (h) {
+            if (highlightInChart && (!checkForLast || h !== this.lastHighlighted)) {
+                this.chart.highlight(highlights, true);
+            }
+        }
+        if (eventName) {
+            this.chart.notify({ eventName, data: event.data, highlight: h, highlights });
         }
     }
 
@@ -536,7 +554,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      * Returns true if the current touch situation should be interpreted as inverted, false if not.
      */
     private inverted() {
-        return (this.mClosestDataSetToTouch == null && this.chart.anyAxisInverted) || (this.mClosestDataSetToTouch != null && this.chart.isInverted(this.mClosestDataSetToTouch.axisDependency));
+        return (!this.mClosestDataSetToTouch && this.chart.anyAxisInverted) || (this.mClosestDataSetToTouch && this.chart.isInverted(this.mClosestDataSetToTouch.axisDependency));
     }
 
     /**
@@ -556,8 +574,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             const chart = this.chart;
             // check if double-tap zooming is enabled
             if (chart.hasListeners('doubleTap')) {
-                const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
-                chart.notify({ eventName: 'doubleTap', data: event.data, object: chart, highlight: h });
+                this.handleTouchHighlight(event, false, false, 'doubleTap');
+                // const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
+                // chart.notify({ eventName: 'doubleTap', data: event.data, object: chart, highlight: h });
             }
             if (chart.doubleTapToZoomEnabled && chart.data?.entryCount > 0) {
                 const trans = this.getTrans(event.data.extraData.x, event.data.extraData.y);
@@ -582,13 +601,14 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (!hasListener && !isHighlightPerTapEnabled) {
                 return;
             }
-            const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
-            if (hasListener) {
-                chart.notify({ eventName: 'tap', data: event.data, object: chart, highlight: h });
-            }
-            if (isHighlightPerTapEnabled) {
-                this.performHighlight(h);
-            }
+            this.handleTouchHighlight(event, !isHighlightPerTapEnabled, false, hasListener ? 'tap' : undefined);
+            // const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
+            // if (hasListener) {
+            //     chart.notify({ eventName: 'tap', data: event.data, object: chart, highlight: h });
+            // }
+            // if (isHighlightPerTapEnabled) {
+            //     this.performHighlight(h);
+            // }
         }
     }
 

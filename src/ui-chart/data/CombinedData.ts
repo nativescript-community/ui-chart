@@ -39,7 +39,7 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
     }
 
     public calcMinMax() {
-        if (this.mDataSets == null) {
+        if (!this.mDataSets) {
             this.mDataSets = [];
         }
         this.mDataSets = [];
@@ -54,7 +54,7 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
         this.mRightAxisMax = -Infinity;
         this.mRightAxisMin = Infinity;
 
-        const allData = this.allData;
+        const allData = this.datasArray;
         // for (let index = 0; index < allData.length; index++) {
         //     const element = array[index];
 
@@ -83,15 +83,24 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
         }
     }
 
+    public datasOrder = ['lineData', 'barData', 'scatterData', 'candleData', 'bubbleData'];
+
     /**
      * Returns all data objects in row: line-bar-scatter-candle-bubble if not null.
      */
-    public get allData() {
+    public get datasArray() {
         return [this.lineData, this.barData, this.scatterData, this.candleData, this.bubbleData].filter((d) => !!d) as ChartData<any, any>[];
     }
 
+    /**
+     * Returns all data as object.
+     */
+    public get datas() {
+        return { lineData: this.lineData, barData: this.barData, scatterData: this.scatterData, candleData: this.candleData, bubbleData: this.bubbleData };
+    }
+
     public getDataByIndex(index) {
-        return this.allData[index];
+        return this.datasArray[index];
     }
 
     public notifyDataChanged() {
@@ -111,9 +120,13 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
      * @return the entry that is highlighted
      */
     public getEntryForHighlight(highlight: Highlight) {
-        if (highlight.dataIndex >= this.allData.length) return null;
+        if (highlight.entry) {
+            return highlight.entry;
+        }
+        const datasArray = this.datasArray;
+        if (highlight.dataIndex >= datasArray.length) return null;
 
-        const data = this.getDataByIndex(highlight.dataIndex);
+        const data = datasArray[highlight.dataIndex];
 
         if (highlight.dataSetIndex >= data.dataSetCount) return null;
 
@@ -121,9 +134,11 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
         //   if we are not interested in highlighting a specific value.
         const dataSet = data.getDataSetByIndex(highlight.dataSetIndex) as DataSet<any>;
         const entries = dataSet.getEntriesForXValue(highlight.x);
-        for (const entry of entries) if (entry[dataSet.yProperty] === highlight.y || isNaN(highlight.y)) return entry;
-
-        return null;
+        const yProperty = dataSet.yProperty;
+        if (isNaN(highlight.y)) {
+            return entries[0];
+        }
+        return entries.find((e) => e[yProperty] === highlight.y);
     }
 
     /**
@@ -133,7 +148,7 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
      * @return dataset related to highlight
      */
     public getDataSetByHighlight(highlight: Highlight) {
-        if (highlight.dataIndex >= this.allData.length) return null;
+        if (highlight.dataIndex >= this.datasArray.length) return null;
 
         const data = this.getDataByIndex(highlight.dataIndex);
 
@@ -143,11 +158,11 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
     }
 
     public getDataIndex(data: ChartData<any, any>) {
-        return this.allData.indexOf(data);
+        return this.datasArray.indexOf(data);
     }
 
     public removeDataSet(d: BarLineScatterCandleBubbleDataSet<any>) {
-        const datas = this.allData;
+        const datas = this.datasArray;
 
         let success = false;
 

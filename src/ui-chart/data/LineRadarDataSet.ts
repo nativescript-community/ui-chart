@@ -28,7 +28,7 @@ export abstract class LineRadarDataSet<T extends Entry> extends LineScatterCandl
 
     /**
      * the width of the drawn data lines
-     * thinner line == better performance, thicker line == worse performance
+     * thinner line === better performance, thicker line === worse performance
      */
     lineWidth = 1.5;
 

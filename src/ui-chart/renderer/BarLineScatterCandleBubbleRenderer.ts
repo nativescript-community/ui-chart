@@ -40,8 +40,8 @@ export class XBounds {
 
         const entryFrom = dataSet.getEntryForXValue(low, NaN, Rounding.DOWN);
         const entryTo = dataSet.getEntryForXValue(high, NaN, Rounding.UP);
-        this.min = entryFrom == null ? 0 : dataSet.getEntryIndex(entryFrom);
-        this.max = entryTo == null ? 0 : dataSet.getEntryIndex(entryTo);
+        this.min = entryFrom ? dataSet.getEntryIndex(entryFrom) : 0;
+        this.max = entryTo ? dataSet.getEntryIndex(entryTo) : 0;
 
         this.range = (this.max - this.min) * phaseX;
     }
@@ -77,11 +77,11 @@ export abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
      * @return
      */
     protected isInBoundsX(e: Entry, set: IBarLineScatterCandleBubbleDataSet<any>) {
-        if (e == null) return false;
+        if (!e) return false;
 
         const entryIndex = set.getEntryIndex(e);
 
-        if (e == null || entryIndex >= set.entryCount * this.animator.phaseY) {
+        if (!e || entryIndex >= set.entryCount * this.animator.phaseY) {
             return false;
         } else {
             return true;

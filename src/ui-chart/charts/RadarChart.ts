@@ -93,14 +93,14 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
     }
 
     public notifyDataSetChanged() {
-        if (this.mData == null) return;
+        if (!this.mData) return;
 
         this.calcMinMax();
 
         this.yAxisRenderer.computeAxis(this.yAxis.axisMinimum, this.yAxis.axisMaximum, this.yAxis.inverted);
         this.xAxisRenderer.computeAxis(this.xAxis.axisMinimum, this.xAxis.axisMaximum, false);
 
-        if (this.mLegend != null && !this.mLegend.isLegendCustom()) this.legendRenderer.computeLegend(this.mData);
+        if (this.mLegend && !this.mLegend.isLegendCustom()) this.legendRenderer.computeLegend(this.mData);
 
         this.calculateOffsets();
     }
@@ -109,7 +109,7 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
         const startTime = Date.now();
         super.onDraw(c);
 
-        if (this.mData == null) return;
+        if (!this.mData) return;
 
         if (this.xAxis.enabled) {
             this.xAxisRenderer.computeAxis(this.xAxis.axisMinimum, this.xAxis.axisMaximum, false);

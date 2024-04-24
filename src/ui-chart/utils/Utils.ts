@@ -78,22 +78,7 @@ export namespace Utils {
      *
      * @param context
      */
-    export function init(context) {
-        if (context == null) {
-            // noinspection deprecation
-            // this.mMinimumFlingVelocity = android.view.ViewConfiguration.getMinimumFlingVelocity();
-            // noinspection deprecation
-            // this.mMaximumFlingVelocity = android.view.ViewConfiguration.getMaximumFlingVelocity();
-
-            console.error('MPChartLib-Utils', 'Utils.init(...) PROVIDED CONTEXT OBJECT IS NULL');
-        } else {
-            // const viewConfiguration = android.view.ViewConfiguration.get(context);
-            // this.mMinimumFlingVelocity = viewConfiguration.getScaledMinimumFlingVelocity();
-            // this.mMaximumFlingVelocity = viewConfiguration.getScaledMaximumFlingVelocity();
-            // Resources res = context.getResources();
-            // this.mMetrics = res.getDisplayMetrics();
-        }
-    }
+    export function init() {}
 
     /**
      * This method converts dp unit to equivalent pixels, depending on device
@@ -661,7 +646,7 @@ export namespace Utils {
     export function calcSum(values: number[]) {
         let sum = 0;
 
-        if (values == null) {
+        if (!values) {
             return sum;
         }
 
@@ -681,7 +666,7 @@ export namespace Utils {
      */
     export function calcPosNegSum(values: number[]) {
         const sums = { pos: 0, neg: 0 };
-        if (values == null) {
+        if (!values) {
             return sums;
         }
 
@@ -700,7 +685,7 @@ export namespace Utils {
     }
 
     export function calcSumToIndex(index: number, values: number[], desc: boolean) {
-        if (values == null) return 0;
+        if (!values) return 0;
 
         let remainder = 0;
         let lastIndex = values.length - 1;

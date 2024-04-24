@@ -24,7 +24,7 @@ export interface IBarDataSet extends IBarLineScatterCandleBubbleDataSet<BarEntry
 
     /**
      * Returns the width used for drawing borders around the bars.
-     * If borderWidth == 0, no border will be drawn.
+     * If borderWidth === 0, no border will be drawn.
      */
     barBorderWidth: number;
 

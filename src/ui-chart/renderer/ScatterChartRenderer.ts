@@ -37,7 +37,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         const phaseY = this.animator.phaseY;
 
         const renderer = dataSet.shapeRenderer;
-        if (renderer == null) {
+        if (!renderer) {
             if (Trace.isEnabled()) {
                 CLog(CLogTypes.warning, "There's no IShapeRenderer specified for ScatterDataSet");
             }
@@ -56,7 +56,10 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         }
         for (let i = 0; i < max; i++) {
             const e = dataSet.getEntryForIndex(i);
-
+            const yVal = e[yKey];
+            if (yVal === undefined || yVal === null) {
+                continue;
+            }
             pixelBuffer[0] = dataSet.getEntryXValue(e, i);
             pixelBuffer[1] = e[yKey] * phaseY;
 
@@ -118,7 +121,10 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
                 const index = j / 2 + this.mXBounds.min;
                 const entry = dataSet.getEntryForIndex(index);
-
+                const yVal = entry[yKey];
+                if (yVal === undefined || yVal === null) {
+                    continue;
+                }
                 if (drawValues) {
                     this.drawValue(
                         c,
@@ -127,7 +133,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
                         i,
                         entry,
                         index,
-                        (formatter.getPointLabel || formatter.getFormattedValue).call(formatter, entry[yKey], entry),
+                        (formatter.getPointLabel || formatter.getFormattedValue).call(formatter, yVal, entry),
                         points[j] + valuesOffset.x,
                         points[j + 1] + valuesOffset.y - shapeSize,
                         dataSet.getValueTextColor(j / 2 + this.mXBounds.min),
@@ -155,7 +161,7 @@ export class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
             const set = scatterData.getDataSetByIndex(high.dataSetIndex);
             const yKey = set.yProperty;
 
-            if (set == null || !set.highlightEnabled) continue;
+            if (!set || !set.highlightEnabled) continue;
 
             if (high.entry) {
                 entry = high.entry;
