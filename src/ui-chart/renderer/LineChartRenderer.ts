@@ -246,7 +246,12 @@ export class LineChartRenderer extends LineRadarRenderer {
         const scaleX = this.mViewPortHandler.getScaleX();
         dataSet.applyFiltering(scaleX);
         const result = this.draw(c, dataSet);
-        renderPaint.setPathEffect(null);
+        if (dataSet.dashPathEffect) {
+            renderPaint.setPathEffect(null);
+        }
+        if (dataSet.shader) {
+            renderPaint.setShader(null);
+        }
         return result;
     }
 
