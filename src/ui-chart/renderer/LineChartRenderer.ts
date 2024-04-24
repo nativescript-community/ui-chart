@@ -234,7 +234,12 @@ export class LineChartRenderer extends LineRadarRenderer {
         if (dataSet.entryCount < 1) return false;
         const renderPaint = this.renderPaint;
         renderPaint.setStrokeWidth(dataSet.lineWidth);
-        renderPaint.setPathEffect(dataSet.dashPathEffect);
+        if (dataSet.dashPathEffect) {
+            renderPaint.setPathEffect(dataSet.dashPathEffect);
+        }
+        if (dataSet.shader) {
+            renderPaint.setShader(dataSet.shader);
+        }
         renderPaint.setColor(dataSet.getColor());
         renderPaint.setStyle(Style.STROKE);
 
@@ -482,9 +487,9 @@ export class LineChartRenderer extends LineRadarRenderer {
                 let colorIndex = color[xKey || 'index'] as number;
                 // if filtered we need to get the real index
                 if ((dataSet as any).isFiltered()) {
-                    (dataSet as any).setIgnoreFiltered(true);
+                    dataSet.ignoreFiltered = true;
                     const entry = dataSet.getEntryForIndex(colorIndex);
-                    (dataSet as any).setIgnoreFiltered(false);
+                    dataSet.ignoreFiltered = false;
                     if (entry) {
                         colorIndex = dataSet.getEntryIndexForXValue(dataSet.getEntryXValue(entry, colorIndex), NaN, Rounding.CLOSEST);
                     }

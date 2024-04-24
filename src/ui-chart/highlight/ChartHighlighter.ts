@@ -141,9 +141,8 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
     protected buildHighlights(set: IDataSet<Entry>, dataSetIndex, touchX, touchY, xVal, rounding) {
         const yKey = set.yProperty;
         const highlights: Highlight[] = [];
-
-        if (set['setIgnoreFiltered']) {
-            (set as LineDataSet).ignoreFiltered = true;
+        if (set instanceof LineDataSet) {
+            set.ignoreFiltered = true;
         }
         //noinspection unchecked
         let entries = set.getEntriesAndIndexesForXValue(xVal);
@@ -176,8 +175,8 @@ export class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
                 axis: set.axisDependency
             });
         }
-        if (set['setIgnoreFiltered']) {
-            (set as LineDataSet).ignoreFiltered = false;
+        if (set instanceof LineDataSet) {
+            set.ignoreFiltered = false;
         }
 
         return highlights;

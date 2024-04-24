@@ -269,7 +269,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param ignorecase if true, the search is not case-sensitive
      * @return
      */
-    protected getDataSetIndexByLabel(dataSets: T[], label: string, ignorecase) {
+    protected getDataSetIndexByLabel(dataSets: T[], label: string, ignorecase: boolean = false) {
         if (ignorecase) {
             const toTest = label.toLowerCase();
             for (let i = 0; i < dataSets.length; i++) if (toTest === dataSets[i].label?.toLowerCase()) return i;
@@ -334,7 +334,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param ignorecase
      * @return
      */
-    public getDataSetByLabel(label, ignorecase) {
+    public getDataSetByLabel(label: string, ignorecase: boolean = false) {
         const index = this.getDataSetIndexByLabel(this.mDataSets, label, ignorecase);
 
         if (index < 0 || index >= this.mDataSets.length) return null;

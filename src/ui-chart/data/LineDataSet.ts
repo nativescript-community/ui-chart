@@ -1,4 +1,4 @@
-import { DashPathEffect } from '@nativescript-community/ui-canvas';
+import { DashPathEffect, Shader } from '@nativescript-community/ui-canvas';
 import { ObservableArray, profile } from '@nativescript/core';
 import { Color } from '@nativescript/core/color';
 import { createLTTB } from 'downsample/methods/LTTB';
@@ -54,6 +54,11 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     dashPathEffect: DashPathEffect = null;
 
     /**
+     * the path effect of this DataSet that makes dashed lines possible
+     */
+    shader: Shader = null;
+
+    /**
      * formatter for customizing the position of the fill-line
      */
     fillFormatter: IFillFormatter = new DefaultFillFormatter();
@@ -82,7 +87,6 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     public getCircleColor(index) {
         return this.circleColors[Math.floor(index)] || this.getColor();
     }
-
 
     /**
      * Sets the colors that should be used for the circles of this DataSet.
