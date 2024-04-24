@@ -27,7 +27,6 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
     }
 
     protected drawDataSet(c: Canvas, dataSet: IBarDataSet, index: number): boolean {
-        const xKey = dataSet.xProperty;
         const trans = this.mChart.getTransformer(dataSet.axisDependency);
 
         const drawBorder = dataSet.barBorderWidth > 0;
@@ -91,7 +90,6 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         trans.pointValuesToPixel(buffer.buffer);
 
         const isSingleColor = dataSet.colors.length === 1;
-        const isInverted = this.mChart.isInverted(dataSet.axisDependency);
         const renderPaint = this.renderPaint;
         const previousShader = renderPaint.getShader();
         const shader = dataSet.fillShader;
