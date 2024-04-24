@@ -53,7 +53,7 @@ export default Vue.extend({
 
                 // chart.drawGridBackgroundEnabled=(false);
                 // chart.drawBarShadowEnabled=(false);
-                chart.highlightFullBarEnabled = false;
+                chart.highlightFullBarEnabled = true;
 
                 chart.dragEnabled = true;
                 chart.scaleEnabled = true;
@@ -75,11 +75,11 @@ export default Vue.extend({
                 l.orientation = LegendOrientation.HORIZONTAL;
                 l.drawInside = false;
 
-                const rightAxis = chart.axisRight;
+                const rightAxis = chart.rightAxis;
                 rightAxis.drawGridLines = false;
                 rightAxis.axisMinimum = 0; // this replaces setStartAtZero(true)
 
-                const leftAxis = chart.axisLeft;
+                const leftAxis = chart.leftAxis;
                 leftAxis.drawGridLines = false;
                 leftAxis.axisMinimum = 0; // this replaces setStartAtZero(true)
 
@@ -110,7 +110,7 @@ export default Vue.extend({
                 // draw points over time
                 // chart.animateX(1500);
             } catch (error) {
-                console.error(error);
+                console.error(error, error.stack);
             }
         },
         generateLineData() {
