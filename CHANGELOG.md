@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.0](https://github.com/nativescript-community/ui-chart/compare/v1.2.36...v2.0.0) (2024-04-24)
+
+### ⚠ BREAKING CHANGES
+
+* The API change is breaking (for the better!). Use Typescript typings to find out the new property names (mostly same as what was used in method name).
+
+### Features
+
+* new API. All methods used as getter/setter (setData,setColor,getData...) are now properties (color, data...) ([27a47ea](https://github.com/nativescript-community/ui-chart/commit/27a47ea0f23fe02a89f1e16c97b46b5ca03aef54))
+
 ## [1.2.36](https://github.com/nativescript-community/ui-chart/compare/v1.2.35...v1.2.36) (2024-04-14)
 
 ### Bug Fixes
