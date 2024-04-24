@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/nativescript-community/ui-chart/compare/v2.0.0...v2.0.1) (2024-04-24)
+
+### Bug Fixes
+
+* custom shader support for `LineDataSet` ([32ff06f](https://github.com/nativescript-community/ui-chart/commit/32ff06fb49ac0ec499a9568b831ee612690ca53f))
+
 ## [2.0.0](https://github.com/nativescript-community/ui-chart/compare/v1.2.36...v2.0.0) (2024-04-24)
 
 ### ⚠ BREAKING CHANGES
