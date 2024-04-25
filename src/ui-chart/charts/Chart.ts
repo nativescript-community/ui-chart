@@ -89,11 +89,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     xAxis: XAxis;
 
     /**
-     * if true, touch gestures are enabled on the chart
-     */
-    touchEnabled = true;
-
-    /**
      * the object responsible for representing the description text
      */
     mDescription: Description;
