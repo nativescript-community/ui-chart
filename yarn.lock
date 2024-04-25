@@ -1320,12 +1320,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@nativescript-community/ui-canvas@npm:^4.6.21":
-  version: 4.6.21
-  resolution: "@nativescript-community/ui-canvas@npm:4.6.21"
+"@nativescript-community/ui-canvas@npm:^4.6.22":
+  version: 4.6.22
+  resolution: "@nativescript-community/ui-canvas@npm:4.6.22"
   peerDependencies:
     "@nativescript-community/arraybuffers": ^1.1.3
-  checksum: c68c00d012083a5023c71f78a9ba586fbde69536bd82ade892fba2f45eaddca394ed31a6bbd3a9818eea4bc77cb9d86a497fd1ad466b95bef802cea5c7f9ccbb
+  checksum: c5e6a4a77c970df49062a2bb4e7e3eeef1bf24e73df02032b186a79e2145a3bdde9e1b1e0de72a34b2689f2950d8b6c12d31a840123191ba4399c31d3ca1b0e8
   languageName: node
   linkType: hard
 
@@ -1336,7 +1336,7 @@ __metadata:
     "@nativescript-community/additween": "npm:^4.0.5"
     "@nativescript-community/arraybuffers": "npm:^1.1.5"
     "@nativescript-community/gesturehandler": "npm:^2.0.31"
-    "@nativescript-community/ui-canvas": "npm:^4.6.21"
+    "@nativescript-community/ui-canvas": "npm:^4.6.22"
     downsample: "npm:^1.4.0"
     number-format.js: "npm:^2.0.9"
   languageName: unknown
@@ -11245,7 +11245,7 @@ __metadata:
     "@nativescript-community/arraybuffers": "npm:^1.1.5"
     "@nativescript-community/gesturehandler": "npm:^2.0.31"
     "@nativescript-community/plugin-seed-tools": "file:tools"
-    "@nativescript-community/ui-canvas": "npm:^4.6.21"
+    "@nativescript-community/ui-canvas": "npm:^4.6.22"
     downsample: "npm:^1.4.0"
     number-format.js: "npm:^2.0.9"
   languageName: unknown
