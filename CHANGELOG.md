@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.3](https://github.com/nativescript-community/ui-chart/compare/v2.0.2...v2.0.3) (2024-04-25)
+
+### Bug Fixes
+
+* prevent error with highlighter when no data is set ([1c0bca2](https://github.com/nativescript-community/ui-chart/commit/1c0bca2b78f2ff99961c474fae726d1252aaec1a))
+
 ## [2.0.2](https://github.com/nativescript-community/ui-chart/compare/v2.0.1...v2.0.2) (2024-04-25)
 
 ### Bug Fixes
