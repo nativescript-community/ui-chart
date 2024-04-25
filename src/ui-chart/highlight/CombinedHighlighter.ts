@@ -21,11 +21,18 @@ export class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
         this.barHighlighter = !barChart.barData ? null : new BarHighlighter(barChart);
     }
 
+    protected getChartData() {
+        return this.mChart.combinedData;
+    }
+
     public getHighlightsAtXValue(xVal, x?, y?) {
         this.mHighlightBuffer = [];
+        const data = this.getChartData();
 
-        const dataObjects = this.mChart.combinedData.datas;
-        const datasArray = this.mChart.combinedData.datasArray;
+        if (!data) return this.mHighlightBuffer;
+
+        const dataObjects = data.datas;
+        const datasArray = data.datasArray;
         const keys = Object.keys(dataObjects);
 
         for (let i = 0; i < keys.length; i++) {
