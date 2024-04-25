@@ -54,8 +54,8 @@ import { LineData } from '@nativescript-community/ui-chart/data/LineData';
 export function onLineChartLoaded(args) {
     const chart = args.object as LineChart;
 
-    chart.setScaleEnabled(true);
-    chart.setDragEnabled(true);
+    chart.dragEnabled = true;
+    chart.scaleEnabled = true;
 
     const data = new Array(500).fill(0).map((v, i) => ({
         index: i,
@@ -64,21 +64,21 @@ export function onLineChartLoaded(args) {
 
     const sets = [];
     const set = new LineDataSet(data, 'Legend Label', 'index', 'value');
-    set.setColor('blue');
+    set.color = 'blue';
     sets.push(set);
 
     // Create a data object with the data sets
     const ld = new LineData(sets);
 
     // Set data
-    chart.setData(ld);
+    chart.data = ld;
 }
 ```
 
 ## NativeScript + Vue
 
 ```javascript
-Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
+Vue.registerElement('LineChart', () => require('@nativescript-community/ui-chart').LineChart);
 ```
 
 ```html
@@ -96,20 +96,17 @@ onChartLoaded() {
     const chart = this.$refs.chart['nativeView'] as LineChart;
     chart.backgroundColor = 'white';
 
-    // enable touch gestures
-    chart.setTouchEnabled(true);
-
-    chart.setDrawGridBackground(false);
+    chart.drawGridBackground = false;
 
     // enable scaling and dragging
-    chart.setDragEnabled(true);
-    chart.setScaleEnabled(true);
+    chart.dragEnabled = true;
+    chart.scaleEnabled = true;
 
     // force pinch zoom along both axis
-    chart.setPinchZoom(true);
+    chart.petPinchZoomEnabled = true;
 
     // disable dual axis (only use LEFT axis)
-    chart.getAxisRight().setEnabled(false);
+    chart.axisRight.enabled = false;
 
     const myData = new Array(500).fill(0).map((v, i) => ({
         index: i,
@@ -125,14 +122,14 @@ onChartLoaded() {
     const ld = new LineData(sets);
 
     // Set data
-    chart.setData(ld);
+    chart.data = ld;
 }
 ```
 
 ## NativeScript + Angular
 Register the element in app.module.ts
 ```javascript
-registerElement('LineChart', () => require('@nativescript-community/ui-chart/charts').LineChart);
+registerElement('LineChart', () => require('@nativescript-community/ui-chart').LineChart);
 ```
 
 ```html
@@ -150,20 +147,17 @@ onChartLoaded(args) {
     const chart = args.object as LineChart;
     chart.backgroundColor = 'white';
 
-    // enable touch gestures
-    chart.setTouchEnabled(true);
-
-    chart.setDrawGridBackground(false);
+    chart.drawGridBackground = false;
 
     // enable scaling and dragging
-    chart.setDragEnabled(true);
-    chart.setScaleEnabled(true);
+    chart.dragEnabled = true;
+    chart.scaleEnabled = true;
 
     // force pinch zoom along both axis
-    chart.setPinchZoom(true);
+    chart.petPinchZoomEnabled = true;
 
     // disable dual axis (only use LEFT axis)
-    chart.getAxisRight().setEnabled(false);
+    chart.axisRight.enabled = false;
 
     const myData = new Array(500).fill(0).map((v, i) => ({
         index: i,
@@ -172,14 +166,14 @@ onChartLoaded(args) {
 
     const sets = [];
     const set = new LineDataSet(myData, 'Legend Label', 'index', 'value');
-    set.setColor('blue');
+    set.color = 'blue';
     sets.push(set);
 
     // Create a data object with the data sets
     const ld = new LineData(sets);
 
     // Set data
-    chart.setData(ld);
+    chart.data = ld;
 }
 ```
 
