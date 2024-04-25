@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.2](https://github.com/nativescript-community/ui-chart/compare/v2.0.1...v2.0.2) (2024-04-25)
+
+### Bug Fixes
+
+* regression fix with barel import ([b56a87a](https://github.com/nativescript-community/ui-chart/commit/b56a87abf7a287d98bf7597bba6ec28f7ea88f19))
+
 ## [2.0.1](https://github.com/nativescript-community/ui-chart/compare/v2.0.0...v2.0.1) (2024-04-24)
 
 ### Bug Fixes
