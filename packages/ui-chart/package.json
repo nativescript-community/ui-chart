@@ -50,7 +50,7 @@
         "@nativescript-community/additween": "^4.0.5",
         "@nativescript-community/arraybuffers": "^1.1.5",
         "@nativescript-community/gesturehandler": "^2.0.31",
-        "@nativescript-community/ui-canvas": "^4.6.21",
+        "@nativescript-community/ui-canvas": "^4.6.22",
         "downsample": "^1.4.0",
         "number-format.js": "^2.0.9"
     },
