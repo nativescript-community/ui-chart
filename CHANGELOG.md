@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.5](https://github.com/nativescript-community/ui-chart/compare/v2.0.4...v2.0.5) (2024-04-26)
+
+### Bug Fixes
+
+* `DataSet.getColor` fix ([34b3419](https://github.com/nativescript-community/ui-chart/commit/34b34192b4a6d0ffb3b516f1813ff918295fa603))
+
 ## [2.0.4](https://github.com/nativescript-community/ui-chart/compare/v2.0.3...v2.0.4) (2024-04-26)
 
 ### Bug Fixes
