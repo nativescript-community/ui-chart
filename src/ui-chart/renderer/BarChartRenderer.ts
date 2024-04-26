@@ -144,7 +144,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
         trans.pointValuesToPixel(buffer.buffer);
 
-        const isSingleColor = dataSet.colors.length === 1;
+        const isSingleColor = !dataSet.colors || dataSet.colors.length === 1;
         // const isInverted = chart.isInverted(dataSet.axisDependency);
         const renderPaint = this.renderPaint;
         const previousShader = renderPaint.getShader();
@@ -471,7 +471,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const x = set.getEntryXValue(entry, index);
             this.prepareBarHighlight(x, y1, y2, barData.barWidth / 2, trans, barRect);
 
-            // this.setHighlightDrawPos(high, barRect);
+            this.setHighlightDrawPos(high, barRect);
             const customRender = this.mChart.customRenderer;
             if (customRender && customRender.drawHighlight) {
                 const rect = barRect;

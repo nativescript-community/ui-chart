@@ -61,7 +61,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     /**
      * List representing all colors that are used for drawing the actual values for this DataSet
      */
-    valueColors: (string | Color)[] = null;
+    valueColors: (string | Color)[] = ['black'];
 
     /**
      * label that describes the DataSet or the data the DataSet represents
@@ -129,8 +129,6 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * @param label
      */
     constructor(label, xProperty?, yProperty?) {
-        this.colors = [];
-        this.valueColors = [];
         // if (xProperty) {
         this.xProperty = xProperty;
         // }
@@ -146,7 +144,6 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
             this.getEntryXValue = (e: T, entryIndex: number) => e[this.xProperty];
         }
 
-        this.valueColors.push('black');
         this.label = label;
     }
 
@@ -234,8 +231,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public set valueTextColor(color) {
-        this.valueColors = [];
-        this.valueColors.push(color);
+        this.valueColors = [color];
     }
 
     public set valueTextColors(colors) {

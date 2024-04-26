@@ -117,8 +117,9 @@ export abstract class AxisRenderer extends Renderer {
                 inverted = axis['isInverted'] ? axis['isInverted']() : false;
             }
         }
-        if (this.mViewPortHandler && this.mViewPortHandler.contentRect.width() > 10 && !this.mViewPortHandler.isFullyZoomedOutY()) {
-            const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.chartRect : this.mViewPortHandler.contentRect;
+        const viewPortHandler = this.mViewPortHandler;
+        if (viewPortHandler?.contentRect.width() > 10 && !viewPortHandler.isFullyZoomedOutY()) {
+            const rect = this.mAxis.ignoreOffsets ? viewPortHandler.chartRect : viewPortHandler.contentRect;
             const p1 = this.transformer.getValuesByTouchPoint(rect.left, rect.top);
             const p2 = this.transformer.getValuesByTouchPoint(rect.left, rect.bottom);
 

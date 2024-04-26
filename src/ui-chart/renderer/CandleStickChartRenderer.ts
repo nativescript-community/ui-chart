@@ -312,7 +312,7 @@ export class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
             if (customRender && customRender.drawHighlight) {
                 customRender.drawHighlight(c, high, set, paint);
             } else {
-                this.drawHighlightLines(c, high.xPx, high.yPx, set);
+                this.drawHighlightLines(c, high.drawX, high.drawY, set);
             }
         }
     }

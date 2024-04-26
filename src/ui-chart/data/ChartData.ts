@@ -112,57 +112,37 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * Calc minimum and maximum values (both x and y) over all DataSets.
      */
     calcMinMax() {
-        if (!this.mDataSets) return;
-
         this.mYMax = -Infinity;
         this.mYMin = Infinity;
         this.mXMax = -Infinity;
         this.mXMin = Infinity;
 
-        const visibleDatasets = this.visibleDataSets;
-
-        for (const set of visibleDatasets) {
-            if (set.visible) {
-                this.calcMinMaxForDataSet(set);
-            }
-        }
-
         this.mLeftAxisMax = -Infinity;
         this.mLeftAxisMin = Infinity;
         this.mRightAxisMax = -Infinity;
         this.mRightAxisMin = Infinity;
+        if (!this.mDataSets || this.mDataSets.length === 0) return;
 
-        // left axis
-        const firstLeft = this.getFirstLeft(visibleDatasets);
+        const visibleDatasets = this.visibleDataSets;
 
-        if (firstLeft) {
-            this.mLeftAxisMax = firstLeft.yMax;
-            this.mLeftAxisMin = firstLeft.yMin;
-
-            for (const dataSet of visibleDatasets) {
-                if (dataSet.axisDependency === AxisDependency.LEFT) {
-                    if (dataSet.yMin < this.mLeftAxisMin) this.mLeftAxisMin = dataSet.yMin;
-
-                    if (dataSet.yMax > this.mLeftAxisMax) this.mLeftAxisMax = dataSet.yMax;
-                }
-            }
+        for (const set of visibleDatasets) {
+            this.calcMinMaxForDataSet(set);
         }
 
-        // right axis
-        const firstRight = this.getFirstRight(visibleDatasets);
-
-        if (firstRight) {
-            this.mRightAxisMax = firstRight.yMax;
-            this.mRightAxisMin = firstRight.yMin;
-
-            for (const dataSet of visibleDatasets) {
-                if (dataSet.axisDependency === AxisDependency.RIGHT) {
-                    if (dataSet.yMin < this.mRightAxisMin) this.mRightAxisMin = dataSet.yMin;
-
-                    if (dataSet.yMax > this.mRightAxisMax) this.mRightAxisMax = dataSet.yMax;
-                }
-            }
-        }
+        // this.mLeftAxisMax = -Infinity;
+        // this.mLeftAxisMin = Infinity;
+        // this.mRightAxisMax = -Infinity;
+        // this.mRightAxisMin = Infinity;
+        // for (let i = 0; i < visibleDatasets.length; i++) {
+        //     const set = visibleDatasets[i];
+        //     if (set.axisDependency === AxisDependency.RIGHT) {
+        //         this.mRightAxisMin = Math.min(this.mRightAxisMin, set.yMin);
+        //         this.mRightAxisMax = Math.min(this.mRightAxisMax, set.yMax);
+        //     } else {
+        //         this.mLeftAxisMin = Math.min(this.mLeftAxisMin, set.yMin);
+        //         this.mLeftAxisMax = Math.min(this.mLeftAxisMax, set.yMax);
+        //     }
+        // }
     }
 
     /** ONLY GETTERS AND SETTERS BELOW THIS */
@@ -426,22 +406,19 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param axis
      */
     protected calcMinMaxForEntry(set: IDataSet<Entry>, e: Entry, entryIndex: number, axis: AxisDependency) {
-        const xKey = set.xProperty;
-        const yKey = set.yProperty;
         const xValue = set.getEntryXValue(e, entryIndex);
-        const yValue = e[yKey];
-        if (this.mYMax < yValue) this.mYMax = yValue;
-        if (this.mYMin > yValue) this.mYMin = yValue;
-
-        if (this.mXMax < xValue) this.mXMax = xValue;
-        if (this.mXMin > xValue) this.mXMin = xValue;
+        const yValue = e[set.yProperty];
+        this.mYMin = Math.min(this.mYMin, yValue);
+        this.mYMax = Math.max(this.mYMax, yValue);
+        this.mXMin = Math.min(this.mXMin, xValue);
+        this.mXMax = Math.max(this.mXMax, xValue);
 
         if (axis === AxisDependency.LEFT) {
-            if (this.mLeftAxisMax < yValue) this.mLeftAxisMax = yValue;
-            if (this.mLeftAxisMin > yValue) this.mLeftAxisMin = yValue;
+            this.mLeftAxisMin = Math.min(this.mLeftAxisMin, yValue);
+            this.mLeftAxisMax = Math.max(this.mLeftAxisMax, yValue);
         } else {
-            if (this.mRightAxisMax < yValue) this.mRightAxisMax = yValue;
-            if (this.mRightAxisMin > yValue) this.mRightAxisMin = yValue;
+            this.mRightAxisMin = Math.min(this.mRightAxisMin, yValue);
+            this.mRightAxisMax = Math.max(this.mRightAxisMax, yValue);
         }
     }
 
@@ -451,18 +428,17 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param d
      */
     protected calcMinMaxForDataSet(d: T) {
-        if (this.mYMax < d.yMax) this.mYMax = d.yMax;
-        if (this.mYMin > d.yMin) this.mYMin = d.yMin;
-
-        if (this.mXMax < d.xMax) this.mXMax = d.xMax;
-        if (this.mXMin > d.xMin) this.mXMin = d.xMin;
+        this.mXMin = Math.min(this.mXMin, d.xMin);
+        this.mXMax = Math.max(this.mXMax, d.xMax);
+        this.mYMin = Math.min(this.mYMin, d.yMin);
+        this.mYMax = Math.max(this.mYMax, d.yMax);
 
         if (d.axisDependency === AxisDependency.LEFT) {
-            if (this.mLeftAxisMax < d.yMax) this.mLeftAxisMax = d.yMax;
-            if (this.mLeftAxisMin > d.yMin) this.mLeftAxisMin = d.yMin;
+            this.mLeftAxisMin = Math.min(this.mLeftAxisMin, d.yMin);
+            this.mLeftAxisMax = Math.max(this.mLeftAxisMax, d.yMax);
         } else {
-            if (this.mRightAxisMax < d.yMax) this.mRightAxisMax = d.yMax;
-            if (this.mRightAxisMin > d.yMin) this.mRightAxisMin = d.yMin;
+            this.mRightAxisMin = Math.min(this.mRightAxisMin, d.yMin);
+            this.mRightAxisMax = Math.max(this.mRightAxisMax, d.yMax);
         }
     }
 

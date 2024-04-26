@@ -279,9 +279,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         } else {
             this.renderer.drawValues(canvas);
         }
-        if (this.legendRenderer) {
-            this.legendRenderer.renderLegend(canvas);
-        }
+        this.legendRenderer?.renderLegend(canvas);
 
         this.drawDescription(canvas);
 
@@ -764,6 +762,11 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
      */
     public setScale(scaleX, scaleY) {
         this.viewPortHandler.setScale(scaleX, scaleY);
+        // Range might have changed, which  means that Y-axis labels
+        // could have changed in size, affecting Y-axis size.
+        // So we need to recalculate offsets.
+        this.calculateOffsets();
+        this.invalidate();
     }
 
     /**

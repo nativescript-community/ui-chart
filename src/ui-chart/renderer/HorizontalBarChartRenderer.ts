@@ -89,7 +89,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
 
         trans.pointValuesToPixel(buffer.buffer);
 
-        const isSingleColor = dataSet.colors.length === 1;
+        const isSingleColor = !dataSet.colors || dataSet.colors.length === 1;
         const renderPaint = this.renderPaint;
         const previousShader = renderPaint.getShader();
         const shader = dataSet.fillShader;
@@ -396,10 +396,10 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
      * @param high
      * @param bar
      */
-    // protected setHighlightDrawPos(high: Highlight, bar: RectF) {
-    //     high.drawX = bar.centerY();
-    //     high.drawY = bar.right;
-    // }
+    protected setHighlightDrawPos(high: Highlight, bar: RectF) {
+        high.drawX = bar.centerY();
+        high.drawY = bar.right;
+    }
 
     protected isDrawingValuesAllowed(chart: ChartInterface) {
         return chart.data.entryCount < chart.maxVisibleValueCount * this.mViewPortHandler.getScaleY();

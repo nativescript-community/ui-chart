@@ -61,12 +61,12 @@ export class LegendRenderer extends Renderer {
     public computeLegend(data: ChartData<any, IDataSet<any>>) {
         if (!this.mLegend.isLegendCustom()) {
             this.computedEntries = [];
-
+            const dataSets = data.dataSets;
             // loop for building up the colors and labels used in the legend
-            for (let i = 0; i < data.dataSetCount; i++) {
-                const dataSet = data.getDataSetByIndex(i);
+            for (let i = 0; i < dataSets.length; i++) {
+                const dataSet = dataSets[i];
 
-                const clrs = dataSet.colors;
+                const clrs = dataSet.colors || [dataSet.color];
                 const entryCount = dataSet.entryCount;
 
                 // if we have a barchart with stacked bars

@@ -861,19 +861,6 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
     }
 
     /**
-     * Flag that indicates if highlighting per tap (touch) is enabled
-     */
-    get highlightPerTapEnabled() {
-        return this.mHighlightPerTapEnabled;
-    }
-    /**
-     * Flag that indicates if highlighting per tap (touch) is enabled
-     */
-    set highlightPerTapEnabled(value: boolean) {
-        this.mHighlightPerTapEnabled = value;
-    }
-
-    /**
      * Returns the bitmap that represents the chart.
      */
     public get chartBitmap() {

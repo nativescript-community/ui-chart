@@ -572,13 +572,13 @@ export class LineChartRenderer extends LineRadarRenderer {
             return result;
         }
 
-        const colors = dataSet.colors as any as { color: string | Color; [k: string]: any }[];
+        const colors = dataSet.colors || [dataSet.color];
         const nbColors = colors.length;
         const renderPaint = this.renderPaint;
         let paintColorsShader;
-        if (nbColors > 0) {
+        if (nbColors > 1) {
             // TODO: we transforms points in there. Could be dangerous if used after
-            paintColorsShader = this.getMultiColorsShader(colors, points, trans, dataSet);
+            paintColorsShader = this.getMultiColorsShader(colors as any, points, trans, dataSet);
         }
 
         let oldShader;
@@ -843,7 +843,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             if (customRender && customRender.drawHighlight) {
                 customRender.drawHighlight(c, high, set, paint);
             } else {
-                this.drawHighlightLines(c, high.xPx, high.yPx, set);
+                this.drawHighlightLines(c, high.drawX, high.drawY, set);
             }
         }
     }

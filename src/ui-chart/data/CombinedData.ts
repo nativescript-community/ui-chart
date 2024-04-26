@@ -39,9 +39,6 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
     }
 
     public calcMinMax() {
-        if (!this.mDataSets) {
-            this.mDataSets = [];
-        }
         this.mDataSets = [];
 
         this.mYMax = -Infinity;
@@ -55,31 +52,19 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
         this.mRightAxisMin = Infinity;
 
         const allData = this.datasArray;
-        // for (let index = 0; index < allData.length; index++) {
-        //     const element = array[index];
-
-        // }
-        for (const data of allData) {
+        for (let index = 0; index < allData.length; index++) {
+            const data = allData[index];
+            this.mDataSets.push(...data.dataSets);
             data.calcMinMax();
+            this.mXMin = Math.min(this.mXMin, data.xMin);
+            this.mXMax = Math.max(this.mXMax, data.xMax);
+            this.mYMin = Math.min(this.mYMin, data.yMin);
+            this.mYMax = Math.max(this.mYMax, data.yMax);
 
-            const sets = data.dataSets;
-            this.mDataSets.push(...sets);
-
-            if (data.yMax > this.mYMax) this.mYMax = data.yMax;
-
-            if (data.yMin < this.mYMin) this.mYMin = data.yMin;
-
-            if (data.xMax > this.mXMax) this.mXMax = data.xMax;
-
-            if (data.xMin < this.mXMin) this.mXMin = data.xMin;
-
-            if (data.mLeftAxisMax > this.mLeftAxisMax) this.mLeftAxisMax = data.mLeftAxisMax;
-
-            if (data.mLeftAxisMin < this.mLeftAxisMin) this.mLeftAxisMin = data.mLeftAxisMin;
-
-            if (data.mRightAxisMax > this.mRightAxisMax) this.mRightAxisMax = data.mRightAxisMax;
-
-            if (data.mRightAxisMin < this.mRightAxisMin) this.mRightAxisMin = data.mRightAxisMin;
+            this.mLeftAxisMin = Math.min(this.mLeftAxisMin, data.mLeftAxisMin);
+            this.mLeftAxisMax = Math.max(this.mLeftAxisMax, data.mLeftAxisMax);
+            this.mRightAxisMin = Math.min(this.mRightAxisMin, data.mRightAxisMin);
+            this.mRightAxisMax = Math.max(this.mRightAxisMax, data.mRightAxisMax);
         }
     }
 
@@ -98,18 +83,18 @@ export class CombinedData extends BarLineScatterCandleBubbleData<Entry, BarLineS
     public get datas() {
         return { lineData: this.lineData, barData: this.barData, scatterData: this.scatterData, candleData: this.candleData, bubbleData: this.bubbleData };
     }
-
-    public getDataByIndex(index) {
+    // get dataSetCount() {
+    //     return this.datasArray.reduce((acc, data) => acc + data.dataSetCount, 0);
+    // }
+    // get dataSets() {
+    //     return this.datasArray.reduce((acc, data) =>  acc.concat(data.dataSets), []);
+    // }
+    getDataByIndex(index) {
         return this.datasArray[index];
     }
 
     public notifyDataChanged() {
-        if (this.lineData) this.lineData.notifyDataChanged();
-        if (this.barData) this.barData.notifyDataChanged();
-        if (this.candleData) this.candleData.notifyDataChanged();
-        if (this.scatterData) this.scatterData.notifyDataChanged();
-        if (this.bubbleData) this.bubbleData.notifyDataChanged();
-
+        this.datasArray.forEach((d) => d.notifyDataChanged());
         this.calcMinMax(); // recalculate everything
     }
 

@@ -142,17 +142,15 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
             }
         } else {
             const x = this.getEntryXValue(e, index);
-            if (x < this.mXMin) this.mXMin = x;
-
-            if (x > this.mXMax) this.mXMax = x;
+            this.mXMin = Math.min(x, this.mXMin);
+            this.mXMax = Math.max(x, this.mXMax);
         }
     }
 
     protected calcMinMaxY(e: T, index?: number) {
         const y = e[this.yProperty] || 0;
-        if (y < this.mYMin) this.mYMin = y;
-
-        if (y > this.mYMax) this.mYMax = y;
+        this.mYMin = Math.min(y, this.mYMin);
+        this.mYMax = Math.max(y, this.mYMax);
     }
 
     protected getInternalValues() {

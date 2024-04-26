@@ -128,9 +128,14 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
                 this.mAxis.mCenteredEntries[i] = this.mAxis.mEntries[i] + offset;
             }
         }
-
-        this.mAxis.axisMinimum = this.mAxis.mEntries[0];
-        this.mAxis.axisMaximum = this.mAxis.mEntries[n - 1];
+        if (!this.mAxis.isAxisMinCustom()) {
+            this.mAxis.axisMinimum = this.mAxis.mEntries[0];
+            this.mAxis.resetAxisMinimum();
+        }
+        if (!this.mAxis.isAxisMaxCustom()) {
+            this.mAxis.axisMaximum = this.mAxis.mEntries[n - 1];
+            this.mAxis.resetAxisMaximum();
+        }
         this.mAxis.axisRange = Math.abs(this.mAxis.axisMaximum - this.mAxis.axisMinimum);
     }
 

@@ -601,7 +601,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             if (!hasListener && !isHighlightPerTapEnabled) {
                 return;
             }
-            this.handleTouchHighlight(event, !isHighlightPerTapEnabled, false, hasListener ? 'tap' : undefined);
+            this.handleTouchHighlight(event, isHighlightPerTapEnabled, false, hasListener ? 'tap' : undefined);
             // const h = chart.getHighlightByTouchPoint(event.data.extraData.x, event.data.extraData.y);
             // if (hasListener) {
             //     chart.notify({ eventName: 'tap', data: event.data, object: chart, highlight: h });
