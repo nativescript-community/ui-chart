@@ -169,11 +169,11 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * ###### ###### COLOR GETTING RELATED METHODS ##### ######
      */
 
-    public getColor(index?) {
-        if (index === undefined || this.colors.length === 0) {
-            return this.color;
+    public getColor(index = 0) {
+        if (this.colors?.length > 0) {
+            return this.colors[Math.floor(index) % this.colors.length];
         }
-        return this.colors[Math.floor(index) % this.colors.length];
+        return this.color;
     }
 
     /**
