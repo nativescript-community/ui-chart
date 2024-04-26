@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.4](https://github.com/nativescript-community/ui-chart/compare/v2.0.3...v2.0.4) (2024-04-26)
+
+### Bug Fixes
+
+* regressions fix ([e7879e8](https://github.com/nativescript-community/ui-chart/commit/e7879e821277246dbe8124ef99222403f0c36f7c))
+
 ## [2.0.3](https://github.com/nativescript-community/ui-chart/compare/v2.0.2...v2.0.3) (2024-04-25)
 
 ### Bug Fixes
