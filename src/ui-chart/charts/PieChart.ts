@@ -114,16 +114,9 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
 
         this.highlighter = new PieHighlighter(this);
     }
-    // for performance tracking
-    private totalTime = 0;
-    private drawCycles = 0;
-    public onDraw(canvas: Canvas) {
-        const startTime = Date.now();
-        super.onDraw(canvas);
-
-        if (!this.mData) {
-            return;
-        }
+    public draw(canvas: Canvas) {
+        super.draw(canvas);
+        if (!this.mData) return;
 
         this.renderer.drawData(canvas);
 
@@ -141,15 +134,6 @@ export class PieChart extends PieRadarChartBase<Entry, PieDataSet, PieData> {
 
         this.drawDescription(canvas);
         this.drawMarkers(canvas);
-        this.notify({ eventName: 'drawn', object: this });
-        if (Trace.isEnabled()) {
-            const drawtime = Date.now() - startTime;
-            this.totalTime += drawtime;
-            this.drawCycles += 1;
-            const average = this.totalTime / this.drawCycles;
-            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
-        }
-        this.notify({ eventName: 'postDraw', object: this, canvas });
     }
 
     public calculateOffsets() {

@@ -105,10 +105,8 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
         this.calculateOffsets();
     }
 
-    onDraw(c: Canvas) {
-        const startTime = Date.now();
-        super.onDraw(c);
-
+    draw(c: Canvas) {
+        super.draw(c);
         if (!this.mData) return;
 
         if (this.xAxis.enabled) {
@@ -134,15 +132,6 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
         this.drawDescription(c);
 
         this.drawMarkers(c);
-
-        this.notify({ eventName: 'drawn', object: this });
-        if (Trace.isEnabled()) {
-            const drawtime = Date.now() - startTime;
-            this.mTotalTime += drawtime;
-            this.mDrawCycles += 1;
-            const average = this.mTotalTime / this.mDrawCycles;
-            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.mDrawCycles);
-        }
     }
 
     /**

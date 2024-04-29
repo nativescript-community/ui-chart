@@ -105,11 +105,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     keepPositionOnRotation: boolean;
 
     /**
-     * the listener for user drawing on the chart
-     */
-    // protected OnDrawListener this.mDrawListener;
-
-    /**
      * the object representing the labels on the left y-axis
      */
     mAxisLeft: YAxis;
@@ -180,15 +175,8 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         }
         return this.chartTouchListener;
     }
-
-    // for performance tracking
-    private totalTime = 0;
-    private drawCycles = 0;
-
-    @profile
-    public onDraw(canvas: Canvas) {
-        const startTime = Date.now();
-        super.onDraw(canvas);
+    public draw(canvas: Canvas) {
+        super.draw(canvas);
         const noComputeAutoScaleOnNextDraw = this.noComputeAutoScaleOnNextDraw;
         const noComputeAxisOnNextDraw = this.noComputeAxisOnNextDraw;
         this.noComputeAxisOnNextDraw = false;
@@ -284,23 +272,6 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
         this.drawDescription(canvas);
 
         this.drawMarkers(canvas);
-
-        this.notify({ eventName: 'postDraw', canvas, object: this });
-        if (Trace.isEnabled()) {
-            const drawtime = Date.now() - startTime;
-            this.totalTime += drawtime;
-            this.drawCycles += 1;
-            const average = this.totalTime / this.drawCycles;
-            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
-        }
-    }
-
-    /**
-     * RESET PERFORMANCE TRACKING FIELDS
-     */
-    public resetTracking() {
-        this.totalTime = 0;
-        this.drawCycles = 0;
     }
 
     protected prepareValuePxMatrix() {

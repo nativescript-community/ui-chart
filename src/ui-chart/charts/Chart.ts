@@ -338,10 +338,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         // setup the formatter with a new number of digits
         this.defaultValueFormatter.setup(digits);
     }
-
-    public onDraw(canvas: Canvas) {
-        super.onDraw(canvas);
-
+    protected draw(canvas: Canvas) {
         if (!this.mData) {
             const hasText = this.noDataText && this.noDataText.length > 0;
 
@@ -350,7 +347,30 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
                 canvas.drawText(this.noDataText, c.x, c.y, this.infoPaint);
             }
         }
-        this.notify({ eventName: 'postDraw', object: this, canvas });
+    }
+
+    // for performance tracking
+    private totalTime = 0;
+    private drawCycles = 0;
+    public onDraw(canvas: Canvas) {
+        const startTime = Date.now();
+        super.onDraw(canvas);
+        this.draw(canvas);
+        if (Trace.isEnabled()) {
+            const drawtime = Date.now() - startTime;
+            this.totalTime += drawtime;
+            this.drawCycles += 1;
+            const average = this.totalTime / this.drawCycles;
+            CLog(CLogTypes.log, this.constructor.name, 'Drawtime: ' + drawtime + ' ms, average: ' + average + ' ms, cycles: ' + this.drawCycles);
+        }
+        this.notify({ eventName: 'postDraw', canvas, object: this });
+    }
+    /**
+     * RESET PERFORMANCE TRACKING FIELDS
+     */
+    public resetTracking() {
+        this.totalTime = 0;
+        this.drawCycles = 0;
     }
 
     /**
