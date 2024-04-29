@@ -130,6 +130,7 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
      */
     public getGroupWidth(groupSpace, barSpace) {
         const dataSetCount = this.dataSetCount;
-        return dataSetCount * this.barWidth + (dataSetCount > 1 ? Math.ceil(dataSetCount / 2) : 0) * barSpace + groupSpace;
+        // return dataSetCount * this.barWidth + (dataSetCount > 1 ? Math.ceil(dataSetCount / 2) : 0) * barSpace + groupSpace;
+        return dataSetCount * (this.barWidth + barSpace) + groupSpace;
     }
 }
