@@ -5,13 +5,6 @@
     "main": "./index",
     "sideEffects": false,
     "typings": "./index.d.ts",
-    "scripts": {
-        "build": "npm run tsc",
-        "build.all": "npm run build",
-        "readme": "readme generate -c ../../tools/readme/blueprint.json",
-        "tsc": "cpy '**/*.d.ts' '../../packages/ui-chart' --parents --cwd=../../src/ui-chart && tsc -skipLibCheck -d",
-        "clean": "rimraf ./*.d.ts ./*.js ./*.js.map"
-    },
     "nativescript": {
         "platforms": {
             "android": "6.0.0",
@@ -54,5 +47,5 @@
         "downsample": "^1.4.0",
         "number-format.js": "^2.0.9"
     },
-    "gitHead": "5c91f884f8ca30cfcff1c3ac88f90492831c73aa"
+    "gitHead": "c77f1d8dc0dedd4a5ecee7577043e3247b94eee3"
 }
