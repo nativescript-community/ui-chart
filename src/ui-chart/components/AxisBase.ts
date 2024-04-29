@@ -1,4 +1,4 @@
-import { Align, DashPathEffect, parseDashEffect } from '@nativescript-community/ui-canvas';
+import { Align, DashPathEffect } from '@nativescript-community/ui-canvas';
 import { DefaultAxisValueFormatter } from '../formatter/DefaultAxisValueFormatter';
 import { IAxisValueFormatter } from '../formatter/IAxisValueFormatter';
 import { CustomRenderer } from '../renderer/AxisRenderer';
@@ -340,7 +340,8 @@ export abstract class AxisBase extends ComponentBase {
      * @param phase       offset, in degrees (normally, use 0)
      */
     public enableAxisLineDashedLine(lineLength, spaceLength, phase) {
-        this.axisLineDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`);
+        this.axisLineDashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
+        // this.axisLineDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`);
     }
 
     /**
