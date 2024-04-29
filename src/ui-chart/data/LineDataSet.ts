@@ -113,7 +113,6 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     protected mFilteredValues: Entry[] = null;
     protected mFilterFunction;
-    @profile
     public applyFiltering(scaleX: number) {
         if (this.maxFilterNumber > 0 && this.mValues.length / scaleX > this.maxFilterNumber) {
             const filterCount = Math.round(this.maxFilterNumber * scaleX);
@@ -171,6 +170,5 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      */
     public enableDashedLine(lineLength, spaceLength, phase) {
         this.dashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
-        // this.mDashPathEffect = parseDashEffect(`${lineLength} ${spaceLength} ${phase}`) ;
     }
 }

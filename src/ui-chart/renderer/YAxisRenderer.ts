@@ -29,7 +29,6 @@ export class YAxisRenderer extends AxisRenderer {
     /**
      * draws the y-axis labels to the screen
      */
-    @profile
     public renderAxisLabels(c: Canvas) {
         const axis = this.mYAxis;
         if (!axis.enabled || !axis.drawLabels) return;
@@ -102,7 +101,6 @@ export class YAxisRenderer extends AxisRenderer {
      * @param fixedPosition
      * @param positions
      */
-    @profile
     protected drawYLabels(c: Canvas, fixedPosition, positions, offset) {
         const axis = this.mYAxis;
         const customRender = axis.customRenderer;

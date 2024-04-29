@@ -98,7 +98,6 @@ export class PieChartRenderer extends DataRenderer {
         return this.mValuePaint;
     }
 
-    @profile
     public drawData(c: Canvas) {
         const width = this.mViewPortHandler.chartWidth;
         const height = this.mViewPortHandler.chartHeight;

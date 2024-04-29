@@ -65,7 +65,6 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         }
     }
 
-    @profile
     public drawData(c: Canvas) {
         const barData = this.mChart.barData;
 

@@ -1,7 +1,6 @@
-import { ComponentBase } from './ComponentBase';
-import { DashPathEffect, Paint, Style, parseDashEffect } from '@nativescript-community/ui-canvas';
-import { Utils } from '../utils/Utils';
+import { DashPathEffect, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
+import { ComponentBase } from './ComponentBase';
 
 /** enum that indicates the position of the LimitLine label */
 export enum LimitLabelPosition {

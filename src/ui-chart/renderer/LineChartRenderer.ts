@@ -201,7 +201,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         return this.mCirclePaintInner;
     }
 
-    @profile
     public drawData(c: Canvas) {
         const width = this.mViewPortHandler.chartWidth;
         const height = this.mViewPortHandler.chartHeight;
@@ -229,7 +228,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    @profile
     protected drawDataSet(c: Canvas, dataSet: LineDataSet): boolean {
         if (dataSet.entryCount < 1) return false;
         const renderPaint = this.renderPaint;
@@ -255,7 +253,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         return result;
     }
 
-    @profile
     generateHorizontalBezierPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
             const pointsPerEntryPair = 6;
@@ -318,7 +315,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    @profile
     generateCubicPath(dataSet: ILineDataSet, outputPath: Path) {
         if (this.mXBounds.range >= 1) {
             const pointsPerEntryPair = 6;
@@ -622,7 +618,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         return result;
     }
 
-    @profile
     drawLines(canvas: Canvas, points: number[], offest: number, length: number, paint: Paint, matrix?: Matrix) {
         if (matrix) {
             canvas.drawLines(points, offest, length, paint, matrix);
@@ -652,7 +647,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    @profile
     public drawValuesForDataset(c: Canvas, dataSet: LineDataSet, dataSetIndex: number) {
         const yKey = dataSet.yProperty;
         // apply the text-styling defined by the DataSet
@@ -734,7 +728,6 @@ export class LineChartRenderer extends LineRadarRenderer {
         this.drawCircles(c);
     }
 
-    @profile
     protected drawCirclesForDataset(c: Canvas, dataSet: LineDataSet) {
         const paint = this.circlePaintInner;
         paint.setColor(dataSet.circleHoleColor);

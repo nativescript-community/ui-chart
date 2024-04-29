@@ -141,7 +141,6 @@ export class LegendRenderer extends Renderer {
         this.mLegend.calculateDimensions(paint, this.mViewPortHandler);
     }
 
-    @profile
     public renderLegend(c: Canvas) {
         if (!this.mLegend.enabled) return;
         const paint = this.labelPaint;

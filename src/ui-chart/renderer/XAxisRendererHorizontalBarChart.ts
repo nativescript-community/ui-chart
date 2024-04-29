@@ -58,7 +58,6 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         axis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
     }
 
-    @profile
     public renderAxisLabels(c: Canvas) {
         const axis = this.xAxis;
         if (!axis.enabled || !axis.drawLabels) {
@@ -107,7 +106,6 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
      *
      * @param pos
      */
-    @profile
     protected drawLabels(c: Canvas, pos, anchor: MPPointF) {
         const axis = this.xAxis;
         const labelRotationAngleDegrees = axis.labelRotationAngle;
