@@ -142,6 +142,8 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
     protected drawZeroLine(c: Canvas) {
         const axis = this.mYAxis;
+        const customRender = axis.customRenderer;
+        const customRendererFunc = customRender && customRender.drawZeroLine;
         const clipRestoreCount = c.save();
         const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.chartRect : this.mViewPortHandler.contentRect;
         const zeroLineClippingRect = Utils.getTempRectF();
@@ -163,7 +165,12 @@ export class YAxisRendererHorizontalBarChart extends YAxisRenderer {
         zeroLinePath.lineTo(pos.x - 1, rect.bottom);
 
         // draw a path because lines don't support dashing on lower android versions
-        c.drawPath(zeroLinePath, paint);
+        if (customRendererFunc) {
+            customRendererFunc(c, axis, pos, zeroLinePath, paint);
+        } else {
+            // draw a path because lines don't support dashing on lower android versions
+            c.drawPath(zeroLinePath, paint);
+        }
 
         c.restoreToCount(clipRestoreCount);
     }

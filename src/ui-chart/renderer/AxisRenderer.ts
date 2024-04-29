@@ -1,4 +1,4 @@
-import { Align, Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Paint, Path, RectF } from '@nativescript-community/ui-canvas';
 import { profile } from '@nativescript/core';
 import { AxisBase } from '../components/AxisBase';
 import { LimitLine } from '../components/LimitLine';
@@ -9,6 +9,7 @@ import { BaseCustomRenderer } from './DataRenderer';
 import { Renderer } from './Renderer';
 import { MPPointF } from '../utils/MPPointF';
 
+export type CustomRendererZeroLineFunction = (c: Canvas, axis: AxisBase, zeroPos: MPPointF, path: Path, paint: Paint) => void;
 export type CustomRendererGridLineFunction = (c: Canvas, axis: AxisBase, rect: RectF, x, y, axisValue, paint: Paint) => void;
 export type CustomRendererLimitLineFunction = (c: Canvas, axis: AxisBase, limitLine: LimitLine, rect: RectF, x: number, paint: Paint) => void;
 export type CustomRendererLabelFunction = (c: Canvas, axis: AxisBase, text: string, x: number, y: number, paint: Paint, anchor?: MPPointF, angleDegrees?: number) => void;
@@ -16,6 +17,7 @@ export type CustomRendererTickFunction = (c: Canvas, renderer: AxisRenderer, sta
 export interface CustomRenderer extends BaseCustomRenderer {
     drawLabel?: CustomRendererLabelFunction;
     drawGridLine?: CustomRendererGridLineFunction;
+    drawZeroLine?: CustomRendererZeroLineFunction;
     drawLimitLine?: CustomRendererLimitLineFunction;
     drawMarkTick?: CustomRendererTickFunction;
 }
@@ -140,7 +142,6 @@ export abstract class AxisRenderer extends Renderer {
      * @param min - the minimum value in the data object for this axis
      * @param max - the maximum value in the data object for this axis
      */
-    @profile
     public computeAxis(min, max, inverted) {
         const axis = this.mAxis;
         if (!axis.enabled) {

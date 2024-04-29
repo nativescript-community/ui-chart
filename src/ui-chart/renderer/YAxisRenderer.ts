@@ -226,6 +226,9 @@ export class YAxisRenderer extends AxisRenderer {
      */
     protected drawZeroLine(c: Canvas) {
         const axis = this.mYAxis;
+
+        const customRender = axis.customRenderer;
+        const customRendererFunc = customRender && customRender.drawZeroLine;
         const clipRestoreCount = c.save();
         const rect = this.mAxis.ignoreOffsets ? this.mViewPortHandler.chartRect : this.mViewPortHandler.contentRect;
         const zeroLineClippingRectl = Utils.getTempRectF();
@@ -246,7 +249,11 @@ export class YAxisRenderer extends AxisRenderer {
         zeroLinePath.lineTo(rect.right, pos.y);
 
         // draw a path because lines don't support dashing on lower android versions
-        c.drawPath(zeroLinePath, paint);
+        if (customRendererFunc) {
+            customRendererFunc(c, axis, pos, zeroLinePath, paint);
+        } else {
+            c.drawPath(zeroLinePath, paint);
+        }
 
         c.restoreToCount(clipRestoreCount);
     }
