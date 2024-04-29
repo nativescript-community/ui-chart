@@ -1,8 +1,10 @@
-import { CanvasView, Matrix, Rect, RectF } from '@nativescript-community/ui-canvas';
 import { TypedArray } from '@nativescript-community/arraybuffers';
-import { Utils } from './Utils';
+import { Trace } from '@nativescript/core';
+import { CanvasView, Matrix, Rect, RectF } from '@nativescript-community/ui-canvas';
+import { CLog, CLogTypes, Utils } from './Utils';
 
 const EPSILON = 0.0001;
+const LOG_TAG = 'ViewPortHandler';
 
 /**
  * Class that contains information about the charts current viewport settings, including offsets, scale & translation
@@ -341,6 +343,9 @@ export class ViewPortHandler {
      * @return
      */
     public refresh(newMatrix: Matrix, chart: CanvasView, invalidate) {
+        if (Trace.isEnabled()) {
+            CLog(CLogTypes.info, LOG_TAG, 'refresh:', newMatrix);
+        }
         this.mMatrixTouch.set(newMatrix);
 
         // make sure scale and translation are within their bounds
