@@ -452,7 +452,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     }
 
     public calculateOffsets(force = true) {
-        if (this.offsetsCalculated && !force) {
+        if (!this.viewPortHandler.hasChartDimens || (this.offsetsCalculated && !force)) {
             return;
         }
         this.offsetsCalculated = true;
