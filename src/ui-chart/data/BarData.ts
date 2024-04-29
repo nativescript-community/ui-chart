@@ -27,6 +27,7 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
      * @param groupSpace the space between groups of bars in values (not pixels) e.g. 0.8f for bar width 1
      * @param barSpace   the space between individual bars in values (not pixels) e.g. 0.1 for bar width 1
      * @param centered   whether to group bar around x values or between (default is false)
+     * @param groupCondensed   whether to condensed grouped bar (no space for "0" bars)
      */
     public groupBars(fromX, groupSpace, barSpace, centered = false, groupCondensed = false) {
         const setCount = this.mDataSets.length;
@@ -41,6 +42,7 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
         const barWidthHalf = this.barWidth / 2;
 
         const interval = this.getGroupWidth(groupSpace, barSpace);
+
         if (!groupCondensed && centered) {
             fromX -= interval / 2;
         }
@@ -50,6 +52,7 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
                 fromX += groupSpaceWidthHalf;
             }
             if (groupCondensed) {
+                // we need to get entries filtered removing "empty" y entries
                 const entries = this.mDataSets.reduce(
                     (acc, set) => {
                         if (i < set.entryCount) {
@@ -109,9 +112,8 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
             const end = fromX;
             const innerInterval = end - start;
             const diff = interval - innerInterval;
-
             // correct rounding errors
-            if (diff > 0 || diff < 0) {
+            if (diff !== 0) {
                 fromX += diff;
             }
         }
@@ -127,6 +129,7 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
      * @return
      */
     public getGroupWidth(groupSpace, barSpace) {
-        return this.mDataSets.length * (this.barWidth + barSpace) + groupSpace;
+        const dataSetCount = this.dataSetCount;
+        return dataSetCount * this.barWidth + (dataSetCount > 1 ? Math.ceil(dataSetCount / 2) : 0) * barSpace + groupSpace;
     }
 }
