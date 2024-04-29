@@ -176,9 +176,11 @@ export class BarChart extends BarLineChartBase<Entry, BarDataSet, BarData> imple
      * @param fromX      the starting polet on the x-axis where the grouping should begin
      * @param groupSpace the space between groups of bars in values (not pixels) e.g. 0.8f for bar width 1
      * @param barSpace   the space between individual bars in values (not pixels) e.g. 0.1 for bar width 1
+     * @param centered   whether to group bar around x values or between (default is false)
+     * @param groupCondensed   whether to condensed grouped bar (no space for "0" bars)
      */
-    public groupBars(fromX, groupSpace, barSpace) {
-        this.barData.groupBars(fromX, groupSpace, barSpace);
+    public groupBars(fromX, groupSpace, barSpace, centered?, groupCondensed?) {
+        this.barData.groupBars(fromX, groupSpace, barSpace, centered, groupCondensed);
         this.notifyDataSetChanged();
     }
 }
