@@ -113,7 +113,7 @@ export class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         const customRenderFunction = customRender && customRender.drawLabel;
         const centeringEnabled = axis.centerAxisLabels;
         const entryCount = axis.mEntryCount;
-        if (entryCount === 0) {
+        if (entryCount <= 0) {
             return;
         }
         if (!this.mLabelsPositionsBuffer || this.mLabelsPositionsBuffer.length !== length) {

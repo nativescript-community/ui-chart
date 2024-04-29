@@ -166,7 +166,7 @@ export class XAxisRenderer extends AxisRenderer {
         const labelRotationAngleDegrees = axis.labelRotationAngle;
         const centeringEnabled = axis.centerAxisLabels;
         const entryCount = axis.mEntryCount;
-        if (entryCount === 0) {
+        if (entryCount <= 0) {
             return;
         }
 
