@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.8](https://github.com/Akylas/nativescript-chart/compare/v2.0.7...v2.0.8) (2024-04-29)
+
+**Note:** Version bump only for package ui-chart
+
 ## [2.0.7](https://github.com/Akylas/nativescript-chart/compare/v2.0.6...v2.0.7) (2024-04-29)
 
 **Note:** Version bump only for package ui-chart
