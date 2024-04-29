@@ -5,6 +5,13 @@
     "main": "./index",
     "sideEffects": false,
     "typings": "./index.d.ts",
+    "scripts": {
+        "build": "npm run tsc",
+        "build.all": "npm run build",
+        "readme": "readme generate -c ../../tools/readme/blueprint.json",
+        "tsc": "cpy '**/*.d.ts' '../../packages/ui-chart' --parents --cwd=../../src/ui-chart && tsc -skipLibCheck -d",
+        "clean": "rimraf ./*.d.ts ./*.js ./*.js.map"
+    },
     "nativescript": {
         "platforms": {
             "android": "6.0.0",
