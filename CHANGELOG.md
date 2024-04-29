@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.6](https://github.com/Akylas/nativescript-chart/compare/v2.0.5...v2.0.6) (2024-04-29)
+
+### Features
+
+* customRenderer `drawZeroLine` ([2277cd3](https://github.com/Akylas/nativescript-chart/commit/2277cd3705fa98316feb9fefcbef256136ba1bf6))
+
+### Bug Fixes
+
+* dont calculate offsets if graph is not layed out yet ([f81a8a6](https://github.com/Akylas/nativescript-chart/commit/f81a8a6dcf8fa91c6a63a7c5b4326a92425976b1))
+* ensure entryCount is >=0 ([24d3a78](https://github.com/Akylas/nativescript-chart/commit/24d3a78e0792dd105a605ee1bba826c021cda4e7))
+* groupBars improvements ([59c2ecf](https://github.com/Akylas/nativescript-chart/commit/59c2ecfd027f7325434b539ba0e5769794313c6d))
+* typings fix for groupBars ([03f2983](https://github.com/Akylas/nativescript-chart/commit/03f2983278446c5f97cd5d98b4e13f7064bd834b))
+
 ## [2.0.5](https://github.com/nativescript-community/ui-chart/compare/v2.0.4...v2.0.5) (2024-04-26)
 
 ### Bug Fixes
