@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.11](https://github.com/Akylas/nativescript-chart/compare/v2.0.10...v2.0.11) (2024-04-30)
+
+### Bug Fixes
+
+* `groupBars` fix for with centered:true and groupCondensed:false ([d0150ec](https://github.com/Akylas/nativescript-chart/commit/d0150ec7c72be4ed8122b2b56f9af8d133eb839a))
+
 ## [2.0.10](https://github.com/Akylas/nativescript-chart/compare/v2.0.9...v2.0.10) (2024-04-29)
 
 **Note:** Version bump only for package ui-chart
