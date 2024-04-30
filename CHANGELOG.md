@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.12](https://github.com/Akylas/nativescript-chart/compare/v2.0.11...v2.0.12) (2024-04-30)
+
+### Bug Fixes
+
+* expose renderers ([aebb8c2](https://github.com/Akylas/nativescript-chart/commit/aebb8c2387d36d4f3962b740cf32e57e8fcce9d0))
+
 ## [2.0.11](https://github.com/Akylas/nativescript-chart/compare/v2.0.10...v2.0.11) (2024-04-30)
 
 ### Bug Fixes
