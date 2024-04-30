@@ -44,7 +44,7 @@ export class BarData extends BarLineScatterCandleBubbleData<BarEntry, BarDataSet
         const interval = this.getGroupWidth(groupSpace, barSpace);
 
         if (!groupCondensed && centered) {
-            fromX -= interval / 2;
+            fromX -= (interval - groupSpace) / 2;
         }
         for (let i = 0; i < maxEntryCount; i++) {
             const start = fromX;
