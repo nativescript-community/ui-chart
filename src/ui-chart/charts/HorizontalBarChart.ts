@@ -29,13 +29,13 @@ export class HorizontalBarChart extends BarChart {
         this.renderer = new HorizontalBarChartRenderer(this, this.animator, this.viewPortHandler);
         this.highlighter = new HorizontalBarHighlighter(this);
 
-        this.rendererLeftYAxis = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisLeft, this.leftAxisTransformer);
+        this.leftAxisRenderer = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisLeft, this.leftAxisTransformer);
     }
 
     public get axisRight() {
         if (!this.mAxisRight) {
-            this.rendererRightYAxis = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisRight, this.rightAxisTransformer);
-            this.rendererXAxis = new XAxisRendererHorizontalBarChart(this.viewPortHandler, this.xAxis, this.leftAxisTransformer, this);
+            this.rightAxisRenderer = new YAxisRendererHorizontalBarChart(this.viewPortHandler, this.mAxisRight, this.rightAxisTransformer);
+            this.xAxisRenderer = new XAxisRendererHorizontalBarChart(this.viewPortHandler, this.xAxis, this.leftAxisTransformer, this);
             this.rightAxisTransformer = new TransformerHorizontalBarChart(this.viewPortHandler);
         }
         return this.mAxisRight;
@@ -52,11 +52,11 @@ export class HorizontalBarChart extends BarChart {
 
         // offsets for y-labels
         if (this.mAxisLeft?.needsOffset) {
-            offsetTop += this.mAxisLeft.getRequiredHeightSpace(this.rendererLeftYAxis.axisLabelsPaint);
+            offsetTop += this.mAxisLeft.getRequiredHeightSpace(this.leftAxisRenderer.axisLabelsPaint);
         }
 
         if (this.mAxisRight?.needsOffset) {
-            offsetBottom += this.mAxisRight.getRequiredHeightSpace(this.rendererRightYAxis.axisLabelsPaint);
+            offsetBottom += this.mAxisRight.getRequiredHeightSpace(this.rightAxisRenderer.axisLabelsPaint);
         }
 
         const xlabelWidth = this.xAxis.mLabelRotatedWidth;

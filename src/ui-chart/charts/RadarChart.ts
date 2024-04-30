@@ -66,12 +66,8 @@ export class RadarChart extends PieRadarChartBase<Entry, RadarDataSet, RadarData
      */
     yAxis: YAxis;
 
-    // for performance tracking
-    private mTotalTime = 0;
-    private mDrawCycles = 0;
-
-    protected yAxisRenderer: YAxisRendererRadarChart;
-    protected xAxisRenderer: XAxisRendererRadarChart;
+    public yAxisRenderer: YAxisRendererRadarChart;
+    public xAxisRenderer: XAxisRendererRadarChart;
 
     protected init() {
         super.init();
