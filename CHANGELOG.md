@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.13](https://github.com/nativescript-community/ui-chart/compare/v2.0.12...v2.0.13) (2024-05-03)
+
+### Bug Fixes
+
+* bar chart custom rendering fix ([d5596c8](https://github.com/nativescript-community/ui-chart/commit/d5596c85597813e2ace481cd8ace44d47eb1896c))
+
 ## [2.0.12](https://github.com/Akylas/nativescript-chart/compare/v2.0.11...v2.0.12) (2024-04-30)
 
 ### Bug Fixes
