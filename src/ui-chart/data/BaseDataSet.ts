@@ -148,10 +148,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getEntryXValue(e: T, entryIndex: number) {
-        if (!this.xProperty) {
-            return entryIndex;
-        }
-        return e[this.xProperty];
+        return this.xProperty ? e[this.xProperty] : entryIndex;
     }
 
     public getEntryIcon(e: T) {
