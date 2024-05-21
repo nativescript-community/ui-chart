@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.14](https://github.com/nativescript-community/ui-chart/compare/v2.0.13...v2.0.14) (2024-05-21)
+
+### Bug Fixes
+
+* multiple regression fixes after big rewrite ([0613dc3](https://github.com/nativescript-community/ui-chart/commit/0613dc3ad8a13f461b45a4b6dc466388fbee04e9))
+
 ## [2.0.13](https://github.com/nativescript-community/ui-chart/compare/v2.0.12...v2.0.13) (2024-05-03)
 
 ### Bug Fixes
