@@ -152,7 +152,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             renderPaint.setShader(shader);
         }
         if (isSingleColor) {
-            renderPaint.setColor(dataSet.getColor());
+            renderPaint.setColor(dataSet.color);
         }
 
         const customRender = chart.customRenderer;

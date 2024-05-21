@@ -238,7 +238,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         if (dataSet.shader) {
             renderPaint.setShader(dataSet.shader);
         }
-        renderPaint.setColor(dataSet.getColor());
+        renderPaint.setColor(dataSet.color);
         renderPaint.setStyle(Style.STROKE);
 
         const scaleX = this.mViewPortHandler.getScaleX();
@@ -487,7 +487,7 @@ export class LineChartRenderer extends LineRadarRenderer {
                 const color = colors[index] as { color: string | Color; [k: string]: any };
                 let colorIndex = color[xKey || 'index'] as number;
                 // if filtered we need to get the real index
-                if ((dataSet as any).isFiltered()) {
+                if (dataSet.filtered) {
                     dataSet.ignoreFiltered = true;
                     const entry = dataSet.getEntryForIndex(colorIndex);
                     dataSet.ignoreFiltered = false;

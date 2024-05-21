@@ -85,7 +85,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     public getCircleColor(index) {
-        return this.circleColors[Math.floor(index)] || this.getColor();
+        return this.circleColors[Math.floor(index)] || this.color;
     }
 
     /**
@@ -132,7 +132,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     mIgnoreFiltered = false;
-    protected get internalValues() {
+    protected geInternalValues() {
         if (this.mFilteredValues && !this.mIgnoreFiltered) {
             return this.mFilteredValues;
         }

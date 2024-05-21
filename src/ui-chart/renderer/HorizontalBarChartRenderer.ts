@@ -98,7 +98,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         }
 
         if (isSingleColor) {
-            renderPaint.setColor(dataSet.getColor());
+            renderPaint.setColor(dataSet.color);
         }
 
         const customRender = this.mChart.customRenderer;
