@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.16](https://github.com/nativescript-community/ui-chart/compare/v2.0.15...v2.0.16) (2024-05-21)
+
+### Features
+
+* spaceTop/spaceBottom for data sets ([0750bf6](https://github.com/nativescript-community/ui-chart/commit/0750bf641ade2d6fde2f18e6a70d088a8bc48326))
+
 ## [2.0.15](https://github.com/nativescript-community/ui-chart/compare/v2.0.14...v2.0.15) (2024-05-21)
 
 **Note:** Version bump only for package ui-chart
