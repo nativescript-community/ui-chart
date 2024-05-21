@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.17](https://github.com/nativescript-community/ui-chart/compare/v2.0.16...v2.0.17) (2024-05-21)
+
+### Features
+
+* **android:** `disableScrollEnabled` chart property ([56650c1](https://github.com/nativescript-community/ui-chart/commit/56650c17c89ac56ef90122039d393d1135336ad3))
+
 ## [2.0.16](https://github.com/nativescript-community/ui-chart/compare/v2.0.15...v2.0.16) (2024-05-21)
 
 ### Features
