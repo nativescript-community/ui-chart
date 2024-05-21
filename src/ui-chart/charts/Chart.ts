@@ -168,6 +168,11 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * Wether to filter highlights by axis. Default is true
      */
     highlightsFilterByAxis = true;
+
+    /**
+     * Wether to disable scroll while touching the chart. Default to true
+     */
+    disableScrollEnabled = true;
     /**
      * tasks to be done after the view is setup
      */
@@ -975,22 +980,14 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
         }
     }
 
-    /**
-     * Setting this to true will set the layer-type HARDWARE for the view, false
-     * will set layer-type SOFTWARE.
-     *
-     * @param enabled
-     */
-    public set hardwareAccelerationEnabled(enabled) {
-        this.hardwareAccelerated = enabled;
-    }
-
+    mDisallowInterceptTouchEvent = true;
     /**
      * disables intercept touchevents
      */
     disableScroll() {
-        if (__ANDROID__) {
+        if (__ANDROID__ && this.disableScrollEnabled) {
             const parent: android.view.ViewParent = this.nativeViewProtected?.getParent();
+            this.mDisallowInterceptTouchEvent = true;
             parent?.requestDisallowInterceptTouchEvent(true);
         }
     }
@@ -999,7 +996,7 @@ export abstract class Chart<U extends Entry, D extends IDataSet<U>, T extends Ch
      * enables intercept touchevents
      */
     enableScroll() {
-        if (__ANDROID__) {
+        if (__ANDROID__ && (this.disableScrollEnabled || this.mDisallowInterceptTouchEvent)) {
             const parent: android.view.ViewParent = this.nativeViewProtected?.getParent();
             parent?.requestDisallowInterceptTouchEvent(false);
         }
