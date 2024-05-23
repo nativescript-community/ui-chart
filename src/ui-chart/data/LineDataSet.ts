@@ -132,7 +132,7 @@ export class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     }
 
     mIgnoreFiltered = false;
-    protected geInternalValues() {
+    protected getInternalValues() {
         if (this.mFilteredValues && !this.mIgnoreFiltered) {
             return this.mFilteredValues;
         }
