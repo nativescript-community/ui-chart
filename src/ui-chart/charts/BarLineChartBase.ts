@@ -204,6 +204,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
 
         if (!this.offsetsCalculated) {
             this.calculateOffsets(false);
+            this.notify({ eventName: 'firstOffsetsCalculated' });
             this.offsetsCalculated = true;
         }
 
