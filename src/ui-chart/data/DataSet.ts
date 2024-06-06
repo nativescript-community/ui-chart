@@ -178,11 +178,11 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
     }
 
     public get yMin() {
-        return this.mYMin;
+        return this.mYMin - this.spaceBottom;
     }
 
     public get yMax() {
-        return this.mYMax;
+        return this.mYMax + this.spaceTop;
     }
 
     public get xMin() {

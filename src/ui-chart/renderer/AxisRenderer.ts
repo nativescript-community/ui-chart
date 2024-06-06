@@ -162,7 +162,7 @@ export abstract class AxisRenderer extends Renderer {
         const yMin = min;
         const yMax = max;
 
-        const labelCount = axis.labelCount;
+        const labelCount = Math.max(0, axis.labelCount);
         const range = Math.abs(yMax - yMin);
 
         if (labelCount === 0 || range <= 0 || !Number.isFinite(range)) {

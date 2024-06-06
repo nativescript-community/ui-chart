@@ -139,7 +139,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         buffer.yAxisMin = chart.getAxis(dataSet.axisDependency).axisMinimum;
         buffer.yAxisMax = chart.getAxis(dataSet.axisDependency).axisMaximum;
 
-        buffer.feed(dataSet);
+        const barsCount = buffer.feed(dataSet);
 
         trans.pointValuesToPixel(buffer.buffer);
 
@@ -152,31 +152,34 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             renderPaint.setShader(shader);
         }
         if (isSingleColor) {
-            renderPaint.setColor(dataSet.getColor());
+            renderPaint.setColor(dataSet.color);
         }
 
         const customRender = chart.customRenderer;
-        for (let j = 0; j < buffer.length; j += 4) {
-            if (!this.mViewPortHandler.isInBoundsLeft(buffer.buffer[j + 2])) {
+        for (let j = 0; j < barsCount; j += 1) {
+            const left = buffer.buffer[j * 4];
+            const top = buffer.buffer[j * 4 + 1];
+            const right = buffer.buffer[j * 4 + 2];
+            const bottom = buffer.buffer[j * 4 + 3];
+            if (!this.mViewPortHandler.isInBoundsLeft(right)) {
                 continue;
             }
 
-            if (!this.mViewPortHandler.isInBoundsRight(buffer.buffer[j])) {
+            if (!this.mViewPortHandler.isInBoundsRight(left)) {
                 break;
             }
             if (!isSingleColor) {
                 // Set the color for the currently drawn value. If the index
                 // is out of bounds, reuse colors.
-                renderPaint.setColor(dataSet.getColor(j / 4));
+                renderPaint.setColor(dataSet.getColor(j));
             }
             if (customRender && customRender.drawBar) {
-                const e = dataSet.getEntryForIndex(j / 4);
-                customRender.drawBar(c, e, dataSet, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], renderPaint);
+                const e = buffer.entries[j];
+                customRender.drawBar(c, e, dataSet, left, top, right, bottom, renderPaint);
             } else {
-                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], renderPaint);
-
+                c.drawRect(left, top, right, bottom, renderPaint);
                 if (drawBorder) {
-                    c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], borderPaint);
+                    c.drawRect(left, top, right, bottom, borderPaint);
                 }
             }
         }

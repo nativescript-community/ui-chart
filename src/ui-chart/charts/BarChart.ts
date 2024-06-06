@@ -10,7 +10,6 @@ import { Highlight } from '../highlight/Highlight';
 import { BarChartRenderer } from '../renderer/BarChartRenderer';
 import { Canvas, Paint, RectF } from '@nativescript-community/ui-canvas';
 import { IBarDataSet } from '../interfaces/datasets/IBarDataSet';
-import { Color } from '@nativescript/core';
 import { BaseCustomRenderer } from '../renderer/DataRenderer';
 
 const LOG_TAG = 'BarChart';

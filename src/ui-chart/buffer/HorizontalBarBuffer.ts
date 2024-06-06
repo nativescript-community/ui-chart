@@ -20,7 +20,10 @@ export class HorizontalBarBuffer extends BarBuffer {
             let y = e[yKey];
             const vals = e.yVals;
 
-            if (!this.containsStacks || !vals) {
+            if (!this.containsStacks || !vals || vals.length === 0) {
+                if (y === undefined || y === null) {
+                    continue;
+                }
                 const bottom = x - barWidthHalf;
                 const top = x + barWidthHalf;
                 let left, right;
@@ -38,7 +41,7 @@ export class HorizontalBarBuffer extends BarBuffer {
                 } else {
                     left = right + this.phaseY * (left - right);
                 }
-                this.addBar(left, top, right, bottom);
+                this.addBar(e, left, top, right, bottom);
             } else {
                 let posY = 0;
                 let negY = -e.negativeSum;
@@ -76,10 +79,12 @@ export class HorizontalBarBuffer extends BarBuffer {
                         left = right + this.phaseY * (left - right);
                     }
 
-                    this.addBar(left, top, right, bottom);
+                    this.addBar(e, left, top, right, bottom);
                 }
             }
         }
+        const barsCount = this.index / 4;
         this.reset();
+        return barsCount;
     }
 }

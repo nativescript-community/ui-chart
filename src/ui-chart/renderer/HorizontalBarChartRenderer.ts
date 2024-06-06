@@ -85,7 +85,7 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         buffer.yAxisMin = this.mChart.getAxis(dataSet.axisDependency).axisMinimum;
         buffer.yAxisMax = this.mChart.getAxis(dataSet.axisDependency).axisMaximum;
 
-        buffer.feed(dataSet);
+        const barsCount = buffer.feed(dataSet);
 
         trans.pointValuesToPixel(buffer.buffer);
 
@@ -98,31 +98,35 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
         }
 
         if (isSingleColor) {
-            renderPaint.setColor(dataSet.getColor());
+            renderPaint.setColor(dataSet.color);
         }
 
         const customRender = this.mChart.customRenderer;
-        for (let j = 0, pos = 0; j < buffer.length; j += 4, pos++) {
-            if (!this.mViewPortHandler.isInBoundsTop(buffer.buffer[j + 3])) {
+        for (let j = 0, pos = 0; j < barsCount; j += 1, pos++) {
+            const left = buffer.buffer[j * 4];
+            const top = buffer.buffer[j * 4 + 1];
+            const right = buffer.buffer[j * 4 + 2];
+            const bottom = buffer.buffer[j * 4 + 3];
+            if (!this.mViewPortHandler.isInBoundsTop(bottom)) {
                 break;
             }
 
-            if (!this.mViewPortHandler.isInBoundsBottom(buffer.buffer[j + 1])) {
+            if (!this.mViewPortHandler.isInBoundsBottom(top)) {
                 continue;
             }
             if (!isSingleColor) {
                 // Set the color for the currently drawn value. If the index
                 // is out of bounds, reuse colors.
-                renderPaint.setColor(dataSet.getColor(j / 4));
+                renderPaint.setColor(dataSet.getColor(j));
             }
             if (customRender && customRender.drawBar) {
-                const e = dataSet.getEntryForIndex(j / 4);
-                customRender.drawBar(c, e, dataSet, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], renderPaint);
+                const e = buffer.entries[j];
+                customRender.drawBar(c, e, dataSet, left, top, right, bottom, renderPaint);
             } else {
-                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], renderPaint);
+                c.drawRect(left, top, right, bottom, renderPaint);
 
                 if (drawBorder) {
-                    c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3], borderPaint);
+                    c.drawRect(left, top, right, bottom, borderPaint);
                 }
             }
         }

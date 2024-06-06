@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.19](https://github.com/nativescript-community/ui-chart/compare/v2.0.18...v2.0.19) (2024-05-23)
+
+**Note:** Version bump only for package ui-chart
+
+## [2.0.18](https://github.com/nativescript-community/ui-chart/compare/v2.0.17...v2.0.18) (2024-05-23)
+
+### Bug Fixes
+
+* filtering fix ([2d091de](https://github.com/nativescript-community/ui-chart/commit/2d091de9491aab30f278f9d4f841056037d144dc))
+
+## [2.0.17](https://github.com/nativescript-community/ui-chart/compare/v2.0.16...v2.0.17) (2024-05-21)
+
+### Features
+
+* **android:** `disableScrollEnabled` chart property ([56650c1](https://github.com/nativescript-community/ui-chart/commit/56650c17c89ac56ef90122039d393d1135336ad3))
+
+## [2.0.16](https://github.com/nativescript-community/ui-chart/compare/v2.0.15...v2.0.16) (2024-05-21)
+
+### Features
+
+* spaceTop/spaceBottom for data sets ([0750bf6](https://github.com/nativescript-community/ui-chart/commit/0750bf641ade2d6fde2f18e6a70d088a8bc48326))
+
+## [2.0.15](https://github.com/nativescript-community/ui-chart/compare/v2.0.14...v2.0.15) (2024-05-21)
+
+**Note:** Version bump only for package ui-chart
+
+## [2.0.14](https://github.com/nativescript-community/ui-chart/compare/v2.0.13...v2.0.14) (2024-05-21)
+
+### Bug Fixes
+
+* multiple regression fixes after big rewrite ([0613dc3](https://github.com/nativescript-community/ui-chart/commit/0613dc3ad8a13f461b45a4b6dc466388fbee04e9))
+
+## [2.0.13](https://github.com/nativescript-community/ui-chart/compare/v2.0.12...v2.0.13) (2024-05-03)
+
+### Bug Fixes
+
+* bar chart custom rendering fix ([d5596c8](https://github.com/nativescript-community/ui-chart/commit/d5596c85597813e2ace481cd8ace44d47eb1896c))
+
 ## [2.0.12](https://github.com/Akylas/nativescript-chart/compare/v2.0.11...v2.0.12) (2024-04-30)
 
 ### Bug Fixes

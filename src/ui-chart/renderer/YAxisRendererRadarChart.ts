@@ -19,7 +19,7 @@ export class YAxisRendererRadarChart extends YAxisRenderer {
         const yMin = min;
         const yMax = max;
 
-        const labelCount = axis.labelCount;
+        const labelCount = Math.max(axis.labelCount, 0);
         const range = Math.abs(yMax - yMin);
 
         if (labelCount === 0 || range <= 0 || !Number.isFinite(range)) {

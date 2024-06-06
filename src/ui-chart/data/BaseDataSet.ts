@@ -124,6 +124,16 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     visible = true;
 
     /**
+     * data  space from the smallest value to the bottom in percent of the total axis range
+     */
+    spaceBottom = 0;
+
+    /**
+     * data  space from the highest value to the top in percent of the total axis range
+     */
+    spaceTop = 0;
+
+    /**
      * Constructor with label.
      *
      * @param label
@@ -148,10 +158,7 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
     public getEntryXValue(e: T, entryIndex: number) {
-        if (!this.xProperty) {
-            return entryIndex;
-        }
-        return e[this.xProperty];
+        return this.xProperty ? e[this.xProperty] : entryIndex;
     }
 
     public getEntryIcon(e: T) {

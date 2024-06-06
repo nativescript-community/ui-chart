@@ -19,7 +19,8 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
         this.containsStacks = containsStacks;
     }
 
-    protected addBar(left, top, right, bottom) {
+    protected addBar(entry, left, top, right, bottom) {
+        this.entries.push(entry);
         this.buffer[this.index++] = left;
         this.buffer[this.index++] = top;
         this.buffer[this.index++] = right;
@@ -30,6 +31,7 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
         const size = data.entryCount * this.phaseX;
         const barWidthHalf = this.barWidth / 2;
         const yKey = data.yProperty;
+        this.entries = [];
         for (let i = 0; i < size; i++) {
             const e = data.getEntryForIndex(i);
             if (!e) {
@@ -63,7 +65,7 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                     bottom = top + this.phaseY * (bottom - top);
                 }
                 if (left !== right && top !== bottom) {
-                    this.addBar(left, top, right, bottom);
+                    this.addBar(e, left, top, right, bottom);
                 }
             } else {
                 let posY = 0;
@@ -108,12 +110,13 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                     }
 
                     if (left !== right && top !== bottom) {
-                        this.addBar(left, top, right, bottom);
+                        this.addBar(e, left, top, right, bottom);
                     }
                 }
             }
         }
-
+        const addedBars = this.index / 4;
         this.reset();
+        return addedBars;
     }
 }

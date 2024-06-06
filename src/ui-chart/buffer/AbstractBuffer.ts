@@ -8,6 +8,7 @@ export abstract class AbstractBuffer<T> {
     protected to: number;
 
     public buffer;
+    public entries: T[];
 
     /**
      * Initialization with buffer-size.

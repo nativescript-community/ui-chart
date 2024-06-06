@@ -141,7 +141,7 @@ export class RadarChartRenderer extends LineRadarRenderer {
         const lineWidth = dataSet.lineWidth;
         if ((!dataSet.drawFilledEnabled || dataSet.fillAlpha < 255) && lineWidth > 0) {
             const renderPaint = this.renderPaint;
-            renderPaint.setColor(dataSet.getColor());
+            renderPaint.setColor(dataSet.color);
             renderPaint.setStrokeWidth(lineWidth);
             renderPaint.setStyle(Style.STROKE);
             c.drawPath(surface, renderPaint);
