@@ -3,12 +3,10 @@
     "compilerOptions": {
        "composite": true,
        "paths": {
-        "nativescript-vue": ["./node_modules/nativescript-vue3"]
+            "nativescript-vue": ["./node_modules/nativescript-vue3"]
        }
     },
     "include": [
-        "./src/ui-drawer", 
-        "./src/ui-drawer/vue3", 
         "./demo-snippets/vue3"
     ]
 }
