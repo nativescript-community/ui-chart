@@ -107,12 +107,13 @@ export class HorizontalBarChartRenderer extends BarChartRenderer {
             const top = buffer.buffer[j * 4 + 1];
             const right = buffer.buffer[j * 4 + 2];
             const bottom = buffer.buffer[j * 4 + 3];
-            if (!this.mViewPortHandler.isInBoundsTop(bottom)) {
-                break;
+
+            if (!this.mViewPortHandler.isInBoundsBottom(top) || (left === right && top === bottom)) {
+                continue;
             }
 
-            if (!this.mViewPortHandler.isInBoundsBottom(top)) {
-                continue;
+            if (!this.mViewPortHandler.isInBoundsTop(bottom)) {
+                break;
             }
             if (!isSingleColor) {
                 // Set the color for the currently drawn value. If the index

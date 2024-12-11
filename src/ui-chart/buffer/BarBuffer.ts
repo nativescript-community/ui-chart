@@ -64,9 +64,9 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                 } else {
                     bottom = top + this.phaseY * (bottom - top);
                 }
-                if (left !== right && top !== bottom) {
-                    this.addBar(e, left, top, right, bottom);
-                }
+                // if (left !== right && top !== bottom) {
+                this.addBar(e, left, top, right, bottom);
+                // }
             } else {
                 let posY = 0;
                 let negY = -e.negativeSum;
@@ -109,9 +109,9 @@ export class BarBuffer extends AbstractBuffer<IBarDataSet> {
                         bottom = top + this.phaseY * (bottom - top);
                     }
 
-                    if (left !== right && top !== bottom) {
-                        this.addBar(e, left, top, right, bottom);
-                    }
+                    // if (left !== right && top !== bottom) {
+                    this.addBar(e, left, top, right, bottom);
+                    // }
                 }
             }
         }

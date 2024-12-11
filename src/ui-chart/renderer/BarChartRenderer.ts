@@ -161,7 +161,7 @@ export class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             const top = buffer.buffer[j * 4 + 1];
             const right = buffer.buffer[j * 4 + 2];
             const bottom = buffer.buffer[j * 4 + 3];
-            if (!this.mViewPortHandler.isInBoundsLeft(right)) {
+            if (!this.mViewPortHandler.isInBoundsLeft(right) || (left === right && top === bottom)) {
                 continue;
             }
 
