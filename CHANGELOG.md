@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.22](https://github.com/nativescript-community/ui-chart/compare/v2.0.21...v2.0.22) (2024-12-11)
+
+### Bug Fixes
+
+* bar chart fix for stack bars ([504714f](https://github.com/nativescript-community/ui-chart/commit/504714faf0dda43cd067864b029d42a52f359180))
+
 ## [2.0.21](https://github.com/Akylas/nativescript-chart/compare/v2.0.20...v2.0.21) (2024-06-06)
 
 **Note:** Version bump only for package ui-chart
