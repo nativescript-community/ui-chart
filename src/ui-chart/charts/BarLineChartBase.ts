@@ -40,7 +40,7 @@ export abstract class BarLineChartBase<U extends Entry, D extends IBarLineScatte
     /**
      * flag that indicates if auto scaling on the y axis is enabled
      */
-    autoScaleMinMaxEnabled: boolean = true;
+    autoScaleMinMaxEnabled: boolean = false;
 
     /**
      * flag that indicates if pinch-zoom is enabled. if true, both x and y axis
