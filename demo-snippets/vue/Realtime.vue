@@ -39,19 +39,14 @@ export default Vue.extend({
 
             // disable description text
             // chart.getDescription().enabled=(false);
-            // enable touch gestures
-            chart.touchEnabled = true;
-
-            // enable touch gestures
-            chart.touchEnabled = true;
 
             // enable scaling and dragging
-            chart.dragEnabled = true;
-            chart.scaleEnabled = true;
+            // chart.dragEnabled = true;
+            // chart.scaleEnabled = true;
             chart.drawGridBackgroundEnabled = false;
 
             // if disabled, scaling can be done on x- and y-axis separately
-            chart.pinchZoomEnabled = true;
+            // chart.pinchZoomEnabled = true;
 
             // set an alternative background color
             // chart.backgroundColor = 'lightgray';
@@ -91,7 +86,7 @@ export default Vue.extend({
         },
         start() {
             if (!this.timer) {
-                this.timer = setInterval(this.addEntry, 25);
+                this.timer = setInterval(this.addEntry, 0);
             }
         },
         stop() {
@@ -120,11 +115,11 @@ export default Vue.extend({
                 }
                 set.batchEntryOperations(() => {
                     set.addEntry({ y: Math.random() * 40 + 30 });
-                    if (set.entryCount >= 120) {
+                    if (set.entryCount >= 1200) {
                         set.removeFirst();
                     }
                 });
-                data.calcMinMax();
+                data.notifyDataChanged();
                 // chart.visibleXRangeMaximum=(120);
                 // data.addEntry(new Entry(set.entrCount, (float) (Math.random() * 40) + 30), 0);
                 // set.notifyDataSetChanged();
