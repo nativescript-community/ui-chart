@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.23](https://github.com/nativescript-community/ui-chart/compare/v2.0.22...v2.0.23) (2025-02-22)
+
+### Bug Fixes
+
+* autoScaleMinMaxEnabled default to false as it induce wrong layout when using pan ([63124d4](https://github.com/nativescript-community/ui-chart/commit/63124d483260517941d63ff2d73eef949bc15f6b))
+
 ## [2.0.22](https://github.com/nativescript-community/ui-chart/compare/v2.0.21...v2.0.22) (2024-12-11)
 
 ### Bug Fixes
