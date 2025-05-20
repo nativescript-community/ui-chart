@@ -329,7 +329,7 @@ export class YAxisRenderer extends AxisRenderer {
 
                 let size = Utils.calcTextSize(paint, label);
                 const xOffset = l.xOffset;
-                const yOffset = l.lineWidth + size.height + l.yOffset;
+                const yOffset = l.lineWidth + l.yOffset;
 
                 const position = l.labelPosition;
                 const needsSize = l.ensureVisible;
@@ -341,7 +341,7 @@ export class YAxisRenderer extends AxisRenderer {
                     case LimitLabelPosition.RIGHT_TOP: {
                         paint.setTextAlign(Align.RIGHT);
                         const x = rect.right - xOffset;
-                        let y = pts[1] - yOffset + size.height;
+                        let y = pts[1] - yOffset;
                         if (l.ensureVisible && y < size.height) {
                             y -= size.height;
                         }
@@ -351,7 +351,7 @@ export class YAxisRenderer extends AxisRenderer {
                     case LimitLabelPosition.RIGHT_BOTTOM: {
                         paint.setTextAlign(Align.RIGHT);
                         const x = rect.right - xOffset;
-                        let y = pts[1] - yOffset;
+                        let y = pts[1] + yOffset + size.height;
 
                         if (l.ensureVisible && y > rect.bottom - size.height) {
                             y += size.height;
@@ -361,7 +361,7 @@ export class YAxisRenderer extends AxisRenderer {
                     }
                     case LimitLabelPosition.CENTER_TOP: {
                         const x = rect.right - xOffset;
-                        let y = pts[1] - yOffset + size.height;
+                        let y = pts[1] - yOffset;
 
                         if (l.ensureVisible && y < size.height) {
                             y -= size.height;
@@ -373,7 +373,7 @@ export class YAxisRenderer extends AxisRenderer {
                     case LimitLabelPosition.CENTER_BOTTOM: {
                         paint.setTextAlign(Align.CENTER);
                         const x = rect.right - xOffset;
-                        let y = pts[1] - yOffset;
+                        let y = pts[1] + yOffset + size.height;
 
                         if (l.ensureVisible && y > rect.bottom - size.height) {
                             y += size.height;
@@ -384,7 +384,7 @@ export class YAxisRenderer extends AxisRenderer {
                     }
                     case LimitLabelPosition.LEFT_TOP: {
                         const x = offsetLeft + xOffset;
-                        let y = pts[1] - yOffset + size.height;
+                        let y = pts[1] - yOffset;
                         if (l.ensureVisible && x > rect.right - size.width) {
                             paint.setTextAlign(Align.RIGHT);
                         }
@@ -397,7 +397,7 @@ export class YAxisRenderer extends AxisRenderer {
                     case LimitLabelPosition.LEFT_BOTTOM: {
                         paint.setTextAlign(Align.LEFT);
                         const x = offsetLeft + xOffset;
-                        let y = pts[1] + yOffset;
+                        let y = pts[1] + yOffset + size.height;
                         if (l.ensureVisible && x > rect.right - size.width) {
                             paint.setTextAlign(Align.RIGHT);
                         }
