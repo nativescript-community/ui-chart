@@ -444,7 +444,7 @@ export class XAxisRenderer extends AxisRenderer {
                     if (limitLine.ensureVisible) {
                         x = Math.max(size.width / 2, Math.min(rect.right - size.width / 2, x));
                     }
-                    c.drawText(label, x, rect.top + yOffset + size.height, paint);
+                    this.drawLimitLineLabel(c, limitLine, label, x, rect.top + yOffset + size.height, paint);
                     break;
                 }
                 case LimitLabelPosition.CENTER_BOTTOM: {
@@ -453,7 +453,7 @@ export class XAxisRenderer extends AxisRenderer {
                     if (limitLine.ensureVisible) {
                         x = Math.max(size.width / 2, Math.min(rect.right - size.width / 2, x));
                     }
-                    c.drawText(label, x, rect.bottom - yOffset, paint);
+                    this.drawLimitLineLabel(c, limitLine, label, x, rect.bottom - yOffset, paint);
                     break;
                 }
                 case LimitLabelPosition.RIGHT_TOP: {
@@ -463,7 +463,7 @@ export class XAxisRenderer extends AxisRenderer {
                         x = position[0] - xOffset;
                         paint.setTextAlign(Align.RIGHT);
                     }
-                    c.drawText(label, x, rect.top + yOffset + size.height, paint);
+                    this.drawLimitLineLabel(c, limitLine, label, x, rect.top + yOffset + size.height, paint);
                     break;
                 }
                 case LimitLabelPosition.RIGHT_BOTTOM: {
@@ -473,7 +473,7 @@ export class XAxisRenderer extends AxisRenderer {
                         x = position[0] - xOffset;
                         paint.setTextAlign(Align.RIGHT);
                     }
-                    c.drawText(label, x, rect.bottom - yOffset, paint);
+                    this.drawLimitLineLabel(c, limitLine, label, x, rect.bottom - yOffset, paint);
                     break;
                 }
                 case LimitLabelPosition.LEFT_TOP: {
@@ -484,7 +484,7 @@ export class XAxisRenderer extends AxisRenderer {
                         x = position[0] + xOffset;
                         paint.setTextAlign(Align.LEFT);
                     }
-                    c.drawText(label, x, rect.top + yOffset + size.height, paint);
+                    this.drawLimitLineLabel(c, limitLine, label, x, rect.top + yOffset + size.height, paint);
                     break;
                 }
                 case LimitLabelPosition.LEFT_BOTTOM: {
@@ -495,7 +495,7 @@ export class XAxisRenderer extends AxisRenderer {
                         x = position[0] + xOffset;
                         paint.setTextAlign(Align.LEFT);
                     }
-                    c.drawText(label, x, rect.bottom - yOffset, paint);
+                    this.drawLimitLineLabel(c, limitLine, label, x, rect.bottom - yOffset, paint);
                     break;
                 }
             }
