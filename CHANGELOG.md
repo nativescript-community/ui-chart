@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.25](https://github.com/nativescript-community/ui-chart/compare/v2.0.24...v2.0.25) (2025-05-29)
+
+### Bug Fixes
+
+* allow custom drawLabel for limitLines ([b2367ea](https://github.com/nativescript-community/ui-chart/commit/b2367eab0cd656111054afb1486b40548754f75e))
+
 ## [2.0.24](https://github.com/nativescript-community/ui-chart/compare/v2.0.23...v2.0.24) (2025-05-20)
 
 ### Bug Fixes
