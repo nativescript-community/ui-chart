@@ -406,6 +406,13 @@ export class XAxisRenderer extends AxisRenderer {
         }
     }
 
+    public drawLimitLineLabel(c: Canvas, limitLine: LimitLine, label: string, x: number, y: number, paint: Paint) {
+        if (typeof limitLine['drawLabel'] === 'function') {
+            limitLine.drawLabel(c, label, x, y, paint);
+        } else {
+            c.drawText(label, x, y, paint);
+        }
+    }
     public renderLimitLineLabel(c: Canvas, limitLine: LimitLine, position, yOffset) {
         const label = limitLine.label;
         // if drawing the limit-value label is enabled
