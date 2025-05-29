@@ -1,4 +1,4 @@
-import { DashPathEffect, Style } from '@nativescript-community/ui-canvas';
+import { Canvas, DashPathEffect, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
 import { ComponentBase } from './ComponentBase';
 
@@ -67,4 +67,5 @@ export class LimitLine extends ComponentBase {
     public enableDashedLine(lineLength, spaceLength, phase) {
         this.dashPathEffect = new DashPathEffect([lineLength, spaceLength], phase);
     }
+    public drawLabel ?: (c: Canvas, label: string, x: number, y: number, paint: Paint) => void
 }
