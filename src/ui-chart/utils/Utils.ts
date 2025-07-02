@@ -577,10 +577,11 @@ export namespace Utils {
     }
     const mTemplatePaints: { [k: string]: Paint } = {};
     export function getTemplatePaint(template: string) {
-        const cached = mTemplatePaints[template];
-        if (cached) {
-            return new Paint(cached);
-        }
+      //  const cached = mTemplatePaints[template];
+      // for now cached paint share the same font object when cloned so it is no good
+      //  if (cached) {
+      //      return new Paint(cached);
+      //  }
         let paint: Paint;
         switch (template) {
             case 'black-stroke': {
