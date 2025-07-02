@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.26](https://github.com/nativescript-community/ui-chart/compare/v2.0.25...v2.0.26) (2025-07-02)
+
+### Bug Fixes
+
+* should fix limit lines text size breaking all texts size in chart ([87d9498](https://github.com/nativescript-community/ui-chart/commit/87d9498e213de147ea2f0cdc2c940ce722e76375))
+
 ## [2.0.25](https://github.com/nativescript-community/ui-chart/compare/v2.0.24...v2.0.25) (2025-05-29)
 
 ### Bug Fixes
