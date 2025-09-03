@@ -44,11 +44,11 @@
     "homepage": "https://github.com/nativescript-community/ui-chart",
     "readmeFilename": "README.md",
     "devDependencies": {
-        "@nativescript-community/additween": "^4.0.5",
+        "@nativescript-community/additween": "^4.0.9",
         "@nativescript-community/arraybuffers": "^1.1.5",
-        "@nativescript-community/gesturehandler": "^2.0.31",
+        "@nativescript-community/gesturehandler": "^2.0.32",
         "@nativescript-community/plugin-seed-tools": "file:tools",
-        "@nativescript-community/ui-canvas": "^4.6.23",
+        "@nativescript-community/ui-canvas": "^4.6.41",
         "downsample": "^1.4.0",
         "number-format.js": "^2.0.9"
     },
