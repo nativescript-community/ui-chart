@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.27](https://github.com/nativescript-community/ui-chart/compare/v2.0.26...v2.0.27) (2025-09-03)
+
+### Bug Fixes
+
+* revert limitline change as the issue was not there ([c7d4f67](https://github.com/nativescript-community/ui-chart/commit/c7d4f67090f03dbda2a5a05dde99b56d6972a162))
+
 ## [2.0.26](https://github.com/nativescript-community/ui-chart/compare/v2.0.25...v2.0.26) (2025-07-02)
 
 ### Bug Fixes
