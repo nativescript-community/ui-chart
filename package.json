@@ -6,8 +6,8 @@
         "build.watch": "lerna run build.watch",
         "build.all": "npm run build",
         "build.all.win": "lerna run build.all.win",
-        "clean": "rimraf 'packages/**/*.d.ts' 'packages/**/*.js' 'packages/**/*.js.map' 'packages/**/*.metada' 'packages/**/angular/ng-package.json'",
-        "fullclean": "npm run clean && rimraf 'packages/**/node_modules' 'demo-*/hooks' 'demo-*/node_modules' 'package-lock.json' 'pnpm-lock.yaml' 'node_modules'",
+        "clean": "rimraf -g 'packages/**/*.d.ts' 'packages/**/*.tsbuildinfo' 'packages/**/*.js' 'packages/**/*.mjs' 'packages/**/*.js.map' 'packages/**/*.mjs.map' 'packages/**/*.metada' 'packages/**/angular/ng-package.json'",
+        "fullclean": "npm run clean && rimraf -g 'packages/**/node_modules' 'demo-*/hooks' 'demo-*/node_modules' 'package-lock.json' 'pnpm-lock.yaml' 'node_modules'",
         "commitmsg": "commitlint -e $GIT_PARAMS",
         "demo.vue.android": "cd ./demo-vue && ns run android --no-hmr --env.watchNodeModules",
         "demo.vue.clean": "cd ./demo-vue && ns clean",
@@ -22,7 +22,7 @@
         "start": "./node_modules/.bin/ntl -A -s 15 -o",
         "submodules": "git submodule update --init",
         "submodules.update": "git submodule -q foreach git pull -q origin master && git add .",
-        "sync": "node ./tools/sync.js",
+        "sync": "node ./tools/sync.mjs",
         "update": "node ./tools/update.js",
         "doc": "node tools/builddoc.mjs",
         "commit_readme_doc_changes": "git add docs/** *.md ; git commit -m \"readme/doc\" ; echo \"commit readme doc done\""
@@ -47,7 +47,7 @@
         "@nativescript-community/additween": "^4.0.9",
         "@nativescript-community/arraybuffers": "^1.1.5",
         "@nativescript-community/gesturehandler": "^2.0.32",
-        "@nativescript-community/plugin-seed-tools": "file:tools",
+        "@nativescript-community/plugin-seed-tools": "portal:tools",
         "@nativescript-community/ui-canvas": "^4.6.41",
         "downsample": "^1.4.0",
         "number-format.js": "^2.0.9"
@@ -77,5 +77,5 @@
         "pnpm": ">=7.0.0",
         "node": "^14.20.0 || ^16.13.0 || >=18.10.0"
     },
-    "packageManager": "yarn@4.6.0+sha512.5383cc12567a95f1d668fbe762dfe0075c595b4bfff433be478dbbe24e05251a8e8c3eb992a986667c1d53b6c3a9c85b8398c35a960587fbd9fa3a0915406728"
+    "packageManager": "yarn@4.10.2"
 }
