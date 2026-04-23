@@ -49,8 +49,8 @@
     "dependencies": {
         "@nativescript-community/additween": "^4.0.9",
         "@nativescript-community/arraybuffers": "^1.1.5",
-        "@nativescript-community/gesturehandler": "^2.0.32",
-        "@nativescript-community/ui-canvas": "^4.6.41",
+        "@nativescript-community/gesturehandler": "^2.0.44",
+        "@nativescript-community/ui-canvas": "^4.6.46",
         "downsample": "^1.4.0",
         "number-format.js": "^2.0.9"
     },
