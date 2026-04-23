@@ -589,7 +589,17 @@ export class LineChartRenderer extends LineRadarRenderer {
             fillPath.addPath(linePath);
             const minEntryValue = dataSet.getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min), this.mXBounds.min);
             const maxEntryValue = dataSet.getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), this.mXBounds.min + this.mXBounds.range);
-            this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
+
+            const customRender = this.mChart.customRenderer;
+            const drawFill = ()=>{
+                this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
+
+            }
+            if (customRender?.drawFill) {
+                 customRender.drawFill(c, dataSet as LineDataSet, fillPath, trans, minEntryValue, maxEntryValue, drawFill);
+            } else {
+                drawFill();
+            }
             this.lastLinePath = linePath;
             if (paintColorsShader && useColorsForFill) {
                 renderPaint.setShader(oldShader);
@@ -606,7 +616,7 @@ export class LineChartRenderer extends LineRadarRenderer {
             }
             trans.pathValueToPixel(linePath);
             if (customRender?.drawLine) {
-                customRender.drawLine(c, linePath, renderPaint);
+                customRender.drawLine(c, linePath, renderPaint, this.mChart, dataSet);
             } else {
                 this.drawPath(c, linePath, renderPaint);
             }
@@ -627,6 +637,8 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?, fillMin?: number) {
+
+        
         const fillFormatter = dataSet.fillFormatter;
         if (fillFormatter.getFillLinePath) {
             fillFormatter.getFillLinePath(dataSet, this.mChart, spline, this.lastLinePath);

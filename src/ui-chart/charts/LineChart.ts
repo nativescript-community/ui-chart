@@ -7,10 +7,13 @@ import { LineDataProvider } from '../interfaces/dataprovider/LineDataProvider';
 import { BaseCustomRenderer } from '../renderer/DataRenderer';
 import { LineChartRenderer } from '../renderer/LineChartRenderer';
 import { BarLineChartBase } from './BarLineChartBase';
+import { Chart } from '@nativescript-community/ui-chart/charts/Chart';
+import { Transformer } from '@nativescript-community/ui-chart/utils/Transformer';
 
 export interface CustomRenderer extends BaseCustomRenderer {
-    drawLine?: (c: Canvas, line: Path, paint: Paint) => void;
+    drawLine?: (c: Canvas, line: Path, paint: Paint, chart: Chart<any, any, any>, set: LineDataSet) => void;
     drawHighlight?: (c: Canvas, e: Highlight, set: LineDataSet, paint: Paint) => void;
+    drawFill?: (c: Canvas, dataSet: LineDataSet, spline: Path, trans: Transformer, min: number, max: number, superMethod:Function) => void;
 }
 
 export class LineChart extends BarLineChartBase<Entry, LineDataSet, LineData> implements LineDataProvider {
