@@ -406,6 +406,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param axis
      */
     protected calcMinMaxForEntry(set: IDataSet<Entry>, e: Entry, entryIndex: number, axis: AxisDependency) {
+        if (set.ignoreForMinMax === true) {
+            return;
+        }
         const xValue = set.getEntryXValue(e, entryIndex);
         const yValue = e[set.yProperty];
         this.mYMin = Math.min(this.mYMin, yValue);
@@ -416,7 +419,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         if (axis === AxisDependency.LEFT) {
             this.mLeftAxisMin = Math.min(this.mLeftAxisMin, yValue);
             this.mLeftAxisMax = Math.max(this.mLeftAxisMax, yValue);
-        } else {
+        } else if (axis === AxisDependency.RIGHT) {
             this.mRightAxisMin = Math.min(this.mRightAxisMin, yValue);
             this.mRightAxisMax = Math.max(this.mRightAxisMax, yValue);
         }
@@ -428,6 +431,9 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
      * @param d
      */
     protected calcMinMaxForDataSet(d: T) {
+        if (d.ignoreForMinMax === true) {
+            return;
+        }
         this.mXMin = Math.min(this.mXMin, d.xMin);
         this.mXMax = Math.max(this.mXMax, d.xMax);
         this.mYMin = Math.min(this.mYMin, d.yMin);
@@ -436,7 +442,7 @@ export abstract class ChartData<U extends Entry, T extends IDataSet<U>> {
         if (d.axisDependency === AxisDependency.LEFT) {
             this.mLeftAxisMin = Math.min(this.mLeftAxisMin, d.yMin);
             this.mLeftAxisMax = Math.max(this.mLeftAxisMax, d.yMax);
-        } else {
+        } else if (d.axisDependency === AxisDependency.RIGHT) {
             this.mRightAxisMin = Math.min(this.mRightAxisMin, d.yMin);
             this.mRightAxisMax = Math.max(this.mRightAxisMax, d.yMax);
         }

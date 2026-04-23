@@ -15,6 +15,7 @@ import { LegendForm } from '../../components/Legend';
 export interface IDataSet<T extends Entry> {
     xProperty: string;
     yProperty: string;
+
     /** ###### ###### DATA RELATED METHODS ###### ###### */
 
     /**
@@ -382,4 +383,10 @@ export interface IDataSet<T extends Entry> {
      * Returns the shader used for filling the area below the line.
      */
     fillShader: any;
+
+    /**
+     * Ignore this dataSet to compute axis minMax
+     */
+    ignoreForMinMax?: boolean;
+
 }
