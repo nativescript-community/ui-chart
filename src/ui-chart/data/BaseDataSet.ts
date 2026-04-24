@@ -134,6 +134,11 @@ export abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     spaceTop = 0;
 
     /**
+     * Ignore this dataSet to compute axis minMax
+     */
+    ignoreForMinMax = false;
+
+    /**
      * Constructor with label.
      *
      * @param label

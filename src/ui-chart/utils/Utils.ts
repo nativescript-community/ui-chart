@@ -15,6 +15,7 @@ import { DefaultValueFormatter } from '../formatter/DefaultValueFormatter';
 import { ValueFormatter } from '../formatter/ValueFormatter';
 import { MPPointF } from './MPPointF';
 import { MPSize } from './MPSize';
+import { SDK_VERSION } from '@nativescript/core/utils';
 
 export const ChartTraceCategory = 'NativescriptChart';
 
@@ -29,13 +30,6 @@ export const CLog = (type: CLogTypes, ...args) => {
     Trace.write(args.map((a) => (a && typeof a === 'object' ? JSON.stringify(a) : a)).join(' '), ChartTraceCategory, type);
 };
 
-let SDK_INT = -1;
-function getSDK() {
-    if (SDK_INT === -1) {
-        SDK_INT = android.os.Build.VERSION.SDK_INT;
-    }
-    return SDK_INT;
-}
 /**
  * Utilities class that has some helper methods. Needs to be initialized by
  * calling Utils.init(...) before usage. Inside the Chart.init() method, this is
@@ -633,7 +627,7 @@ export namespace Utils {
 
     export function clipPathSupported() {
         if (__ANDROID__) {
-            return getSDK() >= 18;
+            return SDK_VERSION >= 18;
         }
         return true;
     }

@@ -388,5 +388,4 @@ export interface IDataSet<T extends Entry> {
      * Ignore this dataSet to compute axis minMax
      */
     ignoreForMinMax?: boolean;
-
 }

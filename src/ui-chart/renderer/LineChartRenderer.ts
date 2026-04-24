@@ -591,12 +591,11 @@ export class LineChartRenderer extends LineRadarRenderer {
             const maxEntryValue = dataSet.getEntryXValue(dataSet.getEntryForIndex(this.mXBounds.min + this.mXBounds.range), this.mXBounds.min + this.mXBounds.range);
 
             const customRender = this.mChart.customRenderer;
-            const drawFill = ()=>{
+            const drawFill = () => {
                 this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
-
-            }
+            };
             if (customRender?.drawFill) {
-                 customRender.drawFill(c, dataSet as LineDataSet, fillPath, trans, minEntryValue, maxEntryValue, drawFill);
+                customRender.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue, drawFill);
             } else {
                 drawFill();
             }
@@ -637,8 +636,6 @@ export class LineChartRenderer extends LineRadarRenderer {
     }
 
     protected drawFill(c: Canvas, dataSet: ILineDataSet, spline: Path, trans: Transformer, min: number, max: number, color?, fillMin?: number) {
-
-        
         const fillFormatter = dataSet.fillFormatter;
         if (fillFormatter.getFillLinePath) {
             fillFormatter.getFillLinePath(dataSet, this.mChart, spline, this.lastLinePath);

@@ -358,7 +358,6 @@ export abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
                     let closestYValue = this.getEntryYValue(Utils.getArrayItem(values, closest));
                     let closestYIndex = closest;
 
-                    // eslint-disable-next-line no-constant-condition
                     while (true) {
                         closest += 1;
                         if (closest >= values.length) break;
