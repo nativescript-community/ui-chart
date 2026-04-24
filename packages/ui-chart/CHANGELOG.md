@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.28](https://github.com/nativescript-community/ui-chart/compare/v2.0.27...v2.0.28) (2026-04-24)
+
+**Note:** Version bump only for package @nativescript-community/ui-chart
+
 ## [2.0.27](https://github.com/nativescript-community/ui-chart/compare/v2.0.26...v2.0.27) (2025-09-03)
 
 **Note:** Version bump only for package @nativescript-community/ui-chart

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.28](https://github.com/nativescript-community/ui-chart/compare/v2.0.27...v2.0.28) (2026-04-24)
+
+### Bug Fixes
+
+* dataSet ignoreForMinMax ([a00b5d0](https://github.com/nativescript-community/ui-chart/commit/a00b5d0be1b0091da656e073d926ce0c9ae4f848))
+* new customRenderer methods ([b89048e](https://github.com/nativescript-community/ui-chart/commit/b89048e36b16afc94d5ce6d460c1996750abb837))
+* typings fix ([d111ff4](https://github.com/nativescript-community/ui-chart/commit/d111ff48b781aa984e61e69fc401c61f30d1722e))
+
 ## [2.0.27](https://github.com/nativescript-community/ui-chart/compare/v2.0.26...v2.0.27) (2025-09-03)
 
 ### Bug Fixes
