@@ -1,8 +1,70 @@
-<!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
-[![npm](https://img.shields.io/npm/v/@nativescript-community/ui-chart.svg)](https://www.npmjs.com/package/@nativescript-community/ui-chart)
-[![npm](https://img.shields.io/npm/dt/@nativescript-community/ui-chart.svg?label=npm%20downloads)](https://www.npmjs.com/package/@nativescript-community/ui-chart)
-[![GitHub forks](https://img.shields.io/github/forks/nativescript-community/ui-chart.svg)](https://github.com/nativescript-community/ui-chart/network)
-[![GitHub stars](https://img.shields.io/github/stars/nativescript-community/ui-chart.svg)](https://github.com/nativescript-community/ui-chart/stargazers)
+<!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️--><!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
+<!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      DO NOT EDIT THIS READEME DIRECTLY! Edit "bluesprint.md" instead.
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+<h1 align="center">@nativescript-community/ui-chart</h1>
+<p align="center">
+		<a href="https://npmcharts.com/compare/@nativescript-community/ui-chart?minimal=true"><img alt="Downloads per month" src="https://img.shields.io/npm/dm/@nativescript-community/ui-chart.svg" height="20"/></a>
+<a href="https://www.npmjs.com/package/@nativescript-community/ui-chart"><img alt="NPM Version" src="https://img.shields.io/npm/v/@nativescript-community/ui-chart.svg" height="20"/></a>
+	</p>
+
+<p align="center">
+  <b>A powerful chart / graph plugin, supporting line, bar, pie, radar, bubble, and candlestick charts as well as scaling, panning and animations.</b></br>
+  <sub><sub>
+</p>
+
+<br />
+
+
+
+[](#table-of-contents)
+
+
+[](#table-of-contents)
+
+## Table of Contents
+
+* [Installation](#installation)
+* [Migration to 2.x](#migration-to-2x)
+* [Usage](#usage)
+* [Plain NativeScript](#plain-nativescript)
+	* [XML](#xml)
+	* [TypeScript](#typescript)
+* [NativeScript + Vue](#nativescript--vue)
+* [NativeScript + Angular](#nativescript--angular)
+* [About](#about)
+	* [Examples:](#examples)
+* [Demos and Development](#demos-and-development)
+	* [Repo Setup](#repo-setup)
+	* [Build](#build)
+	* [Demos](#demos)
+* [Contributing](#contributing)
+	* [Update repo ](#update-repo-)
+	* [Update readme ](#update-readme-)
+	* [Update doc ](#update-doc-)
+	* [Publish](#publish)
+	* [modifying submodules](#modifying-submodules)
+* [Questions](#questions)
+
+
+
+[](#installation)
 
 
 [](#installation)
@@ -16,11 +78,17 @@
 
 [](#migration-to-2x)
 
+
+[](#migration-to-2x)
+
 ## Migration to 2.x
 
 In 2.x most methods like `setColor`/`getColor` have been changed to properties like `color`
 You can either to it manually and update them all (you should get tsc errors for removed or renamed methods), or you can use a regexp like `/set([A-Z])(\w*?)\(/` to search and replace (first group should be lowercase in the replace) with something like `\L$1$2=(`
 Then use typings to fix potential name change
+
+
+[](#usage)
 
 
 [](#usage)
@@ -35,6 +103,9 @@ install();
 ```
 
 You can also check [Wiki](https://github.com/nativescript-community/ui-chart/wiki) for any useful material.
+
+
+[](#plain-nativescript)
 
 
 [](#plain-nativescript)
@@ -86,6 +157,9 @@ export function onLineChartLoaded(args) {
     chart.data = ld;
 }
 ```
+
+
+[](#nativescript--vue)
 
 
 [](#nativescript--vue)
@@ -144,6 +218,9 @@ onChartLoaded() {
 
 [](#nativescript--angular)
 
+
+[](#nativescript--angular)
+
 ## NativeScript + Angular
 Register the element in app.module.ts
 ```javascript
@@ -198,6 +275,9 @@ onChartLoaded(args) {
 
 [](#about)
 
+
+[](#about)
+
 ## About
 
 This plugin is based on [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart), a powerful & easy to use chart library. Therefore, special thanks goes to Philipp Jahoda, the creator of [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) and the rest of his team.
@@ -221,14 +301,124 @@ That is because:
 -   It can share the same data array between multiple datasets
 -   It can still use the power of native arrays to NOT marshal arrays of positions while drawing lines with [@nativescript-community/ui-canvas](https://github.com/nativescript-community/ui-canvas)
 
+### Examples:
 
-[](#documentation)
+- [Basic](demo-snippets/vue/Basic.vue)
+- [Basic](demo-snippets/vue/BubbleChart.vue)
+- [Basic](demo-snippets/vue/CandleStickChart.vue)
+- [Basic](demo-snippets/vue/CombinedChart.vue)
+- [Basic](demo-snippets/vue/NSChart.vue)
+- [Basic](demo-snippets/vue/PieChart.vue)
+- [Basic](demo-snippets/vue/Realtime.vue)
+- [Basic](demo-snippets/vue/ScatterPlot.vue)
 
-## Documentation
 
-The NativeScript 'ui-chart' plugin is based on the [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) library.
-In few words, its API is identical. The possibility to add API reference will be considered in the future.
+[](#demos-and-development)
 
+
+[](#demos-and-development)
+
+## Demos and Development
+
+
+### Repo Setup
+
+The repo uses submodules. If you did not clone with ` --recursive` then you need to call
+```
+git submodule update --init
+```
+
+The package manager used to install and link dependencies must be `pnpm` or `yarn`. `npm` wont work.
+
+To develop and test:
+if you use `yarn` then run `yarn`
+if you use `pnpm` then run `pnpm i`
+
+**Interactive Menu:**
+
+To start the interactive menu, run `npm start` (or `yarn start` or `pnpm start`). This will list all of the commonly used scripts.
+
+### Build
+
+```bash
+npm run build.all
+```
+WARNING: it seems `yarn build.all` wont always work (not finding binaries in `node_modules/.bin`) which is why the doc explicitly uses `npm run`
+
+### Demos
+
+```bash
+npm run demo.[ng|react|svelte|vue].[ios|android]
+
+npm run demo.svelte.ios # Example
+```
+
+Demo setup is a bit special in the sense that if you want to modify/add demos you dont work directly in `demo-[ng|react|svelte|vue]`
+Instead you work in `demo-snippets/[ng|react|svelte|vue]`
+You can start from the `install.ts` of each flavor to see how to register new demos 
+
+
+[](#contributing)
+
+
+[](#contributing)
+
+## Contributing
+
+### Update repo 
+
+You can update the repo files quite easily
+
+First update the submodules
+
+```bash
+npm run update
+```
+
+Then commit the changes
+Then update common files
+
+```bash
+npm run sync
+```
+Then you can run `yarn|pnpm`, commit changed files if any
+
+### Update readme 
+```bash
+npm run readme
+```
+
+### Update doc 
+```bash
+npm run doc
+```
+
+### Publish
+
+The publishing is completely handled by `lerna` (you can add `-- --bump major` to force a major release)
+Simply run 
+```shell
+npm run publish
+```
+
+### modifying submodules
+
+The repo uses https:// for submodules which means you won't be able to push directly into the submodules.
+One easy solution is t modify `~/.gitconfig` and add
+```
+[url "ssh://git@github.com/"]
+	pushInsteadOf = https://github.com/
+```
+
+
+[](#questions)
+
+
+[](#questions)
+
+## Questions
+
+If you have any questions/issues/comments please feel free to create an issue or start a conversation in the [NativeScript Community Discord](https://nativescript.org/discord).
 
 [](#demos-and-development)
 
