@@ -78,14 +78,14 @@ export class CombinedChart extends BarLineChartBase<Entry, BarLineScatterCandleB
     }
 
     public set data(data: CombinedData) {
+        // clear renderers first to prevent notifying on removed renderers
+        this.renderer.renderers = [];
         super.data = data;
         // we need to reset highlighter here because it checks for barData
         // to create BarHighligther
         this.highlighter = new CombinedHighlighter(this, this);
         this.renderer.createRenderers();
-        // if (this.viewPortHandler.hasChartDimens) {
         this.renderer.initBuffers();
-        // }
     }
     get data() {
         return this.mData;
