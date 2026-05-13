@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.29](https://github.com/nativescript-community/ui-chart/compare/v2.0.28...v2.0.29) (2026-05-13)
+
+### Bug Fixes
+
+* prevent error on CombinedChart changed data ([69c5e4a](https://github.com/nativescript-community/ui-chart/commit/69c5e4a9502977ac4c6422f0504a000a2ce25924))
+
 ## [2.0.28](https://github.com/nativescript-community/ui-chart/compare/v2.0.27...v2.0.28) (2026-04-24)
 
 ### Bug Fixes
