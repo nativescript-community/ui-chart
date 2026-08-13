@@ -3,7 +3,6 @@ import { Canvas, Direction, FillType, LinearGradient, Matrix, Paint, Path, Style
 import { Color, ImageSource, Screen, profile } from '@nativescript/core';
 import { ChartAnimator } from '../animation/ChartAnimator';
 import { LineChart } from '..';
-import { Rounding } from '../data/DataSet';
 import { LineDataSet, Mode } from '../data/LineDataSet';
 import { Highlight } from '../highlight/Highlight';
 import { ILineDataSet } from '../interfaces/datasets/ILineDataSet';
@@ -467,72 +466,85 @@ export class LineChartRenderer extends LineRadarRenderer {
         }
     }
 
-    getMultiColorsShader(colors: { color: string | Color; [k: string]: any }[], points, trans: Transformer, dataSet: LineDataSet) {
+    /**
+     * Hard edged gradient over the content rect, one band per color. Each color carries the index of
+     * the entry it starts at, in `dataSet.xProperty` or in `index`.
+     *
+     * The pixel of a stop is derived from the entry's x **value** through the transformer rather than
+     * from the point buffer: that buffer holds 2 floats per entry in LINEAR/STEPPED mode but 6 in
+     * either bezier mode (two control points and the anchor), so indexing it with a stride of 2 put
+     * every stop at roughly a third of its real position, and the error moved with the pan. Going
+     * through the transformer is mode agnostic, and filtering agnostic too: decimation changes which
+     * entries exist, not where a given x value lands on screen.
+     *
+     * @param alpha optional 0-255 alpha applied to every stop, for the fill pass
+     */
+    getMultiColorsShader(colors: { color: string | Color; [k: string]: any }[], trans: Transformer, dataSet: LineDataSet, alpha?: number) {
         const nbColors = colors.length;
-        const xKey = dataSet.xProperty;
-        if (nbColors > 0) {
-            trans.pointValuesToPixel(points);
-            const shaderColors = [];
-            const positions = [];
-            const firstIndex = Math.max(0, this.mXBounds.min);
-            const range = this.mXBounds.range;
-            const lastIndex = firstIndex + range;
-            const width = this.mViewPortHandler.chartWidth;
-            const chartRect = this.mViewPortHandler.chartRect;
-            let lastColor;
-
-            const gradientDelta = 0;
-            const posDelta = gradientDelta / width;
-            for (let index = 0; index < nbColors; index++) {
-                const color = colors[index] as { color: string | Color; [k: string]: any };
-                let colorIndex = color[xKey || 'index'] as number;
-                // if filtered we need to get the real index
-                if (dataSet.filtered) {
-                    dataSet.ignoreFiltered = true;
-                    const entry = dataSet.getEntryForIndex(colorIndex);
-                    dataSet.ignoreFiltered = false;
-                    if (entry) {
-                        colorIndex = dataSet.getEntryIndexForXValue(dataSet.getEntryXValue(entry, colorIndex), NaN, Rounding.CLOSEST);
-                    }
-                }
-                if (colorIndex < firstIndex) {
-                    lastColor = color.color;
-                    continue;
-                }
-                if (colorIndex > lastIndex) {
-                    if (shaderColors.length === 0) {
-                        shaderColors.push(lastColor);
-                        positions.push(0);
-                        shaderColors.push(lastColor);
-                        positions.push(1);
-                    }
-                    break;
-                }
-                const posX = Math.floor(points[(colorIndex - firstIndex) * 2]);
-                const pos = (posX - chartRect.left) / width;
-                if (lastColor) {
-                    if (shaderColors.length === 0) {
-                        shaderColors.push(lastColor);
-                        positions.push(0);
-                    }
-                    shaderColors.push(lastColor);
-                    positions.push(pos - posDelta);
-                }
-                shaderColors.push(color.color);
-                positions.push(pos + posDelta);
-                lastColor = color.color;
-            }
-            if (shaderColors.length === 0) {
-                shaderColors.push(colors[0].color);
-                positions.push(0);
-            }
-            if (shaderColors.length === 1) {
-                shaderColors.push(colors[0].color);
-                positions.push(1);
-            }
-            return new LinearGradient(0, 0, width, 0, shaderColors, positions, TileMode.CLAMP);
+        if (nbColors === 0) {
+            return null;
         }
-        return null;
+        const xKey = dataSet.xProperty;
+        const contentRect = this.mViewPortHandler.contentRect;
+        const width = contentRect.width();
+        if (width <= 0) {
+            return null;
+        }
+        const withAlpha = (color: string | Color) => {
+            if (alpha === undefined || alpha >= 255) {
+                return color;
+            }
+            const actual = color instanceof Color ? color : new Color(color);
+            return new Color(Math.round((alpha * actual.a) / 255), actual.r, actual.g, actual.b);
+        };
+
+        const shaderColors = [];
+        const positions = [];
+        let currentColor;
+        let lastPosition = 0;
+        // the stops index the unfiltered values, whatever decimation is currently applied
+        const wasIgnoringFiltered = dataSet.ignoreFiltered;
+        dataSet.ignoreFiltered = true;
+        for (let index = 0; index < nbColors; index++) {
+            const color = colors[index];
+            const colorIndex = color[xKey || 'index'] as number;
+            const entry = dataSet.getEntryForIndex(colorIndex);
+            if (!entry) {
+                continue;
+            }
+            const posX = trans.getPixelForValues(dataSet.getEntryXValue(entry, colorIndex), 0).x;
+            // a stop outside the viewport still matters: clamped, it is the color CLAMP extends past
+            // that edge. Unclamped it would be an out of range gradient stop, which both backends
+            // render as garbage - that was the second half of the "colors jump when panning" bug
+            const position = Math.max(Math.min((posX - contentRect.left) / width, 1), 0);
+            currentColor = withAlpha(color.color);
+            if (shaderColors.length === 0) {
+                // whatever its real position, the first stop anchors the gradient at the left edge
+                shaderColors.push(currentColor);
+                positions.push(0);
+                continue;
+            }
+            if (position <= lastPosition) {
+                // collapsed onto the previous stop, ie clamped or under a pixel wide: it takes over
+                shaderColors[shaderColors.length - 1] = currentColor;
+                continue;
+            }
+            // close the running band and open the new one on the same position, for a hard edge
+            shaderColors.push(shaderColors[shaderColors.length - 1]);
+            positions.push(position);
+            shaderColors.push(currentColor);
+            positions.push(position);
+            lastPosition = position;
+        }
+        dataSet.ignoreFiltered = wasIgnoringFiltered;
+        if (shaderColors.length === 0) {
+            return null;
+        }
+        if (shaderColors.length === 1) {
+            shaderColors.push(currentColor);
+            positions.push(1);
+        }
+        return new LinearGradient(contentRect.left, 0, contentRect.right, 0, shaderColors, positions, TileMode.CLAMP);
     }
 
     lastLinePath: Path;
@@ -573,8 +585,7 @@ export class LineChartRenderer extends LineRadarRenderer {
         const renderPaint = this.renderPaint;
         let paintColorsShader;
         if (nbColors > 1) {
-            // TODO: we transforms points in there. Could be dangerous if used after
-            paintColorsShader = this.getMultiColorsShader(colors as any, points, trans, dataSet);
+            paintColorsShader = this.getMultiColorsShader(colors as any, trans, dataSet);
         }
 
         let oldShader;
@@ -582,7 +593,10 @@ export class LineChartRenderer extends LineRadarRenderer {
             const useColorsForFill = dataSet.useColorsForFill;
             if (paintColorsShader && useColorsForFill) {
                 oldShader = renderPaint.getShader();
-                renderPaint.setShader(paintColorsShader);
+                // the paint color is ignored once a shader is set, so the fill alpha has to be baked
+                // into the stops. Without it a multi colored fill draws opaque while a plain one
+                // honours fillAlpha
+                renderPaint.setShader(dataSet.fillAlpha >= 255 ? paintColorsShader : this.getMultiColorsShader(colors as any, trans, dataSet, dataSet.fillAlpha));
             }
             const fillPath = this.fillPath;
             fillPath.reset();
@@ -594,10 +608,20 @@ export class LineChartRenderer extends LineRadarRenderer {
             const drawFill = () => {
                 this.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue);
             };
+            // the fill is painted through clipPath + drawPaint, which floods the whole clip region.
+            // Keep it inside the plot area whatever the platform does with the outer clip
+            const clipToContent = this.mChart.clipDataToContent;
+            const clipSave = clipToContent ? c.save() : 0;
+            if (clipToContent) {
+                c.clipRect(this.mViewPortHandler.contentRect);
+            }
             if (customRender?.drawFill) {
                 customRender.drawFill(c, dataSet, fillPath, trans, minEntryValue, maxEntryValue, drawFill);
             } else {
                 drawFill();
+            }
+            if (clipToContent) {
+                c.restoreToCount(clipSave);
             }
             this.lastLinePath = linePath;
             if (paintColorsShader && useColorsForFill) {
