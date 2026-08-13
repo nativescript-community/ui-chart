@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.30](https://github.com/nativescript-community/ui-chart/compare/v2.0.29...v2.0.30) (2026-08-13)
+
+### Bug Fixes
+
+* correct multi-color fill shader stops ([57c7112](https://github.com/nativescript-community/ui-chart/commit/57c7112fd820a5ec423a41e25203175311df3588))
+
 ## [2.0.29](https://github.com/nativescript-community/ui-chart/compare/v2.0.28...v2.0.29) (2026-05-13)
 
 ### Bug Fixes
