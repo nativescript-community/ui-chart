@@ -11,7 +11,7 @@ import {
     TapGestureHandler
 } from '@nativescript-community/gesturehandler';
 import { Matrix } from '@nativescript-community/ui-canvas';
-import { Trace } from '@nativescript/core';
+import { Trace, isIOS } from '@nativescript/core';
 import { BarLineChartBase } from '../charts/BarLineChartBase';
 import { IDataSet } from '../interfaces/datasets/IDataSet';
 import { CLog, CLogTypes } from '../utils/Utils';
@@ -147,18 +147,49 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             }
             const panOptions = this.getPanGestureOptions();
             const pinchOptions = this.getPinchGestureOptions();
+            // iOS: the wheel/trackpad scrolls the chart too (Mac Catalyst), see shouldStartPan
+            const scrollOptions = isIOS ? { allowedScrollTypes: 3, shouldStartGesture: this.shouldStartPan.bind(this) } : {};
             this.panGestureHandler = manager
                 .createGestureHandler(HandlerType.PAN, panOptions.gestureTag, {
                     simultaneousHandlers: [pinchOptions.gestureTag],
                     minPointers: 1,
                     maxPointers: 2,
                     shouldCancelWhenOutside: false,
+                    ...scrollOptions,
                     ...panOptions
                 })
                 .on(GestureHandlerStateEvent, this.onPanGestureState, this)
                 .on(GestureHandlerTouchEvent, this.onPanGestureTouch, this);
         }
         return this.panGestureHandler;
+    }
+
+    // true when a parent scroll view could use a vertical wheel scroll
+    hasVerticalScrollableAncestor() {
+        let ancestor: UIView = this.chart.nativeViewProtected?.superview;
+        while (ancestor) {
+            if (ancestor instanceof UIScrollView && ancestor.scrollEnabled) {
+                const inset = ancestor.adjustedContentInset;
+                if (ancestor.contentSize.height + inset.top + inset.bottom > ancestor.bounds.size.height) {
+                    return true;
+                }
+            }
+            ancestor = ancestor.superview;
+        }
+        return false;
+    }
+    // touches always start a pan. A scroll event (no pointer) only when the chart can be moved,
+    // and a vertical one not when a parent scroll view can use it
+    shouldStartPan(extraData: { numberOfPointers?: number; translationX?: number; translationY?: number }) {
+        if (extraData.numberOfPointers) {
+            return true;
+        }
+        const chart = this.chart;
+        if (!chart.dragEnabled || (chart.isFullyZoomedOut() && chart.hasNoDragOffset())) {
+            return false;
+        }
+        const vertical = Math.abs(extraData.translationY) > Math.abs(extraData.translationX);
+        return !vertical || !this.hasVerticalScrollableAncestor();
     }
 
     setDoubleTap(enabled: boolean) {
@@ -263,8 +294,11 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     this.mTouchMode = ChartTouchListener.NONE;
                     this.stopDeceleration();
 
-                    this.mDecelerationVelocity.x = event.data.extraData.velocityX;
-                    this.mDecelerationVelocity.y = event.data.extraData.velocityY;
+                    const extraData = event.data.extraData;
+                    // like the drag, a wheel scroll moves the chart horizontally
+                    const isScroll = !extraData.numberOfPointers;
+                    this.mDecelerationVelocity.x = isScroll ? extraData.velocityX + extraData.velocityY : extraData.velocityX;
+                    this.mDecelerationVelocity.y = isScroll ? 0 : extraData.velocityY;
 
                     chart.invalidate();
                 }
@@ -286,13 +320,16 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 chart.notify({ eventName: 'pan', data: event.data, object: chart });
             }
             chart.disableScroll();
-            const x = event.data.extraData.translationX;
-            const y = event.data.extraData.translationY;
+            const extraData = event.data.extraData;
+            // a wheel only gives vertical deltas, which move the chart horizontally
+            const isScroll = !extraData.numberOfPointers;
+            const x = isScroll ? extraData.translationX + extraData.translationY : extraData.translationX;
+            const y = isScroll ? 0 : extraData.translationY;
 
             this.performDrag(event, x, y);
             this.mMatrix = chart.viewPortHandler.refresh(this.mMatrix, chart, true);
         } else if (this.mTouchMode === ChartTouchListener.NONE) {
-            const shouldPan = (!chart.isFullyZoomedOut() || !chart.hasNoDragOffset()) && (!chart.zoomedPanWith2Pointers || event.data.extraData.numberOfPointers === 2);
+            const shouldPan = (!chart.isFullyZoomedOut() || !chart.hasNoDragOffset()) && (!chart.zoomedPanWith2Pointers || event.data.extraData.numberOfPointers === 2 || !event.data.extraData.numberOfPointers);
 
             if (shouldPan) {
                 // Disable dragging in a direction that's disallowed
