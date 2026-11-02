@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.31](https://github.com/nativescript-community/ui-chart/compare/v2.0.30...v2.0.31) (2026-11-02)
+
+### Features
+
+* **ios:** scroll the chart with the mouse wheel on Mac Catalyst ([e6abedd](https://github.com/nativescript-community/ui-chart/commit/e6abedd5ee281b77bca13b407cbc7a75f338246f))
+
+### Bug Fixes
+
+* **pan:** keep zoom when a pinch ends with one finger still down ([da52434](https://github.com/nativescript-community/ui-chart/commit/da52434c35cdb926a6b4450a8cb49db4dab31122))
+
 ## [2.0.30](https://github.com/nativescript-community/ui-chart/compare/v2.0.29...v2.0.30) (2026-08-13)
 
 ### Bug Fixes
