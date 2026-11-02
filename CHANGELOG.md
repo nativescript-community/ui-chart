@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.32](https://github.com/nativescript-community/ui-chart/compare/v2.0.31...v2.0.32) (2026-11-02)
+
+### Bug Fixes
+
+* **line:** keep dashes in place while panning ([4ad44c6](https://github.com/nativescript-community/ui-chart/commit/4ad44c6da5bc034759e057085443b182b36b97bf))
+
 ## [2.0.31](https://github.com/nativescript-community/ui-chart/compare/v2.0.30...v2.0.31) (2026-11-02)
 
 ### Features
