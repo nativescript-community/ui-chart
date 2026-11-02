@@ -559,6 +559,11 @@ export class LineChartRenderer extends LineRadarRenderer {
         const linePath = Utils.getTempPath();
 
         this.mXBounds.set(this.mChart, dataSet, this.animator);
+        if (dataSet.dashPathEffect) {
+            // dashes are laid along the path: starting it at the first entry keeps them in place while panning
+            this.mXBounds.range += this.mXBounds.min;
+            this.mXBounds.min = 0;
+        }
         let points;
         switch (dataSet.mode) {
             default:
