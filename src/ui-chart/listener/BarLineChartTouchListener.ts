@@ -49,6 +49,12 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     private mSavedXDist = 1;
     private mSavedYDist = 1;
 
+    // the pan keeps running when a pinch ends with one finger still down: its translation
+    // is relative to the pan start, so drag must restart from the matrix the pinch left
+    private mPanRebase = false;
+    private mPanOriginX = 0;
+    private mPanOriginY = 0;
+
     private mClosestDataSetToTouch: IDataSet<any>;
 
     private mDecelerationVelocity = { x: 0, y: 0 };
@@ -287,6 +293,9 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             case GestureState.ACTIVE:
                 this.stopDeceleration();
                 this.saveTouchStart(event);
+                this.mPanRebase = false;
+                this.mPanOriginX = 0;
+                this.mPanOriginY = 0;
                 break;
             case GestureState.END:
             case GestureState.CANCELLED:
@@ -323,8 +332,8 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             const extraData = event.data.extraData;
             // a wheel only gives vertical deltas, which move the chart horizontally
             const isScroll = !extraData.numberOfPointers;
-            const x = isScroll ? extraData.translationX + extraData.translationY : extraData.translationX;
-            const y = isScroll ? 0 : extraData.translationY;
+            const x = isScroll ? extraData.translationX + extraData.translationY : extraData.translationX - this.mPanOriginX;
+            const y = isScroll ? 0 : extraData.translationY - this.mPanOriginY;
 
             this.performDrag(event, x, y);
             this.mMatrix = chart.viewPortHandler.refresh(this.mMatrix, chart, true);
@@ -337,6 +346,12 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     chart.disableScroll();
                     this.mLastGesture = ChartGesture.DRAG;
                     this.mTouchMode = ChartTouchListener.DRAG;
+                    if (this.mPanRebase) {
+                        this.mPanRebase = false;
+                        this.saveTouchStart(event);
+                        this.mPanOriginX = event.data.extraData.translationX;
+                        this.mPanOriginY = event.data.extraData.translationY;
+                    }
                 }
             } else {
                 if (chart.highlightPerDragEnabled) {
@@ -385,6 +400,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                     this.mTouchMode === ChartTouchListener.POST_ZOOM
                 ) {
                     this.mTouchMode = ChartTouchListener.NONE;
+                    this.mPanRebase = true;
                     // Range might have changed, which means that Y-axis labels
                     // could have changed in size, affecting Y-axis size.
                     // So we need to recalculate offsets.
@@ -481,7 +497,7 @@ export class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
      *
      * @param event
      */
-    private saveTouchStart(event: GestureStateEventData) {
+    private saveTouchStart(event: GestureStateEventData | GestureTouchEventData) {
         this.mSavedMatrix.set(this.mMatrix);
     }
 
