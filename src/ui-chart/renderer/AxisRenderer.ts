@@ -240,9 +240,12 @@ export abstract class AxisRenderer extends Renderer {
                     ++n;
                 }
             }
-            // if (axis.ensureLastLabel && (n - 1) * interval < last) {
-            //     n++;
-            // }
+            // a label at the end of the axis when the interval's own labels stop before it, and not so near it that the two would overlap
+            const lastRegular = first + (n - 1) * interval;
+            const addsLastLabel = axis.ensureLastLabel && interval !== 0 && n > 0 && max - lastRegular >= interval * 0.3;
+            if (addsLastLabel) {
+                n++;
+            }
 
             axis.mEntryCount = n;
 
@@ -256,7 +259,7 @@ export abstract class AxisRenderer extends Renderer {
                 if (f === 0.0) {
                     // Fix for negative zero case (Where value === -0.0, and 0.0 === -0.0)
                     f = 0.0;
-                } else if (!axis.allowLastLabelAboveMax && f > max) {
+                } else if ((!axis.allowLastLabelAboveMax && f > max) || (addsLastLabel && i === n - 1)) {
                     f = max;
                 }
 
