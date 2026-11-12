@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.33](https://github.com/nativescript-community/ui-chart/compare/v2.0.32...v2.0.33) (2026-11-12)
+
+### Features
+
+* **axis:** ensureLastLabel also works with a forced interval ([5707f60](https://github.com/nativescript-community/ui-chart/commit/5707f607420501463f91ab3d8049e625f11d3b8f))
+
 ## [2.0.32](https://github.com/nativescript-community/ui-chart/compare/v2.0.31...v2.0.32) (2026-11-02)
 
 ### Bug Fixes
